@@ -1,0 +1,58 @@
+{
+  "id": 6712,
+  "name": "Card #6712",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6712.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "garbage pail kids pack"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Banette"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6712.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

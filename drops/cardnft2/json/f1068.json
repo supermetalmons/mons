@@ -1,0 +1,46 @@
+{
+  "id": 1068,
+  "name": "Card #1068",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1068.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Meowth - 62/82"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "right",
+      "value": "crowbar hl2"
+    },
+    {
+      "trait_type": "top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1068.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

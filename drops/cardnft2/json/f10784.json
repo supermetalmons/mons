@@ -1,0 +1,70 @@
+{
+  "id": 10784,
+  "name": "Card #10784",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10784.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue yugioh back"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kankuro - card4944 white mask transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "castlevania skeleton boss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10784.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

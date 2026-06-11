@@ -1,0 +1,66 @@
+{
+  "id": 7187,
+  "name": "Card #7187",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7187.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gothic Cathedral Night Background - card1673-41"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "desert shaman"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cell dragon ball"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red pokemon doodles"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mimikyu VMAX - IMG_3438 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7187.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

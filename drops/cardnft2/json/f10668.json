@@ -1,0 +1,102 @@
+{
+  "id": 10668,
+  "name": "Card #10668",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10668.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko ultraviolet magenta soft blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "070 cyan magenta gold extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark magician clean wisp moon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "abstract demon collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "100 rainbow prism dawn extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 38"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "ghetsis - card2937 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "ghetsis - card2937 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Orange w hat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10668.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

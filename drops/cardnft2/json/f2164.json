@@ -1,0 +1,70 @@
+{
+  "id": 2164,
+  "name": "Card #2164",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2164.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga shocked faces"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "foxy animatronic"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Splicers Metamorph Demon"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel armor engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eevee - 51/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2164.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

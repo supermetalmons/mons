@@ -1,0 +1,54 @@
+{
+  "id": 2285,
+  "name": "Card #2285",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2285.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jack frost sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red crucifixion scene"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dugtrio - 23/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2285.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

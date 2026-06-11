@@ -1,0 +1,58 @@
+{
+  "id": 466,
+  "name": "Card #466",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0466.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Froakie - 22/25"
+    },
+    {
+      "trait_type": "center",
+      "value": "red dress oil sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga lust"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "angel statue black background"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "they want you to fear death"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "spider warrior"
+    },
+    {
+      "trait_type": "top right",
+      "value": "pink skulls and red paint"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0466.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

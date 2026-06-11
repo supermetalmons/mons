@@ -1,0 +1,90 @@
+{
+  "id": 4419,
+  "name": "Card #4419",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4419.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "watercolor block"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "scattered balls"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "top center",
+      "value": "klimt the park 1910"
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "08 vespertine purple peach clean wisp ellipse"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Setzer Gabbiani yoshitaka"
+    },
+    {
+      "trait_type": "right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal necklace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mifella emoji pack"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Spoink 7/12"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4419.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

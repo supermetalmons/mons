@@ -1,0 +1,110 @@
+{
+  "id": 7620,
+  "name": "Card #7620",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7620.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_barbarian_warrior"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "miyazaki birds"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "shot crosshair"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "neversoft logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "super buu"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Entei - IMG_3276 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7620.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

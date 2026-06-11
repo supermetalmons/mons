@@ -1,0 +1,50 @@
+{
+  "id": 514,
+  "name": "Card #514",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0514.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Alolan Vulpix - 21/145"
+    },
+    {
+      "trait_type": "center",
+      "value": "17th-century military engineering treatise"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "muscular person in school uniform"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dr slump arale motorcycle"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0514.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

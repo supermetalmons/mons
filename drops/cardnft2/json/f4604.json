@@ -1,0 +1,102 @@
+{
+  "id": 4604,
+  "name": "Card #4604",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4604.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "dark matter web"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "092 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ascii christ"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "eevee meme"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue purple gradient rectangle"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dragonite and scyther anime"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "the numbers mason text"
+    },
+    {
+      "trait_type": "right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chidori - us065"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4604.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

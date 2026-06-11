@@ -1,0 +1,42 @@
+{
+  "id": 518,
+  "name": "Card #518",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0518.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poliwag - 59/102"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "record player sculpture"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0518.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

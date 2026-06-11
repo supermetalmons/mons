@@ -1,0 +1,106 @@
+{
+  "id": 4498,
+  "name": "Card #4498",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4498.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "gulf war 2"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "kurabbu grooming proof"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - gold holy - drop"
+    },
+    {
+      "trait_type": "hero",
+      "value": "manga action scene"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark angel red glow"
+    },
+    {
+      "trait_type": "right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dune dark ritual scene"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude girls on hand frazetta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bikochu - 037"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4498.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

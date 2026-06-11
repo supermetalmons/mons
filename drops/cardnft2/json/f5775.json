@@ -1,0 +1,50 @@
+{
+  "id": 5775,
+  "name": "Card #5775",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5775.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta girl on tiger"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Demon bite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "I Have a Plan to Take Down One of the Four Emperors!! - OP14-019"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5775.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

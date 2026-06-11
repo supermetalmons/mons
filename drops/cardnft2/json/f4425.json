@@ -1,0 +1,98 @@
+{
+  "id": 4425,
+  "name": "Card #4425",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4425.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "things going kind of good"
+    },
+    {
+      "trait_type": "right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue flame eyes"
+    },
+    {
+      "trait_type": "center",
+      "value": "spirit egg diagram"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging cocoon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "question bag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star burst"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gabite - 89/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4425.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "id": 8935,
+  "name": "Card #8935",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8935.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_dragon_wave_art"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kadabra japanese name corner"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "robot skeleton warrior"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "look at the bottom right corner"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "little flowers"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kuwait 1991"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Drifblim - card3885 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3 (1)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold shuppet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8935.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

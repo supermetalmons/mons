@@ -1,0 +1,90 @@
+{
+  "id": 8216,
+  "name": "Card #8216",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8216.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "neco arc tank"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "pillar engraving"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract paint swirl"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "infernape electivire battle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "009 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Jolteon Jungle - card2072 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8216.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

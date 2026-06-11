@@ -1,0 +1,70 @@
+{
+  "id": 6838,
+  "name": "Card #6838",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6838.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon beanie baby romance"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "roger rabbit"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dice three dots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Beetlemon - DT-78"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6838.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

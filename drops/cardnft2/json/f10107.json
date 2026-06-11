@@ -1,0 +1,102 @@
+{
+  "id": 10107,
+  "name": "Card #10107",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10107.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_jungle_tiger_woman"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "junji ito frankenstein"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cafe de l enfer facade"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "music to kill"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "061 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - labyrinth"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "024 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 18"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gardevoir_v_070_073_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gardevoir_v_070_073_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10107.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

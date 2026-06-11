@@ -1,0 +1,46 @@
+{
+  "id": 980,
+  "name": "Card #980",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0980.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Professor - us005"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0980.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

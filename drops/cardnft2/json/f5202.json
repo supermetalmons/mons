@@ -1,0 +1,78 @@
+{
+  "id": 5202,
+  "name": "Card #5202",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5202.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "don t dead open inside"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black intricate pattern 2"
+    },
+    {
+      "trait_type": "left",
+      "value": "gray door number 7"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red sun rays flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "rising prototype slicing"
+    },
+    {
+      "trait_type": "right",
+      "value": "yoda black lotus mtg"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario drawing"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wigglytuff - 89/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5202.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

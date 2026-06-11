@@ -1,0 +1,190 @@
+{
+  "id": 3430,
+  "name": "Card #3430",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3430.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dr slump arale motorcycle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "watercolor drif wound"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi itachi 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif 2 blue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue namekian chrono trigger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikki heads"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red sharingan eye"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Super Rod - 20/20"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3430.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

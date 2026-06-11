@@ -1,0 +1,70 @@
+{
+  "id": 2723,
+  "name": "Card #2723",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2723.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "killua spider hxh"
+    },
+    {
+      "trait_type": "right",
+      "value": "Sinister Serpent"
+    },
+    {
+      "trait_type": "top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "old atlantis cultic activities"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zarude - 027/264"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2723.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 10874,
+  "name": "Card #10874",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10874.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Fire Landscape Background"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "nidoking - card5567 white mask inverted transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "arceus highway loops"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "buff pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10874.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 5543,
+  "name": "Card #5543",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5543.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "golden puzzle box"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rose shadow - lotus"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "itachi reaching hand sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rgb pixels"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Vileplume - 30/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5543.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

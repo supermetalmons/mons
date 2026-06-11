@@ -1,0 +1,66 @@
+{
+  "id": 2406,
+  "name": "Card #2406",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2406.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ben franklin engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "starry night silhouette"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [S] - 87/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2406.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

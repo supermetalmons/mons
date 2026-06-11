@@ -1,0 +1,74 @@
+{
+  "id": 6029,
+  "name": "Card #6029",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6029.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "42 radiant yellow red clean wisp circle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "skull crossbones flag"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cardboard celebi unknowns sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "gold arrow button"
+    },
+    {
+      "trait_type": "hero",
+      "value": "chrollo silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "right",
+      "value": "fbi drif family guy meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bebe's Search - 89/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6029.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

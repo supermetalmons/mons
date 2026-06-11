@@ -1,0 +1,90 @@
+{
+  "id": 2730,
+  "name": "Card #2730",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2730.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crucifixion cameo pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "haunted terrorism"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "on button"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Landorus - 148/264"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2730.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

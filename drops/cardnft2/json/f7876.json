@@ -1,0 +1,82 @@
+{
+  "id": 7876,
+  "name": "Card #7876",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7876.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "sonic silhouette corner"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "star sygil"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "nude vampirella"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "misdreavus"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Deoxys - IMG_3434 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7876.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 4362,
+  "name": "Card #4362",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4362.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baseball player manga"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Chrollo Lucilfer"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Frogadier - 40/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4362.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

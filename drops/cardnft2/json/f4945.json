@@ -1,0 +1,90 @@
+{
+  "id": 4945,
+  "name": "Card #4945",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4945.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "murnau_s faust"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mon in room"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful-5 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl cuck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - PR 072"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4945.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

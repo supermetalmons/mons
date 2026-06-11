@@ -1,0 +1,38 @@
+{
+  "id": 3134,
+  "name": "Card #3134",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3134.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "counterspell lego frame"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Charmeleon - 32/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3134.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

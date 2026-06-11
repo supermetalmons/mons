@@ -1,0 +1,50 @@
+{
+  "id": 937,
+  "name": "Card #937",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0937.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Koji - 018"
+    },
+    {
+      "trait_type": "center",
+      "value": "monster"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark creature chains"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0937.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

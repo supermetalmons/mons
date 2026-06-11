@@ -1,0 +1,54 @@
+{
+  "id": 5624,
+  "name": "Card #5624",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5624.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon knight and kinnikuman"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "poliwhirl swirl holo - card3300 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold shuppet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Weezing - 14/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5624.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

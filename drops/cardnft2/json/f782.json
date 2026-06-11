@@ -1,0 +1,42 @@
+{
+  "id": 782,
+  "name": "Card #782",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0782.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Captain Ginyu - 2 of 6"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "top left",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0782.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

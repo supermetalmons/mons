@@ -1,0 +1,46 @@
+{
+  "id": 4736,
+  "name": "Card #4736",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4736.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "dark dragonite altered - card6098 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ebisu - 876"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4736.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

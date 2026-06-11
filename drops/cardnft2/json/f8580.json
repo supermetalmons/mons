@@ -1,0 +1,90 @@
+{
+  "id": 8580,
+  "name": "Card #8580",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8580.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "angel halo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dratini team rocket texture"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "delicate hand engraving"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dratini sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "052 cobalt pink sunset extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Suicune ex - IMG_3436 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8580.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

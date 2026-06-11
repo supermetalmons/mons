@@ -1,0 +1,46 @@
+{
+  "id": 1875,
+  "name": "Card #1875",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1875.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Oddish - 58/64"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stars sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "center",
+      "value": "ascii christ"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1875.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

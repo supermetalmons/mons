@@ -1,0 +1,70 @@
+{
+  "id": 9749,
+  "name": "Card #9749",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9749.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pope butchered bacon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - moon phases"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - labyrinth"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dragonite ex Delta Species - IMG_3217 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9749.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 5518,
+  "name": "Card #5518",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5518.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "03 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "facepalm meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Ghost of Akugenta Taking Revenge on Nanba at the Nunobiki Waterfall woodblock negative"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mallash - 67/232"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5518.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

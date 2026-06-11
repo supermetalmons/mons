@@ -1,0 +1,70 @@
+{
+  "id": 6997,
+  "name": "Card #6997",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6997.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "woven pattern grid"
+    },
+    {
+      "trait_type": "border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Orko motu"
+    },
+    {
+      "trait_type": "hero",
+      "value": "metal knight little swag world"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sickly hand"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "yugioh card swirl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "WereGarurumon - St-47"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6997.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 4198,
+  "name": "Card #4198",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4198.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Raizen"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Teraleak"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pink apricot spray"
+    },
+    {
+      "trait_type": "center",
+      "value": "game boy color battle"
+    },
+    {
+      "trait_type": "hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swellow - 104/145"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4198.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

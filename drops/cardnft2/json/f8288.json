@@ -1,0 +1,78 @@
+{
+  "id": 8288,
+  "name": "Card #8288",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8288.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ancient Gold Pokeball Glyph Background - card1673-25"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "morpho"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "retro tv cabinet"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "happy mew playe date vignette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Phantump - card5510 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8288.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

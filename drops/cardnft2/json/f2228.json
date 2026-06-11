@@ -1,0 +1,106 @@
+{
+  "id": 2228,
+  "name": "Card #2228",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2228.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Sam Eric, Pennsylvania (1978) Hiroshi Sugimoto"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red robot head"
+    },
+    {
+      "trait_type": "left",
+      "value": "muscular anime character"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Gorn"
+    },
+    {
+      "trait_type": "right",
+      "value": "doodle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Grovyle - 7/116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2228.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

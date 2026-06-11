@@ -1,0 +1,74 @@
+{
+  "id": 5896,
+  "name": "Card #5896",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5896.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - moon silver - saturn sigil"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "slowpoke rape"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate pendant"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Psyched Up Gotenks - EX01-07"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5896.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

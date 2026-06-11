@@ -1,0 +1,86 @@
+{
+  "id": 4286,
+  "name": "Card #4286",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4286.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "gaara manga"
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu magic card"
+    },
+    {
+      "trait_type": "top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dark magician girl holographic"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - aurora rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "right",
+      "value": "bullet hair"
+    },
+    {
+      "trait_type": "left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scorbunny - 030/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4286.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

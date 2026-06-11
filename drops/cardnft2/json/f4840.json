@@ -1,0 +1,62 @@
+{
+  "id": 4840,
+  "name": "Card #4840",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4840.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-315"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-6"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pimp 830"
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Tactic against Sharingan Eye - PR 026"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4840.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

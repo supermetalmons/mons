@@ -1,0 +1,62 @@
+{
+  "id": 3768,
+  "name": "Card #3768",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3768.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "punch out boxer"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crown of thorns gem"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mewtwoking kiss"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "scream old biscuit collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Communication - 99/114"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3768.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

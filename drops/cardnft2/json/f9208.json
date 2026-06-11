@@ -1,0 +1,74 @@
+{
+  "id": 9208,
+  "name": "Card #9208",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9208.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "opal_pastel_haze_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "071 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "_contact_sheet_preview_1"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mew_3_17_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9208.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

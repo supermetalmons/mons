@@ -1,0 +1,78 @@
+{
+  "id": 9653,
+  "name": "Card #9653",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9653.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "demon bat and archangel"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "card vending machine"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red mew gameboy"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red 3d bike"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "nancy fear sketches"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 39"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "19 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke uchiha - card0224 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9653.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

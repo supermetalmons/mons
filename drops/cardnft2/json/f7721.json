@@ -1,0 +1,114 @@
+{
+  "id": 7721,
+  "name": "Card #7721",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7721.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cinderace_ex_rainbow_pokemon_card"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "baby deer"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "muscular anime character"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "3d cityscape"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark magician knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink angel slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal necklace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel egg dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon ghost pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Card Destruction - IMG_3458 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7721.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

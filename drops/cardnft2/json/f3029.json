@@ -1,0 +1,50 @@
+{
+  "id": 3029,
+  "name": "Card #3029",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3029.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chakra cat outline"
+    },
+    {
+      "trait_type": "top right",
+      "value": "asian man gif"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "altaria ex"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chikorita - 53/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3029.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

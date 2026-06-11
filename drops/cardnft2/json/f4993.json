@@ -1,0 +1,110 @@
+{
+  "id": 4993,
+  "name": "Card #4993",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4993.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "piranha plant head"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alien figure on cloth"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "45 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sheep head on plate"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "asuka red glove pose"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pocket monsters dragonite black"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "creepy long armed figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "sabrinas haunter - card1509 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ebisu - 121"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4993.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

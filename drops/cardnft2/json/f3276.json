@@ -1,0 +1,54 @@
+{
+  "id": 3276,
+  "name": "Card #3276",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3276.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "speech bubble rethinking"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifellaverse"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gyarados - 34/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3276.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

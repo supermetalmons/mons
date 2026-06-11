@@ -1,0 +1,126 @@
+{
+  "id": 3610,
+  "name": "Card #3610",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3610.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby bat crucifix drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red nabler purse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mazoku yusuke sketch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frankenstein wrightson the modern prometheus"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "slender man notes"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kimimaro - 6/3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3610.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

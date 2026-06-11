@@ -1,0 +1,102 @@
+{
+  "id": 7772,
+  "name": "Card #7772",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7772.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "purple graffiti wire fence"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "empty stage background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "orange knit toy sonic youth"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "7401% ApY"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "manga smashing frog"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "porygon gameboy corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Vaporeon Gold Star black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7772.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

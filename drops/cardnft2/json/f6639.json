@@ -1,0 +1,78 @@
+{
+  "id": 6639,
+  "name": "Card #6639",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6639.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "small colorful figures"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nemesis holding man"
+    },
+    {
+      "trait_type": "right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sleeping chibi kid"
+    },
+    {
+      "trait_type": "top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady7"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cosmog - SM42"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6639.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

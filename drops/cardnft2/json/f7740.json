@@ -1,0 +1,102 @@
+{
+  "id": 7740,
+  "name": "Card #7740",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7740.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "orange_purple_wave_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "melted figure"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "isobelle pascha kuma"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goku dragon riding"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "BigMamemon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pikachu ponyta celebi collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Ralts - card2026 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7740.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

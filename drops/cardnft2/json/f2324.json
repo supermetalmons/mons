@@ -1,0 +1,118 @@
+{
+  "id": 2324,
+  "name": "Card #2324",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2324.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chopper sitting cloud"
+    },
+    {
+      "trait_type": "border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "top center",
+      "value": "who would win meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime girl red black wings"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holo card"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jigglypuff - 54/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2324.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

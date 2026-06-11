@@ -1,0 +1,62 @@
+{
+  "id": 4964,
+  "name": "Card #4964",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4964.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "021 emerald violet dream extra holo ellipse"
+    },
+    {
+      "trait_type": "top center",
+      "value": "world hierarchy pyramid"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-58"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime warrior with tiger"
+    },
+    {
+      "trait_type": "right",
+      "value": "krillin falling"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha & Sakura Haruno - C010"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4964.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

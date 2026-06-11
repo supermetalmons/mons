@@ -1,0 +1,106 @@
+{
+  "id": 7633,
+  "name": "Card #7633",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7633.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bear face lick"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "The Lonely House on Adachi Moor woodblock"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi white wizard bakura"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract pastel texture"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "17th-century military engineering treatise"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Itachi Uchiha - IMG_3239 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7633.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

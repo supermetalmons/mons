@@ -1,0 +1,114 @@
+{
+  "id": 7581,
+  "name": "Card #7581",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7581.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "Beelzemon Blast Mode"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "astroboy ashley wood"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pokemon crayon art"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "prussian troops 1871"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Uchiha Proof Of Genius inverted mask variant 2"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sith eyes"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Aipom Neo Genesis - card1765 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7581.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

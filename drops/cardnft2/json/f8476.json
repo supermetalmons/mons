@@ -1,0 +1,82 @@
+{
+  "id": 8476,
+  "name": "Card #8476",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8476.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Meme Lords Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful abstract caligraphy"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dumbo concept"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Uchiha Mangekyo inverted mask variant 3"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8476.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "id": 3719,
+  "name": "Card #3719",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3719.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jack frost sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Fantastic Planet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Gotenks ghost trio"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "indie horror rpg text"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "skeleton with scythe"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Servine - RC2/RC25"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3719.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

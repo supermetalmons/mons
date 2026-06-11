@@ -1,0 +1,114 @@
+{
+  "id": 4923,
+  "name": "Card #4923",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4923.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "parappa the rapper cooking"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kero anime drawer"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "cartoon face with gun"
+    },
+    {
+      "trait_type": "center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "alpha c418 score"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wojak boy runescape shirt"
+    },
+    {
+      "trait_type": "top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Multi Shadow Clone Jutsu - PR US014"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4923.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 9918,
+  "name": "Card #9918",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9918.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "stone warrior statues"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "ebisu - card4993 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "ebisu - card4993 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9918.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

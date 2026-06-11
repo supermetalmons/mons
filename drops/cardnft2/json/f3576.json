@@ -1,0 +1,190 @@
+{
+  "id": 3576,
+  "name": "Card #3576",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3576.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Unai no Tomo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag gundam"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Fantastic Planet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tomato"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "homunculus in flask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toy phone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi crow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gama - 102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3576.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

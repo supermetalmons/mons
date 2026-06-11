@@ -1,0 +1,54 @@
+{
+  "id": 6198,
+  "name": "Card #6198",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6198.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Choji Akimichi - us016"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard sketch flames"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "zeni"
+    },
+    {
+      "trait_type": "top right",
+      "value": "This video features a person repeatedly striking their head with a hammer-like object."
+    },
+    {
+      "trait_type": "top left",
+      "value": "house party nearby im bringing weird guys"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "d-terminal"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6198.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

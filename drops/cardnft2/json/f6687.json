@@ -1,0 +1,106 @@
+{
+  "id": 6687,
+  "name": "Card #6687",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6687.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "ultraman starry silhouette"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy brawl painting"
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "top left",
+      "value": "cute penguin"
+    },
+    {
+      "trait_type": "right",
+      "value": "penguin with blue crown"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon characters"
+    },
+    {
+      "trait_type": "center",
+      "value": "red blue black brushwork 3"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "top center",
+      "value": "back of canvas frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unknown Card #6687"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6687.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 2678,
+  "name": "Card #2678",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2678.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork 3"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "left",
+      "value": "two penguins low poly"
+    },
+    {
+      "trait_type": "top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giovanni's Nidoran ♂ - 76/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2678.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 2348,
+  "name": "Card #2348",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2348.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract texture 3"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella pink boy head"
+    },
+    {
+      "trait_type": "right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "greek statue hands covering eyes"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "agonize about the story"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Coxyclaque - 39/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2348.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

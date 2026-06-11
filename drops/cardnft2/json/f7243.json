@@ -1,0 +1,62 @@
+{
+  "id": 7243,
+  "name": "Card #7243",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7243.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note angel biscuit - card1673-37"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "back of canvas frame"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi smm"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Celebi - IMG_3250 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7243.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

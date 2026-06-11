@@ -1,0 +1,86 @@
+{
+  "id": 7974,
+  "name": "Card #7974",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7974.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kadabra japanese name corner"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "terriermon digimon card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "green dummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Syakomon - IMG_3507 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7974.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 8116,
+  "name": "Card #8116",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8116.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pepe cod meme"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "puyo puyo sun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragonite EX XY Evolutions 72 108 inverted mask variant 3"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8116.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": 6417,
+  "name": "Card #6417",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6417.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Murkrow - 58/90"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "top right",
+      "value": "3 banknote corner"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokemon card scattered"
+    },
+    {
+      "trait_type": "top left",
+      "value": "monster reborn pendant"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6417.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": 7463,
+  "name": "Card #7463",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7463.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple plants in pots"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red starry portal"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "cartoon character sketch"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "toriyama character sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Uchiha black mask"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Bagon - card2989 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7463.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

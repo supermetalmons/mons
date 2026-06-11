@@ -1,0 +1,94 @@
+{
+  "id": 7464,
+  "name": "Card #7464",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7464.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "lava_violet_ember_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cory infinite mario clouds"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kinnikuman wrestlers lineup"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 5"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "miyazaki birds"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gliscor LV X - IMG_3443 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7464.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

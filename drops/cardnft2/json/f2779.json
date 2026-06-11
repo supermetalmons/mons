@@ -1,0 +1,74 @@
+{
+  "id": 2779,
+  "name": "Card #2779",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2779.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "punch out boxer"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "seedot"
+    },
+    {
+      "trait_type": "center",
+      "value": "starry night silhouette"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kiryu text box"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime character with spikes"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Totodile - 85/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2779.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

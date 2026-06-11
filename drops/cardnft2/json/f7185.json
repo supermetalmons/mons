@@ -1,0 +1,70 @@
+{
+  "id": 7185,
+  "name": "Card #7185",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7185.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mars frazetta"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "twin peaks giant"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "incredibly protected graded card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract paint swirl"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mega Gengar ex - IMG_3227 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakurai trickster god"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7185.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

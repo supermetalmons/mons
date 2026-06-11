@@ -1,0 +1,66 @@
+{
+  "id": 3872,
+  "name": "Card #3872",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3872.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "gengar holo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "possi 1816"
+    },
+    {
+      "trait_type": "top right",
+      "value": "eye engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kimimaro bone dagger"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Flaaffy - 39/114"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3872.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

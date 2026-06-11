@@ -1,0 +1,74 @@
+{
+  "id": 9346,
+  "name": "Card #9346",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9346.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink White Drip Texture Background - card1673-42"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst violet - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - labyrinth"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "100 rainbow prism dawn extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9346.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

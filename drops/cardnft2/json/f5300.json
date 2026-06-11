@@ -1,0 +1,122 @@
+{
+  "id": 5300,
+  "name": "Card #5300",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5300.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drif triptych in dilapidated museum"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow galaxy portal"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime angel cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "nara puppy"
+    },
+    {
+      "trait_type": "left",
+      "value": "shrug emoji oh well"
+    },
+    {
+      "trait_type": "right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ceiling light bulb"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Inkay - 75/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5300.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

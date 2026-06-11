@@ -1,0 +1,62 @@
+{
+  "id": 4737,
+  "name": "Card #4737",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4737.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pixelated building and fence"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 1192"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4737.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

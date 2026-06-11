@@ -1,0 +1,130 @@
+{
+  "id": 10695,
+  "name": "Card #10695",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10695.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon pink umbrella man"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "wood block dratini"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "psychedelic pocket checkerboard collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 fire ice split holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_19"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "white_abstract_texture_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_12"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_09"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_16"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_01"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_19"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10695.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

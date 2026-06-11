@@ -1,0 +1,114 @@
+{
+  "id": 4878,
+  "name": "Card #4878",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4878.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "085 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 02"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - emerald green - crucifix cross"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 27"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 50"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 24"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "51 red soft holo holo capsule"
+    },
+    {
+      "trait_type": "left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cacnea - 57/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4878.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

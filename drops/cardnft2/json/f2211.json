@@ -1,0 +1,54 @@
+{
+  "id": 2211,
+  "name": "Card #2211",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2211.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "green circle flowchart"
+    },
+    {
+      "trait_type": "hero",
+      "value": "digimon tamers group"
+    },
+    {
+      "trait_type": "right",
+      "value": "green dummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pakkun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Totodile - 79/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2211.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

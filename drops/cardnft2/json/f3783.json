@@ -1,0 +1,90 @@
+{
+  "id": 3783,
+  "name": "Card #3783",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3783.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "morrigan bat wings"
+    },
+    {
+      "trait_type": "top center",
+      "value": "shinji bacon"
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "mega dragonite ex sar"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract muscular figure circles"
+    },
+    {
+      "trait_type": "hero",
+      "value": "arale phone lettuce"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kecleon - 94/116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3783.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

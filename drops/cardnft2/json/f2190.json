@@ -1,0 +1,78 @@
+{
+  "id": 2190,
+  "name": "Card #2190",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2190.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "training room button"
+    },
+    {
+      "trait_type": "center",
+      "value": "wavy line pattern"
+    },
+    {
+      "trait_type": "top left",
+      "value": "centipede arcade art"
+    },
+    {
+      "trait_type": "hero",
+      "value": "umbreon glow"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "greek statue hands covering eyes"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "handwritten note on social media"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Crystal Beach - 75/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2190.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 6996,
+  "name": "Card #6996",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6996.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black intricate pattern"
+    },
+    {
+      "trait_type": "top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella halloween costume"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract demonic symbol"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green drif body"
+    },
+    {
+      "trait_type": "border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Grisly Ritual - 116/277"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6996.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

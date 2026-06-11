@@ -1,0 +1,54 @@
+{
+  "id": 353,
+  "name": "Card #353",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0353.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Altaria - RC24/RC32"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "yellow book"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "xfiles streetlight figures night"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw hexp sonic"
+    },
+    {
+      "trait_type": "left",
+      "value": "precious moments wedding"
+    },
+    {
+      "trait_type": "right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0353.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

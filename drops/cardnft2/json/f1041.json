@@ -1,0 +1,62 @@
+{
+  "id": 1041,
+  "name": "Card #1041",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1041.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shikamaru Nara - 138"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract chainlink pattern"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chain link fence"
+    },
+    {
+      "trait_type": "center",
+      "value": "zombie animitronic drifella demon"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime helmet gunman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "right",
+      "value": "duskull zapping larvitar"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1041.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 3753,
+  "name": "Card #3753",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3753.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "heavy rain logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "This video features a person repeatedly striking their head with a hammer-like object."
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shinji manga"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude vampirella"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "drif bodies and drat sprites"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Beelzemon Blast Mode"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "A"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grass and ruins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw hexp sonic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Psychic Energy - 164/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3753.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 2084,
+  "name": "Card #2084",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2084.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black striped pattern"
+    },
+    {
+      "trait_type": "hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hell hound"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Grimer - 100/189"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2084.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

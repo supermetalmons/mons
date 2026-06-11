@@ -1,0 +1,166 @@
+{
+  "id": 10875,
+  "name": "Card #10875",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10875.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif maga"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 sage green gold clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "crumpled foil texture"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "bullet pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black gradient sky"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 calm teal violet clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_25"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_30"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - ouroboros"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "trunks_1_of_28_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "trunks_1_of_28_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cobalt cad"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10875.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

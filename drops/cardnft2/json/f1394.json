@@ -1,0 +1,42 @@
+{
+  "id": 1394,
+  "name": "Card #1394",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1394.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Beloved Chaplain - 11/350"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow dratini pattern"
+    },
+    {
+      "trait_type": "top right",
+      "value": "jester face"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1394.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

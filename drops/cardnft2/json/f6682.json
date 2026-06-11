@@ -1,0 +1,94 @@
+{
+  "id": 6682,
+  "name": "Card #6682",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6682.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "neopets icons"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "bosch beggars and cripples"
+    },
+    {
+      "trait_type": "top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "hero",
+      "value": "death stranding porter"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "the art of conspiracy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unknown Card #6682"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6682.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

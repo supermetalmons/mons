@@ -1,0 +1,154 @@
+{
+  "id": 8926,
+  "name": "Card #8926",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8926.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "vintage_anatomy_skeleton"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragon quest monster figures"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bulbafella"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dratini team rocket texture"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "bottle on gray background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Team Rocket Mewtwo - IMG_3273 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8926.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

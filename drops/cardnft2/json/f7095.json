@@ -1,0 +1,58 @@
+{
+  "id": 7095,
+  "name": "Card #7095",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7095.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Hell Mirror Scene Background - card1673-43"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "wish it was a game"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Ancient Fairy Dragon - IMG_3452 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7095.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

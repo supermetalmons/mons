@@ -1,0 +1,78 @@
+{
+  "id": 5212,
+  "name": "Card #5212",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5212.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "blonde knight armor"
+    },
+    {
+      "trait_type": "center",
+      "value": "card frame concepts"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bunny girl"
+    },
+    {
+      "trait_type": "right",
+      "value": "smug ash meme"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime fox girl sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "King Yemma"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kiryu text box"
+    },
+    {
+      "trait_type": "top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokemon berry sprites"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "heat map corner"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gabite - 89/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5212.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

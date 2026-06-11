@@ -1,0 +1,58 @@
+{
+  "id": 300,
+  "name": "Card #300",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0300.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Max Potion - 121/116"
+    },
+    {
+      "trait_type": "center",
+      "value": "round table conspiracy meeting"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "wireframe revolver"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "life on mars earth comic"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0300.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

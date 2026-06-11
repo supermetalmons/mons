@@ -1,0 +1,50 @@
+{
+  "id": 1234,
+  "name": "Card #1234",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1234.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Guardian Angel - X"
+    },
+    {
+      "trait_type": "center",
+      "value": "ahm the talking horse"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "vampire arale"
+    },
+    {
+      "trait_type": "right",
+      "value": "local game shop"
+    },
+    {
+      "trait_type": "center",
+      "value": "starry night silhouette"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1234.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

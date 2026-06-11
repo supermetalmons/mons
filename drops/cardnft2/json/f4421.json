@@ -1,0 +1,94 @@
+{
+  "id": 4421,
+  "name": "Card #4421",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4421.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alien creature Deacon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "foggy dark figure"
+    },
+    {
+      "trait_type": "top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "happy mew playe date vignette"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Dragon Devouring the Companions of Cadmus engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "golden puzzle box"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "alfredo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gible - 96/156"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4421.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

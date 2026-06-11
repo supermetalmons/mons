@@ -1,0 +1,62 @@
+{
+  "id": 3800,
+  "name": "Card #3800",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3800.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "army teen baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "teddiursa"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Raticate - 51/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3800.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

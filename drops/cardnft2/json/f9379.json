@@ -1,0 +1,66 @@
+{
+  "id": 9379,
+  "name": "Card #9379",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9379.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Charizard Lightning Battle Background - card1673-28"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - claw"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 gentle pearl clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 lava violet ember holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - eye horus style"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini Delta Species Hypnotic Gaze inverted mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9379.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

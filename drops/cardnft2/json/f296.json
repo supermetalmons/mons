@@ -1,0 +1,42 @@
+{
+  "id": 296,
+  "name": "Card #296",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0296.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ditto - Fossil 3/62"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "scott pilgrim surprised faces"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dark magician girl holographic"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0296.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

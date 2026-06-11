@@ -1,0 +1,62 @@
+{
+  "id": 5639,
+  "name": "Card #5639",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5639.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "goodra anime face"
+    },
+    {
+      "trait_type": "left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Furfrou - 114/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5639.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

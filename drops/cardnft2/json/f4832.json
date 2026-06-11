@@ -1,0 +1,90 @@
+{
+  "id": 4832,
+  "name": "Card #4832",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4832.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "left",
+      "value": "pillar engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "embryo fetus guy"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cyan magenta scribble page"
+    },
+    {
+      "trait_type": "center",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tylenol cartoon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - C001"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4832.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 10160,
+  "name": "Card #10160",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10160.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue_yellow_cloud_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "mew ex japanese card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 dark magician clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "black_lotus_magic_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "black_lotus_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10160.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

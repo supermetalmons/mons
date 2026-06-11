@@ -1,0 +1,118 @@
+{
+  "id": 9992,
+  "name": "Card #9992",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9992.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "lapras celebi pokemon garden art"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "blue armored figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "alien figure on cloth"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "orange panel texture"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dodonpachi black label"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 psychic pink blue clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sakura haruno pink - card4753 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sakura haruno pink - card4753 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9992.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

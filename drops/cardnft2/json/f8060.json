@@ -1,0 +1,86 @@
+{
+  "id": 8060,
+  "name": "Card #8060",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8060.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_dragon_wave_art"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mifella mcdonalds meme"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "offense skulls badge"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "043 ruby violet flame extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Millennium Shield - IMG_3565 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8060.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

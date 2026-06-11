@@ -1,0 +1,66 @@
+{
+  "id": 9934,
+  "name": "Card #9934",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9934.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jiraya"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "choji akimichi water - card3591 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "choji akimichi water - card3591 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9934.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

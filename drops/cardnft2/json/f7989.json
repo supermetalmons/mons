@@ -1,0 +1,102 @@
+{
+  "id": 7989,
+  "name": "Card #7989",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7989.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_barbarian_warrior"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "crucidrifella digimon illustration"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ryuk manga panel"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "two penguins low poly"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "shadow on sand"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cowboy kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 gentle pearl clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 gentle pearl clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "008 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon French Dark Haunter Spectrum obscur Team Rocket - card3080 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7989.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

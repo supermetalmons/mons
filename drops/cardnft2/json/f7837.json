@@ -1,0 +1,98 @@
+{
+  "id": 7837,
+  "name": "Card #7837",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7837.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red fishing guy"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red abstract figure"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "on button"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "snow capped trees"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime angel cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Orochimaru - IMG_3240 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7837.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 1860,
+  "name": "Card #1860",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1860.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rhyhorn - 60/146"
+    },
+    {
+      "trait_type": "top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "music to kill"
+    },
+    {
+      "trait_type": "top center",
+      "value": "techno 3 metal pattern"
+    },
+    {
+      "trait_type": "left",
+      "value": "spiky hair duo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Super Zarbon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1860.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

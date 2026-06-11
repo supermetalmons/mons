@@ -1,0 +1,74 @@
+{
+  "id": 5442,
+  "name": "Card #5442",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5442.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "great balls of fire"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Cupsy☆Yummy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drapion smoke"
+    },
+    {
+      "trait_type": "hero",
+      "value": "red nidoqueen trainer"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "center",
+      "value": "leyendecker head"
+    },
+    {
+      "trait_type": "left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gta money counter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chain link fence"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hippopotas - 83/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5442.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

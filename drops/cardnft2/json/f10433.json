@@ -1,0 +1,102 @@
+{
+  "id": 10433,
+  "name": "Card #10433",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10433.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ghostly figure with wolf face"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "it s dangerous to trench alone"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - alchemy fire"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gyarados_ex_123_122_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gyarados_ex_123_122_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - right",
+      "value": "wplace st. paisios"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10433.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

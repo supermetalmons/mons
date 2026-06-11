@@ -1,0 +1,50 @@
+{
+  "id": 876,
+  "name": "Card #876",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0876.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragon Ball Z - Collection Serie 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "tree green paint wall"
+    },
+    {
+      "trait_type": "hero",
+      "value": "mew joker card"
+    },
+    {
+      "trait_type": "left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0876.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

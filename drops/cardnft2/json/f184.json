@@ -2,7 +2,7 @@
   "id": 184,
   "name": "Card #184",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_184.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0184.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,44 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Fifth Kazekage - 4/2"
+    },
+    {
+      "trait_type": "hero",
+      "value": "jester character art"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "center",
+      "value": "frosted window silhouette"
+    },
+    {
+      "trait_type": "top right",
+      "value": "goku eye"
+    },
+    {
+      "trait_type": "top left",
+      "value": "vintage coffee carton"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_184.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0184.webp",
         "type": "image/webp"
       }
     ],

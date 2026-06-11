@@ -1,0 +1,50 @@
+{
+  "id": 1555,
+  "name": "Card #1555",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1555.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kjeldoran Guard - 1/1"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard x blue flames"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "top right",
+      "value": "alien creature head"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1555.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

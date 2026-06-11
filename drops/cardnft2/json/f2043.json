@@ -1,0 +1,74 @@
+{
+  "id": 2043,
+  "name": "Card #2043",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2043.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon sprite chart"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "right",
+      "value": "body"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Thunder Mountain - 191/214"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2043.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

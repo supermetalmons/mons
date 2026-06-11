@@ -1,0 +1,58 @@
+{
+  "id": 405,
+  "name": "Card #405",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0405.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Primary Lotus - US004"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chovey nintendog"
+    },
+    {
+      "trait_type": "hero",
+      "value": "misa"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixelated alien"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi orochimaru and shikamaru"
+    },
+    {
+      "trait_type": "top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "center",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0405.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

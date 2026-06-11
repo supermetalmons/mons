@@ -1,0 +1,106 @@
+{
+  "id": 7504,
+  "name": "Card #7504",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7504.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "cave story tiles"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "noise circle blur"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Flareon Gold Star inverted mask"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kids dont even know who they are"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi white wizard bakura"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "spiky hair duo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini legendary collection inverted black mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7504.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

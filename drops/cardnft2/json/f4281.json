@@ -1,0 +1,114 @@
+{
+  "id": 4281,
+  "name": "Card #4281",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4281.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "greek statue hands covering eyes"
+    },
+    {
+      "trait_type": "left",
+      "value": "shin chan group"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful abstract caligraphy"
+    },
+    {
+      "trait_type": "center",
+      "value": "unicorn ring engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "joker abstract bats"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pluto"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu ash hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Collector - 97/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4281.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

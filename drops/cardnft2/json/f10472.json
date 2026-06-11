@@ -1,0 +1,110 @@
+{
+  "id": 10472,
+  "name": "Card #10472",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10472.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Art Nouveau Spring Poster Background - card1673-53"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract figure bacon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "never forgetti drawing"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "severed head"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Pinocchio drowning"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "sprite sheet lightning attack"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kong silhouette drawing"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "charizard fire breath"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red dress oil sketch"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese bellossom - card2310 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese bellossom - card2310 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "shizuku hxh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10472.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 5615,
+  "name": "Card #5615",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5615.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-219"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-115"
+    },
+    {
+      "trait_type": "top left",
+      "value": "yugi meme"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "05 dark ruby violet orange holo heart"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "that must hurt kankuro and temari"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ultimate muscle manga"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "garlic jr fig"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "base card",
+      "value": "ランターン - No. 171"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5615.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

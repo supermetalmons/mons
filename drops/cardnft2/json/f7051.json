@@ -1,0 +1,62 @@
+{
+  "id": 7051,
+  "name": "Card #7051",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7051.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_magenta_cyan_gold_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "evangelion kabbalah tree"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "graphite spikes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragonite EX XY Evolutions 72 108 inverted mask variant 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hell hound"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7051.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

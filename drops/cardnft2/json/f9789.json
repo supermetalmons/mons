@@ -1,0 +1,66 @@
+{
+  "id": 9789,
+  "name": "Card #9789",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9789.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "floral crowned golden saint knight painting"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "FR they are gay racist nft"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "two creatures in a drain pipe"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "lizard possession"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 21"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "squirtle - card3399 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9789.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

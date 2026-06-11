@@ -1,0 +1,126 @@
+{
+  "id": 7438,
+  "name": "Card #7438",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7438.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mechanical spider tank"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "old man roshi"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "killua and gon sketch black"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Dark Strike Fighter"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Orochimaru - IMG_3530 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7438.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

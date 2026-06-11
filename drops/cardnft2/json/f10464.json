@@ -1,0 +1,134 @@
+{
+  "id": 10464,
+  "name": "Card #10464",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10464.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Dark Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crucifixion cameo pendant"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "chibi clay character jump"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "metallic sphere with spikes"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sun moon mercury venus diagram"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "guts slash"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "south park esoteric ink"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "The Massacre of the Innocents engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "metagross tank"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "094 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 31"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald green - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "cleffa - card4580 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "cleffa - card4580 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "goblin text"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "batman dark street scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10464.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

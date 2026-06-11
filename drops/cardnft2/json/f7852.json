@@ -1,0 +1,122 @@
+{
+  "id": 7852,
+  "name": "Card #7852",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7852.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif maga"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "frazetta romance panel"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shining sonichu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "027 toxic sunset extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 emerald violet dream holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dragonite EX Evolutions 106 of 108 - IMG_3410 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7852.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

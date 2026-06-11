@@ -1,0 +1,102 @@
+{
+  "id": 7714,
+  "name": "Card #7714",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7714.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "opal_pastel_haze_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "forest path watercolor"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chrollo in white"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "uwu chain"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Snorlax Jungle - card2287 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7714.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

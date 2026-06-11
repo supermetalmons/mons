@@ -2,7 +2,7 @@
   "id": 131,
   "name": "Card #131",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_131.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0131.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,92 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "search and destroy badge"
+    },
+    {
+      "trait_type": "center",
+      "value": "neon sketch figures"
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "one piece reactions"
+    },
+    {
+      "trait_type": "top center",
+      "value": "7 hearts"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hikaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vaporeon - 12/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_131.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0131.webp",
         "type": "image/webp"
       }
     ],

@@ -1,0 +1,98 @@
+{
+  "id": 2019,
+  "name": "Card #2019",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2019.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "top center",
+      "value": "matrix numbers"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "petra raindrop"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wobbuffet - 67/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2019.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

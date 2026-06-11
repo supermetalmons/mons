@@ -1,0 +1,54 @@
+{
+  "id": 1016,
+  "name": "Card #1016",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1016.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - 325"
+    },
+    {
+      "trait_type": "center",
+      "value": "face spirals"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nemesis holding man"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "scott pilgrim surprised faces"
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones emo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1016.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

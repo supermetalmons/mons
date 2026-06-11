@@ -1,0 +1,46 @@
+{
+  "id": 1317,
+  "name": "Card #1317",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1317.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Afterlife"
+    },
+    {
+      "trait_type": "right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1317.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

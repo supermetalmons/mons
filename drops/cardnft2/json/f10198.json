@@ -1,0 +1,114 @@
+{
+  "id": 10198,
+  "name": "Card #10198",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10198.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note Drifella - card1673-38"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "white star"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "half-life"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "s drip dragon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark angel red glow"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - ankh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 calm teal violet clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - cuneiform tablet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "monster_reborn_yugioh_83764718_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10198.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

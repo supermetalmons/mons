@@ -1,0 +1,114 @@
+{
+  "id": 10677,
+  "name": "Card #10677",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10677.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "jesus tears"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract clown figures"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract horse riders sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "The Ghost of Akugenta Taking Revenge on Nanba at the Nunobiki Waterfall woodblock negative"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "027 toxic sunset extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose magenta - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 01 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Shikamaru Nara - card0585 halftone screenprint mask"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_24"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_27"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10677.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

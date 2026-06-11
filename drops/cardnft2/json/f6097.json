@@ -1,0 +1,46 @@
+{
+  "id": 6097,
+  "name": "Card #6097",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6097.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pidgey - 73/112"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink swag text blur"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red rider motorcycle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dr slump arale motorcycle"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6097.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

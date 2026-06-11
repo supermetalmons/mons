@@ -1,0 +1,94 @@
+{
+  "id": 10096,
+  "name": "Card #10096",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10096.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "precious moments wedding"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "wavy line pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_and_sasuke_uchiha_custom_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "itachi_uchiha_and_sasuke_uchiha_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10096.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": 4299,
+  "name": "Card #4299",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4299.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "aerodactyl anime art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Psychic Energy - 164/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4299.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

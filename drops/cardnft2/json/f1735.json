@@ -1,0 +1,46 @@
+{
+  "id": 1735,
+  "name": "Card #1735",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1735.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Recall - 116/132"
+    },
+    {
+      "trait_type": "top center",
+      "value": "millennium puzzle dialogue"
+    },
+    {
+      "trait_type": "top right",
+      "value": "two headed cat"
+    },
+    {
+      "trait_type": "top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1735.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

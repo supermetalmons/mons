@@ -1,0 +1,110 @@
+{
+  "id": 10674,
+  "name": "Card #10674",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10674.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko yellow gold ochre soft blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract colorful face sketch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract horse riders sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 09 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "059 fire ice split extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "012 purple peach glow extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - triskelion"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "058 black cherry red extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - candy rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark forest magic card - card0349 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "larvitar"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10674.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

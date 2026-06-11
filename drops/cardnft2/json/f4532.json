@@ -1,0 +1,62 @@
+{
+  "id": 4532,
+  "name": "Card #4532",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4532.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "left",
+      "value": "aigis fight"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "explosion tower"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Vamdemon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "two creatures in a drain pipe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "A"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kakashi Hatake"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4532.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

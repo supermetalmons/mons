@@ -1,0 +1,98 @@
+{
+  "id": 8817,
+  "name": "Card #8817",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8817.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gothic Cathedral Night Background - card1673-41"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "japanese dragonite in clouds mask"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "my first drifella"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "piranha plant head"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "batman skyline"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic chest sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "giratina_10_127_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8817.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

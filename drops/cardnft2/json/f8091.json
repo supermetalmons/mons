@@ -1,0 +1,90 @@
+{
+  "id": 8091,
+  "name": "Card #8091",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8091.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Tortue of Christ - card1673-4"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "airbrush spikes"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "golden puzzle box"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "eye hand gesture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Base Set - card1790 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8091.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

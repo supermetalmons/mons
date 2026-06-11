@@ -1,0 +1,106 @@
+{
+  "id": 8238,
+  "name": "Card #8238",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8238.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Chrono Trigger helmet"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dripping purple knife"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi white wizard bakura"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 blood orange magenta holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "43 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "063 emerald violet dream extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 emerald violet dream holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Blaines Charizard Gym Challenge 2 of 132 - IMG_3465 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8238.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

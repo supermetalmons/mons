@@ -1,0 +1,82 @@
+{
+  "id": 8572,
+  "name": "Card #8572",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8572.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen shadow wizar"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "carnival leyendecker"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "playstation buttons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini topps mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8572.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

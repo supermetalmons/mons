@@ -1,0 +1,130 @@
+{
+  "id": 7428,
+  "name": "Card #7428",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7428.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "storm_amber_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "snake arm manga panel"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "shinigami"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "batgirl"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink monkey keshi figures"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Noibat - IMG_3476 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7428.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

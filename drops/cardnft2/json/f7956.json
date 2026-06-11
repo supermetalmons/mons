@@ -1,0 +1,82 @@
+{
+  "id": 7956,
+  "name": "Card #7956",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7956.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "lava_violet_ember_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "taped string"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "crucifix city"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "purple blue goblins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Pikachu in Umbreon Poncho - IMG_3264 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7956.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

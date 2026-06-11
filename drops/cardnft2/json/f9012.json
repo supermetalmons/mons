@@ -1,0 +1,46 @@
+{
+  "id": 9012,
+  "name": "Card #9012",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9012.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Forest Water Lilies Background - card1673-7"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black intricate pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "birthright_yugioh_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9012.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

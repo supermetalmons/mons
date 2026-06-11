@@ -1,0 +1,106 @@
+{
+  "id": 7602,
+  "name": "Card #7602",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7602.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cherubs clouds ink sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "crystallization"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "akira manga girl"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "infinity nikki"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "nude frazetta girl 3"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Orochimaru - card0358 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7602.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

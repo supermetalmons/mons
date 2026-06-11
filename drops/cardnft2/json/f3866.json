@@ -1,0 +1,62 @@
+{
+  "id": 3866,
+  "name": "Card #3866",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3866.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "1000-Armed Avalokiteshvara"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Machop - 52/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3866.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

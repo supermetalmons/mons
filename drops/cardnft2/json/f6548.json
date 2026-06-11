@@ -1,0 +1,54 @@
+{
+  "id": 6548,
+  "name": "Card #6548",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6548.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rainbow gradient 02 - crucifix cross"
+    },
+    {
+      "trait_type": "hero",
+      "value": "eva unit 01 glitch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pakkun"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Battle between Insect Tamers - 281 X"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6548.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

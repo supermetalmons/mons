@@ -1,0 +1,90 @@
+{
+  "id": 3022,
+  "name": "Card #3022",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3022.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "watercolor cart scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "poliwhirl sitting"
+    },
+    {
+      "trait_type": "hero",
+      "value": "rustic armored figure"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mountain dew bottles"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dark fantasy landscape"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vibrava - 47/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3022.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

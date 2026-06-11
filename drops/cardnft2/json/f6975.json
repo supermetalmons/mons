@@ -1,0 +1,62 @@
+{
+  "id": 6975,
+  "name": "Card #6975",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6975.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "comic review"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon breeders dragonite"
+    },
+    {
+      "trait_type": "top center",
+      "value": "star sygil"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "center",
+      "value": "dungeon path"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime helmet gunman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Furnace Gremlin - 0139"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6975.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

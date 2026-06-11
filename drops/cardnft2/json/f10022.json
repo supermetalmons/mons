@@ -1,0 +1,90 @@
+{
+  "id": 10022,
+  "name": "Card #10022",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicttnaubgex6mle5zbtcsokt5bd56d5qre23ebdldkuybpltzjsmm/10022.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko violet and deep green shadow blocks"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ultimate muscle logo"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue purple gradient rectangle"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "057 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - lotus"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "giant chameleon - card0174 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "giant chameleon - card0174 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicttnaubgex6mle5zbtcsokt5bd56d5qre23ebdldkuybpltzjsmm/10022.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

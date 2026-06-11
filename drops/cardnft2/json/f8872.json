@@ -1,0 +1,130 @@
+{
+  "id": 8872,
+  "name": "Card #8872",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8872.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "red_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "astroboy ashley wood"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Meteor B Dragon"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "piccolo energy swirl"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ghibli reeled in fish"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "blue_eye_cartoon_dragon_yugioh_card_2 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8872.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

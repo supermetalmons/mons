@@ -1,0 +1,106 @@
+{
+  "id": 8392,
+  "name": "Card #8392",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8392.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Style Surreal Creature Landscape Background - card1673-5"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "lsw box sprites"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "kurt angle"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "darkrai close up"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black soot sprites pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "079 emerald violet dream extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 blood orange magenta holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Zabuza Momochi inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8392.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

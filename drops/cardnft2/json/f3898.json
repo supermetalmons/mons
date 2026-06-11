@@ -1,0 +1,82 @@
+{
+  "id": 3898,
+  "name": "Card #3898",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3898.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "green blue soundwave strip"
+    },
+    {
+      "trait_type": "top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "025 dark blood orange extra holo capsule"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chain link fence"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anatomical illustration of a neck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Light Sunflora - 72/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3898.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 8891,
+  "name": "Card #8891",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8891.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "White Lily Dark Floral Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "manga cap back view"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "joker collage"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "3"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini rocket returns white mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8891.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

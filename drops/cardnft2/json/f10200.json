@@ -1,0 +1,114 @@
+{
+  "id": 10200,
+  "name": "Card #10200",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10200.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "fire_ice_split_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark abstract sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue water mtg"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark bacon abstract texture 6"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "purple sofa"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue kimono dragon design"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "batman skyline"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card_2 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "itachi_uchiha_custom_card_2 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10200.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

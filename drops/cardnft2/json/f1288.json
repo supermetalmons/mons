@@ -1,0 +1,62 @@
+{
+  "id": 1288,
+  "name": "Card #1288",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1288.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gran Gure, Space Guardian - 5/110"
+    },
+    {
+      "trait_type": "center",
+      "value": "red baroque tapestry"
+    },
+    {
+      "trait_type": "center",
+      "value": "white px crucidrif"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dvd anime girl"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1288.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

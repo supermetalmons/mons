@@ -1,0 +1,50 @@
+{
+  "id": 2083,
+  "name": "Card #2083",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2083.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "black boots"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink hearts blur"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gundam style mech card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Teddiursa - 128/203"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2083.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

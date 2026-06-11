@@ -1,0 +1,54 @@
+{
+  "id": 6643,
+  "name": "Card #6643",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6643.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ink Fish"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6643.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

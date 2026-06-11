@@ -1,0 +1,62 @@
+{
+  "id": 7113,
+  "name": "Card #7113",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7113.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "vintage_anatomy_skeleton"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "different mental states of being"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "duplicated guy w gun from a cool painting"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "black white industrial scene"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Charmeleon Base Set Autographed - IMG_3417 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7113.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

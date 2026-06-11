@@ -1,0 +1,74 @@
+{
+  "id": 8266,
+  "name": "Card #8266",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8266.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Fechin Impressionist Woman Portrait Background - card1673-54"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "icy landscape"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "gynoug"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "holographic armored figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Vaporeon Gold Star white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8266.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

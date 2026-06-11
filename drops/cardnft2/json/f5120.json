@@ -1,0 +1,98 @@
+{
+  "id": 5120,
+  "name": "Card #5120",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5120.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract lines"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "condor dialogue box"
+    },
+    {
+      "trait_type": "right",
+      "value": "foggy church graveyard"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tree of death frazetta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow galaxy portal"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cow and bird toy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kirlia - 35/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5120.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

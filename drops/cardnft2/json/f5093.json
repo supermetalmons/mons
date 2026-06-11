@@ -1,0 +1,54 @@
+{
+  "id": 5093,
+  "name": "Card #5093",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5093.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "hero",
+      "value": "devilman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gible - 106/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5093.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

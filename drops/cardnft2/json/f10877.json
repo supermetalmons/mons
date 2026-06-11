@@ -1,0 +1,118 @@
+{
+  "id": 10877,
+  "name": "Card #10877",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10877.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "toji 100 rothko red bowtie"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "100 rainbow prism dawn extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "060 emerald violet dream extra holo heart"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "rainbow goal text"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "water energy holographic"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_10"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mistys gyarados japanese - card5674 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10877.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

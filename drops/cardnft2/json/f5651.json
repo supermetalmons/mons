@@ -1,0 +1,138 @@
+{
+  "id": 5651,
+  "name": "Card #5651",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5651.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "smeargles art study"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 38"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 02"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "075 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "085 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 27"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 49"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 23"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "067 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - gold holy - triangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "left",
+      "value": "nidoking"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "krabby"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "needed a fresh restart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "babyspiky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Larvitar - 40/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5651.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

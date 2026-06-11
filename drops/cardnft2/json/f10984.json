@@ -1,0 +1,162 @@
+{
+  "id": 10984,
+  "name": "Card #10984",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10984.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sheep Pasture Classical Landscape Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "60 emerald violet dream holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark magician clean wisp moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - lotus"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_three__rubber_smoke_fair_lip"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_three__firework_noise"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy upside down"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_five__painted_canvas"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_28"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - triskelion"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - sun cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - moon phases"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 17"
+    },
+    {
+      "trait_type": "under mask embryos",
+      "value": "sr_over_mask_embryos"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_two__pixel_atomic"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Dragon Zombie - IMG_3563 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10984.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

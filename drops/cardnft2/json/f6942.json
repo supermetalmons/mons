@@ -1,0 +1,78 @@
+{
+  "id": 6942,
+  "name": "Card #6942",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6942.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "youve been liquidated crucifella white engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "alfonso x of castille"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lowbie dip pen test"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Idol Work - MHA03 C 91/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6942.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

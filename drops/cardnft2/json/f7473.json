@@ -1,0 +1,102 @@
+{
+  "id": 7473,
+  "name": "Card #7473",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7473.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue japanese text box"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "no piplups sign"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pluto"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract cartoon faces"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "ink wash"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "meat computer"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Beldum - card2682 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7473.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

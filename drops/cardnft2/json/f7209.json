@@ -1,0 +1,62 @@
+{
+  "id": 7209,
+  "name": "Card #7209",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7209.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Charizard Lightning Battle Background - card1673-28"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hand holding green snake"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic The Gathering Mox Sapphire - card0233 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7209.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 9940,
+  "name": "Card #9940",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9940.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient candy acid nocturne blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "hellboy zombie sculpture bust"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pulled this text"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__third age armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 calm teal violet clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "giant chameleon - card0174 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "giant chameleon - card0174 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9940.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

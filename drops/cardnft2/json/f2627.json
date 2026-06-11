@@ -1,0 +1,66 @@
+{
+  "id": 2627,
+  "name": "Card #2627",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2627.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "biscuit engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Castform - 121/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2627.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

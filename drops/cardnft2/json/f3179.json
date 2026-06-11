@@ -1,0 +1,58 @@
+{
+  "id": 3179,
+  "name": "Card #3179",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3179.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Switch - 135/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3179.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 736,
+  "name": "Card #736",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0736.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sand Shield - 395"
+    },
+    {
+      "trait_type": "center",
+      "value": "petra emoji cross"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card game"
+    },
+    {
+      "trait_type": "left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "top left",
+      "value": "burning rangers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chovey nintendog"
+    },
+    {
+      "trait_type": "center",
+      "value": "red starry portal"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0736.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

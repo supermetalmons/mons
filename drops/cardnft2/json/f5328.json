@@ -1,0 +1,102 @@
+{
+  "id": 5328,
+  "name": "Card #5328",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5328.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bottle on gray background"
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "center",
+      "value": "red yellow tulip engraving"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nickit - 125/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5328.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": 6531,
+  "name": "Card #6531",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6531.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "roserade - card3427 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gumby"
+    },
+    {
+      "trait_type": "left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "touhou spell"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh style gravestone SIMON GEORGE KONRAD HILL WILLiANS F5"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yokai group"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dratini art sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bidoof - 117/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6531.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

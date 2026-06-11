@@ -1,0 +1,54 @@
+{
+  "id": 1224,
+  "name": "Card #1224",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1224.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wall of Wood"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "nude frazetta girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hidden tv in chip bag"
+    },
+    {
+      "trait_type": "center",
+      "value": "petra emoji cross"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1224.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

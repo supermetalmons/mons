@@ -1,0 +1,54 @@
+{
+  "id": 536,
+  "name": "Card #536",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0536.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Catcher - 83/101"
+    },
+    {
+      "trait_type": "center",
+      "value": "gray circular pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "wrightson zombie ink"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pink season text"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "hero",
+      "value": "XYZ Dragon Cannon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0536.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

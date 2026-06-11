@@ -1,0 +1,94 @@
+{
+  "id": 8566,
+  "name": "Card #8566",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8566.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "baby embryos"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "gundam head illustration"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "029 black cherry red extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Marill - IMG_3484 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8566.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

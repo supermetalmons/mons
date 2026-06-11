@@ -1,0 +1,98 @@
+{
+  "id": 5562,
+  "name": "Card #5562",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5562.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "black bear silhouette"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel halo"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "left",
+      "value": "dr doom"
+    },
+    {
+      "trait_type": "top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "right",
+      "value": "hokusai bamboo print"
+    },
+    {
+      "trait_type": "top center",
+      "value": "who would win meme"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "zelda_ii_link_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vileplume - 31/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5562.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

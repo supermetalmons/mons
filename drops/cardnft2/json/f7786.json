@@ -1,0 +1,106 @@
+{
+  "id": 7786,
+  "name": "Card #7786",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7786.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "angry bunny sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "halo grunt sketches"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "japanese shrine autumn"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Lugia VSTAR - IMG_3439 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7786.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

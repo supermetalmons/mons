@@ -1,0 +1,42 @@
+{
+  "id": 2535,
+  "name": "Card #2535",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2535.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "snake girl manga ink"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magneton - 43/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2535.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

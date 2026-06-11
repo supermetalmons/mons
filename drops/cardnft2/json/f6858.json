@@ -1,0 +1,74 @@
+{
+  "id": 6858,
+  "name": "Card #6858",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6858.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "$dragon dna"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Machinedramon - DT-58"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6858.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

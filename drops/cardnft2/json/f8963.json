@@ -1,0 +1,118 @@
+{
+  "id": 8963,
+  "name": "Card #8963",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8963.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Buddhist Guardian Deity Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "hand holding star engraving"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pocket monsters dragonite black"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "orc warrior"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "poker table"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu ANA Airlines Promo - IMG_3223 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8963.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

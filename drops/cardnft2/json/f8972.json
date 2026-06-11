@@ -1,0 +1,126 @@
+{
+  "id": 8972,
+  "name": "Card #8972",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8972.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "panda adventure title screen"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "silver cross purple gem"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "BigMamemon"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "magikarp splash art"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ds at night"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Caterpie Neo Discovery - card1661 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8972.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

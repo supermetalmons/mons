@@ -1,0 +1,70 @@
+{
+  "id": 8671,
+  "name": "Card #8671",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8671.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "hockey mask"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "manga lust"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Injection Fairy Lily"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magikarp XY Promo - IMG_3489 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8671.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

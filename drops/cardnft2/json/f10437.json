@@ -1,0 +1,78 @@
+{
+  "id": 10437,
+  "name": "Card #10437",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10437.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink White Drip Texture Background - card1673-42"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "price tag"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "steal her look"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "tsukuyomi black flames - card4922 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "tsukuyomi black flames - card4922 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10437.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

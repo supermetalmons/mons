@@ -1,0 +1,58 @@
+{
+  "id": 2467,
+  "name": "Card #2467",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2467.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "top center",
+      "value": "klimt the park 1910"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "center",
+      "value": "gengar holo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "green blue soundwave strip"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Aron - 48/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2467.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -2,7 +2,7 @@
   "id": 41,
   "name": "Card #41",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_41.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0041.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,68 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood samurai figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hey man im sure you that the psyop play didnt really work out wondering you can help me frame this whole thing as performance let me know your"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "homunculus in flask"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Radiant Charizard - 020/159"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_41.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0041.webp",
         "type": "image/webp"
       }
     ],

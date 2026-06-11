@@ -1,0 +1,94 @@
+{
+  "id": 3989,
+  "name": "Card #3989",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3989.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "might and magic logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "neco arc tank"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga temple"
+    },
+    {
+      "trait_type": "center",
+      "value": "buddha repeated"
+    },
+    {
+      "trait_type": "top right",
+      "value": "mole pixel"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Professor Souichi Tomoe"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "disturbing dream"
+    },
+    {
+      "trait_type": "right",
+      "value": "billie eilish and murakami"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Drilbur - 25/30"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3989.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

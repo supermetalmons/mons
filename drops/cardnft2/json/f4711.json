@@ -1,0 +1,106 @@
+{
+  "id": 4711,
+  "name": "Card #4711",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4711.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - blood red - blood drop"
+    },
+    {
+      "trait_type": "right",
+      "value": "police officer arresting"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "halo grunt sketches"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel halo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frazetta crucifix preliminaries"
+    },
+    {
+      "trait_type": "top left",
+      "value": "zombie cryptopunk"
+    },
+    {
+      "trait_type": "hero",
+      "value": "pixelated abstract figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "team rocket retard"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dvd anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kidomaru - 280"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4711.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 6698,
+  "name": "Card #6698",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6698.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "energy symbols light"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - bone and ruby - spiral"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon characters"
+    },
+    {
+      "trait_type": "center",
+      "value": "chrollo engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white rat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yellow Memory Boost! P-037"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6698.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

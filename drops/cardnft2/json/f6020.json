@@ -1,0 +1,54 @@
+{
+  "id": 6020,
+  "name": "Card #6020",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6020.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "terraria sprites"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sitting superhero pixelated"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton warrior knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swablu - 132/203"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6020.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

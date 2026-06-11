@@ -1,0 +1,86 @@
+{
+  "id": 4787,
+  "name": "Card #4787",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4787.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "023 emerald violet dream extra holo ellipse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red gemstone corner"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shinji manga"
+    },
+    {
+      "trait_type": "hero",
+      "value": "rustic armored figure"
+    },
+    {
+      "trait_type": "right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fe6 pegasus concept art"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gold stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3 (1)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "homunculus in flask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Orange w hat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Temari - 1266 S22"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4787.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

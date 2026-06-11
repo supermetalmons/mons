@@ -2,7 +2,7 @@
   "id": 142,
   "name": "Card #142",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_142.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0142.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Neji Hyuga - 3/0"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "charizard meme group"
+    },
+    {
+      "trait_type": "center",
+      "value": "unicorn ring engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "character model progression"
+    },
+    {
+      "trait_type": "top right",
+      "value": "goodra anime face"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_142.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0142.webp",
         "type": "image/webp"
       }
     ],

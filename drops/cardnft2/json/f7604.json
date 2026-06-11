@@ -1,0 +1,102 @@
+{
+  "id": 7604,
+  "name": "Card #7604",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7604.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "do not ask me to do a fucking nft"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "neversoft logo"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "despair anubis collage"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "barbarian watercolor head"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "horned stone creature"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "saint with angels"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "7401% ApY"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic The Gathering Mox Sapphire - card0233 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7604.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

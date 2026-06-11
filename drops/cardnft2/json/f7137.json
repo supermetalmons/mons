@@ -1,0 +1,58 @@
+{
+  "id": 7137,
+  "name": "Card #7137",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7137.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_purple_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "goku watching"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon2 - card5232 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camo drif body"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7137.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 7676,
+  "name": "Card #7676",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7676.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "skull crossbones flag"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella halloween costume"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "devilman"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "spiky hair duo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark abstract paint marks"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Sableye - card4468 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink angel slime"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7676.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

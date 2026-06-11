@@ -1,0 +1,50 @@
+{
+  "id": 6218,
+  "name": "Card #6218",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6218.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Isaribi (Sea Monster) - 2/3"
+    },
+    {
+      "trait_type": "center",
+      "value": "gibson ink woman"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "queer as folk"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark hallway creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6218.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

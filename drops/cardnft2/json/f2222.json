@@ -1,0 +1,50 @@
+{
+  "id": 2222,
+  "name": "Card #2222",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2222.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Meteor Falls - 89/107"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2222.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

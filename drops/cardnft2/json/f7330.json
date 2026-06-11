@@ -1,0 +1,50 @@
+{
+  "id": 7330,
+  "name": "Card #7330",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7330.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sargent Woman By The Sea Background - card1673-52"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Goblin Zombie - IMG_3564 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7330.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

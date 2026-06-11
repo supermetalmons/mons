@@ -1,0 +1,90 @@
+{
+  "id": 4802,
+  "name": "Card #4802",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4802.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "red blue sparkles"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "right",
+      "value": "lego drif"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kyrie eleison"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture 5"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cherub drifella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pfp+102"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - S26"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4802.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

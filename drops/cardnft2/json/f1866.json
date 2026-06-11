@@ -1,0 +1,54 @@
+{
+  "id": 1866,
+  "name": "Card #1866",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1866.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kabuto - 50/62"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "tree background"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu02"
+    },
+    {
+      "trait_type": "left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "top right",
+      "value": "mole pixel"
+    },
+    {
+      "trait_type": "top left",
+      "value": "unown"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1866.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

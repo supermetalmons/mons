@@ -1,0 +1,126 @@
+{
+  "id": 5038,
+  "name": "Card #5038",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5038.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ancient scrolls"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "top center",
+      "value": "tekkonkinkreet city"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black intricate pattern 2"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "blue eyes white dragon"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dragonite and scyther anime"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Rebecca"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eelektrik - 45/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5038.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

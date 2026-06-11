@@ -1,0 +1,58 @@
+{
+  "id": 6903,
+  "name": "Card #6903",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6903.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "yellow star pattern"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "orange elite"
+    },
+    {
+      "trait_type": "right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "top center",
+      "value": "marin chinese"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Paldean Student - 230/091"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6903.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

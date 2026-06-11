@@ -1,0 +1,118 @@
+{
+  "id": 10282,
+  "name": "Card #10282",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10282.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Jesus Icon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "geometric star pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bulbafella"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "evil empire banner"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "exodia necross"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bomberman sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - ankh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 05 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - ouroboros"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card_3 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "itachi_uchiha_custom_card_3 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10282.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

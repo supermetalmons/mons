@@ -1,0 +1,70 @@
+{
+  "id": 9409,
+  "name": "Card #9409",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9409.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Butcher Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__black armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "073 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 27"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 vespertine purple peach clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "35 dark magician clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Holon Phantoms - IMG_3222 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9409.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

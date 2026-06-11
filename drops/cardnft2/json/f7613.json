@@ -1,0 +1,102 @@
+{
+  "id": 7613,
+  "name": "Card #7613",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7613.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Art Nouveau Spring Poster Background - card1673-53"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "pink season text"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Vamdemon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "watercolor drif wound"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Playing Card Snorlax Ace of Diamonds - IMG_3213 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Fantastic Planet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7613.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

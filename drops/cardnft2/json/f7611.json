@@ -1,0 +1,114 @@
+{
+  "id": 7611,
+  "name": "Card #7611",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7611.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "emerald_violet_dream_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "aavegotchi  land"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "poker table"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Pikachu Costume Party - IMG_3267 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mother creep sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "henteko doujin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7611.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 3083,
+  "name": "Card #3083",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3083.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pastel injured angel with cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow dratini pattern"
+    },
+    {
+      "trait_type": "left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Muk - 28/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3083.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

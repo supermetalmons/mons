@@ -1,0 +1,50 @@
+{
+  "id": 6553,
+  "name": "Card #6553",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6553.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "cracked windows number two"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Slowpoke - 73/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6553.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

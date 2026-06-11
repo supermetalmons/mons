@@ -1,0 +1,70 @@
+{
+  "id": 6899,
+  "name": "Card #6899",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6899.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "angel holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "top left",
+      "value": "goddess story frame copy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "malevich"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fluffeluff - 40/75"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6899.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

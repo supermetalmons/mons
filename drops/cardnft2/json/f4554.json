@@ -1,0 +1,58 @@
+{
+  "id": 4554,
+  "name": "Card #4554",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4554.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "watercolor swatches"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Warrior Mira - BT3-107 R"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4554.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

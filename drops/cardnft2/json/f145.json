@@ -2,7 +2,7 @@
   "id": 145,
   "name": "Card #145",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_145.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0145.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ino Yamanaka - 835"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "nude frazetta girl"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokemon berry sprites"
+    },
+    {
+      "trait_type": "right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_145.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0145.webp",
         "type": "image/webp"
       }
     ],

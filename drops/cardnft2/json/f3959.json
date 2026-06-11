@@ -1,0 +1,90 @@
+{
+  "id": 3959,
+  "name": "Card #3959",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3959.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokemon crayon art"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "right",
+      "value": "skeleton ghost green flames"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "056 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shinji manga"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robot detective illustration"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black maze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sublime"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rhydon - 80/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3959.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

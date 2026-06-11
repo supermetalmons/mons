@@ -1,0 +1,94 @@
+{
+  "id": 8473,
+  "name": "Card #8473",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8473.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark magician knight"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "29 calm teal violet clean wisp moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "080 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "013 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Electrode Jungle - card2296 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8473.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 7010,
+  "name": "Card #7010",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7010.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "they should let me color frank millers batman"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "glitter pixel bokeh"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Alpha The Magnet Warrior - IMG_3497 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7010.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

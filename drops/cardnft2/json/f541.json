@@ -1,0 +1,58 @@
+{
+  "id": 541,
+  "name": "Card #541",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0541.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Raise Dead - 146/221"
+    },
+    {
+      "trait_type": "border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robot chibi mascot black white"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "killua spider hxh"
+    },
+    {
+      "trait_type": "right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "might and magic logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0541.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

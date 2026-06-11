@@ -1,0 +1,58 @@
+{
+  "id": 9636,
+  "name": "Card #9636",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9636.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon pink umbrella man"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sentret - card5494 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9636.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 7518,
+  "name": "Card #7518",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7518.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_full_spectrum_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tekkonkinkreet city"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "paint swatches"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "duplicated guy w gun from a cool painting"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mushroom engraving"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shiny mew"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue pastel sparkles"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "spike tcg"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shining Raichu Neo Destiny 111 of 105 - IMG_3211 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "absol"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7518.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

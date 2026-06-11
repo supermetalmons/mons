@@ -1,0 +1,58 @@
+{
+  "id": 475,
+  "name": "Card #475",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0475.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Iron Treads - 118/162"
+    },
+    {
+      "trait_type": "top right",
+      "value": "usagi"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hiei yu yu hakusho"
+    },
+    {
+      "trait_type": "right",
+      "value": "pluto puppies sketches"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowpoly knight"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lego reaper"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0475.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

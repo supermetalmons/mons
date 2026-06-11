@@ -1,0 +1,106 @@
+{
+  "id": 10510,
+  "name": "Card #10510",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10510.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Japanese Crane Blossom Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - bolt"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "23 red soft holo holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "44 dark cobalt pink sunset holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini - card1339 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dratini - card1339 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "devil world"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10510.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

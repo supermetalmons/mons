@@ -1,0 +1,50 @@
+{
+  "id": 1152,
+  "name": "Card #1152",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1152.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chinchou - 42/64"
+    },
+    {
+      "trait_type": "center",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh style gravestone SIMON GEORGE KONRAD HILL WILLiANS F5"
+    },
+    {
+      "trait_type": "right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1152.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

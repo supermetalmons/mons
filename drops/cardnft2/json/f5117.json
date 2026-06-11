@@ -1,0 +1,114 @@
+{
+  "id": 5117,
+  "name": "Card #5117",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5117.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red crucifixion scene"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sine Cerere et Baccho friget Venus engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ruby and sapphire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold floral pattern 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Inkay - 74/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5117.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

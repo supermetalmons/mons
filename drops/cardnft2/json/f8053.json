@@ -1,0 +1,94 @@
+{
+  "id": 8053,
+  "name": "Card #8053",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8053.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "gohan great saiyaman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "queer as folk"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "creepy long armed figure"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "life is boring so why not steal this card"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "nen hexagon hxh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "076 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "015 gold plum teal extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "pac_man_rub_off_game_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8053.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

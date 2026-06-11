@@ -1,0 +1,74 @@
+{
+  "id": 4201,
+  "name": "Card #4201",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4201.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "nen hexagon hxh"
+    },
+    {
+      "trait_type": "top center",
+      "value": "surreal eye and skulls"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "secret of mana"
+    },
+    {
+      "trait_type": "center",
+      "value": "you cant beat a man hoods drifella daze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "top left",
+      "value": "cute penguin"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dodonpachi black label"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red block"
+    },
+    {
+      "trait_type": "left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lombre 6/30"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4201.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

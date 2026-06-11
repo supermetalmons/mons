@@ -1,0 +1,110 @@
+{
+  "id": 8913,
+  "name": "Card #8913",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8913.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Dark Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "castle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "deity flames"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Vaporeon Gold Star black mask"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "incredibly protected graded card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Chinchou Neo Genesis - card2724 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cowboy kid"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8913.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 9288,
+  "name": "Card #9288",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9288.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gothic Cathedral Night Background - card1673-41"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "091 deep teal lime extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "094 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose magenta - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Darkness Energy unknown set - card0074 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9288.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

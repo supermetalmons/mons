@@ -1,0 +1,70 @@
+{
+  "id": 9652,
+  "name": "Card #9652",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9652.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "guess what i never went to art school meme"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "All Might weakened"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "brown floral pattern fabric"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "akira kneeling red cape"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Cell the Master - card0769 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9652.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

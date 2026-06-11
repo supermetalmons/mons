@@ -1,0 +1,54 @@
+{
+  "id": 276,
+  "name": "Card #276",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0276.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Asuma Sarutobi - 3/1"
+    },
+    {
+      "trait_type": "center",
+      "value": "black soot sprites pattern"
+    },
+    {
+      "trait_type": "right",
+      "value": "smug ash meme"
+    },
+    {
+      "trait_type": "hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0276.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

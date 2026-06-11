@@ -1,0 +1,82 @@
+{
+  "id": 2465,
+  "name": "Card #2465",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2465.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mechanical spider tank"
+    },
+    {
+      "trait_type": "top right",
+      "value": "plastinated specimen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "babyspiky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester painter drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dusclops - 34/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2465.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

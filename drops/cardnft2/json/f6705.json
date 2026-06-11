@@ -1,0 +1,74 @@
+{
+  "id": 6705,
+  "name": "Card #6705",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6705.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "waddle dee spear"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - aurora rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shaymin"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6705.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

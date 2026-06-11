@@ -1,0 +1,54 @@
+{
+  "id": 7347,
+  "name": "Card #7347",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7347.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Peeling Paint Blue Wall Background - card1673-15"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shelgon - card2848 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toy phone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7347.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

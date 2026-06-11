@@ -1,0 +1,126 @@
+{
+  "id": 10213,
+  "name": "Card #10213",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10213.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mewtwo Purple Lab Capsule Background - card1673-32"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "imagine popping a grey homunculus"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ancient relief sculpture"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pikachu wooloo sleep"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "cyan magenta scribble page"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pokemon calendar sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "magikarp splash art"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "XYZ Dragon Cannon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "032 dark blood orange extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "craw wurm - card1447 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "teddiursa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "craw wurm - card1447 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10213.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 7671,
+  "name": "Card #7671",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7671.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_green_purple_fire_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "life is boring so why not steal this card"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "naruto card pack"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract watercolor hand"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Articuno Fossil 2 of 62 - card0069 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7671.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

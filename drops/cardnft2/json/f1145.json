@@ -1,0 +1,98 @@
+{
+  "id": 1145,
+  "name": "Card #1145",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1145.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jynx - 45/130"
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue black abstract texture"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood samurai figure"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ultimate entertainment bundle box"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "punch out boxer"
+    },
+    {
+      "trait_type": "right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "top right",
+      "value": "twin peaks giant"
+    },
+    {
+      "trait_type": "top left",
+      "value": "alfredo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "center",
+      "value": "red mew gameboy"
+    },
+    {
+      "trait_type": "center",
+      "value": "petra emoji cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1145.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

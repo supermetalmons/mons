@@ -1,0 +1,62 @@
+{
+  "id": 10743,
+  "name": "Card #10743",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10743.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko yellow mauve and charcoal blocks"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Kabuto Yakushi - IMG_3533 halftone screenprint mask"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "evil empire banner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10743.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

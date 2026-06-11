@@ -1,0 +1,186 @@
+{
+  "id": 3467,
+  "name": "Card #3467",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3467.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "eva girls ascii"
+    },
+    {
+      "trait_type": "top center",
+      "value": "geometric star pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel egg dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goat face heisenberg pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw hexp sonic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "salute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sprite sheet lightning attack"
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Name 'Gaara' - 162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3467.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

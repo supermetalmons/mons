@@ -1,0 +1,58 @@
+{
+  "id": 9298,
+  "name": "Card #9298",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9298.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract Woman Figure Painting Background - card1673-16"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - saturn sigil"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__dragon armor jester diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card1014 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9298.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

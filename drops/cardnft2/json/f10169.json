@@ -1,0 +1,78 @@
+{
+  "id": 10169,
+  "name": "Card #10169",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10169.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "storm_amber_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "halo grunt sketches"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "pain animal path - card4734 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red nabler purse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cowboy kid"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "pain animal path - card4734 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10169.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

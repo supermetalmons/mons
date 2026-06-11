@@ -1,0 +1,54 @@
+{
+  "id": 3587,
+  "name": "Card #3587",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3587.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "left",
+      "value": "industrial stairwell"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "blue black abstract texture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Threat of the Akatsuki"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3587.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

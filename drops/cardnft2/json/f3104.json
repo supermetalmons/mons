@@ -1,0 +1,78 @@
+{
+  "id": 3104,
+  "name": "Card #3104",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3104.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "hero",
+      "value": "darkrai art"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract ink symbols"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "calligraphy"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "top center",
+      "value": "filigree crown"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gynoug"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Professor Kukui - 128/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3104.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

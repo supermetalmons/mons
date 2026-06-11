@@ -1,0 +1,98 @@
+{
+  "id": 10228,
+  "name": "Card #10228",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10228.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Pink Impressionist Flower Field Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "blurry osrs"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "is a fishman a snake"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "pokeball chain pendant"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "017 black cherry red extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 17"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "time_walk_magic_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "captain"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "time_walk_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10228.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

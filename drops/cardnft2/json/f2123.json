@@ -1,0 +1,38 @@
+{
+  "id": 2123,
+  "name": "Card #2123",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2123.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "delicate hand engraving"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Duskull - 61/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2123.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

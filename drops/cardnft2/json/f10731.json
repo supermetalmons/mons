@@ -1,0 +1,134 @@
+{
+  "id": 10731,
+  "name": "Card #10731",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10731.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "world war robot fig"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 blood orange magenta holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "29 calm teal violet clean wisp moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - water drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "088 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "poke holo manga cover"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pink purple watercolor drif body"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored dq bat"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "057 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_25"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_10"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "018 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - gold holy - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_03"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kakashi hatake - card0610 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "kakashi hatake - card0610 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10731.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

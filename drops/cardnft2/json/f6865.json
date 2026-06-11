@@ -1,0 +1,102 @@
+{
+  "id": 6865,
+  "name": "Card #6865",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6865.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga cap back view"
+    },
+    {
+      "trait_type": "left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cowboy kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal necklace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif apple body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "center",
+      "value": "magic circle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "energy symbols dark"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "they want you to fear death"
+    },
+    {
+      "trait_type": "base card",
+      "value": "テラパゴス ex - 145/193"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6865.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

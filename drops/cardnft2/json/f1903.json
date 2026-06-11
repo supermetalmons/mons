@@ -1,0 +1,54 @@
+{
+  "id": 1903,
+  "name": "Card #1903",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1903.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tentacruel - 44/62"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ornate brown chair"
+    },
+    {
+      "trait_type": "top right",
+      "value": "magikarp splash art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dude im a fucking goblin i dont care im going to take your shit and then kill you"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon warrior jester"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1903.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

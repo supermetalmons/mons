@@ -1,0 +1,94 @@
+{
+  "id": 4215,
+  "name": "Card #4215",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4215.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mickey mouse gas mask"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "069 cyan magenta gold extra holo circle"
+    },
+    {
+      "trait_type": "top center",
+      "value": "noise circle blur"
+    },
+    {
+      "trait_type": "right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "center",
+      "value": "petra emoji cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowpoly knight"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Drowzee - 50/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4215.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

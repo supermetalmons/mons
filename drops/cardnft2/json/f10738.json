@@ -1,0 +1,62 @@
+{
+  "id": 10738,
+  "name": "Card #10738",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10738.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card0401 inverted white mask"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "hand in soil"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi itachi 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "panda statue flowers"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10738.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

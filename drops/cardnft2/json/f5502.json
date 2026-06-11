@@ -1,0 +1,74 @@
+{
+  "id": 5502,
+  "name": "Card #5502",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5502.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "money man reaper fishing"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "akira kneeling red cape"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ds at night"
+    },
+    {
+      "trait_type": "top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Parasect - 35/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5502.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

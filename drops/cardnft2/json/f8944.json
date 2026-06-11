@@ -1,0 +1,126 @@
+{
+  "id": 8944,
+  "name": "Card #8944",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8944.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "might and magic logo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "dq slimes"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "angelic layer"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "persona bear character"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon Vending Series - card1784 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "summoned skull figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tech deck bean jester"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cow"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8944.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "id": 2559,
+  "name": "Card #2559",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2559.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "Professor Souichi Tomoe"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fractal universe comparison"
+    },
+    {
+      "trait_type": "center",
+      "value": "petra emoji cross"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier zombie"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Catcher - 175/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2559.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

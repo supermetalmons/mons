@@ -1,0 +1,54 @@
+{
+  "id": 3051,
+  "name": "Card #3051",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3051.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "left",
+      "value": "furry star wars creature with cup"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hooded figure magic hand"
+    },
+    {
+      "trait_type": "center",
+      "value": "industrial machine engine"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ghibli reeled in fish"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dugtrio - 19/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3051.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

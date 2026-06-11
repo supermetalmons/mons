@@ -1,0 +1,74 @@
+{
+  "id": 2978,
+  "name": "Card #2978",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2978.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "silver spheres installation"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shizuku fan art"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "hero",
+      "value": "croconaw"
+    },
+    {
+      "trait_type": "top center",
+      "value": "graveyard examiner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lana - 117/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2978.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

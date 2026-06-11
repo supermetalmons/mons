@@ -1,0 +1,82 @@
+{
+  "id": 2891,
+  "name": "Card #2891",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2891.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bandai logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract structure"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "energy symbols light"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "hero",
+      "value": "yu gi oh 17 cover"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kakashi zabuza manga"
+    },
+    {
+      "trait_type": "left",
+      "value": "King Yemma"
+    },
+    {
+      "trait_type": "top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "right",
+      "value": "floating square hole"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Guzma - 115/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2891.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

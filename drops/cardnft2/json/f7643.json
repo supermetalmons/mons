@@ -1,0 +1,90 @@
+{
+  "id": 7643,
+  "name": "Card #7643",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7643.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sacred Heart Floral Gold Background - card1673-47"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zombie hands reaching"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark abstract sculpture"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Uchiha inverted mask variant 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite clawbearer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7643.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

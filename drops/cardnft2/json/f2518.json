@@ -1,0 +1,38 @@
+{
+  "id": 2518,
+  "name": "Card #2518",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2518.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "buck rogers cover 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Skarmory - 88/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2518.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

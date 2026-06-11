@@ -1,0 +1,98 @@
+{
+  "id": 7546,
+  "name": "Card #7546",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7546.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Forest Water Lilies Background - card1673-7"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "9 11 anime eyes meme"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi character speech bubble"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Miki Koishikawa"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Fire Energy - card2435 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Light blue bomb check"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7546.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

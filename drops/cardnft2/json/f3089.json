@@ -1,0 +1,82 @@
+{
+  "id": 3089,
+  "name": "Card #3089",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3089.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "top right",
+      "value": "cyborg head profile"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kero anime drawer"
+    },
+    {
+      "trait_type": "center",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alien figure on cloth"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dark angel girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "buddha repeated"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyndaquil - 56/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3089.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

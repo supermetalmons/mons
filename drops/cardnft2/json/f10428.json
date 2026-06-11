@@ -1,0 +1,122 @@
+{
+  "id": 10428,
+  "name": "Card #10428",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10428.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "xenomorph w flashlight"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "073 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 48"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "pokeball chain pendant"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract brush strokes"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "a dark room"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "069 cyan magenta gold extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - sunset rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "karin - card4765 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "karin - card4765 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "runescape trade scam"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10428.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

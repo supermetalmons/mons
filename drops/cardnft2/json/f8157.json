@@ -1,0 +1,90 @@
+{
+  "id": 8157,
+  "name": "Card #8157",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8157.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Classical Hunt Fruit Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "arceus highway loops"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "purple blue goblins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "druid-8 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "pac_man_rub_off_game_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8157.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

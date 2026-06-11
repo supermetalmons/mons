@@ -1,0 +1,62 @@
+{
+  "id": 7227,
+  "name": "Card #7227",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7227.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Moon Black Cat Silhouette Background - card1673-23"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "ultraman starry silhouette"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mew ex - IMG_3220 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7227.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

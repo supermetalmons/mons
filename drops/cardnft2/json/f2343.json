@@ -1,0 +1,90 @@
+{
+  "id": 2343,
+  "name": "Card #2343",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2343.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokemon card scattered"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swablu - 132/203"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2343.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

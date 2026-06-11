@@ -1,0 +1,62 @@
+{
+  "id": 10522,
+  "name": "Card #10522",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10522.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Bouquet Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "astroboy ashley wood"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "super_mario_bros_2_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "super_mario_bros_2_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "The Ghost of Akugenta Taking Revenge on Nanba at the Nunobiki Waterfall woodblock negative"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10522.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

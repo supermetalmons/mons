@@ -1,0 +1,86 @@
+{
+  "id": 10182,
+  "name": "Card #10182",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10182.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "togetic japanese pokemon get card"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green sky rocky landscape"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pinball sprites"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gardevoir ex - card2452 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gardevoir ex - card2452 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10182.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

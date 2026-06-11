@@ -1,0 +1,114 @@
+{
+  "id": 7832,
+  "name": "Card #7832",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7832.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Moon Black Cat Silhouette Background - card1673-23"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "earl grey a la creme"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "foggy church graveyard"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "wrightson goblin"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "batgirl"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "matrix numbers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "26 calm teal violet clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Houndoom - card2814 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7832.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

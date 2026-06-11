@@ -1,0 +1,82 @@
+{
+  "id": 8526,
+  "name": "Card #8526",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8526.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_full_spectrum_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "frazetta frodo wolf plate"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blood and bones"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ye_s wreck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 radiant yellow red clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "020 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "altaria_sv37_sv94_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8526.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

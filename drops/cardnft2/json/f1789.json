@@ -1,0 +1,58 @@
+{
+  "id": 1789,
+  "name": "Card #1789",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1789.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Porygon - 39/102"
+    },
+    {
+      "trait_type": "top right",
+      "value": "desktop icons"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pinball sprites"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1789.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

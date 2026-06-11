@@ -1,0 +1,114 @@
+{
+  "id": 10142,
+  "name": "Card #10142",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10142.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue yugioh back"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen dratini"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Egghead Brook"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "blue connection"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shiny mew"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hylics sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "water energy holographic"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "42 radiant yellow red clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 dragon red green clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shinx_98_130_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "shinx_98_130_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10142.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

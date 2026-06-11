@@ -1,0 +1,94 @@
+{
+  "id": 376,
+  "name": "Card #376",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0376.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "touhou spell"
+    },
+    {
+      "trait_type": "left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sheep in glass tank"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "do not ask me to do a fucking nft"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime warrior green hair"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark landscape painting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 1129"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0376.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

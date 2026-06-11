@@ -1,0 +1,58 @@
+{
+  "id": 346,
+  "name": "Card #346",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0346.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Summoning Jutsu: Sea Monster - 334"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokemon berry sprites"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "tree background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi crow"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0346.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

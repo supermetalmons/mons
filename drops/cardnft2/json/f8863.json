@@ -1,0 +1,126 @@
+{
+  "id": 8863,
+  "name": "Card #8863",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8863.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mars frazetta"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "back story speech bubble"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dr doom"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "splatterhouse mask monster"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "eevee meme"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gengar ex - IMG_3216 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel egg dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "druid-8 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "esoteric lessons steiner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8863.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

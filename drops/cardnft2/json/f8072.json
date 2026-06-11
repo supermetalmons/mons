@@ -1,0 +1,102 @@
+{
+  "id": 8072,
+  "name": "Card #8072",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8072.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Bandai Super Mario Bros Keshi figure"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "warbly wash line"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi crow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 gentle pearl clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "009 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "light_azumarill_neo_destiny_13_105_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8072.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

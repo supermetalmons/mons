@@ -1,0 +1,106 @@
+{
+  "id": 8283,
+  "name": "Card #8283",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8283.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "vega 1850"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "freaky nikki"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sickly hand"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "075 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "20 baroque gold clean wisp moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Sheldon Card - IMG_3553 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8283.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 8683,
+  "name": "Card #8683",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8683.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hungry"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anime angel divider"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dratini biscuit sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "cartoon face with gun"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "valve baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "51 red soft holo holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "58 blood orange magenta holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "025 dark blood orange extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke_uchiha_custom_card_2 white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8683.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

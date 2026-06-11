@@ -1,0 +1,110 @@
+{
+  "id": 2345,
+  "name": "Card #2345",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2345.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "black boots"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dice three dots"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rocket dratini black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goat face heisenberg pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frank ocean"
+    },
+    {
+      "trait_type": "right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Diglett - 72/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2345.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

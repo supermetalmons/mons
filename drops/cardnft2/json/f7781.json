@@ -1,0 +1,86 @@
+{
+  "id": 7781,
+  "name": "Card #7781",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7781.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cosmic_cyan_magenta_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goku dragon riding"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "9 tails evil smile"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Dark Strike Fighter"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "shining gyarados"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ancient dice"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "touhou spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "no war"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Totodile - card5023 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7781.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

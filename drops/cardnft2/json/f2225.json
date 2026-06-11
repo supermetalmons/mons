@@ -1,0 +1,62 @@
+{
+  "id": 2225,
+  "name": "Card #2225",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2225.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i m sorry i can t"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tokusatsu bug"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "top center",
+      "value": "don t dead open inside"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke curse mark"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Porygon - 103/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2225.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

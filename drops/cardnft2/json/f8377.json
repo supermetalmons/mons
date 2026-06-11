@@ -1,0 +1,90 @@
+{
+  "id": 8377,
+  "name": "Card #8377",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8377.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "desert_rainbow_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Church Servant"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "42 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Mew EX Holon Phantoms inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8377.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

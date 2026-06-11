@@ -2,7 +2,7 @@
   "id": 116,
   "name": "Card #116",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_116.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0116.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Last Resort: Eight Gates Assault - 300 X"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Leorio Paradinight"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "syrup jug"
+    },
+    {
+      "trait_type": "center",
+      "value": "Mangekyo Sharingan"
+    },
+    {
+      "trait_type": "right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_116.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0116.webp",
         "type": "image/webp"
       }
     ],

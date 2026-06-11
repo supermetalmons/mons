@@ -1,0 +1,78 @@
+{
+  "id": 3116,
+  "name": "Card #3116",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3116.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "no piplups sign"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deoxys pokeball basketball player"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi Suigetsu"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black rectangle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "wires"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke curse mark"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink blue pastel scribble"
+    },
+    {
+      "trait_type": "left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fighting Stadium - 90/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3116.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

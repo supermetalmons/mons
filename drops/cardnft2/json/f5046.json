@@ -1,0 +1,86 @@
+{
+  "id": 5046,
+  "name": "Card #5046",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5046.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black ink scratch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "chibi itachi"
+    },
+    {
+      "trait_type": "center",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "backside bacon"
+    },
+    {
+      "trait_type": "right",
+      "value": "money stack"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "robotic drone turret"
+    },
+    {
+      "trait_type": "left",
+      "value": "maw of the underworld and world tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "top center",
+      "value": "severed head"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pachirisu - 10/17"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5046.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

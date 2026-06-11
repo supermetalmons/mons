@@ -1,0 +1,46 @@
+{
+  "id": 1899,
+  "name": "Card #1899",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1899.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Persian - 42/64"
+    },
+    {
+      "trait_type": "center",
+      "value": "black intricate pattern 2"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mamano hunter youko"
+    },
+    {
+      "trait_type": "center",
+      "value": "pc98 woman"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1899.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "id": 11121,
+  "name": "Card #11121",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11121.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 vespertine purple peach clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_three__rubber_smoke_fair_lip"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_seven__blue_light_spike"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_seven__split"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 fire ice split holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 sage green gold clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "051 deep teal lime extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mew Expedition - IMG_3254 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11121.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

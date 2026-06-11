@@ -1,0 +1,86 @@
+{
+  "id": 8513,
+  "name": "Card #8513",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8513.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "St George Slaying Dragon Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dual swords abstract"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chair"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Sneasel - card4415 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8513.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

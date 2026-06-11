@@ -1,0 +1,42 @@
+{
+  "id": 1521,
+  "name": "Card #1521",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1521.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tyrogue - 66/75"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1521.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

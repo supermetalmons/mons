@@ -1,0 +1,90 @@
+{
+  "id": 6912,
+  "name": "Card #6912",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6912.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gotcha force a rank"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Towa, Union of Magic and Science - BT11-139"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6912.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

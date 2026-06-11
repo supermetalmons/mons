@@ -1,0 +1,110 @@
+{
+  "id": 3861,
+  "name": "Card #3861",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3861.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "top right",
+      "value": "3"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 24"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cave logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "gon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "killua gon computer meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bottle on gray background"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "neon sketch figures"
+    },
+    {
+      "trait_type": "top left",
+      "value": "croagunk"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ff wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Golem - 36/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3861.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

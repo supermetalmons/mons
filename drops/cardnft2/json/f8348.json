@@ -1,0 +1,82 @@
+{
+  "id": 8348,
+  "name": "Card #8348",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8348.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black red abstract painting"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "kirby inhaling"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "shadow mage"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mewtwo secret super battle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "046 purple peach glow extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 dark magician clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8348.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

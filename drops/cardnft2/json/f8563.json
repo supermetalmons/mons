@@ -1,0 +1,74 @@
+{
+  "id": 8563,
+  "name": "Card #8563",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8563.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "St George Slaying Dragon Painting Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "soldier zombie"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "owls on pine branch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Playing Card Snorlax Ace of Diamonds - IMG_3213 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8563.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

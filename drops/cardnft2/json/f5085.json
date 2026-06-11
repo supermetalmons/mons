@@ -1,0 +1,102 @@
+{
+  "id": 5085,
+  "name": "Card #5085",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5085.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Concentric Rinds"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Gotenks ghost trio"
+    },
+    {
+      "trait_type": "top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gible - 85/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5085.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

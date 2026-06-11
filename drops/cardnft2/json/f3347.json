@@ -1,0 +1,74 @@
+{
+  "id": 3347,
+  "name": "Card #3347",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3347.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mystery box"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "heavy rain logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "skull crossbones flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Egghead Brook"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shizuku fan art"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mareep - 64/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3347.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

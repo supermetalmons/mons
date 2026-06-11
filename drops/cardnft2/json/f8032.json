@@ -1,0 +1,102 @@
+{
+  "id": 8032,
+  "name": "Card #8032",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8032.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Frazetta Death Dealer Moon Warrior Background - card1673-19"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "eevee meme"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby bat crucifix drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "094 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 dark cobalt pink sunset holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "100 rainbow prism dawn extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "naruto_shippuden_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8032.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

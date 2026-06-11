@@ -1,0 +1,174 @@
+{
+  "id": 3473,
+  "name": "Card #3473",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3473.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred heart lace card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester painter drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink bunny tank"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pog face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pimp 830"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman exe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "top left",
+      "value": "centipede arcade art"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gaara manga"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Iyashi - 098"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3473.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

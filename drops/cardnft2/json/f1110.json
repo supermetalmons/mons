@@ -1,0 +1,54 @@
+{
+  "id": 1110,
+  "name": "Card #1110",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1110.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Full Heal - 111/130"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon mc escher"
+    },
+    {
+      "trait_type": "center",
+      "value": "green burst "
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dark magician girl holographic"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ship silhouette night"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1110.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 4153,
+  "name": "Card #4153",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4153.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "green red pastel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story curly and quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ultra Recon Squad - 114/131"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4153.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 7126,
+  "name": "Card #7126",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7126.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shadow Triad Supporter - card2708 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7126.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

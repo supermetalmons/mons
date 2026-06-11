@@ -1,0 +1,62 @@
+{
+  "id": 10645,
+  "name": "Card #10645",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10645.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "altered hermit tarot card"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green sky rocky landscape"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mew_3_17_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "mew_3_17_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "resident evil health status"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10645.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

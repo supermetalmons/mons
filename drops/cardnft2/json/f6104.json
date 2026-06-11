@@ -1,0 +1,42 @@
+{
+  "id": 6104,
+  "name": "Card #6104",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6104.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sudowoodo - 48/100"
+    },
+    {
+      "trait_type": "center",
+      "value": "white spray 1"
+    },
+    {
+      "trait_type": "top right",
+      "value": "manga smashing frog"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6104.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

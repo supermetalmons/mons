@@ -1,0 +1,66 @@
+{
+  "id": 9180,
+  "name": "Card #9180",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9180.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Embryo Medical Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "tiny mole in hand"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Raid of Akatsuki - card3550 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9180.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

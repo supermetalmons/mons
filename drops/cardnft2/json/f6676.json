@@ -1,0 +1,74 @@
+{
+  "id": 6676,
+  "name": "Card #6676",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6676.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "watercolor swatches"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ship silhouette night"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "center",
+      "value": "trader retard baby drif"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unknown Card #6676"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6676.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

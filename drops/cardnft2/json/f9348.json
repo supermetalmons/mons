@@ -1,0 +1,46 @@
+{
+  "id": 9348,
+  "name": "Card #9348",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9348.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ito waifu - card1673-18"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 09 - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Thief - IMG_3442 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9348.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

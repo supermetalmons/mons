@@ -1,0 +1,54 @@
+{
+  "id": 6181,
+  "name": "Card #6181",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6181.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Speed Trader - 28/28"
+    },
+    {
+      "trait_type": "center",
+      "value": "storm"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "center",
+      "value": "goku vs octopus"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6181.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

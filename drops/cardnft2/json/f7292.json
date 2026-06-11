@@ -1,0 +1,50 @@
+{
+  "id": 7292,
+  "name": "Card #7292",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7292.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card0389 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7292.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

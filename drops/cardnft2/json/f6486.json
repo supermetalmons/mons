@@ -1,0 +1,50 @@
+{
+  "id": 6486,
+  "name": "Card #6486",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6486.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "diamond_holo_pikachu_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Breeder Fields - 62/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6486.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

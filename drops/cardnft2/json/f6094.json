@@ -1,0 +1,66 @@
+{
+  "id": 6094,
+  "name": "Card #6094",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6094.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "dratini water - card1357 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "center",
+      "value": "earthbound enemies collage"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anime angel divider"
+    },
+    {
+      "trait_type": "top right",
+      "value": "333"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Neo Discovery Promo Card"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6094.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

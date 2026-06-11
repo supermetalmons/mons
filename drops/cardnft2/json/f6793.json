@@ -1,0 +1,54 @@
+{
+  "id": 6793,
+  "name": "Card #6793",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6793.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "matrix numbers"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "emolga_ex_generations_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mekanorimon 57-71"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6793.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

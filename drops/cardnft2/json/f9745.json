@@ -1,0 +1,58 @@
+{
+  "id": 9745,
+  "name": "Card #9745",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9745.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "hxh card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dragonite holy texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - water drop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "trainer n - card2889 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9745.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

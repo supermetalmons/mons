@@ -1,0 +1,50 @@
+{
+  "id": 10547,
+  "name": "Card #10547",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10547.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko pale bone blue and umber blocks"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Bagon - card2989 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10547.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

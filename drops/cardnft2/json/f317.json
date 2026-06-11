@@ -1,0 +1,50 @@
+{
+  "id": 317,
+  "name": "Card #317",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0317.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Combined Transformation - us031"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "center",
+      "value": "Saint Paul engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0317.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

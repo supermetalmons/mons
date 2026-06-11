@@ -1,0 +1,210 @@
+{
+  "id": 6670,
+  "name": "Card #6670",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6670.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-211"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bubble planet"
+    },
+    {
+      "trait_type": "left",
+      "value": "pillar engraving"
+    },
+    {
+      "trait_type": "right",
+      "value": "Miki Koishikawa"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "A"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blipbug - 017/163"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6670.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

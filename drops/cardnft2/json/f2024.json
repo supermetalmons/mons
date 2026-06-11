@@ -1,0 +1,58 @@
+{
+  "id": 2024,
+  "name": "Card #2024",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2024.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "unown"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "hell crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blitzle - 48/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2024.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

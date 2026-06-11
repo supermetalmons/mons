@@ -1,0 +1,138 @@
+{
+  "id": 10362,
+  "name": "Card #10362",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10362.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dragon Serpent Storm Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "why stop making games"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "messy paint smear"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "croconaw"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "don t dead open inside"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Gotenks ghost trio"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue black wave pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "24 red soft holo holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "046 purple peach glow extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "10 lava violet ember holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kingdra - card3131 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "kingdra - card3131 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "19 yo avant nft collector"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10362.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 2229,
+  "name": "Card #2229",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2229.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "Sinister Serpent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black luffy one piece card"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Imposter Professor Oak - 102/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2229.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 10371,
+  "name": "Card #10371",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10371.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Neon Rainbow Light Streaks Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "green dummy"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dumbo concept"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen shadow wizar"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 01 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - gold holy - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 lava violet ember holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ankh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 09 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white light - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke uchiha - card0224 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasuke uchiha - card0224 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10371.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

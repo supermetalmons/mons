@@ -1,0 +1,66 @@
+{
+  "id": 4757,
+  "name": "Card #4757",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4757.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alchemy and occult"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - candy rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "right",
+      "value": "swamp"
+    },
+    {
+      "trait_type": "top left",
+      "value": "alfredo"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "wizardworld_star_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Asuma Sarutobi"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4757.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

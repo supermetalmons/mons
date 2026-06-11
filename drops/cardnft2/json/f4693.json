@@ -1,0 +1,94 @@
+{
+  "id": 4693,
+  "name": "Card #4693",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4693.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "062 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "the x files logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kimimaro bone dagger"
+    },
+    {
+      "trait_type": "right",
+      "value": "shadow mage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "r2d2 partial illustration"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elian"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Snake Sword"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4693.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

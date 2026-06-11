@@ -1,0 +1,70 @@
+{
+  "id": 10786,
+  "name": "Card #10786",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10786.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blacky umbreon japanese pokemon get card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "earl grey a la creme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10786.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 4828,
+  "name": "Card #4828",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4828.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "toriyama character sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red gemstone corner"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "center",
+      "value": "anime house street"
+    },
+    {
+      "trait_type": "left",
+      "value": "nidoking"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragonite rider"
+    },
+    {
+      "trait_type": "top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mifella mcdonalds meme"
+    },
+    {
+      "trait_type": "hero",
+      "value": "darkrai art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - PR 015"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4828.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

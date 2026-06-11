@@ -1,0 +1,54 @@
+{
+  "id": 4973,
+  "name": "Card #4973",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4973.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepshow scroll guy"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "team_aquas_manectric_4_95_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Revival of the Dead"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4973.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

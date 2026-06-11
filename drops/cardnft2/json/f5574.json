@@ -1,0 +1,106 @@
+{
+  "id": 5574,
+  "name": "Card #5574",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5574.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - purple void - moon"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 13"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "035 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 48"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "crucifix city"
+    },
+    {
+      "trait_type": "top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chikorita - 2/25"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5574.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

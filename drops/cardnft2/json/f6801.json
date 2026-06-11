@@ -1,0 +1,70 @@
+{
+  "id": 6801,
+  "name": "Card #6801",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6801.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "deidara seated - card0401 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hyper real crucifella"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ceiling light bulb"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal necklace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tentomon - St-07"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6801.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

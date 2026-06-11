@@ -1,0 +1,50 @@
+{
+  "id": 6503,
+  "name": "Card #6503",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6503.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "kankuro puppet - card0607 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Water Energy - 102/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6503.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

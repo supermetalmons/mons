@@ -1,0 +1,90 @@
+{
+  "id": 4405,
+  "name": "Card #4405",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4405.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "018 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "left",
+      "value": "valve baby"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "vampire anime character"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gulf war 2"
+    },
+    {
+      "trait_type": "right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeletal alien figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Fordite and Detroit agate"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Venonat - 81/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4405.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 4178,
+  "name": "Card #4178",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4178.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "hero",
+      "value": "bane with tubes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "garlic jr fig"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bronzong - 33/99"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4178.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

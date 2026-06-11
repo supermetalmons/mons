@@ -1,0 +1,66 @@
+{
+  "id": 2733,
+  "name": "Card #2733",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2733.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke curse mark - trenton"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "my son thinks the moon is a monster"
+    },
+    {
+      "trait_type": "left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fossil Egg - 72/75"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2733.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

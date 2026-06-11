@@ -1,0 +1,62 @@
+{
+  "id": 5198,
+  "name": "Card #5198",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5198.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red block"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokemon calendar sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "tcg"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mudkip - 32/168"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5198.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

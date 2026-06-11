@@ -1,0 +1,138 @@
+{
+  "id": 10836,
+  "name": "Card #10836",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10836.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Toy Store Anime Aisle Background - card1673-24"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 calm teal violet clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "071 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "tandemaus mousehold pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "046 purple peach glow extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blue mana - claw"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shuppet - card2615 black halftone transparent"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_28"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_27"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_30"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_04"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_23"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_20"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "shuppet - card2615 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10836.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

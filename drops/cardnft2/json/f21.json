@@ -2,7 +2,7 @@
   "id": 21,
   "name": "Card #21",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_21.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0021.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,44 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Raikou - 32/73"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Chiaotzu"
+    },
+    {
+      "trait_type": "hero",
+      "value": "striped insect creature"
+    },
+    {
+      "trait_type": "center",
+      "value": "robot man burning"
+    },
+    {
+      "trait_type": "top left",
+      "value": "scapegoat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chain link fence"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_21.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0021.webp",
         "type": "image/webp"
       }
     ],

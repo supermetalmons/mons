@@ -1,0 +1,102 @@
+{
+  "id": 7598,
+  "name": "Card #7598",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7598.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Illuminated Cathedral Nave Background - card1673-44"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "giger holding alien head"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "croconaw"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "two penguins low poly"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "They have slept in the forest too long"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "ugly"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Swinub Neo Genesis - card2720 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7598.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

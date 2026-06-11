@@ -1,0 +1,86 @@
+{
+  "id": 8347,
+  "name": "Card #8347",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8347.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "noob tube"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Team Rocket Mewtwo - IMG_3273 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8347.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

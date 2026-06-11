@@ -1,0 +1,94 @@
+{
+  "id": 5155,
+  "name": "Card #5155",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5155.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "watercolor block"
+    },
+    {
+      "trait_type": "left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "hero",
+      "value": "trunks"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frankenstein wrightson the modern prometheus"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga shocked faces"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "zack fair sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow cat hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "right",
+      "value": "billie eilish and murakami"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "top right",
+      "value": "mesprit"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lopunny - 117/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5155.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "id": 3710,
+  "name": "Card #3710",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3710.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby bat crucifix drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "noise mc skin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magneton - 35/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3710.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

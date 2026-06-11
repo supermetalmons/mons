@@ -2,7 +2,7 @@
   "id": 100,
   "name": "Card #100",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_100.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0100.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,84 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Summoning Jutsu: Rashomon - 240"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "center",
+      "value": "green red pastel"
+    },
+    {
+      "trait_type": "top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepshow scroll guy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "brigandine"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sai kyo kanji"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gray safe"
+    },
+    {
+      "trait_type": "right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "center",
+      "value": "joan of arc 1900"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "center",
+      "value": "woman engraving"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_100.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0100.webp",
         "type": "image/webp"
       }
     ],

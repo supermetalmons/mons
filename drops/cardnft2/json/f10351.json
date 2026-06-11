@@ -1,0 +1,114 @@
+{
+  "id": 10351,
+  "name": "Card #10351",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10351.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif 2 regarded"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "001 rainbow prism dawn extra holo capsule"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green radar screen"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "084 cyan magenta gold extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke_uchiha_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasuke_uchiha_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "toon rabbit manga"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "d-terminal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red nabler purse"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10351.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

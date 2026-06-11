@@ -1,0 +1,94 @@
+{
+  "id": 10367,
+  "name": "Card #10367",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10367.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "jesus astrological chart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "snivy - card0461 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "snivy - card0461 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "shot crosshair"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10367.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

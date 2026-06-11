@@ -1,0 +1,70 @@
+{
+  "id": 6893,
+  "name": "Card #6893",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6893.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red ring of death"
+    },
+    {
+      "trait_type": "center",
+      "value": "frankenstein ship"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cyan magenta scribble page"
+    },
+    {
+      "trait_type": "right",
+      "value": "ashita no joe label"
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Misty's Wrath - 114/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6893.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

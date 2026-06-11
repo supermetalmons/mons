@@ -1,0 +1,102 @@
+{
+  "id": 10452,
+  "name": "Card #10452",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10452.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "hint shop sign"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 16"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "shinji bacon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "090 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "spinda_48_101_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "spinda_48_101_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "severed head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10452.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

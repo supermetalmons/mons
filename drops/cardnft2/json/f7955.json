@@ -1,0 +1,98 @@
+{
+  "id": 7955,
+  "name": "Card #7955",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7955.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "billie eilish and murakami"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "without twin with twin"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "shot crosshair"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 blood orange magenta holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 blood orange magenta holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Naruto Uzumaki - card0598 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7955.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

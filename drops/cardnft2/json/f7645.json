@@ -1,0 +1,90 @@
+{
+  "id": 7645,
+  "name": "Card #7645",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7645.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "toxic_slime_sunset_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "chainsawman manga"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anime angel warrior"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "motorcycle in traffic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Salamander"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sine Cerere et Baccho friget Venus engraving"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Scyther Card - IMG_3556 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Doomed bando"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7645.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

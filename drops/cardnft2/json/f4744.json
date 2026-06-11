@@ -1,0 +1,102 @@
+{
+  "id": 4744,
+  "name": "Card #4744",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4744.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "042 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixel dragon embroidery"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "fighter jet girl"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "center",
+      "value": "sasuke drifella black"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - PR us001"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4744.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

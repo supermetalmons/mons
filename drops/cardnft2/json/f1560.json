@@ -1,0 +1,50 @@
+{
+  "id": 1560,
+  "name": "Card #1560",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1560.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Island - 234/249"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "top right",
+      "value": "baby angel oil"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1560.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "id": 7826,
+  "name": "Card #7826",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7826.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ultimate muscle logo"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Chrollo Lucilfer"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Alien Baltan"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Kankuro black mask"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu ash hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "26 calm teal violet clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Shining Mew - IMG_3493 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7826.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

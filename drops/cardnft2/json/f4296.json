@@ -1,0 +1,70 @@
+{
+  "id": 4296,
+  "name": "Card #4296",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4296.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke curse mark - trenton"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragonite rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ceiling light bulb"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hr giger alien sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark circle misty hand"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bowser"
+    },
+    {
+      "trait_type": "right",
+      "value": "alien skeleton sculpture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Professor Oak - 88/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4296.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 10638,
+  "name": "Card #10638",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10638.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacred heart lace card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Itachi Uchiha - card0383 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10638.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

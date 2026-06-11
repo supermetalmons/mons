@@ -1,0 +1,66 @@
+{
+  "id": 4209,
+  "name": "Card #4209",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4209.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "cave story tiles"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi Suigetsu"
+    },
+    {
+      "trait_type": "hero",
+      "value": "manga action scene 2"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 1"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "babyspiky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Makuhita - 67/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4209.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

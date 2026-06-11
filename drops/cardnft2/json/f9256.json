@@ -1,0 +1,62 @@
+{
+  "id": 9256,
+  "name": "Card #9256",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9256.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red - blood drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "10 lava violet ember holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese_kingdra_no_230_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9256.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

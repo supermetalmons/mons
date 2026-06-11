@@ -1,0 +1,70 @@
+{
+  "id": 2674,
+  "name": "Card #2674",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2674.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "budokai trunks future"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "moai statue"
+    },
+    {
+      "trait_type": "center",
+      "value": "teddy bear soul"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "great balls of fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wild cat"
+    },
+    {
+      "trait_type": "right",
+      "value": "smug ash meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "hero",
+      "value": "i wish i was in a cabin with my hot wife"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Electrode - 34/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2674.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

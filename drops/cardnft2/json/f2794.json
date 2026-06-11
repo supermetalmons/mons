@@ -1,0 +1,86 @@
+{
+  "id": 2794,
+  "name": "Card #2794",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2794.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "that must hurt kankuro and temari"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small fish"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokeball chain pendant"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robot skeleton warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pog face"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "greek vase warriors"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "orange knit toy sonic youth"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wartortle - 42/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2794.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

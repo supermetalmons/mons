@@ -1,0 +1,74 @@
+{
+  "id": 8248,
+  "name": "Card #8248",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8248.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "fantasy_cloaked_figures_waterfall"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "onigiri plate"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Caterpie Neo Discovery - card1661 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8248.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

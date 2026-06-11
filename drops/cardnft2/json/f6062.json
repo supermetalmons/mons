@@ -1,0 +1,74 @@
+{
+  "id": 6062,
+  "name": "Card #6062",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6062.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "medieval figures and symbols"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "robot ashley wood"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "bruce connor inkblot"
+    },
+    {
+      "trait_type": "right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime helmet gunman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ultra Ball - 102/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6062.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 4171,
+  "name": "Card #4171",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4171.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "killua spider hxh"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "077 cobalt pink sunset extra holo rectangle"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow cat hologram"
+    },
+    {
+      "trait_type": "left",
+      "value": "precious moments wedding"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Expert Belt - 87/99"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4171.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

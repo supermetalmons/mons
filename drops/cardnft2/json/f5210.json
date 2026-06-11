@@ -1,0 +1,58 @@
+{
+  "id": 5210,
+  "name": "Card #5210",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5210.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black red blue paint smear"
+    },
+    {
+      "trait_type": "center",
+      "value": "dratini neck pillow"
+    },
+    {
+      "trait_type": "left",
+      "value": "emmaciated angel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Manectric - 25/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5210.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

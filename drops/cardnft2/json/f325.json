@@ -1,0 +1,50 @@
+{
+  "id": 325,
+  "name": "Card #325",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0325.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Aggron VMAX - 097/172"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeleton figure with flowers"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "right",
+      "value": "ashita no joe label"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0325.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

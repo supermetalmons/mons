@@ -1,0 +1,82 @@
+{
+  "id": 8516,
+  "name": "Card #8516",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8516.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Winter Tree Village Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "horror pikachu"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "porygon gameboy corner"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "orange knit toy sonic youth"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "my son thinks the moon is a monster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "galarian_perrserker_sv086_sv122_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8516.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

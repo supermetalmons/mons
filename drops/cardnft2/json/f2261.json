@@ -1,0 +1,58 @@
+{
+  "id": 2261,
+  "name": "Card #2261",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2261.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "hand holding star engraving"
+    },
+    {
+      "trait_type": "left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "hero",
+      "value": "medieval figures carrying bundles"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bill's Teleporter - 91/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2261.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 7660,
+  "name": "Card #7660",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7660.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_magenta_cyan_gold_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "gynoug"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "A Dead Trench Sentry"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "infernape electivire battle"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "miyazaki birds"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "sacred hearts bw"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Milotic ex - IMG_3428 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7660.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

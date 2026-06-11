@@ -1,0 +1,58 @@
+{
+  "id": 7138,
+  "name": "Card #7138",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7138.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "ammo counter hud"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chain link fence"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese dragonite in clouds mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7138.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

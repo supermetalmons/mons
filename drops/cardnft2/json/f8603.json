@@ -1,0 +1,74 @@
+{
+  "id": 8603,
+  "name": "Card #8603",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8603.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Angel Cloud Rococo Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "homunculus in jar"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "chinese banknote corner"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kirby fusion"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "yugioh card swirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Jungle - card1634 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8603.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

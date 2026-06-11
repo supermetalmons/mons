@@ -1,0 +1,66 @@
+{
+  "id": 4006,
+  "name": "Card #4006",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4006.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - violet cyan - ankh"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "right",
+      "value": "pistol branch"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue clouds night sky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Full Heal - 93/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4006.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 2070,
+  "name": "Card #2070",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2070.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "top center",
+      "value": "speech bubble rethinking"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "orange purple wave lines"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Smeargle - 123/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2070.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

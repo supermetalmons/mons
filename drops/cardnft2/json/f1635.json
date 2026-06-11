@@ -1,0 +1,54 @@
+{
+  "id": 1635,
+  "name": "Card #1635",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1635.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Oddish - 58/64"
+    },
+    {
+      "trait_type": "top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "parappa the rapper cooking"
+    },
+    {
+      "trait_type": "center",
+      "value": "misa black"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red apples row"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ghost in the shell fight scene"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1635.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

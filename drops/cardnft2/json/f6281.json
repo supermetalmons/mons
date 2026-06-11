@@ -1,0 +1,50 @@
+{
+  "id": 6281,
+  "name": "Card #6281",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6281.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Silcoon - 43/109"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime character with spikes"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Real human intelligence includes intuitive subconscious faculties and a capacity for freedom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6281.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

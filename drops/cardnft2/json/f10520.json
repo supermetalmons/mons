@@ -1,0 +1,54 @@
+{
+  "id": 10520,
+  "name": "Card #10520",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10520.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "buizel"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "charizard gx - card2453 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "charizard gx - card2453 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "drain dratini theology"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10520.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": 10030,
+  "name": "Card #10030",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10030.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Dark Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "clay figures tea party"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "godzilla blue glow"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "furry star wars creature with cup"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "023 emerald violet dream extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "11 gentle pearl clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - dark rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "rescue_rabbit_yugioh_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "rescue_rabbit_yugioh_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10030.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

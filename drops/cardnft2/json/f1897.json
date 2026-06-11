@@ -1,0 +1,46 @@
+{
+  "id": 1897,
+  "name": "Card #1897",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1897.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Whismur - 80/124"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract cartoon faces"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1897.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

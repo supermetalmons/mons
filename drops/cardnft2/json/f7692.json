@@ -1,0 +1,110 @@
+{
+  "id": 7692,
+  "name": "Card #7692",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7692.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note angel biscuit - card1673-37"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anime girl red black wings"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Rebecca"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "hand holding star engraving"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif triptych sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl pin"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Marill Neo Genesis - card2538 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7692.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

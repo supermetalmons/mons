@@ -1,0 +1,62 @@
+{
+  "id": 4455,
+  "name": "Card #4455",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4455.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "silver letter e"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "music to kill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Erika's Perfume - 110/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4455.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

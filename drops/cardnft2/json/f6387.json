@@ -1,0 +1,46 @@
+{
+  "id": 6387,
+  "name": "Card #6387",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6387.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yanma - 50/115"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "goetheanum"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6387.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

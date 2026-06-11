@@ -1,0 +1,102 @@
+{
+  "id": 7954,
+  "name": "Card #7954",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7954.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Charizard Lightning Battle Background - card1673-28"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "milady nazi technology"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "frieza pose"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen honor thy father"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "chibi clay character jump"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Shock Troops Advance under Gas"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "093 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark magician clean wisp moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "089 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon Z - card2331 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7954.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

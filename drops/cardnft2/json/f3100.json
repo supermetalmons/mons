@@ -1,0 +1,46 @@
+{
+  "id": 3100,
+  "name": "Card #3100",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3100.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blaine's Charmander - 60/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3100.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

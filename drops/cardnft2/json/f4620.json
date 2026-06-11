@@ -1,0 +1,102 @@
+{
+  "id": 4620,
+  "name": "Card #4620",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4620.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black rectangle"
+    },
+    {
+      "trait_type": "top center",
+      "value": "severed head"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 20"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 09"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "096 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 32"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 17"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "002 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 38"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rubberado - 51/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4620.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

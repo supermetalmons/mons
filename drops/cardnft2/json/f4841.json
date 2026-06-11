@@ -1,0 +1,94 @@
+{
+  "id": 4841,
+  "name": "Card #4841",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4841.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-304"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - amethyst void - saturn sigil"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pokemon mystery dungeon scene"
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Rebecca"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful abstract caligraphy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "taped string"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract paint swirl"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sharingan Eye - PR US004"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4841.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

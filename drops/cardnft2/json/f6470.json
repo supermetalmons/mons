@@ -1,0 +1,54 @@
+{
+  "id": 6470,
+  "name": "Card #6470",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6470.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "green radar screen"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jirobo (State 1) - 4/0"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6470.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

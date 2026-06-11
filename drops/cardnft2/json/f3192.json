@@ -1,0 +1,58 @@
+{
+  "id": 3192,
+  "name": "Card #3192",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3192.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "slender man notes"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Glenn"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red skeletal creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Squirtle - 63/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3192.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

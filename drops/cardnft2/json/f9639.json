@@ -1,0 +1,74 @@
+{
+  "id": 9639,
+  "name": "Card #9639",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9639.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "black winged armored sd card"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "purple white pixel blur"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 32"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 fire ice split holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Gengar Neo Destiny 6 of 105 - IMG_3537 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini finger puppet figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9639.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

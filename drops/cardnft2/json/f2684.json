@@ -1,0 +1,46 @@
+{
+  "id": 2684,
+  "name": "Card #2684",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2684.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink hearts blur"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jirachi - 99/181"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2684.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

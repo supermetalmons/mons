@@ -1,0 +1,106 @@
+{
+  "id": 5528,
+  "name": "Card #5528",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5528.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen dratini"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "your imagination is stunted"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 17"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - antique gold - eye horus style"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "069 cyan magenta gold extra holo circle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "035 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - blue mana - bolt"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 20"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 46"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - bone and ruby - eye horus style"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 19"
+    },
+    {
+      "trait_type": "right",
+      "value": "bitcoins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragonite - 119/181"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5528.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

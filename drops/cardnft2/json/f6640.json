@@ -1,0 +1,74 @@
+{
+  "id": 6640,
+  "name": "Card #6640",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6640.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "hoar shade - card1573 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "left",
+      "value": "dr slump arale jeep"
+    },
+    {
+      "trait_type": "right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kneeling NEO humanoid robot"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gundam style mech card"
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dino"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Orochimaru - 4/1"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6640.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

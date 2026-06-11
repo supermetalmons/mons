@@ -1,0 +1,98 @@
+{
+  "id": 3793,
+  "name": "Card #3793",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3793.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "medieval figures and symbols"
+    },
+    {
+      "trait_type": "top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small fish"
+    },
+    {
+      "trait_type": "center",
+      "value": "wojak esoterica"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "creepy link"
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tauros - 100/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3793.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

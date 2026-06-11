@@ -1,0 +1,70 @@
+{
+  "id": 8255,
+  "name": "Card #8255",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8255.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "angry mokey"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "shot crosshair"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "entei 7 of hearts"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "parappa the rapper cooking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dragonite EX Evolutions 106 of 108 - IMG_3410 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8255.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

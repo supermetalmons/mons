@@ -1,0 +1,54 @@
+{
+  "id": 2758,
+  "name": "Card #2758",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2758.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "right",
+      "value": "orange bacon right"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "homo noosphericus bodies"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Wartortle - 46/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2758.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 9359,
+  "name": "Card #9359",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9359.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - sun cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Power Option Power Blast - IMG_3406 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9359.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

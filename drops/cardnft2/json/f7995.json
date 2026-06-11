@@ -1,0 +1,98 @@
+{
+  "id": 7995,
+  "name": "Card #7995",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7995.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drif iii chained test print"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue star light trails"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract brush strokes"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bald head"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "031 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Sangan - IMG_3543 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7995.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

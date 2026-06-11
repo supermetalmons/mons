@@ -1,0 +1,78 @@
+{
+  "id": 3340,
+  "name": "Card #3340",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3340.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "left",
+      "value": "emmaciated angel"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hope syringe figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "it s dangerous to trench alone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold shuppet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime intense stare"
+    },
+    {
+      "trait_type": "center",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Numel - 70/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3340.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

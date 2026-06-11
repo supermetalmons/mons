@@ -1,0 +1,62 @@
+{
+  "id": 7149,
+  "name": "Card #7149",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7149.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_red_kimono_gold_screen"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "jedi"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Reaper Death Seal"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Synchro Dragon - IMG_3457 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7149.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

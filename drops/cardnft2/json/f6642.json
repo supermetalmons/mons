@@ -1,0 +1,70 @@
+{
+  "id": 6642,
+  "name": "Card #6642",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6642.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "hero",
+      "value": "abstract painted humanoid figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "joker collage"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colored scribble"
+    },
+    {
+      "trait_type": "top center",
+      "value": "possi 1816"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "sasuke uchiha lightning - card0376 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magic: The Gathering Card Back"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6642.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

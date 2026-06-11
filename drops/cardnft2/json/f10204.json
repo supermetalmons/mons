@@ -1,0 +1,102 @@
+{
+  "id": 10204,
+  "name": "Card #10204",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10204.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cyan_magenta_blur_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "neopets forum"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "evil ethereum"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "004 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - runic bind"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sabrinas porygon - card1798 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3 (1)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "henteko doujin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sabrinas porygon - card1798 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10204.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

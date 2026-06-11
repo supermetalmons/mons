@@ -1,0 +1,114 @@
+{
+  "id": 4640,
+  "name": "Card #4640",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4640.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "giant spider - card4724 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - purple void - drop"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghost fleischer character"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sheep head on plate"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragon flames"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "net and yoohoo"
+    },
+    {
+      "trait_type": "left",
+      "value": "industrial stairwell"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Farnese Hercules engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu ash hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gaara of the Desert - 1327"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4640.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 8355,
+  "name": "Card #8355",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8355.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_scribble_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "blue eyes white dragon"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini Delta Species Hypnotic Gaze inverted mask"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo 2"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "003 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "051 deep teal lime extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 lava violet ember holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Power Play - card1367 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8355.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

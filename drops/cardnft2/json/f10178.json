@@ -1,0 +1,86 @@
+{
+  "id": 10178,
+  "name": "Card #10178",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10178.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "neon_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black with snowflakes"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pain"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "floating square hole"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "027 toxic sunset extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ouroboros"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "energy_switch_90_112_trainer_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "energy_switch_90_112_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10178.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

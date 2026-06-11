@@ -1,0 +1,118 @@
+{
+  "id": 10052,
+  "name": "Card #10052",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10052.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "demon bat and archangel"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gotenks majin buu battle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red rectangle black background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red blue black brushwork"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "wireframe hair"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hylics sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "akira fight scene"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "striped insect creature"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "orange pink abstract sketch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "20 black cherry glow holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "restless bones - card1499 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic chest sprite"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "restless bones - card1499 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10052.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

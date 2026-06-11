@@ -1,0 +1,114 @@
+{
+  "id": 10913,
+  "name": "Card #10913",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10913.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "sd pc art card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "071 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - crucifix cross"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black red blue paint smears"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cream block"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "spiral galaxy stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "011 fire ice split extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_27"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "under mask embryos",
+      "value": "sr_over_mask_embryos"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "pain animal path - card4734 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "pain animal path - card4734 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu ash hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10913.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

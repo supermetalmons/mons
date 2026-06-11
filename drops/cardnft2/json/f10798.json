@@ -1,0 +1,122 @@
+{
+  "id": 10798,
+  "name": "Card #10798",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10798.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dragon Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - runic bind"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "073 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_28"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_20"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "crumpled foil texture"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zodiac signs holographic"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pikachu ponyta celebi collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "starry night silhouette"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "psychedelic pocket checkerboard collage"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "018 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_08"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - ouroboros"
+    },
+    {
+      "trait_type": "under mask aura eggs",
+      "value": "sr_under_mask_aura_eggs_ordered_random"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "aron - card2467 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10798.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

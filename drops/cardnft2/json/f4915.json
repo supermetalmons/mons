@@ -1,0 +1,114 @@
+{
+  "id": 4915,
+  "name": "Card #4915",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4915.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "deity flames"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dune dark ritual scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "hero",
+      "value": "joker abstract bats"
+    },
+    {
+      "trait_type": "center",
+      "value": "bullet in teeth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kiba Inuzuka & Akamaru - 226"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4915.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

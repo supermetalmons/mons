@@ -1,0 +1,110 @@
+{
+  "id": 3759,
+  "name": "Card #3759",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3759.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gumby"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "top right",
+      "value": "garbage pail kids pack"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "left",
+      "value": "black boots"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "jew milady"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - emerald green - crucifix cross"
+    },
+    {
+      "trait_type": "right",
+      "value": "milady nazi technology"
+    },
+    {
+      "trait_type": "hero",
+      "value": "isobelle pascha kuma"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "you cant beat a man hoods drifella daze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kingler - 26/112"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3759.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

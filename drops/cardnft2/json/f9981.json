@@ -1,0 +1,114 @@
+{
+  "id": 9981,
+  "name": "Card #9981",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9981.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "world war robot fig"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - eye"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "spiked mace weapon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "fantasy battle scene"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black noise void - abstract void sigil"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "53 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 01"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "028 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "squirtle - card3399 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camerupt sprite"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "squirtle - card3399 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9981.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

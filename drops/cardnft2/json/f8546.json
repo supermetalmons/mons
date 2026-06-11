@@ -1,0 +1,86 @@
+{
+  "id": 8546,
+  "name": "Card #8546",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8546.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dragon Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cracked windows number two"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "gnome in overalls"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "price tag"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "prussian troops 1871"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Recall Trainer - card1730 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8546.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "id": 3475,
+  "name": "Card #3475",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3475.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "akira fight scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag gundam"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester boxer baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "noise mc skin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "teddiursa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tomato"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "GeGeGe no Kitaro"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "campfire"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "myst island"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 047"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3475.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": 1035,
+  "name": "Card #1035",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1035.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - 815"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga shocked faces"
+    },
+    {
+      "trait_type": "center",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1035.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

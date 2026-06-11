@@ -1,0 +1,138 @@
+{
+  "id": 10773,
+  "name": "Card #10773",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10773.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Circular Mandala Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful abstract pastel scribbles"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "parker venom paint card"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue black abstract texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "010 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "42 radiant yellow red clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "20 black cherry glow holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_28"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "ghetsis - card2937 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "ghetsis - card2937 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tech deck bean jester"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10773.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

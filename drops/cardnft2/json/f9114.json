@@ -1,0 +1,62 @@
+{
+  "id": 9114,
+  "name": "Card #9114",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9114.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Fire Landscape Background"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Pain Deva Path and Konan - IMG_3246 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "greek vase warriors"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "japanese folklore art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9114.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

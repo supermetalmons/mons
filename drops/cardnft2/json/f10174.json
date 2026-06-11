@@ -1,0 +1,78 @@
+{
+  "id": 10174,
+  "name": "Card #10174",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10174.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goku dragon riding"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "plusle - card2736 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby bat crucifix drif"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "plusle - card2736 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10174.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

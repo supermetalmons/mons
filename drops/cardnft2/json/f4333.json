@@ -1,0 +1,62 @@
+{
+  "id": 4333,
+  "name": "Card #4333",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4333.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "top right",
+      "value": "f zero logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sizzlipede - 038/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4333.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

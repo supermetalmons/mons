@@ -1,0 +1,102 @@
+{
+  "id": 4483,
+  "name": "Card #4483",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4483.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "umbreon coin"
+    },
+    {
+      "trait_type": "right",
+      "value": "grim reaper scythe"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "fella royale"
+    },
+    {
+      "trait_type": "left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lego reaper"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "025 dark blood orange extra holo capsule"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars 2"
+    },
+    {
+      "trait_type": "hero",
+      "value": "isobelle pascha kuma"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alan moore wizard"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "poke holo manga cover"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "buff pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jack frost sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cobalt cad"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kakashi Hatake - us116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4483.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

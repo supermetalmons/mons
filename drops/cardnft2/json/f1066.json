@@ -1,0 +1,58 @@
+{
+  "id": 1066,
+  "name": "Card #1066",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1066.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Team Rocket's Evil Deeds - 103/105"
+    },
+    {
+      "trait_type": "hero",
+      "value": "darkrai art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "blue winged avatar"
+    },
+    {
+      "trait_type": "right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1066.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

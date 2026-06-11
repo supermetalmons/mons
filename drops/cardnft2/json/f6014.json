@@ -1,0 +1,62 @@
+{
+  "id": 6014,
+  "name": "Card #6014",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6014.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ornate pillar heart"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kurapika chains"
+    },
+    {
+      "trait_type": "left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Quick Ball - 114/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6014.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

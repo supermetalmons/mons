@@ -1,0 +1,118 @@
+{
+  "id": 10203,
+  "name": "Card #10203",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10203.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pancake Stack Meme Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 radiant yellow red clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "29 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 35"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark industrial pipes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic chaos dark magician"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "watercolor drif reaper"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - crescent"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - eye horus style"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gyarados_ex_123_122_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gyarados_ex_123_122_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10203.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

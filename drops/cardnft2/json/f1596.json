@@ -1,0 +1,62 @@
+{
+  "id": 1596,
+  "name": "Card #1596",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1596.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Metapod - 81/130"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow abstract computer painting"
+    },
+    {
+      "trait_type": "hero",
+      "value": "angel amano art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "nude frazetta girl"
+    },
+    {
+      "trait_type": "right",
+      "value": "Injection Fairy Lily"
+    },
+    {
+      "trait_type": "top right",
+      "value": "eye engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mercy text"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "record player sculpture"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1596.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

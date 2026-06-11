@@ -1,0 +1,90 @@
+{
+  "id": 8211,
+  "name": "Card #8211",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8211.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "charizard x blue flames"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yellow robot toy"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sublime"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "004 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Giovannis Machoke Gym Challenge - card3970 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8211.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

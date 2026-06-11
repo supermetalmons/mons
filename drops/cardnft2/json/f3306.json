@@ -1,0 +1,66 @@
+{
+  "id": 3306,
+  "name": "Card #3306",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3306.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "wireframe revolver"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Meteor B Dragon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dialga - 6/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3306.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

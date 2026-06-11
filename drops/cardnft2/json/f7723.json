@@ -1,0 +1,82 @@
+{
+  "id": 7723,
+  "name": "Card #7723",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7723.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_scribble_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink dinosaur bed"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark magician crucifixion"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Blackwing Armed Wing"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Beast of Talwar - IMG_3469 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7723.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

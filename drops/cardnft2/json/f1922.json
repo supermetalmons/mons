@@ -1,0 +1,58 @@
+{
+  "id": 1922,
+  "name": "Card #1922",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1922.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tauros - 47/64"
+    },
+    {
+      "trait_type": "left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hamster and pointing finger"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon breeders dragonite"
+    },
+    {
+      "trait_type": "right",
+      "value": "floating square hole"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1922.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

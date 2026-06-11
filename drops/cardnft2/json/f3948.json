@@ -1,0 +1,98 @@
+{
+  "id": 3948,
+  "name": "Card #3948",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3948.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "airbrush spikes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "retro tv cabinet"
+    },
+    {
+      "trait_type": "center",
+      "value": "evangelion kabbalah tree"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel sculpture head"
+    },
+    {
+      "trait_type": "left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "top center",
+      "value": "warning text black background"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Manectric - 38/107"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3948.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

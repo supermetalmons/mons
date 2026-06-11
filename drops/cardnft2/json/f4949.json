@@ -1,0 +1,62 @@
+{
+  "id": 4949,
+  "name": "Card #4949",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4949.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "093 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i m sorry i can t"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "right",
+      "value": "teardrop embryo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Curse Mark Jutsu"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4949.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

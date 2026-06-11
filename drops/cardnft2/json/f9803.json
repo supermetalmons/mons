@@ -1,0 +1,62 @@
+{
+  "id": 9803,
+  "name": "Card #9803",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9803.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue mountain waterfall painting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green burst "
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "hes choosing texas i can tell by the way"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card1014 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9803.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

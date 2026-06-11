@@ -1,0 +1,62 @@
+{
+  "id": 3788,
+  "name": "Card #3788",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3788.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - orange fire - eye"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "skulls barthel"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pegasus toon yugioh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lopunny - 85/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3788.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

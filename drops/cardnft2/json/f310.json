@@ -1,0 +1,58 @@
+{
+  "id": 310,
+  "name": "Card #310",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0310.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lapras ex - 032/142"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hellboy zombie sculpture bust"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "center",
+      "value": "green night vision alien cave"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0310.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "id": 3715,
+  "name": "Card #3715",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3715.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "slime elasto blast"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Golden Girl frazetta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ff wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mudkip"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Slowbro - 49/145"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3715.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

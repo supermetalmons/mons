@@ -1,0 +1,78 @@
+{
+  "id": 5263,
+  "name": "Card #5263",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5263.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella general with toast"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Cupsy☆Yummy"
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddy reaper"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "brigandine"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Egghead Brook"
+    },
+    {
+      "trait_type": "left",
+      "value": "black white industrial scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "media literacy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white px crucidrif"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red rectangle black background"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Muscle Band - 121/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5263.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

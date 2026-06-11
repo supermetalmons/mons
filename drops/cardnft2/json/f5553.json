@@ -1,0 +1,70 @@
+{
+  "id": 5553,
+  "name": "Card #5553",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5553.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "pichu - card3398 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "mega dragonite ex sar"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "36 fire ice split holo triangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel statue illustration"
+    },
+    {
+      "trait_type": "right",
+      "value": "Berserker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Heatmor - 034/192"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5553.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": 6050,
+  "name": "Card #6050",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6050.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shadow wizar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shinx - 060/192"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6050.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

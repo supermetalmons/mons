@@ -1,0 +1,82 @@
+{
+  "id": 8464,
+  "name": "Card #8464",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8464.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "striped insect creature"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "klimt the park 1910"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "frazetta horse girl"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif triptych sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowpoly knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Milotic ex - IMG_3428 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8464.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 6170,
+  "name": "Card #6170",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6170.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Water Style: Water Dragon Jutsu - us023"
+    },
+    {
+      "trait_type": "center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pink stroke"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6170.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

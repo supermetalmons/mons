@@ -1,0 +1,66 @@
+{
+  "id": 4947,
+  "name": "Card #4947",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4947.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - bone and ruby - spiral"
+    },
+    {
+      "trait_type": "top center",
+      "value": "possi 1816"
+    },
+    {
+      "trait_type": "center",
+      "value": "blox drifella statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - PR 074"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4947.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 4809,
+  "name": "Card #4809",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4809.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude girls on hand frazetta"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract figure sketch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark magician knight"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Gotenks ghost trio"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "light_azumarill_neo_destiny_13_105_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goat face heisenberg pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakurai trickster god"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bosch biscuit yin yang"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hinata Hyuga (Childhood) - 1489"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4809.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 4155,
+  "name": "Card #4155",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4155.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gynoug"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "batman skyline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pow! Hand Extension - 85/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4155.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

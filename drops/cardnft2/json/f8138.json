@@ -1,0 +1,86 @@
+{
+  "id": 8138,
+  "name": "Card #8138",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8138.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note Drifella - card1673-38"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mega man"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark mysterious figure"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragonite expedition mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8138.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

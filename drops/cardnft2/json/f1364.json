@@ -1,0 +1,106 @@
+{
+  "id": 1364,
+  "name": "Card #1364",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1364.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "top right",
+      "value": "1001 WAYS TO LIVE WITHOUT WORKING"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "physics of impulse power"
+    },
+    {
+      "trait_type": "center",
+      "value": "lillith rise"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lillith rise"
+    },
+    {
+      "trait_type": "right",
+      "value": "hokusai bamboo print"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "summoned skull figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakurai trickster god"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dratini - 116/181"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1364.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

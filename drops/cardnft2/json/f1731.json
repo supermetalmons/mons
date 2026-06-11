@@ -1,0 +1,54 @@
+{
+  "id": 1731,
+  "name": "Card #1731",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1731.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Boss's Way - 73/82"
+    },
+    {
+      "trait_type": "top right",
+      "value": "piranha plant head"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "zack fair sketch"
+    },
+    {
+      "trait_type": "right",
+      "value": "jonny comic panel"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "center",
+      "value": "sasuke drifella black"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1731.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

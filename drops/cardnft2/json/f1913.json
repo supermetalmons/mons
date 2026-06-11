@@ -1,0 +1,62 @@
+{
+  "id": 1913,
+  "name": "Card #1913",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1913.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giovanni's Nidoran ♂ - 76/132"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold flake amano 2"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "killua and gon sketch black"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sheep head on plate"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dai shogi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "top left",
+      "value": "yugi meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1913.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 8124,
+  "name": "Card #8124",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8124.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "billie eilish and murakami"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "wild cat"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "Raizen"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "abstract demon collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Wartortle Team Rocket - card1650 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8124.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

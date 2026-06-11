@@ -1,0 +1,78 @@
+{
+  "id": 5394,
+  "name": "Card #5394",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5394.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "desprez archway"
+    },
+    {
+      "trait_type": "left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pocket monsters logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "red starry portal"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime intense stare"
+    },
+    {
+      "trait_type": "right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "1000-Armed Avalokiteshvara"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "absol"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wurmple - 70/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5394.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

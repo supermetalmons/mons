@@ -1,0 +1,66 @@
+{
+  "id": 9686,
+  "name": "Card #9686",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9686.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_full_spectrum_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "46 psychic pink blue clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "076 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini rocket returns inverted mask variant 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "drifella middle finger emoji"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9686.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

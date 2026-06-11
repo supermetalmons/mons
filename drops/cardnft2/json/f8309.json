@@ -1,0 +1,86 @@
+{
+  "id": 8309,
+  "name": "Card #8309",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8309.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Volcano Fire Sky Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "paint swatches"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "happy mew playe date vignette"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anna karina"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "offense skulls badge"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smeargle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "d-terminal"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Uchiha Mangekyo inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8309.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

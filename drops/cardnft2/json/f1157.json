@@ -1,0 +1,58 @@
+{
+  "id": 1157,
+  "name": "Card #1157",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1157.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rattata - 61/102"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue tree pattern"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tree of death frazetta"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1157.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

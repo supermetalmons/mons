@@ -1,0 +1,90 @@
+{
+  "id": 5607,
+  "name": "Card #5607",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5607.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "wojak esoterica"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "syrup jug"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hiei yu yu hakusho"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario aura sphere"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white rat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyrus - 120/156"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5607.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

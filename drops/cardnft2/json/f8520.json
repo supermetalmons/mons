@@ -1,0 +1,46 @@
+{
+  "id": 8520,
+  "name": "Card #8520",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8520.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Jungle - card1634 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8520.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

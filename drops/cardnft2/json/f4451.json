@@ -1,0 +1,94 @@
+{
+  "id": 4451,
+  "name": "Card #4451",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4451.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "shocked anime character"
+    },
+    {
+      "trait_type": "left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "order of free gardeners"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - amethyst void - lotus"
+    },
+    {
+      "trait_type": "top right",
+      "value": "goodra anime face"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "3d line digimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bidoof - 91/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4451.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

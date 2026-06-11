@@ -1,0 +1,86 @@
+{
+  "id": 10386,
+  "name": "Card #10386",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10386.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient poison green lagoon sunset blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rpg battle menu"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "stock market will collapse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "manga action scene 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark claw - card2946 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dark claw - card2946 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "Caveman Cutout"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10386.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

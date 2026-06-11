@@ -1,0 +1,66 @@
+{
+  "id": 7124,
+  "name": "Card #7124",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7124.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "toon world monsters"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Nao Tsukiji"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Cell the Master - card0769 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tech deck bean jester"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7124.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

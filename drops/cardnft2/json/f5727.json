@@ -1,0 +1,78 @@
+{
+  "id": 5727,
+  "name": "Card #5727",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5727.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "dark_japanese_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "right",
+      "value": "skeleton ghost green flames"
+    },
+    {
+      "trait_type": "hero",
+      "value": "bulma akira toriyama"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "neco arc tank"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "collectible city"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Combined Transformation - us031"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5727.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

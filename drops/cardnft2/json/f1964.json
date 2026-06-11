@@ -1,0 +1,62 @@
+{
+  "id": 1964,
+  "name": "Card #1964",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1964.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Staravia - Majestic Dawn 47/100"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cow and bird toy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen negative"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi bomberman fighter"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract horse riders sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ar nintendo ds cartridge"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bad apple"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1964.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

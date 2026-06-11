@@ -1,0 +1,50 @@
+{
+  "id": 5535,
+  "name": "Card #5535",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5535.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-316"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-236"
+    },
+    {
+      "trait_type": "top right",
+      "value": "shinigami"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Aqua Energy - 86/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5535.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

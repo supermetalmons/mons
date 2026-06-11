@@ -1,0 +1,94 @@
+{
+  "id": 10232,
+  "name": "Card #10232",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10232.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "enchanted swamp frazetta"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "jew milady"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonite anime face"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green night vision alien cave"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "015 gold plum teal extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 red soft holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - saturn sigil"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "munchlax_68_100_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "munchlax_68_100_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10232.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "id": 7858,
+  "name": "Card #7858",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7858.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cyan_magenta_blur_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "robot ashley wood"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon vampire face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "057 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Base Set - card1790 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7858.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "id": 5559,
+  "name": "Card #5559",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5559.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 09"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 19"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "008 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "035 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holo card"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "lego blocks wojak"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "seasons and elements"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella middle finger emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hatched dragon egg"
+    },
+    {
+      "trait_type": "base card",
+      "value": "シードラ - No.117"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5559.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

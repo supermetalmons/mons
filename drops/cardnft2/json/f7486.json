@@ -1,0 +1,90 @@
+{
+  "id": 7486,
+  "name": "Card #7486",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7486.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "drifella 1 trust the plan black"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rainbow wheel"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shredder tv screen"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Snowman Eater - IMG_3462 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7486.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

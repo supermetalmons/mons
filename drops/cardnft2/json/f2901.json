@@ -1,0 +1,78 @@
+{
+  "id": 2901,
+  "name": "Card #2901",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2901.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chapel"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy brawl painting"
+    },
+    {
+      "trait_type": "center",
+      "value": "enderman gathering"
+    },
+    {
+      "trait_type": "left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "weeping angel statue"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "prayer card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's Suggestion - 154/181"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2901.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

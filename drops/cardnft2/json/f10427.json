@@ -1,0 +1,126 @@
+{
+  "id": 10427,
+  "name": "Card #10427",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10427.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Samurai Battle Painting Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "sonic silhouette corner"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "hockey mask"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "crumpled foil texture"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Abel Nightroad"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "cathedral ruins"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - crescent"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "drampa - card4265 black halftone transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "drampa - card4265 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10427.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

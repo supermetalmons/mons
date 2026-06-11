@@ -1,0 +1,66 @@
+{
+  "id": 3288,
+  "name": "Card #3288",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3288.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon ghost pin"
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eelektross - Team Plasma 33/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3288.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

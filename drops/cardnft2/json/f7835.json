@@ -1,0 +1,90 @@
+{
+  "id": 7835,
+  "name": "Card #7835",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7835.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Itachi Uchiha black mask"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "pokeball chain pendant"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "green dummy"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "horror pikachu"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "watercolor drif wound"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pocket monsters dragonite black"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kiryu text box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Flareon Gold Star inverted mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7835.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

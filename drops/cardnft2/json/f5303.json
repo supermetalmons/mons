@@ -1,0 +1,74 @@
+{
+  "id": 5303,
+  "name": "Card #5303",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5303.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "dark hallway creature"
+    },
+    {
+      "trait_type": "top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "right",
+      "value": "def jam logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black starry pattern"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract cartoon faces"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "collectible city"
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star burst"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clauncher - 33/114"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5303.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

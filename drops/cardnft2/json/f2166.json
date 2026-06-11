@@ -1,0 +1,54 @@
+{
+  "id": 2166,
+  "name": "Card #2166",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2166.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jolteon - 029/131"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2166.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 6016,
+  "name": "Card #6016",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6016.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu - trenton"
+    },
+    {
+      "trait_type": "top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Golett - 065/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6016.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

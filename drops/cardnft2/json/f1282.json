@@ -1,0 +1,50 @@
+{
+  "id": 1282,
+  "name": "Card #1282",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1282.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mountain"
+    },
+    {
+      "trait_type": "center",
+      "value": "drif bodies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1282.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

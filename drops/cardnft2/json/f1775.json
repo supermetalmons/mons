@@ -1,0 +1,70 @@
+{
+  "id": 1775,
+  "name": "Card #1775",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1775.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Aipom - 41/64"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel outline star drif"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "crucidrifella film"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "iceberg under dark sky"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "basketball motion blur"
+    },
+    {
+      "trait_type": "right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1775.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

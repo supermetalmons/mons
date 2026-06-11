@@ -1,0 +1,74 @@
+{
+  "id": 10753,
+  "name": "Card #10753",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10753.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "froslass - card3433 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "froslass - card3433 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10753.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

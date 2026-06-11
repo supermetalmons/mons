@@ -1,0 +1,114 @@
+{
+  "id": 7708,
+  "name": "Card #7708",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7708.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Fechin Impressionist Woman Portrait Background - card1673-54"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "pirate skeleton manga panel"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "metalgreymon card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ghibli drif"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikki heads"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pimp 830"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Charizard Expedition - IMG_3277 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7708.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

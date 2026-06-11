@@ -1,0 +1,94 @@
+{
+  "id": 7813,
+  "name": "Card #7813",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7813.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_violet_aqua_coral_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dinosaur skeleton collage"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "star sygil"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "devilman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magmar - card5067 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7813.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

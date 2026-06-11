@@ -1,0 +1,54 @@
+{
+  "id": 599,
+  "name": "Card #599",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0599.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 1017 TP2"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Ghost of Akugenta Taking Revenge on Nanba at the Nunobiki Waterfall woodblock negative"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Meier Link"
+    },
+    {
+      "trait_type": "left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0599.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

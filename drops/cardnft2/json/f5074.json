@@ -1,0 +1,82 @@
+{
+  "id": 5074,
+  "name": "Card #5074",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5074.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "shin chan group"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "your imagination is stunted"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella with yoshis"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork"
+    },
+    {
+      "trait_type": "hero",
+      "value": "blonde warrior mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "top center",
+      "value": "vega 1850"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "syaoran doll"
+    },
+    {
+      "trait_type": "right",
+      "value": "wplace st. paisios"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Salandit - 25/156"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5074.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

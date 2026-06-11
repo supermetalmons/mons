@@ -1,0 +1,78 @@
+{
+  "id": 8207,
+  "name": "Card #8207",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8207.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "ornate pillar heart"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pikachu wooloo sleep"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gastly Fossil - card1703 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8207.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

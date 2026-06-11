@@ -1,0 +1,74 @@
+{
+  "id": 9137,
+  "name": "Card #9137",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9137.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Pink Impressionist Flower Field Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "greek vase warriors"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ghibli drif"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drif with midlady retardio pillow"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 red soft holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 06"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Umbreon - IMG_3249 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9137.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

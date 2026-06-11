@@ -1,0 +1,102 @@
+{
+  "id": 8973,
+  "name": "Card #8973",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8973.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Fire Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "bane with tubes"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen negative"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "springfield nuclear plant"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "snake arm manga panel"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "turtle gan"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "3 banknote corner"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Illustrator Pikachu inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8973.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

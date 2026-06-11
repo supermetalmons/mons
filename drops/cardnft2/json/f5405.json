@@ -1,0 +1,86 @@
+{
+  "id": 5405,
+  "name": "Card #5405",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5405.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "top right",
+      "value": "crystallization"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "you ever just mint an nft"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Natu - 59/75"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5405.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

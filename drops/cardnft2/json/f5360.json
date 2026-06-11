@@ -1,0 +1,74 @@
+{
+  "id": 5360,
+  "name": "Card #5360",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5360.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "van gogh postman cutout"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark creature chains"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude girls on hand frazetta"
+    },
+    {
+      "trait_type": "top right",
+      "value": "baby angel oil"
+    },
+    {
+      "trait_type": "left",
+      "value": "jiraya"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "vampire arale"
+    },
+    {
+      "trait_type": "top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crown of thorns gem"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Murkrow - 90/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5360.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 10150,
+  "name": "Card #10150",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10150.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_full_spectrum_dusk_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 blood orange magenta holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - dark rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "angelic layer"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black red blue paint smear"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "vorse_raider_yugioh_st_05_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "vorse_raider_yugioh_st_05_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10150.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

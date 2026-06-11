@@ -1,0 +1,50 @@
+{
+  "id": 7350,
+  "name": "Card #7350",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7350.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Espeon - IMG_3279 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7350.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

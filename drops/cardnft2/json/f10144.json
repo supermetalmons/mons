@@ -1,0 +1,114 @@
+{
+  "id": 10144,
+  "name": "Card #10144",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10144.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Concert Crowd Silhouette Background - card1673-30"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi character speech bubble"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skeleton relief sculpture"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black starry pattern"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dripping purple knife"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "manga temple"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "tcg"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "072 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kiba_inuzuka_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mifella emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "kiba_inuzuka_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10144.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

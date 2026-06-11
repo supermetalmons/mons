@@ -1,0 +1,58 @@
+{
+  "id": 7042,
+  "name": "Card #7042",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7042.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Forest Water Lilies Background - card1673-7"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "samurai crouching sword"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "judy garland graphite drawing"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Flareon Jungle 19 of 64 - card0111 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7042.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

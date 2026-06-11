@@ -2,7 +2,7 @@
   "id": 187,
   "name": "Card #187",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_187.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0187.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,36 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shin - 2/2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "weeping angel statue"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "green slime face"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mazoku yusuke sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_187.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0187.webp",
         "type": "image/webp"
       }
     ],

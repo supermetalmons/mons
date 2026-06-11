@@ -1,0 +1,106 @@
+{
+  "id": 10443,
+  "name": "Card #10443",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10443.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "world war robot fig"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "35 dark magician clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "027 toxic sunset extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 31"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 33"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "chansey - card5165 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "chansey - card5165 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "angel holo sticker"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "dark magician crucifixion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Crazy stone dancer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10443.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

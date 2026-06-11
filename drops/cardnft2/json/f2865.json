@@ -1,0 +1,70 @@
+{
+  "id": 2865,
+  "name": "Card #2865",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2865.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lucky Helmet - 77/98"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2865.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

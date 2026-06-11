@@ -1,0 +1,94 @@
+{
+  "id": 7913,
+  "name": "Card #7913",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7913.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_jungle_tiger_woman"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "manga smashing frog"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "fantasy mage illustration"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gray tiled ceiling"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 gentle pearl clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "090 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic The Gathering Mox Sapphire - card0233 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7913.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 6096,
+  "name": "Card #6096",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6096.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Meier Link"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [I] - 37/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6096.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

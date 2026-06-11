@@ -1,0 +1,78 @@
+{
+  "id": 8441,
+  "name": "Card #8441",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8441.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "St George Slaying Dragon Painting Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "veiled"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "3d cityscape"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black dragon tattoo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "unown_68_105_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8441.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

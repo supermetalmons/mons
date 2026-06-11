@@ -1,0 +1,66 @@
+{
+  "id": 2640,
+  "name": "Card #2640",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2640.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "right",
+      "value": "pistol branch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeletal alien figure"
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "un spaceship illustration"
+    },
+    {
+      "trait_type": "hero",
+      "value": "red armored cannon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Relicanth - 23/98"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2640.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

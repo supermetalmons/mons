@@ -1,0 +1,94 @@
+{
+  "id": 10172,
+  "name": "Card #10172",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10172.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "one piece snail pattern"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "taped dratini"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "circular chess board"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - saturn sigil"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 blood orange magenta holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "purple angel magic card - card1370 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman exe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "purple angel magic card - card1370 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10172.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

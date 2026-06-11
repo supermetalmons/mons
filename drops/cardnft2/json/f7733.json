@@ -1,0 +1,114 @@
+{
+  "id": 7733,
+  "name": "Card #7733",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7733.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rose crystal glaze"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "nidoking"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "magikarp splash art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "neopets icons"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "skeleton ghost green flames"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif 2 blue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Espeon - IMG_3256 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7733.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

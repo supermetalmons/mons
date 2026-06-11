@@ -1,0 +1,70 @@
+{
+  "id": 8428,
+  "name": "Card #8428",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8428.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Tibetan thangka Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "taped string"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark hallway creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Houndoom - IMG_3413 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8428.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

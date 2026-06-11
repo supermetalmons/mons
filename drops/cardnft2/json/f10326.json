@@ -1,0 +1,102 @@
+{
+  "id": 10326,
+  "name": "Card #10326",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10326.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Teraleak"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cream block"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "044 emerald violet dream extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 20"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gastly - card1600 black halftone transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gastly - card1600 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "sacrificial eunich"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Icedancer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10326.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

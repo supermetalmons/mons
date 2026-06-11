@@ -1,0 +1,86 @@
+{
+  "id": 8388,
+  "name": "Card #8388",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8388.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skeletons motorcycle 3d"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "067 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pokeball Sparkle Back - IMG_3226 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8388.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

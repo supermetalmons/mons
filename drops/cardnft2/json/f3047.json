@@ -1,0 +1,70 @@
+{
+  "id": 3047,
+  "name": "Card #3047",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3047.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark magician knight"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "homunculus engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "daily tribune, wisconsin rapids 1961"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Exeggcute - 64/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3047.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

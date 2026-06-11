@@ -1,0 +1,66 @@
+{
+  "id": 6948,
+  "name": "Card #6948",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6948.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "stacked logs corner"
+    },
+    {
+      "trait_type": "hero",
+      "value": "joker abstract bats"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black question marks"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "scream old biscuit collage"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Soldier - 1/1"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6948.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

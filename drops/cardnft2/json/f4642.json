@@ -1,0 +1,110 @@
+{
+  "id": 4642,
+  "name": "Card #4642",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4642.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "37 fire ice split holo heart"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "circular chess board"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dog knight pixel art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "warbly wash line"
+    },
+    {
+      "trait_type": "left",
+      "value": "jiraya"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime warrior green hair"
+    },
+    {
+      "trait_type": "top center",
+      "value": "speech bubble rethinking"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shadow wizar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "happened in mgs2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smeargle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Emergency Treatment 265"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4642.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

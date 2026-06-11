@@ -1,0 +1,102 @@
+{
+  "id": 10675,
+  "name": "Card #10675",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10675.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dawn"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "lego blocks wojak"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_16"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - crescent"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Porygon black mask variant 8"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10675.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

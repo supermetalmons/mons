@@ -1,0 +1,42 @@
+{
+  "id": 1086,
+  "name": "Card #1086",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1086.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mysterious Small Organization"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "queer as folk"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1086.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

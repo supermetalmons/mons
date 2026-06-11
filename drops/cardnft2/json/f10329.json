@@ -1,0 +1,106 @@
+{
+  "id": 10329,
+  "name": "Card #10329",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10329.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "wireframe hair"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chopper sitting cloud"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "plush toy with bow"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 lava violet ember holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "11 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - triskelion"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mox pearl - card0204 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "mox pearl - card0204 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "black tank silhouette"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "skeleton engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10329.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

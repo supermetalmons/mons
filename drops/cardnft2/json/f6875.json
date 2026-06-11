@@ -1,0 +1,70 @@
+{
+  "id": 6875,
+  "name": "Card #6875",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6875.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bacon girl drif iii sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "despair anubis collage"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "death dealer preliminary"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Moltres - 021/172"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6875.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

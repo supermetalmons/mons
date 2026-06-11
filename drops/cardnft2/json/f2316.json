@@ -1,0 +1,94 @@
+{
+  "id": 2316,
+  "name": "Card #2316",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2316.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu magic card"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "owls on pine branch"
+    },
+    {
+      "trait_type": "right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "yu gi oh 17 cover"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "prophet of drip"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lt. Surge's Raticate - 53/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2316.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

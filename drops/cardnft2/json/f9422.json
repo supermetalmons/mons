@@ -1,0 +1,58 @@
+{
+  "id": 9422,
+  "name": "Card #9422",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9422.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pancake Stack Meme Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "The Sudarium of Saint Veronica engraving"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "029 black cherry red extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Gengar inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9422.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

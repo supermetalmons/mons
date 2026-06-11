@@ -1,0 +1,130 @@
+{
+  "id": 8931,
+  "name": "Card #8931",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8931.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Stormy Lake Smoke Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "prayer card"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bomberman sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "junji ito frankenstein"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "itachi reaching hand sketch"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Sableye - card4468 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hell hound"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8931.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

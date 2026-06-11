@@ -1,0 +1,66 @@
+{
+  "id": 9593,
+  "name": "Card #9593",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9593.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pikachu ditto card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Vaporeon Gold Star white mask"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 psychic pink blue clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - aurora rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "porygon2 stage one - card5232 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white rat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9593.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

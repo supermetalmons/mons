@@ -1,0 +1,82 @@
+{
+  "id": 4267,
+  "name": "Card #4267",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4267.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dodonpachi black label"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "01 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "esoteric lessons steiner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zapdos - 46/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4267.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

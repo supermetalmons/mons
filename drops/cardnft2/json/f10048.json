@@ -1,0 +1,82 @@
+{
+  "id": 10048,
+  "name": "Card #10048",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10048.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract White Jar Painting Background - card1673-49"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pokerus"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragon quest monster figures"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "samurai crouching sword"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "jynx_pokemon_art_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "jynx_pokemon_art_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10048.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

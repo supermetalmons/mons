@@ -1,0 +1,66 @@
+{
+  "id": 804,
+  "name": "Card #804",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0804.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blue Breakfall Drill - 29 of 44"
+    },
+    {
+      "trait_type": "center",
+      "value": "dratini team rocket texture"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dune dark ritual scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "lord megadeath dialogue"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Professor Souichi Tomoe"
+    },
+    {
+      "trait_type": "right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Gelato Pique x Dragon Quest Draky"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0804.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

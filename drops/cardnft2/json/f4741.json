@@ -1,0 +1,110 @@
+{
+  "id": 4741,
+  "name": "Card #4741",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4741.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sharingans"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - orange fire - eye"
+    },
+    {
+      "trait_type": "top center",
+      "value": "who would win meme"
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "hero",
+      "value": "holographic armored figure"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Sudarium of Saint Veronica engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "morrigan bat wings"
+    },
+    {
+      "trait_type": "top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bacon girl drif iii sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - N-224"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4741.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

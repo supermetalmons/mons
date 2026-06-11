@@ -1,0 +1,50 @@
+{
+  "id": 9128,
+  "name": "Card #9128",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9128.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "m_charizard_ex_evolutions_101_108_card black halftone transparent"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9128.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

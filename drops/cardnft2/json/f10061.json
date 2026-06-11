@@ -1,0 +1,82 @@
+{
+  "id": 10061,
+  "name": "Card #10061",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10061.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue yugioh back"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "alien"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "phantasmal forces - card1256 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "phantasmal forces - card1256 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10061.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

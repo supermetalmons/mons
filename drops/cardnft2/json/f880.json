@@ -1,0 +1,46 @@
+{
+  "id": 880,
+  "name": "Card #880",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0880.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Piccolo's Energy Attack - 10 of 23"
+    },
+    {
+      "trait_type": "top right",
+      "value": "drif with bloody margielas"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "center",
+      "value": "digimon world card shop"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0880.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

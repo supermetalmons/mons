@@ -1,0 +1,90 @@
+{
+  "id": 4221,
+  "name": "Card #4221",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4221.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "center",
+      "value": "pointillism park scene"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kero anime drawer"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tree of death frazetta"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Aliens are demons Ai are demons Angels are demons"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "stone warrior statues"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Switch - 95/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4221.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 10413,
+  "name": "Card #10413",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10413.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "battle animation sprites"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cafe de l enfer facade"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "capitalist painter"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 49"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "hidan_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "hidan_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "Meier Link"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10413.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

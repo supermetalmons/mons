@@ -1,0 +1,70 @@
+{
+  "id": 7130,
+  "name": "Card #7130",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7130.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "purple_magenta_green_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "jester print drifella"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Squirtle Base Set 63 of 102 - card1609 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7130.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

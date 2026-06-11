@@ -1,0 +1,46 @@
+{
+  "id": 4975,
+  "name": "Card #4975",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4975.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "creepy long armed figure"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mother creep sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sakura Haruno - 1539"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4975.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": 2717,
+  "name": "Card #2717",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2717.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "shrug emoji oh well"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frankenstein wrightson the modern prometheus"
+    },
+    {
+      "trait_type": "right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu ash hat"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mercy text"
+    },
+    {
+      "trait_type": "top right",
+      "value": "f zero logo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pegasus toon yugioh"
+    },
+    {
+      "trait_type": "hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Commandramon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Feraligatr - 057/264"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2717.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

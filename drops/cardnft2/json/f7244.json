@@ -1,0 +1,58 @@
+{
+  "id": 7244,
+  "name": "Card #7244",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7244.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Hell Mirror Scene Background - card1673-43"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "chalk sketch figures"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Drunkwith Draft Beer Eyer Wink - IMG_3535 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7244.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

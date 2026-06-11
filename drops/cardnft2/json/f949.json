@@ -1,0 +1,46 @@
+{
+  "id": 949,
+  "name": "Card #949",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0949.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shuriken Shadow Clone Jutsu 147"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tyranitar"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0949.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 3153,
+  "name": "Card #3153",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3153.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "d-terminal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dowsing Machine - 128/135"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3153.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

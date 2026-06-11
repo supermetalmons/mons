@@ -1,0 +1,210 @@
+{
+  "id": 3537,
+  "name": "Card #3537",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3537.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella paint"
+    },
+    {
+      "trait_type": "top center",
+      "value": "matrix numbers"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pastel injured angel with cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tomato"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif apple body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink bunny tank"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bosch biscuit yin yang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pfp+102"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "larvitar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cerberus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "puyo puyo sun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat jester baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby jesus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 062"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3537.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

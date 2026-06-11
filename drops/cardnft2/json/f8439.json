@@ -1,0 +1,82 @@
+{
+  "id": 8439,
+  "name": "Card #8439",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8439.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Classical Hunt Fruit Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kneeling NEO humanoid robot"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "who would win meme"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "astroboy ashley wood"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Ralts - card2026 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8439.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

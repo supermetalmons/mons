@@ -1,0 +1,62 @@
+{
+  "id": 7176,
+  "name": "Card #7176",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7176.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note angel biscuit - card1673-37"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "krillin falling"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "champions return to arms pinup dark elf"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mega Charizard ex - IMG_3228 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7176.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

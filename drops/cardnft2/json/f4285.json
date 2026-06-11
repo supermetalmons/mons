@@ -1,0 +1,110 @@
+{
+  "id": 4285,
+  "name": "Card #4285",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4285.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi smm"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Meier Link"
+    },
+    {
+      "trait_type": "right",
+      "value": "castle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "what did he see baby yoda"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract cityscape figure"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragon flames"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke curse mark"
+    },
+    {
+      "trait_type": "top center",
+      "value": "the magic you are looking for"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady7"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Narrow Gym - 124/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4285.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 7681,
+  "name": "Card #7681",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7681.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "blue slime anime hands"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "nude frazetta girl"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "team rocket retard"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "retro tv cabinet"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "lucario drawing"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Charizard VMAX - card0040 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grass and ruins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grail"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7681.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

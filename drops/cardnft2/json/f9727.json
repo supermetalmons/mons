@@ -1,0 +1,78 @@
+{
+  "id": 9727,
+  "name": "Card #9727",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9727.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Impressionist Yellow Green Water Lily Garden Background - card1673-2"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 03 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - moon phases"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mew - card0237 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "drifella middle finger emoji"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9727.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

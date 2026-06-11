@@ -1,0 +1,54 @@
+{
+  "id": 2395,
+  "name": "Card #2395",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2395.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeleton figure with flowers"
+    },
+    {
+      "trait_type": "right",
+      "value": "Berserker"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ornate brown chair"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Phanpy - 66/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2395.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

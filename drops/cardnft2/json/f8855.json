@@ -1,0 +1,98 @@
+{
+  "id": 8855,
+  "name": "Card #8855",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8855.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "alien tamagatchi"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kuriboh hello there meme"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "zombie cryptopunk"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "vega 1850"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "rgb pixels"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "puddies"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "judy garland graphite drawing"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card0389 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red nabler purse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8855.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

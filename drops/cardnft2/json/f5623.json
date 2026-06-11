@@ -1,0 +1,162 @@
+{
+  "id": 5623,
+  "name": "Card #5623",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5623.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 24"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 36"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 20"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 10"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - ice silver - eye"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 16"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 27"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "51 red soft holo holo capsule"
+    },
+    {
+      "trait_type": "top right",
+      "value": "commander Rasso"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "baby pointing up"
+    },
+    {
+      "trait_type": "left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "top left",
+      "value": "melted figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "black and white rugged man"
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "gligar - card5446 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rainbow Energy - 137/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5623.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

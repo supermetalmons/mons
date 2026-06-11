@@ -1,0 +1,66 @@
+{
+  "id": 9260,
+  "name": "Card #9260",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9260.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "desert_rainbow_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white spray 2"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "029 black cherry red extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 13"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Celebi black mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9260.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

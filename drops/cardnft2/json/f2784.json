@@ -1,0 +1,62 @@
+{
+  "id": 2784,
+  "name": "Card #2784",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2784.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "sprite sheet lightning attack"
+    },
+    {
+      "trait_type": "hero",
+      "value": "frank miller dark knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "batman skyline"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "white star box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pikachu - SM10a 009/054"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2784.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 2288,
+  "name": "Card #2288",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2288.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "valve baby"
+    },
+    {
+      "trait_type": "border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "scribbled clown face drif"
+    },
+    {
+      "trait_type": "hero",
+      "value": "hornet silk song"
+    },
+    {
+      "trait_type": "top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dragon ball logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu glitch art"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mewtwo secret super battle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "martini table black background"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rattata - 61/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2288.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

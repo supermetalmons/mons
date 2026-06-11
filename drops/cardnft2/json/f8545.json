@@ -1,0 +1,106 @@
+{
+  "id": 8545,
+  "name": "Card #8545",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8545.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pancake Stack Meme Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "the numbers mason text"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dratini art sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "bad apple"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kneeling NEO humanoid robot"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black ink scratch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold shuppet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 blood orange magenta holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "bellossom_3_111_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8545.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

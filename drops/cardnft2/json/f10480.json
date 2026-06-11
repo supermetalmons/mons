@@ -1,0 +1,106 @@
+{
+  "id": 10480,
+  "name": "Card #10480",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10480.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note angel biscuit - card1673-37"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "bloody cheetah cub"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "magikarp splash art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "black boots"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "golden puzzle box"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "frogs w gun"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue water mtg"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "teddiursa - card5495 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "teddiursa - card5495 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "anime girl shaved ice"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "shopping cart full packs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10480.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

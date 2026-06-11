@@ -1,0 +1,58 @@
+{
+  "id": 1416,
+  "name": "Card #1416",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1416.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Soltari Trooper"
+    },
+    {
+      "trait_type": "center",
+      "value": "They have slept in the forest too long"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "army soldier panel"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "right",
+      "value": "togetic at bat"
+    },
+    {
+      "trait_type": "top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elian"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1416.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

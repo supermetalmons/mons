@@ -1,0 +1,58 @@
+{
+  "id": 7377,
+  "name": "Card #7377",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7377.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Ditto Topps - IMG_3481 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7377.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

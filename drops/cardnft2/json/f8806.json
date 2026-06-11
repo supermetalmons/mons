@@ -1,0 +1,46 @@
+{
+  "id": 8806,
+  "name": "Card #8806",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8806.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "abstract demon collage"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Heracross Neo Genesis - card2309 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8806.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

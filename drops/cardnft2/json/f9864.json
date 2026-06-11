@@ -1,0 +1,62 @@
+{
+  "id": 9864,
+  "name": "Card #9864",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9864.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Illuminated Cathedral Nave Background - card1673-44"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gilded mons board"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - labyrinth"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "phantasmal forces - card1256 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9864.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

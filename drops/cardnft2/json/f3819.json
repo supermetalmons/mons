@@ -1,0 +1,98 @@
+{
+  "id": 3819,
+  "name": "Card #3819",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3819.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dj bruce lee"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 13"
+    },
+    {
+      "trait_type": "hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiked god toji painting"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic guitar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "babyspiky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Juggler - 126/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3819.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

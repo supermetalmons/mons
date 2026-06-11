@@ -1,0 +1,82 @@
+{
+  "id": 8509,
+  "name": "Card #8509",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8509.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Green Moss Forest Texture Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "jester face"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "alien sketch"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Kimimaro"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ancient butterfly ulti"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Alakazam Star Crystal Guardians - IMG_3426 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8509.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

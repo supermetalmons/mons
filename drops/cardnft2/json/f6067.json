@@ -1,0 +1,62 @@
+{
+  "id": 6067,
+  "name": "Card #6067",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6067.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "chibi clay character jump"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black luffy one piece card"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink japanese menu icons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Larry's Komala - 175/217"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6067.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 8403,
+  "name": "Card #8403",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8403.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_glow_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "The Massacre of the Innocents engraving"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "zabuza"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tomato"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "35 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "030 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Cubone Arc Master Card - IMG_3554 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8403.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

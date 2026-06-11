@@ -1,0 +1,90 @@
+{
+  "id": 6891,
+  "name": "Card #6891",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6891.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "no war"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "right",
+      "value": "togetic at bat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Radiant Alakazam - 059/195"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6891.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

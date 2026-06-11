@@ -1,0 +1,70 @@
+{
+  "id": 5294,
+  "name": "Card #5294",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5294.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "shienryu"
+    },
+    {
+      "trait_type": "top right",
+      "value": "pink skulls and red paint"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "center",
+      "value": "final fantasy iv chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "left",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Inkay - 93/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5294.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

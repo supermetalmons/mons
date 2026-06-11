@@ -1,0 +1,150 @@
+{
+  "id": 3486,
+  "name": "Card #3486",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3486.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red skeletal creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixel dragon embroidery"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ghost in the shell fight scene"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Vivi Ornitier"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Itachi Uchiha - 6/3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3486.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 8142,
+  "name": "Card #8142",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8142.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "deoxys pokeball basketball player"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "tree green paint wall"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lizard sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "093 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "43 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Shining Mew - IMG_3260 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8142.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 9351,
+  "name": "Card #9351",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9351.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - aurora rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "028 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini neo destiny black mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9351.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

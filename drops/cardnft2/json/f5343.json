@@ -1,0 +1,66 @@
+{
+  "id": 5343,
+  "name": "Card #5343",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5343.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "angry manga man"
+    },
+    {
+      "trait_type": "right",
+      "value": "crowbar hl2"
+    },
+    {
+      "trait_type": "left",
+      "value": "precious moments wedding"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi Setzer Gabbiani"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ye_s wreck"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Koffing - 68/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5343.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

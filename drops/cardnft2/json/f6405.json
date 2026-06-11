@@ -1,0 +1,50 @@
+{
+  "id": 6405,
+  "name": "Card #6405",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6405.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mewtwo - 51/108"
+    },
+    {
+      "trait_type": "center",
+      "value": "mew ex japanese card"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ancient relief sculpture"
+    },
+    {
+      "trait_type": "right",
+      "value": "fbi drif family guy meme"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dice logo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6405.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

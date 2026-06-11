@@ -1,0 +1,90 @@
+{
+  "id": 2842,
+  "name": "Card #2842",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2842.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "cherubs clouds ink sketch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "hero",
+      "value": "muscular buu"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Unai no Tomo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black rectangle"
+    },
+    {
+      "trait_type": "right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rare Candy - 100/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2842.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "id": 8885,
+  "name": "Card #8885",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8885.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "order of free gardeners"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "spike tcg"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skeleton engraving"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "nidoking"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Playing Card Gengar 6 of Spades - IMG_3212 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby bat crucifix drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "noise mc skin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hunson Abadeer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8885.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 2008,
+  "name": "Card #2008",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2008.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "hokusai bamboo print"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "bulma akira toriyama"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "drif bodies and drat sprites"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Parasect - 58/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2008.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

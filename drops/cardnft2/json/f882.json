@@ -1,0 +1,58 @@
+{
+  "id": 882,
+  "name": "Card #882",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0882.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Saiyan Arm Throw - 4 of 12"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink japanese menu icons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "de glocke"
+    },
+    {
+      "trait_type": "right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "center",
+      "value": "klonoa boss concept"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0882.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

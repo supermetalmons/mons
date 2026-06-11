@@ -1,0 +1,70 @@
+{
+  "id": 5370,
+  "name": "Card #5370",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5370.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black lace bag electric chair"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "woven pattern grid"
+    },
+    {
+      "trait_type": "top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ds at night"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "thorgal"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black rectangle"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shroomish - 78/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5370.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

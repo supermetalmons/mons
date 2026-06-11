@@ -1,0 +1,46 @@
+{
+  "id": 1832,
+  "name": "Card #1832",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1832.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Raticate - 40/102"
+    },
+    {
+      "trait_type": "hero",
+      "value": "muscular buu"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ornate pillar heart"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1832.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

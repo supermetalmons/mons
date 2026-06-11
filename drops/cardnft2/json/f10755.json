@@ -1,0 +1,158 @@
+{
+  "id": 10755,
+  "name": "Card #10755",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10755.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_green_purple_fire_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "042 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_13"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful music notation diagram"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red block"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract pastel strokes"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_16"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_08"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_22"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "time_walk_magic_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_08"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_01"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_19"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_30"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_20"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_23"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_05"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "time_walk_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi crow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10755.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

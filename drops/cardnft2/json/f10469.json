@@ -1,0 +1,102 @@
+{
+  "id": 10469,
+  "name": "Card #10469",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10469.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_cobalt_pink_sunset_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "color gradient swatches"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval figures and symbols"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dark fantasy landscape"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__bronze armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 14"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 calm teal violet clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shino aburame - card0609 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "shino aburame - card0609 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "you cant beat a man hoods drifella daze"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "rpg battle menu - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10469.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

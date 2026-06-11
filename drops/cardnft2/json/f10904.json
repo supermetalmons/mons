@@ -1,0 +1,174 @@
+{
+  "id": 10904,
+  "name": "Card #10904",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10904.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Tortue of Christ - card1673-4"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - crescent"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "056 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "lego blocks wojak"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "ultraman starry silhouette"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_01"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "045 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_24"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "19 blood orange magenta holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shellmon - card6721 white mask transparent"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_26"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_23"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_18"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_12"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_22"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "shellmon - card6721 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10904.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

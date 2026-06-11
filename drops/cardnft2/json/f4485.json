@@ -1,0 +1,94 @@
+{
+  "id": 4485,
+  "name": "Card #4485",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4485.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "right",
+      "value": "sun moon mercury venus diagram"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "angel holo sticker"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "30 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "center",
+      "value": "chart golf"
+    },
+    {
+      "trait_type": "left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Orochimaru & Kabuto Yakushi - 363"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4485.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

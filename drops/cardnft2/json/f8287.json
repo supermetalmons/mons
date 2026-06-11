@@ -1,0 +1,78 @@
+{
+  "id": 8287,
+  "name": "Card #8287",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8287.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "fantasy_cloaked_figures_waterfall"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anime kid drinking"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ghibli drif"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "jumpluff_7_111_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8287.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

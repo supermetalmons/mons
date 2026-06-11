@@ -1,0 +1,134 @@
+{
+  "id": 4593,
+  "name": "Card #4593",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4593.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 50"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 07"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 02"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 27"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "29 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rainbow wheel"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dog knight pixel art"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "right",
+      "value": "Berserker"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "guts"
+    },
+    {
+      "trait_type": "top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakurai trickster god"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Castle Bodhran - 203/232"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4593.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 8265,
+  "name": "Card #8265",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8265.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Rainbow Collage Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "angel statue illustration"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "cyborg head profile"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shelgon - card2848 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8265.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

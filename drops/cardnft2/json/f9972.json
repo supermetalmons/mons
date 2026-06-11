@@ -1,0 +1,102 @@
+{
+  "id": 9972,
+  "name": "Card #9972",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9972.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko electric blue soft blocks"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anime angel warrior"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "fighter jet girl"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "holographic armored figure"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "broken blade poem"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke_uchiha_custom_card_2 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasuke_uchiha_custom_card_2 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9972.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

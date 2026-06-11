@@ -1,0 +1,62 @@
+{
+  "id": 10598,
+  "name": "Card #10598",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10598.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "world war robot fig"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "062 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - runic bind"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pink hearts blur"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z Cell - IMG_3508 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "death dealer preliminary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10598.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

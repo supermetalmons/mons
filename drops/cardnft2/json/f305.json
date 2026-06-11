@@ -1,0 +1,50 @@
+{
+  "id": 305,
+  "name": "Card #305",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0305.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "テラパゴス ex - SV1 088/102"
+    },
+    {
+      "trait_type": "right",
+      "value": "cartoon detective sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "anime rooftop encounter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "center",
+      "value": "Saint Christopher Facing Right engraving"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0305.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

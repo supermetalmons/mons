@@ -1,0 +1,102 @@
+{
+  "id": 8307,
+  "name": "Card #8307",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8307.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silent Hill pt door - card1673-3"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "naruto card pack"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "joker quote"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "manga cap back view"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "051 deep teal lime extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "066 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "095 dark blood orange extra holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gengar ex - IMG_3216 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8307.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

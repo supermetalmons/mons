@@ -1,0 +1,98 @@
+{
+  "id": 7719,
+  "name": "Card #7719",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7719.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sargent Woman By The Sea Background - card1673-52"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lets rock"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hungry"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon characters"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic chest sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Trunks Battle Simulator - card0692 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7719.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

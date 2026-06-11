@@ -1,0 +1,106 @@
+{
+  "id": 4890,
+  "name": "Card #4890",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4890.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-272"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "baby pointing up"
+    },
+    {
+      "trait_type": "top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel waterfall"
+    },
+    {
+      "trait_type": "top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "right",
+      "value": "fbi drif family guy meme"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard fire breath"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scramble Energy - 89/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4890.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

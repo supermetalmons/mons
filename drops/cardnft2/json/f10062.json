@@ -1,0 +1,94 @@
+{
+  "id": 10062,
+  "name": "Card #10062",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10062.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red wire figure sculpture"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "atari et"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 vespertine purple peach clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - eye"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "team aquas poochyena - card5456 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "team aquas poochyena - card5456 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10062.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 4109,
+  "name": "Card #4109",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4109.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hooded figure dalle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ultima"
+    },
+    {
+      "trait_type": "left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "center",
+      "value": "game boy color battle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fallout ghoul dialogue"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby jesus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sandslash - 41/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4109.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

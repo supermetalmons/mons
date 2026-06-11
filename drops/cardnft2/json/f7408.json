@@ -1,0 +1,66 @@
+{
+  "id": 7408,
+  "name": "Card #7408",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7408.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_purple_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "castlevania skeleton boss"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shuckle Neo Genesis - card1956 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7408.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 7824,
+  "name": "Card #7824",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7824.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "muscular anime character"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dratini sprites"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Mukuro"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Uchiha inverted mask"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "drifella plush"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ancient butterfly ulti"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "larvitar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Trainer Mewtwo Machine - IMG_3262 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7824.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

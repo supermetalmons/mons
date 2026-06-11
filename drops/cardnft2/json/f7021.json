@@ -1,0 +1,54 @@
+{
+  "id": 7021,
+  "name": "Card #7021",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7021.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_jungle_tiger_woman"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract sleeping figures"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Cubone Arc Master Card - IMG_3554 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon booster pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7021.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

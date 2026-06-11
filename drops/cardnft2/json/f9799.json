@@ -1,0 +1,62 @@
+{
+  "id": 9799,
+  "name": "Card #9799",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9799.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "04 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - ouroboros"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "bugsys pinsir japanese - card6093 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9799.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

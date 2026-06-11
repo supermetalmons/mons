@@ -1,0 +1,78 @@
+{
+  "id": 9385,
+  "name": "Card #9385",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9385.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "girl on robot ashley wood"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Gengar inverted mask variant 3"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pocket Monsters Alakazam File No 064 - IMG_3479 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi drif"
+    },
+    {
+      "trait_type": "blood energy sprite overlay - center",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9385.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

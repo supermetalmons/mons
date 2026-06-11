@@ -1,0 +1,78 @@
+{
+  "id": 7924,
+  "name": "Card #7924",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7924.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Black Green Motion Blur Texture Background - card1673-34"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red rider motorcycle"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gotcha force a rank"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white spray 1"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pocket Monsters Mewtwo File No 147 - IMG_3224 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7924.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

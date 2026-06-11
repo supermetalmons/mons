@@ -1,0 +1,78 @@
+{
+  "id": 6849,
+  "name": "Card #6849",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6849.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frank ocean"
+    },
+    {
+      "trait_type": "top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Grankuwagamon - DT-56"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6849.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

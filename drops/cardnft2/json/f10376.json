@@ -1,0 +1,102 @@
+{
+  "id": 10376,
+  "name": "Card #10376",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10376.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "digimon v12 mag cover"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - claw"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - dark rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "hyper real crucifella"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "078 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sableye_10_101_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "blood energy overlay",
+      "value": "blood energy2"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sableye_10_101_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "nemesis holding man"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful-5 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10376.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

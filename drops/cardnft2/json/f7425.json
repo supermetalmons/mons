@@ -1,0 +1,110 @@
+{
+  "id": 7425,
+  "name": "Card #7425",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7425.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Black Green Motion Blur Texture Background - card1673-34"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "embryos imported 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "eye in pancake"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "the fool"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Gargomon C100 - card1466 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal tat lsw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7425.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

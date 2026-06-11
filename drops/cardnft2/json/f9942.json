@@ -1,0 +1,82 @@
+{
+  "id": 9942,
+  "name": "Card #9942",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9942.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mewtwo Purple Lab Capsule Background - card1673-32"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "trunks capsule corp shirt"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacred heart lace card"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9942.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

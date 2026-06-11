@@ -1,0 +1,94 @@
+{
+  "id": 7866,
+  "name": "Card #7866",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7866.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cybernetic head wires"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragonite holo screentone"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "goku eye"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shark costume person"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 lava violet ember holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Killer Bee - card0341 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7866.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

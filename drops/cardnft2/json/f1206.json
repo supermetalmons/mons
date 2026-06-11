@@ -1,0 +1,46 @@
+{
+  "id": 1206,
+  "name": "Card #1206",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1206.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hill Giant"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1206.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

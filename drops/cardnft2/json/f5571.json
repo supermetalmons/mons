@@ -1,0 +1,98 @@
+{
+  "id": 5571,
+  "name": "Card #5571",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5571.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 31"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "41 dark ruby violet orange holo triangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "44 dark cobalt pink sunset holo heart"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Gelus (πé╖πéÖπéºπâ⌐πé╣) manga page"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "no war"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zorua - 9/12"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5571.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

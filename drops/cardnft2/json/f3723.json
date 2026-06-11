@@ -1,0 +1,166 @@
+{
+  "id": 3723,
+  "name": "Card #3723",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3723.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "manga robot scythe"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "top center",
+      "value": "tekkonkinkreet city"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ancient relief sculpture"
+    },
+    {
+      "trait_type": "top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black ink scratch"
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "puyo puyo sun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "garlic jr fig"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract mosaic pattern"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Elgyem - 73/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3723.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

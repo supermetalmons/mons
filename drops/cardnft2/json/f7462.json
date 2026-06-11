@@ -1,0 +1,102 @@
+{
+  "id": 7462,
+  "name": "Card #7462",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7462.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif maga"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shizuku sweepy"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "magikarp splash art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Rebecca"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "9 tails evil smile"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card0401 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7462.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

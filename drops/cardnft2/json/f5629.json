@@ -1,0 +1,62 @@
+{
+  "id": 5629,
+  "name": "Card #5629",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5629.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-314"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - bone and ruby - cuneiform tablet"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Saint Paul engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini deviantart sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Malamar - SV18/SV94"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5629.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

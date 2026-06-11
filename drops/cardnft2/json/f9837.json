@@ -1,0 +1,66 @@
+{
+  "id": 9837,
+  "name": "Card #9837",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9837.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "St George Slaying Dragon Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red - blood drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "35 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mudkip - card3240 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9837.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

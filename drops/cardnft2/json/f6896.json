@@ -1,0 +1,70 @@
+{
+  "id": 6896,
+  "name": "Card #6896",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6896.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ancient relief sculpture"
+    },
+    {
+      "trait_type": "hero",
+      "value": "red nidoqueen trainer"
+    },
+    {
+      "trait_type": "top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "right",
+      "value": "Miki Koishikawa"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hey man im sure you that the psyop play didnt really work out wondering you can help me frame this whole thing as performance let me know your"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sparkling Crystal - 142/142"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6896.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

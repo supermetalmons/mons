@@ -1,0 +1,134 @@
+{
+  "id": 3539,
+  "name": "Card #3539",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3539.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "dr slump arale motorcycle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "foxy animatronic"
+    },
+    {
+      "trait_type": "left",
+      "value": "pillar engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini deviantart sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "summoned skull figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - 3/0"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3539.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

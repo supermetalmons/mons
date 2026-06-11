@@ -1,0 +1,66 @@
+{
+  "id": 9218,
+  "name": "Card #9218",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9218.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "the numbers mason text"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Pinocchio drowning"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "010 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara C1 - card0340 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9218.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

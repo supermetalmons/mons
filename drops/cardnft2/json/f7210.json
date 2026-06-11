@@ -1,0 +1,54 @@
+{
+  "id": 7210,
+  "name": "Card #7210",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7210.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jiraya"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Clefable Jungle - card2289 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7210.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 4337,
+  "name": "Card #4337",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4337.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - carnelian sun - alchemy fire"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghost fleischer character"
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "top center",
+      "value": "7 hearts"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Luxray - 46/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4337.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

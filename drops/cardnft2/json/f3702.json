@@ -1,0 +1,198 @@
+{
+  "id": 3702,
+  "name": "Card #3702",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3702.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sonic level start"
+    },
+    {
+      "trait_type": "top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic chest sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "right",
+      "value": "veiled"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Noctowl - 120/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3702.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

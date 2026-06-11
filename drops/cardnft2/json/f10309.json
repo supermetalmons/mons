@@ -1,0 +1,90 @@
+{
+  "id": 10309,
+  "name": "Card #10309",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10309.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold celestial serpent dragon art"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "plastinated specimen"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "sonic guitar"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "restless bones - card1499 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mother creep sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "restless bones - card1499 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10309.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

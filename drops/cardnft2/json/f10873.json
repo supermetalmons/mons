@@ -1,0 +1,122 @@
+{
+  "id": 10873,
+  "name": "Card #10873",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10873.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient ice lilac pink and wine blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "077 cobalt pink sunset extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 04 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "042 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "052 cobalt pink sunset extra holo heart"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract figure bacon 2"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored dq bat"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow pixel outline star drif"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "069 cyan magenta gold extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_25"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "crest tag digivolve - card6735 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Trust the hood blink"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10873.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

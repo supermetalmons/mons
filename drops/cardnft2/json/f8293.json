@@ -1,0 +1,82 @@
+{
+  "id": 8293,
+  "name": "Card #8293",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8293.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dolphin in water"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "panda statue flowers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat jester baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu ANA Airlines Promo - IMG_3223 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8293.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

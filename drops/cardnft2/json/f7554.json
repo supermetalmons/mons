@@ -1,0 +1,86 @@
+{
+  "id": 7554,
+  "name": "Card #7554",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7554.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract figure sketch"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "mars watercolor preliminary"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cherubs clouds ink sketch"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Beldum - card5355 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7554.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

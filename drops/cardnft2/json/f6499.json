@@ -1,0 +1,74 @@
+{
+  "id": 6499,
+  "name": "Card #6499",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6499.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - emerald black - eye horus style"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yellow robot toy"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue pastel sparkles"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario aura sphere"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif apple body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Parallel City - 145/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6499.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

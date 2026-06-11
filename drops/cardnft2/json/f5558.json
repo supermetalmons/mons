@@ -1,0 +1,98 @@
+{
+  "id": 5558,
+  "name": "Card #5558",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5558.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 09"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "astrological chronos chromosome birth day algorithm"
+    },
+    {
+      "trait_type": "center",
+      "value": "hell crucidrif"
+    },
+    {
+      "trait_type": "right",
+      "value": "teardrop embryo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "twin peaks coffee scene"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hatched dragon egg"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Imposter Professor Oak - 73/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5558.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

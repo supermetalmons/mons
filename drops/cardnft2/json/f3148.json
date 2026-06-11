@@ -1,0 +1,66 @@
+{
+  "id": 3148,
+  "name": "Card #3148",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3148.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "dark us banknote"
+    },
+    {
+      "trait_type": "top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "hero",
+      "value": "batman dark street scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "center",
+      "value": "solid blue enchantment"
+    },
+    {
+      "trait_type": "border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "top right",
+      "value": "3 banknote corner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Crushing Hammer - 60/83"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3148.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

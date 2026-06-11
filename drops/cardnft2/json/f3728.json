@@ -1,0 +1,74 @@
+{
+  "id": 3728,
+  "name": "Card #3728",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3728.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pistol branch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "top right",
+      "value": "9 11 anime eyes meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bladerunner 2049 woman"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue pastel sparkles"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "The Bite 1914"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mime Jr. - 90/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3728.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

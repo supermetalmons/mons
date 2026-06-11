@@ -1,0 +1,46 @@
+{
+  "id": 1997,
+  "name": "Card #1997",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1997.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Butterfree - 33/64"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shredder tv screen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1997.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

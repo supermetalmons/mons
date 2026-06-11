@@ -1,0 +1,94 @@
+{
+  "id": 10220,
+  "name": "Card #10220",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10220.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "sd rainbow trainer card art"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "bloody cheetah cub"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red yellow tulip engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "004 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 dark cobalt pink sunset holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "black_lotus_magic_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "black_lotus_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10220.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

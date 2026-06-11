@@ -1,0 +1,70 @@
+{
+  "id": 3167,
+  "name": "Card #3167",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3167.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Golden Girl frazetta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy upside down"
+    },
+    {
+      "trait_type": "top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Inkay - 74/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3167.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

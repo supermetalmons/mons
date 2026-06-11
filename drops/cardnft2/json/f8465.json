@@ -1,0 +1,90 @@
+{
+  "id": 8465,
+  "name": "Card #8465",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8465.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Samurai Battle Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Church Servant"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "fairy silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Pokemon Gengar Twins - IMG_3548 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8465.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 4116,
+  "name": "Card #4116",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4116.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "lego demon bat  crucidrifella"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mossy spike ball"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bagon - 50/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4116.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

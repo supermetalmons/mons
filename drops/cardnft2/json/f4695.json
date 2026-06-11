@@ -1,0 +1,106 @@
+{
+  "id": 4695,
+  "name": "Card #4695",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4695.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime kid drinking"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bandai logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel halo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "biscuit tollo colored pencil mask"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dratini team rocket texture"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Karin - 925"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4695.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

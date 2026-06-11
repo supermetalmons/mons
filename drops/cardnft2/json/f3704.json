@@ -1,0 +1,150 @@
+{
+  "id": 3704,
+  "name": "Card #3704",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3704.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif triptych sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Carnage poncho"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "snake arm manga panel"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scrafty - 67/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3704.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

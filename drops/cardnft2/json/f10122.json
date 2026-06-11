@@ -1,0 +1,106 @@
+{
+  "id": 10122,
+  "name": "Card #10122",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10122.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "alexander the great"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark abstract sculpture"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "nen hexagon hxh"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "sun face samurai"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 10 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 31"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - labyrinth"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "karin - card4765 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "karin - card4765 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10122.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

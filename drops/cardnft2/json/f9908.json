@@ -1,0 +1,66 @@
+{
+  "id": 9908,
+  "name": "Card #9908",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9908.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Snowy Creek Winter Woods Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract horned figure"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "psyduck charizard collage"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gardevoir_v_070_073_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gardevoir_v_070_073_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9908.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

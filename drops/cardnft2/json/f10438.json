@@ -1,0 +1,110 @@
+{
+  "id": 10438,
+  "name": "Card #10438",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10438.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Winter Tree Village Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue water mtg"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "exodia necross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 05 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 baroque gold clean wisp moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "black_lotus_magic_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "black_lotus_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "astroboy ashley wood"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "The Sudarium of Saint Veronica engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon booster pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10438.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

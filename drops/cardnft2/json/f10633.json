@@ -1,0 +1,62 @@
+{
+  "id": 10633,
+  "name": "Card #10633",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10633.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue eyes"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suspicious_food_tin_080_073_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "suspicious_food_tin_080_073_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10633.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

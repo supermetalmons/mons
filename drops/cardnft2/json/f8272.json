@@ -1,0 +1,66 @@
+{
+  "id": 8272,
+  "name": "Card #8272",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8272.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Soft Blue Green Landscape Painting Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "shadow mage"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "gold arrow button"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Kabuto Fossil - card1974 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8272.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

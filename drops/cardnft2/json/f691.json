@@ -1,0 +1,46 @@
+{
+  "id": 691,
+  "name": "Card #691",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0691.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Black Finger Block - 10 of 16"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "center",
+      "value": "frankenstein ship"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Church Servant"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0691.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 9339,
+  "name": "Card #9339",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9339.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_spirit_wave_illustration"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__bronze armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holy gold - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mew Delta Species - IMG_3234 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9339.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

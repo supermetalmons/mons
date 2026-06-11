@@ -1,0 +1,66 @@
+{
+  "id": 340,
+  "name": "Card #340",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0340.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Deidara (C0 Form) - 1105"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robotic mech warrior"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pleidian billy meier girl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "top right",
+      "value": "vegeta super saiyan battle"
+    },
+    {
+      "trait_type": "center",
+      "value": "team rocket retard"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0340.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

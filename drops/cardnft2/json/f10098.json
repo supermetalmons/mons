@@ -1,0 +1,98 @@
+{
+  "id": 10098,
+  "name": "Card #10098",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10098.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "poke ai goon art"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "thankful quote"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anatomical illustration of a neck"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "068 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - water drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "009 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "tyrogue - card5319 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "tyrogue - card5319 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10098.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

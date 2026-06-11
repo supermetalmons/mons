@@ -1,0 +1,78 @@
+{
+  "id": 5332,
+  "name": "Card #5332",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5332.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract ink symbols"
+    },
+    {
+      "trait_type": "top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "slots"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "the x files logo"
+    },
+    {
+      "trait_type": "right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "embryo fetus guy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scizor - 128/192"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5332.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

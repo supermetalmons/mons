@@ -1,0 +1,78 @@
+{
+  "id": 6675,
+  "name": "Card #6675",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6675.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "gardevoir_7_132_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kids playing cards collage"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "squirtle splash"
+    },
+    {
+      "trait_type": "top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Regigigas - DP40"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6675.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

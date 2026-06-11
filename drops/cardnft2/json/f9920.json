@@ -1,0 +1,62 @@
+{
+  "id": 9920,
+  "name": "Card #9920",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9920.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko lime purple and charcoal blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "All Might weakened"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "alakazam spirit link - card2168 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "alakazam spirit link - card2168 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9920.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

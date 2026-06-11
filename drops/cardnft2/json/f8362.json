@@ -1,0 +1,86 @@
+{
+  "id": 8362,
+  "name": "Card #8362",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8362.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Fire Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "scavenger"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink drif plush"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red apples row"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "anime keychain character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Eevee - IMG_3487 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8362.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

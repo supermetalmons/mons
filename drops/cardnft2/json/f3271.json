@@ -1,0 +1,90 @@
+{
+  "id": 3271,
+  "name": "Card #3271",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3271.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "joker abstract bats"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "slowpoke rape"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hikaru"
+    },
+    {
+      "trait_type": "left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "haunted terrorism"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude girls on hand frazetta"
+    },
+    {
+      "trait_type": "right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mudkip - 65/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3271.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

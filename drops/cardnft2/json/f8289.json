@@ -1,0 +1,90 @@
+{
+  "id": 8289,
+  "name": "Card #8289",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8289.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Samurai Battle Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "prophet of drip"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "two headed cat"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "diamond plate texture"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "white star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bosch biscuit yin yang"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sableye_10_101_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8289.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

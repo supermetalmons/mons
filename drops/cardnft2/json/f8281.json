@@ -1,0 +1,90 @@
+{
+  "id": 8281,
+  "name": "Card #8281",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8281.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Adam Eve Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "asuka red glove pose"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Bandai Super Mario Bros Keshi figure"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad 712"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "misdreavus"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini legendary collection black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8281.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 1681,
+  "name": "Card #1681",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1681.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's Kadabra - 58/132"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "right",
+      "value": "purple orange hydra plush"
+    },
+    {
+      "trait_type": "left",
+      "value": "comic panel thinking peter parker"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1681.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

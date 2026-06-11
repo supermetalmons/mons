@@ -1,0 +1,54 @@
+{
+  "id": 4277,
+  "name": "Card #4277",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4277.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "bloodborne doll dark"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "murakami spray"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cherub drifella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Energy Exchanger - 73/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4277.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

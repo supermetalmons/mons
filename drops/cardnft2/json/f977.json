@@ -1,0 +1,42 @@
+{
+  "id": 977,
+  "name": "Card #977",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0977.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Namekian Rock Crush - 7 of 32"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red crucifixion scene"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0977.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

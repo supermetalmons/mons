@@ -1,0 +1,118 @@
+{
+  "id": 10905,
+  "name": "Card #10905",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10905.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "chaotic_baroque_battle_collage"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "078 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "090 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "093 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "screaming pope painting"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "035 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_19"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "konohamaru - card4800 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "konohamaru - card4800 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Yellow dragon"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10905.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

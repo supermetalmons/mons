@@ -1,0 +1,62 @@
+{
+  "id": 3303,
+  "name": "Card #3303",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3303.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "shining gyarados"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "devils and demons"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sh2 silhouette"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "wojak esoterica"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charmeleon - 10/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3303.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

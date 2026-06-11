@@ -1,0 +1,54 @@
+{
+  "id": 5966,
+  "name": "Card #5966",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5966.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "abra - card5426 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-123"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [C] - 57/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5966.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

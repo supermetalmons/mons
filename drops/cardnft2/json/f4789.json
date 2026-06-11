@@ -1,0 +1,106 @@
+{
+  "id": 4789,
+  "name": "Card #4789",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4789.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "freaky nikki"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red rider motorcycle"
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ceiling light bulb"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holo card"
+    },
+    {
+      "trait_type": "right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Sudarium of Saint Veronica engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kisame Hoshigaki - 9EHS44A9ST"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4789.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

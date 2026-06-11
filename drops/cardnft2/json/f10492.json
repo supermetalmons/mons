@@ -1,0 +1,114 @@
+{
+  "id": 10492,
+  "name": "Card #10492",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10492.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_red_kimono_gold_screen"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 09"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 nightcore rainbow clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__gilded armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 22"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "millennium puzzle dialogue"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 10 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "larvitar - card2943 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "larvitar - card2943 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "abstract clown figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10492.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

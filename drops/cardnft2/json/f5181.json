@@ -1,0 +1,74 @@
+{
+  "id": 5181,
+  "name": "Card #5181",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5181.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "shrug emoji oh well"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "superman phone comic"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pokeballs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small fish"
+    },
+    {
+      "trait_type": "right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy with nude girls frazetta"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Master Ball - 88/107"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5181.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 7216,
+  "name": "Card #7216",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7216.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gengar Shadow Doorway Background - card1673-26"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract brush strokes"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "zeni"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "burnt pancake yugioh pan"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Larvitar Neo Discovery - card1495 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7216.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

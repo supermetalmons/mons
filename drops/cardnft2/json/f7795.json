@@ -1,0 +1,102 @@
+{
+  "id": 7795,
+  "name": "Card #7795",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7795.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "holographic_chrome_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dragonite gb inverted mask"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "eevee meme"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bubble planet"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Splicers Metamorph Demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Articuno Fossil 2 of 62 - card0069 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7795.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

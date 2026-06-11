@@ -1,0 +1,106 @@
+{
+  "id": 4722,
+  "name": "Card #4722",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4722.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "29 calm teal violet clean wisp moon"
+    },
+    {
+      "trait_type": "top right",
+      "value": "spider tattoo eight"
+    },
+    {
+      "trait_type": "top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holo card"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tyranitar fire blast"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "dratini thunder wave - card5225 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Deidara - 1010"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4722.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

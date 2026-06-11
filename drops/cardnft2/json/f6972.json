@@ -1,0 +1,54 @@
+{
+  "id": 6972,
+  "name": "Card #6972",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6972.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "center",
+      "value": "relief"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "base card",
+      "value": "MSN-001A1"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6972.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 7232,
+  "name": "Card #7232",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7232.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "alien skeleton sculpture"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Fighting Energy Expedition - IMG_3475 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7232.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

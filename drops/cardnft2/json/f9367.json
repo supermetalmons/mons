@@ -1,0 +1,74 @@
+{
+  "id": 9367,
+  "name": "Card #9367",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9367.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract White Jar Painting Background - card1673-49"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - lotus"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - saturn sigil"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "050 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Piplup - IMG_3523 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9367.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

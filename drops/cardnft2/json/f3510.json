@@ -1,0 +1,114 @@
+{
+  "id": 3510,
+  "name": "Card #3510",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3510.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Sam Eric, Pennsylvania (1978) Hiroshi Sugimoto"
+    },
+    {
+      "trait_type": "top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pfp+102"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "no war"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Retaliation - 105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3510.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

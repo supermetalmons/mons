@@ -1,0 +1,66 @@
+{
+  "id": 4985,
+  "name": "Card #4985",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4985.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "hydreigon - card3703 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sitting blue anime imp"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-20"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kero anime drawer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yaoki"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4985.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

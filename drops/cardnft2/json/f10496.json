@@ -1,0 +1,98 @@
+{
+  "id": 10496,
+  "name": "Card #10496",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10496.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Rainbow Collage Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "spiderman lizard fight"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "trunks capsule corp shirt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "026 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ankh"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "biscuit - card0623 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "biscuit - card0623 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "orange pink abstract sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grail"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10496.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

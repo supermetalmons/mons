@@ -1,0 +1,122 @@
+{
+  "id": 4954,
+  "name": "Card #4954",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4954.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-82"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-212"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "slender man notes"
+    },
+    {
+      "trait_type": "center",
+      "value": "gilded mons board"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel waterfall"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "hero",
+      "value": "blue armored figure"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "muslim battle pass"
+    },
+    {
+      "trait_type": "top left",
+      "value": "zombie cryptopunk"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elian"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Survival in the Forest of Death - 073"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4954.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

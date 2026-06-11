@@ -1,0 +1,90 @@
+{
+  "id": 4157,
+  "name": "Card #4157",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4157.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gotcha force a rank"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "killua and gon sketch black"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Ghost of Akugenta Taking Revenge on Nanba at the Nunobiki Waterfall woodblock negative"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mr Qi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Corviknight - 135/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4157.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

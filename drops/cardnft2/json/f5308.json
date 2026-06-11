@@ -1,0 +1,82 @@
+{
+  "id": 5308,
+  "name": "Card #5308",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5308.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cezanne fruit bowl corner"
+    },
+    {
+      "trait_type": "left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "printer can do 45 cards at once"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dragonite and scyther anime"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract muscular figure circles"
+    },
+    {
+      "trait_type": "top right",
+      "value": "eye engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "standing monkey"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charmander - 17/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5308.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

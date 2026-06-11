@@ -1,0 +1,114 @@
+{
+  "id": 7743,
+  "name": "Card #7743",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7743.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "orange_purple_wave_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "nen hexagon hxh"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Uchiha inverted mask variant 3"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "demons"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "deadpool keychain"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "batman dark street scene"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract texture 4"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Carnage poncho"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Orochimaru - IMG_3530 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7743.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

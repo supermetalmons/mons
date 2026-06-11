@@ -1,0 +1,54 @@
+{
+  "id": 1133,
+  "name": "Card #1133",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1133.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [S] - 87/105"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black knight helmet"
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow star pattern"
+    },
+    {
+      "trait_type": "top center",
+      "value": "clay eyes"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1133.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

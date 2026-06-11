@@ -1,0 +1,78 @@
+{
+  "id": 8507,
+  "name": "Card #8507",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8507.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Winter Tree Village Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "scapegoat"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "warzone defeat screen"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "aivazovsky"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "mazoku yusuke sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Gengar inverted mask variant 3"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8507.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 4484,
+  "name": "Card #4484",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4484.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Vivi Ornitier"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw hexp sonic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bikochu - 037"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4484.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 8491,
+  "name": "Card #8491",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8491.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Hell Mirror Scene Background - card1673-43"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "icy landscape"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pocket monsters dragonite black"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "solid snake illustration"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "010 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "23 red soft holo holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gaara_of_the_desert_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8491.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

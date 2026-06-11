@@ -1,0 +1,70 @@
+{
+  "id": 10943,
+  "name": "Card #10943",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10943.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kakashi hatake vest - card4533 white mask transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_seven__anime"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "yugioh line stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10943.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

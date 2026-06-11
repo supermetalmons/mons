@@ -1,0 +1,98 @@
+{
+  "id": 4617,
+  "name": "Card #4617",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4617.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 37"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 32"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "035 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 36"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dark us banknote"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - ice silver - eye"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark magician knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Skeleton Token - 1st Edition"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4617.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

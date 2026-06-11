@@ -1,0 +1,74 @@
+{
+  "id": 2974,
+  "name": "Card #2974",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2974.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude vampirella"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "yugioh card swirl"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hobbit sketch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "zabuza"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "top center",
+      "value": "don t dead open inside"
+    },
+    {
+      "trait_type": "right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "top left",
+      "value": "melted figure"
+    },
+    {
+      "trait_type": "left",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clemont - 59/83"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2974.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

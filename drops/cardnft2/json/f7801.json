@@ -1,0 +1,114 @@
+{
+  "id": 7801,
+  "name": "Card #7801",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7801.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "baron munchausen"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Porygon black mask variant 8"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "one piece reactions"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "buff pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magby - card5062 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7801.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

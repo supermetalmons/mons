@@ -1,0 +1,62 @@
+{
+  "id": 565,
+  "name": "Card #565",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0565.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Energy Removal - 92/102"
+    },
+    {
+      "trait_type": "top center",
+      "value": "millennium puzzle dialogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "top right",
+      "value": "playstation buttons"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "center",
+      "value": "glowing doraemon ghosts"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0565.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

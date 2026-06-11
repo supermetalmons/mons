@@ -1,0 +1,62 @@
+{
+  "id": 4519,
+  "name": "Card #4519",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4519.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow galaxy portal"
+    },
+    {
+      "trait_type": "top right",
+      "value": "pink skulls and red paint"
+    },
+    {
+      "trait_type": "left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dratini art sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Second Hokage - 168"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4519.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

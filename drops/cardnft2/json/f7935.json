@@ -1,0 +1,94 @@
+{
+  "id": 7935,
+  "name": "Card #7935",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7935.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Gelato Pique x Dragon Quest Draky"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "handwritten note on social media"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "demons"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "devilman"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "majin Dabura figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cow"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "099 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 calm teal violet clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Gengar Neo Destiny 6 of 105 - IMG_3537 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7935.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

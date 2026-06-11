@@ -1,0 +1,54 @@
+{
+  "id": 2209,
+  "name": "Card #2209",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2209.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "police officer arresting"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tyranitar fire blast"
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sprout Tower - 97/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2209.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

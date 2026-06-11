@@ -1,0 +1,74 @@
+{
+  "id": 8608,
+  "name": "Card #8608",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8608.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "squirtle splash"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skeletons motorcycle 3d"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow pixel outline star drif"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "rustic armored figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mudkip"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Zabuza Momochi inverted mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8608.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

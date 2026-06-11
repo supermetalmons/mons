@@ -1,0 +1,106 @@
+{
+  "id": 3098,
+  "name": "Card #3098",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3098.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "secret of mana"
+    },
+    {
+      "trait_type": "top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chrollo in white"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "blue anime cleavage"
+    },
+    {
+      "trait_type": "center",
+      "value": "charizard sticker"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen honor thy father"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pumpkaboo - 44/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3098.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

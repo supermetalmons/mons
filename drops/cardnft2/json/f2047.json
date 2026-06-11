@@ -1,0 +1,70 @@
+{
+  "id": 2047,
+  "name": "Card #2047",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2047.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "L cross roses anime"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "evangelion kabbalah tree"
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu magic card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Beelzemon Blast Mode"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "punch out boxer"
+    },
+    {
+      "trait_type": "border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Assault Vest - 133/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2047.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

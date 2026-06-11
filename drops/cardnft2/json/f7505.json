@@ -1,0 +1,106 @@
+{
+  "id": 7505,
+  "name": "Card #7505",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7505.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "i am creative at night"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "skeleton ghost green flames"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow wave pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Allister Supporter - card0356 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7505.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

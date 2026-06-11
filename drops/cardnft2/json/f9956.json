@@ -1,0 +1,134 @@
+{
+  "id": 9956,
+  "name": "Card #9956",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9956.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Flower Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "klimt the park 1910"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "terraria sprites"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "splatterhouse mask monster"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lizard sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "terriermon digimon card"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "playstation buttons"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dj bruce lee"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "purple orange hydra plush"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "056 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 01 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "013 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "unown t - card1128 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red skeletal creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "blood energy sprite overlay - center",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "unown t - card1128 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9956.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": 5304,
+  "name": "Card #5304",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5304.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "water energy holographic"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i jest"
+    },
+    {
+      "trait_type": "top center",
+      "value": "thorny branch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "official game boy logo"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark magician girl pink manga"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tanooki arale"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Slowpoke 19/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5304.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

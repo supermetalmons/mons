@@ -1,0 +1,54 @@
+{
+  "id": 521,
+  "name": "Card #521",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0521.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pinsir - 25/64"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ghibli reeled in fish"
+    },
+    {
+      "trait_type": "hero",
+      "value": "totoro and friends"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "crucidrifella film"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0521.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

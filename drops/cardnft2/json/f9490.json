@@ -1,0 +1,110 @@
+{
+  "id": 9490,
+  "name": "Card #9490",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9490.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Embryo Medical Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "anime character with spikes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "punch out boxer"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "069 cyan magenta gold extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Silent Magician LV8 - IMG_3456 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9490.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

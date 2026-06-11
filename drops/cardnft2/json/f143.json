@@ -2,7 +2,7 @@
   "id": 143,
   "name": "Card #143",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_143.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0143.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,84 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "46 psychic pink blue clean wisp circle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "center",
+      "value": "scribbled clown face drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold shuppet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif 2 blue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - N-086"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_143.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0143.webp",
         "type": "image/webp"
       }
     ],

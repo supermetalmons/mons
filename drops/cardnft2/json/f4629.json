@@ -1,0 +1,126 @@
+{
+  "id": 4629,
+  "name": "Card #4629",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4629.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "yellow dice eyes"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "073 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 07"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 20"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "56 chrome pastel holo holo triangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 49"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "10 calm teal violet clean wisp capsule"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 21"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kid graffiti"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "River 164/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4629.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

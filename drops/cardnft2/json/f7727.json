@@ -1,0 +1,110 @@
+{
+  "id": 7727,
+  "name": "Card #7727",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7727.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Moon Black Cat Silhouette Background - card1673-23"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red rectangle black background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "small colorful figures"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue line pattern"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hamburger helper clock"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Unai no Tomo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Spell Card - IMG_3494 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7727.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

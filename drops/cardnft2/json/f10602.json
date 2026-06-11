@@ -1,0 +1,58 @@
+{
+  "id": 10602,
+  "name": "Card #10602",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10602.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mega gengar ex japanese pokemon card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black red blue paint smears"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "digitamamon - card6717 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "digitamamon - card6717 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10602.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

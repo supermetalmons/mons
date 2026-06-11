@@ -1,0 +1,70 @@
+{
+  "id": 4575,
+  "name": "Card #4575",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4575.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "exeggcute - card3047 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super buu"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude girls on hand frazetta"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chopper sitting cloud"
+    },
+    {
+      "trait_type": "center",
+      "value": "holographic chaos dark magician"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Twisted Justice, Fused Zamasu - BT3-076 R"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4575.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

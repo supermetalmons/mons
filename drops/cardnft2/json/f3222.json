@@ -1,0 +1,70 @@
+{
+  "id": 3222,
+  "name": "Card #3222",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3222.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cave logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "mew ex japanese card"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pikachu revive"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy upside down"
+    },
+    {
+      "trait_type": "hero",
+      "value": "asuka red glove pose"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Breeder Fields - 62/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3222.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

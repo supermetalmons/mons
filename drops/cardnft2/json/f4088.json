@@ -1,0 +1,86 @@
+{
+  "id": 4088,
+  "name": "Card #4088",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4088.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shinji manga"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bandai logo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "right",
+      "value": "frazetta horse girl"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rose shadow - eye horus style"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dual swords abstract"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dratini art sketch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract texture 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Root Fossil - 80/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4088.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

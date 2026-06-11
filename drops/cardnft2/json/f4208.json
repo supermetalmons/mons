@@ -1,0 +1,90 @@
+{
+  "id": 4208,
+  "name": "Card #4208",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4208.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "fella royale"
+    },
+    {
+      "trait_type": "center",
+      "value": "saint with angels"
+    },
+    {
+      "trait_type": "right",
+      "value": "Dende"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hikaru"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Poppy Playtime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sandygast - 74/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4208.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

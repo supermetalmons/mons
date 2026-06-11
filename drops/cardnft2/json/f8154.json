@@ -1,0 +1,98 @@
+{
+  "id": 8154,
+  "name": "Card #8154",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8154.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Rainbow Collage Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ghibli drif"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "retarded drifella digimon champion"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "frazetta horse girl"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "008 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "084 cyan magenta gold extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini Delta Species Hypnotic Gaze black mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8154.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 7588,
+  "name": "Card #7588",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7588.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "storm_amber_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "hand in soil"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Mukuro"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "mew ex japanese card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gastly Fossil - card1703 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cobalt cad"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7588.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 7699,
+  "name": "Card #7699",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7699.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "golden_orange_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "two creatures in a drain pipe"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "murnau_s faust"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gray stone sculpture fragment"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "white star"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Focus Band Neo Genesis 86 111 Trainer black mask"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark angel red glow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "biscuit mi note angel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Gay bud"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magby - card5062 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7699.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

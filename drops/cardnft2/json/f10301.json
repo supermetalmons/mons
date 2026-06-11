@@ -1,0 +1,94 @@
+{
+  "id": 10301,
+  "name": "Card #10301",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10301.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "why stop making games"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - vesica"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - aurora rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gogeta ssb vegito - card4550 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gogeta ssb vegito - card4550 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10301.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

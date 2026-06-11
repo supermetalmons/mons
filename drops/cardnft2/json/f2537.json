@@ -1,0 +1,70 @@
+{
+  "id": 2537,
+  "name": "Card #2537",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2537.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "spiked frame"
+    },
+    {
+      "trait_type": "right",
+      "value": "nude frazetta girl 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "captain"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black red blue paint smears"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dodrio - 33/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2537.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

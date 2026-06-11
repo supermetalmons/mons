@@ -1,0 +1,54 @@
+{
+  "id": 7024,
+  "name": "Card #7024",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7024.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Syakomon - IMG_3507 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7024.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

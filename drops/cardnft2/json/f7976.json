@@ -1,0 +1,74 @@
+{
+  "id": 7976,
+  "name": "Card #7976",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7976.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark abstract paint marks"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "092 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "032 dark blood orange extra holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "pink_et_photo_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7976.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

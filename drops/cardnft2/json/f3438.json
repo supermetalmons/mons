@@ -1,0 +1,198 @@
+{
+  "id": 3438,
+  "name": "Card #3438",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3438.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "weaponry"
+    },
+    {
+      "trait_type": "top right",
+      "value": "f zero logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "happened in mgs2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "bloodborne doll dark"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yura - 5/2"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3438.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

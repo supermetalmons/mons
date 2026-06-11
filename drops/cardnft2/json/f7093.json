@@ -1,0 +1,62 @@
+{
+  "id": 7093,
+  "name": "Card #7093",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7093.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon dark landscape"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pink blue pastel scribble"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Zapdos ex FireRed LeafGreen - IMG_3538 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7093.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

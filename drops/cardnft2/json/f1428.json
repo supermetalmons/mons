@@ -1,0 +1,50 @@
+{
+  "id": 1428,
+  "name": "Card #1428",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1428.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragonair - 149/236"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red cross"
+    },
+    {
+      "trait_type": "right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1428.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

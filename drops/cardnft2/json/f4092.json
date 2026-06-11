@@ -1,0 +1,106 @@
+{
+  "id": 4092,
+  "name": "Card #4092",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4092.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue flame eyes"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Pazuzu"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "left",
+      "value": "motorcycle in traffic"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "center",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pawniard - 134/236"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4092.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

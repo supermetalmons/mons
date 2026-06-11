@@ -1,0 +1,98 @@
+{
+  "id": 8140,
+  "name": "Card #8140",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8140.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Armor - card1673-33"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "toon blue eyes w pegasus"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bulbafella"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "misdreavus"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Trust the hood blink"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 dark magician clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Charizard gold star mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8140.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

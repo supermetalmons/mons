@@ -1,0 +1,90 @@
+{
+  "id": 7642,
+  "name": "Card #7642",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7642.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mewtwo Purple Lab Capsule Background - card1673-32"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "spilled flower pot"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cory infinite mario clouds"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gambling in the garden"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Reshiram Black and White - IMG_3427 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7642.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

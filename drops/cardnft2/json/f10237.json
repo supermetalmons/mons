@@ -1,0 +1,102 @@
+{
+  "id": 10237,
+  "name": "Card #10237",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10237.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Sky Between Trees Background - card1673-22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 red soft holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hand holding green snake"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "moai statue"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - eye horus style"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "chansey - card5165 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "chansey - card5165 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10237.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

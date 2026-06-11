@@ -1,0 +1,98 @@
+{
+  "id": 10489,
+  "name": "Card #10489",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10489.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "toxic_slime_sunset_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "white Jester Slime"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "budokai trunks future"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - water drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow prism - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "konohamaru ninja squad - card4540 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "konohamaru ninja squad - card4540 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "itachi sharingan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "misdreavus"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini deviantart sketch"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10489.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

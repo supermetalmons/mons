@@ -1,0 +1,54 @@
+{
+  "id": 2241,
+  "name": "Card #2241",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2241.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "asian man gif"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "the fool"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime girl shaved ice"
+    },
+    {
+      "trait_type": "border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poké Healer + - 90/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2241.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

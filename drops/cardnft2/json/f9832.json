@@ -1,0 +1,58 @@
+{
+  "id": 9832,
+  "name": "Card #9832",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9832.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "red blue yarn heart texture"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "cute penguin"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Pikachu in Magikarp Poncho - IMG_3219 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9832.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

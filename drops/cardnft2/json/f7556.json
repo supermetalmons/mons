@@ -1,0 +1,106 @@
+{
+  "id": 7556,
+  "name": "Card #7556",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7556.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "totoro and friends"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "zombie melting"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "smeargles art study"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "pokemon crayon art"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Kankuro inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7556.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

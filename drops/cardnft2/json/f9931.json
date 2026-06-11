@@ -1,0 +1,74 @@
+{
+  "id": 9931,
+  "name": "Card #9931",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9931.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "The Massacre of the Innocents engraving"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 sage green gold clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - eye horus style"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9931.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

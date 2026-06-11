@@ -1,0 +1,70 @@
+{
+  "id": 7173,
+  "name": "Card #7173",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7173.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif 2 regarded"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "lsw box sprites"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Pain - IMG_3247 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7173.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

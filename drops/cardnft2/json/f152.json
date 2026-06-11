@@ -2,7 +2,7 @@
   "id": 152,
   "name": "Card #152",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_152.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0152.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,36 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Earth Style: Underground Move Jutsu - 098"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "center",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "petra raindrop"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gulf war 2"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_152.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0152.webp",
         "type": "image/webp"
       }
     ],

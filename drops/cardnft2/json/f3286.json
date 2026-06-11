@@ -1,0 +1,114 @@
+{
+  "id": 3286,
+  "name": "Card #3286",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3286.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hellboy zombie sculpture bust"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman exe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story curly and quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pain sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "plush fish skeleton"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black pink abstract texture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Water Energy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3286.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

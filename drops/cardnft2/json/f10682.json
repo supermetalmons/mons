@@ -1,0 +1,142 @@
+{
+  "id": 10682,
+  "name": "Card #10682",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10682.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pikachu ditto card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 emerald violet dream holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 36"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - alchemy fire"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract muscular figure circles"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "watercolor block"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black intricate pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 50"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 06"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_30"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "garbodor_68_113_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_08"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "061 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "garbodor_68_113_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10682.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 10407,
+  "name": "Card #10407",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10407.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko mustard and blackened blue blocks"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "yugioh card swirl"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 31"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deidara cloak - card1014 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "deidara cloak - card1014 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "order of free gardeners"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "misdreavus"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10407.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

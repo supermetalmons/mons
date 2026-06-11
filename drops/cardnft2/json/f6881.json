@@ -1,0 +1,86 @@
+{
+  "id": 6881,
+  "name": "Card #6881",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6881.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "right",
+      "value": "sith eyes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Grave Protector"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "snake girl manga ink"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract demonic symbol"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cleapus spindle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyndaquil - 56/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6881.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

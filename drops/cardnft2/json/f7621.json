@@ -1,0 +1,94 @@
+{
+  "id": 7621,
+  "name": "Card #7621",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7621.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anime angel divider"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chained tortured chimchar"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gold stars"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Pikachu in Umbreon Poncho - IMG_3264 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7621.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

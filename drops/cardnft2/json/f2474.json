@@ -1,0 +1,86 @@
+{
+  "id": 2474,
+  "name": "Card #2474",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2474.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "megami tensei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story curly and quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract pastel texture"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokemon themed desserts"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Seaking - 46/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2474.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

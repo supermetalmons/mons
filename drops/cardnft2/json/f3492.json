@@ -1,0 +1,90 @@
+{
+  "id": 3492,
+  "name": "Card #3492",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3492.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "right",
+      "value": "nude frazetta girl 2"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "bruce connor inkblot"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drain dratini theology"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel sculpture head"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 257"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3492.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

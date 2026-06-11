@@ -1,0 +1,62 @@
+{
+  "id": 5123,
+  "name": "Card #5123",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5123.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white px crucidrif"
+    },
+    {
+      "trait_type": "top center",
+      "value": "warning text black background"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chrollo in white"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "NO EVOLUTION"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Team Plasma Ball - 105/116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5123.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

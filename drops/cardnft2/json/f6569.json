@@ -1,0 +1,54 @@
+{
+  "id": 6569,
+  "name": "Card #6569",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6569.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Pinocchio drowning"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "mew - card0237 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Muk - Fossil 13/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih7johvbbcki4gs2nao76gnw2mdvff764uqyepz67yo36342cnwoi/6569.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

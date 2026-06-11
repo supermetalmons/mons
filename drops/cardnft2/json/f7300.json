@@ -1,0 +1,50 @@
+{
+  "id": 7300,
+  "name": "Card #7300",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7300.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_red_orange_blocks"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Sasuke Uchiha - IMG_3235 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dunks"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7300.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

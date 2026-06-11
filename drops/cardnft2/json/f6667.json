@@ -1,0 +1,94 @@
+{
+  "id": 6667,
+  "name": "Card #6667",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6667.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mewtwoking kiss"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "death dealer preliminary"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - emerald black - cuneiform tablet"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "hero",
+      "value": "isobelle pascha kuma"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "biscuit engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black star"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Seel - 28/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6667.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

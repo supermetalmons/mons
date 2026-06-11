@@ -1,0 +1,62 @@
+{
+  "id": 2564,
+  "name": "Card #2564",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2564.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragonite rider"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kong silhouette drawing"
+    },
+    {
+      "trait_type": "border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga cap back view"
+    },
+    {
+      "trait_type": "hero",
+      "value": "pirate skeleton manga panel"
+    },
+    {
+      "trait_type": "top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blaine's Charmeleon - 31/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2564.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 8712,
+  "name": "Card #8712",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8712.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Cherries Dark Room Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark angel figure"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Sangan - IMG_3543 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8712.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

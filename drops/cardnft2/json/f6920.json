@@ -1,0 +1,86 @@
+{
+  "id": 6920,
+  "name": "Card #6920",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6920.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mifella mcdonalds meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "right",
+      "value": "Injection Fairy Lily"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rgb pixels"
+    },
+    {
+      "trait_type": "left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue clouds night sky"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red 3d bike"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "evil chip"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "hero",
+      "value": "medieval figures carrying bundles"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bone Shards - 395"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6920.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

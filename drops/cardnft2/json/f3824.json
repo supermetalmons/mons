@@ -1,0 +1,62 @@
+{
+  "id": 3824,
+  "name": "Card #3824",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3824.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging bed crimes of the future"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "backside bacon"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Maxie - 73/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3824.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

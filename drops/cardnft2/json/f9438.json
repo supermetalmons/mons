@@ -1,0 +1,62 @@
+{
+  "id": 9438,
+  "name": "Card #9438",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9438.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Fire Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "mars argo"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "29 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__void knight armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Espeon - IMG_3259 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9438.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

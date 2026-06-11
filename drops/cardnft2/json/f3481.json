@@ -1,0 +1,194 @@
+{
+  "id": 3481,
+  "name": "Card #3481",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3481.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "salute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hunson Abadeer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tech deck bean jester"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "printer can do 45 cards at once"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dark magician girl holographic"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mysterious Small Organization"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3481.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

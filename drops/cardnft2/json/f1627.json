@@ -1,0 +1,62 @@
+{
+  "id": 1627,
+  "name": "Card #1627",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1627.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Abra - 49/82"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy rainbow"
+    },
+    {
+      "trait_type": "hero",
+      "value": "muscular buu"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pastel injured angel with cross"
+    },
+    {
+      "trait_type": "right",
+      "value": "Dende"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1627.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

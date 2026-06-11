@@ -1,0 +1,70 @@
+{
+  "id": 4594,
+  "name": "Card #4594",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4594.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "zack fair sketch"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "center",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "forest - card1268 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Liquid Thought Evaporator - 74/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4594.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

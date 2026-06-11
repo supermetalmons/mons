@@ -1,0 +1,70 @@
+{
+  "id": 3068,
+  "name": "Card #3068",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3068.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "arceus highway loops"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Mukuro"
+    },
+    {
+      "trait_type": "right",
+      "value": "angry mokey"
+    },
+    {
+      "trait_type": "top center",
+      "value": "severed head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cell anime portrait"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "frazetta johnny dash comic"
+    },
+    {
+      "trait_type": "top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Slowbro - 43/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3068.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

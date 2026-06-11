@@ -1,0 +1,62 @@
+{
+  "id": 4276,
+  "name": "Card #4276",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4276.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ancient building"
+    },
+    {
+      "trait_type": "right",
+      "value": "local game shop"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pegasus toon yugioh"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "scattered balls"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Collector - 22/30"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4276.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

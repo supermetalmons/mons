@@ -1,0 +1,74 @@
+{
+  "id": 8012,
+  "name": "Card #8012",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8012.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "golden_orange_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "persona bear character"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Lam shifting eyes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon Team Rocket - card1122 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8012.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

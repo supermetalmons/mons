@@ -1,0 +1,70 @@
+{
+  "id": 5437,
+  "name": "Card #5437",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5437.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "isobelle pascha kuma"
+    },
+    {
+      "trait_type": "left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "center",
+      "value": "klonoa boss concept"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white spray 1"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gligar - 49/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5437.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

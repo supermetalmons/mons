@@ -1,0 +1,90 @@
+{
+  "id": 8304,
+  "name": "Card #8304",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8304.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_dragon_wave_art"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "krabby"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "baby pointing up"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Milotic ex - IMG_3428 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8304.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

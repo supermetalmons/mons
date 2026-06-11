@@ -1,0 +1,54 @@
+{
+  "id": 1477,
+  "name": "Card #1477",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1477.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kids playing cards collage"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "two red teddy bears"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "esoteric lessons steiner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Invitation - Mewtwo Strikes Back"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1477.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

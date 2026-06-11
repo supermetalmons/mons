@@ -1,0 +1,114 @@
+{
+  "id": 4410,
+  "name": "Card #4410",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4410.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "22 red soft holo holo ellipse"
+    },
+    {
+      "trait_type": "top center",
+      "value": "graveyard examiner"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 5"
+    },
+    {
+      "trait_type": "center",
+      "value": "gibson ink woman"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "left",
+      "value": "old man roshi"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yokai group"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Die Glocke am Himmel bringt Drifella zum Weinen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Revive - Base Set 2 89/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4410.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

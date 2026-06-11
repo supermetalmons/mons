@@ -1,0 +1,58 @@
+{
+  "id": 6005,
+  "name": "Card #6005",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6005.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "28 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dripping purple knife"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ninja doraemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "N - 92/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6005.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": 972,
+  "name": "Card #972",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0972.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Legacy of the Hero"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shattered glass"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chovey nintendog"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0972.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

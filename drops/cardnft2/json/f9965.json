@@ -1,0 +1,86 @@
+{
+  "id": 9965,
+  "name": "Card #9965",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9965.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon pink umbrella man"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "nen hexagon hxh"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "comic panel thinking peter parker"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - alchemy fire"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "black_lotus_magic_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "black_lotus_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9965.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

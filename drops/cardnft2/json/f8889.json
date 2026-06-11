@@ -1,0 +1,162 @@
+{
+  "id": 8889,
+  "name": "Card #8889",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8889.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cinderace_ex_rainbow_pokemon_card"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dragonair card text"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "poliwhirl sitting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract figure bacon 2"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "star sygil"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Noctowl - card5224 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakurai trickster god"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Trust the hood blink"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8889.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

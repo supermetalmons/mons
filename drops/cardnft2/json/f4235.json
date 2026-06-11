@@ -1,0 +1,94 @@
+{
+  "id": 4235,
+  "name": "Card #4235",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4235.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "46 magenta cyan gold holo holo ellipse"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "misa red"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "squirtle splash"
+    },
+    {
+      "trait_type": "top center",
+      "value": "matrix numbers"
+    },
+    {
+      "trait_type": "left",
+      "value": "noob tube"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy with nude girls frazetta"
+    },
+    {
+      "trait_type": "top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gulpin - 62/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4235.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

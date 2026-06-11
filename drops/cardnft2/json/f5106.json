@@ -1,0 +1,90 @@
+{
+  "id": 5106,
+  "name": "Card #5106",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5106.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "diamond plate texture"
+    },
+    {
+      "trait_type": "top left",
+      "value": "waddle dee spear"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ds at night"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gotenks majin buu battle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ornate pillar heart"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "tiny mole in hand"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "trash cans"
+    },
+    {
+      "trait_type": "hero",
+      "value": "eva statue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cubchoo - 21/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5106.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

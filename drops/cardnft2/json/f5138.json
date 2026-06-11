@@ -1,0 +1,106 @@
+{
+  "id": 5138,
+  "name": "Card #5138",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5138.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "salute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Great Ball - 100/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5138.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 8631,
+  "name": "Card #8631",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8631.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "cracked"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "blue connection"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "thankful quote"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "thorny branch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Topps Chrome Dragonite 149 - IMG_3214 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8631.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

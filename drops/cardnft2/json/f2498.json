@@ -1,0 +1,74 @@
+{
+  "id": 2498,
+  "name": "Card #2498",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2498.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gray tiled ceiling"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon trainers and team"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "stars on black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "shining gyarados"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "net and yoohoo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "morchel"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Drowzee - 32/112"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2498.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

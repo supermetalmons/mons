@@ -1,0 +1,114 @@
+{
+  "id": 7816,
+  "name": "Card #7816",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7816.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "pink stroke"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "glowing doraemon ghosts"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "foggy graveyard crosses"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "zeni"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Noctowl - card1097 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7816.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

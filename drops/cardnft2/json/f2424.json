@@ -1,0 +1,62 @@
+{
+  "id": 2424,
+  "name": "Card #2424",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2424.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "top right",
+      "value": "9 11 anime eyes meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "owls on pine branch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cyan magenta scribble page"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "unnamed david lynch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gotenks'™ Kamikaze Ghost - 3 of 13"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2424.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

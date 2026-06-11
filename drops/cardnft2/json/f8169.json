@@ -1,0 +1,98 @@
+{
+  "id": 8169,
+  "name": "Card #8169",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8169.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ancient Gold Pokeball Glyph Background - card1673-25"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Zabuza Momochi inverted mask"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "dvd anime girl"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "vintage coffee carton"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "the batman chapter 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 fire ice split holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "vorse_raider_yugioh_st_05_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8169.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

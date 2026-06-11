@@ -1,0 +1,102 @@
+{
+  "id": 365,
+  "name": "Card #365",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0365.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "kid graffiti"
+    },
+    {
+      "trait_type": "right",
+      "value": "swamp"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sheep head on plate"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier zombie"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 20"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract ink symbols"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 2"
+    },
+    {
+      "trait_type": "left",
+      "value": "shrug emoji oh well"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime fox girl sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charizard G Lv. X - DP45"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0365.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 4926,
+  "name": "Card #4926",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4926.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "game inventory panel"
+    },
+    {
+      "trait_type": "right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - black gold - bolt"
+    },
+    {
+      "trait_type": "top left",
+      "value": "might and magic logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful abstract pastel scribbles"
+    },
+    {
+      "trait_type": "left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "lego blocks wojak"
+    },
+    {
+      "trait_type": "hero",
+      "value": "pirate skeleton manga panel"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "center",
+      "value": "sacrificial eunich"
+    },
+    {
+      "trait_type": "top right",
+      "value": "help text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pakkun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kidomaru - 920"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4926.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

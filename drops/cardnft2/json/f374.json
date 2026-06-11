@@ -1,0 +1,58 @@
+{
+  "id": 374,
+  "name": "Card #374",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0374.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yugao Uzuki 2/2"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture 4"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon sushi art"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "beat up Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smeargles art study"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0374.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

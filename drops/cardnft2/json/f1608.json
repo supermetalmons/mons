@@ -1,0 +1,54 @@
+{
+  "id": 1608,
+  "name": "Card #1608",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1608.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Psyduck - 53/62"
+    },
+    {
+      "trait_type": "center",
+      "value": "itachi sharingan"
+    },
+    {
+      "trait_type": "top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "right",
+      "value": "no piplups sign"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drif iii chained test print"
+    },
+    {
+      "trait_type": "top left",
+      "value": "green radar screen"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1608.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

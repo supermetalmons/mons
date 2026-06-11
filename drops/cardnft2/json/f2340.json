@@ -1,0 +1,58 @@
+{
+  "id": 2340,
+  "name": "Card #2340",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2340.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging cocoon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Meowth - 56/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2340.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": 10948,
+  "name": "Card #10948",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10948.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "starving monk"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card white mask transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_seven__ghost_rainbow_stack"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "monster_reborn_yugioh_83764718_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "stars sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10948.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

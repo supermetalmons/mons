@@ -1,0 +1,182 @@
+{
+  "id": 3698,
+  "name": "Card #3698",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3698.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tech deck bean jester"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl cuck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shinji manga"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Shining Tyranitar Neo Destiny 113 105 inverted mask"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Toxicroak - 57/156"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3698.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

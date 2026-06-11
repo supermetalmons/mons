@@ -1,0 +1,70 @@
+{
+  "id": 5305,
+  "name": "Card #5305",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5305.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "porygon gameboy corner"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "right",
+      "value": "gunnm"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Pazuzu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow galaxy portal"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyndaquil - 18/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5305.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

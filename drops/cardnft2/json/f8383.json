@@ -1,0 +1,82 @@
+{
+  "id": 8383,
+  "name": "Card #8383",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8383.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "bad apple"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "offense skulls badge"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi pilot manga"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Elemental HERO Shining Flare Wingman - IMG_3454 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8383.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 4120,
+  "name": "Card #4120",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4120.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frazetta frodo wolf plate"
+    },
+    {
+      "trait_type": "center",
+      "value": "apollo engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Raizen"
+    },
+    {
+      "trait_type": "right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker card small"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Duskull - 86/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4120.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

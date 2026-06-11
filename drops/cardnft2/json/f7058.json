@@ -1,0 +1,62 @@
+{
+  "id": 7058,
+  "name": "Card #7058",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7058.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Swinub Neo Genesis - card2720 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elian"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7058.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

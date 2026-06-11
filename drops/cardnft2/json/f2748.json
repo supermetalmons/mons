@@ -1,0 +1,58 @@
+{
+  "id": 2748,
+  "name": "Card #2748",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2748.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "lord megadeath dialogue"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black red blue paint smears"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke sword stance"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red robot head"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pikachu - 60/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2748.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

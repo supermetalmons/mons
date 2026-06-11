@@ -1,0 +1,102 @@
+{
+  "id": 10181,
+  "name": "Card #10181",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10181.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Embryo Planet Space Illustration Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "068 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pack a punched shotgun"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "sonic level start"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "070 cyan magenta gold extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 blood orange magenta holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "garbodor_68_113_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "garbodor_68_113_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10181.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 618,
+  "name": "Card #618",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0618.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sai - 4/3"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixelated alien"
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0618.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

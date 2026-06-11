@@ -1,0 +1,58 @@
+{
+  "id": 9708,
+  "name": "Card #9708",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9708.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_serpent_shell_painting"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "enwretched soul hell fire"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suigetsu hozuki - card4774 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9708.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

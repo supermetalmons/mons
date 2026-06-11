@@ -1,0 +1,58 @@
+{
+  "id": 9325,
+  "name": "Card #9325",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9325.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Yellow Impressionist Garden Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "099 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "045 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 lava violet ember holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Pain - IMG_3247 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9325.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

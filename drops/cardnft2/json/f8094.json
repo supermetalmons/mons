@@ -1,0 +1,98 @@
+{
+  "id": 8094,
+  "name": "Card #8094",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8094.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_red_black_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "without twin with twin"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "taped string"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "orange spiral"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red blue black brushwork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "056 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "059 fire ice split extra holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kisame Hoshigaki - card0400 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8094.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 9441,
+  "name": "Card #9441",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9441.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Cherries Dark Room Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "038 fire ice split extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black void - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - lotus"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Devimon - IMG_3516 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9441.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

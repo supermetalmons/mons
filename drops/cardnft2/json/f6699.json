@@ -1,0 +1,90 @@
+{
+  "id": 6699,
+  "name": "Card #6699",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6699.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "hero",
+      "value": "slender man night"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract clown figures"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "uwu chain"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "mewtwo joker"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Super Zarbon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker card small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unknown Pokémon Energy Card"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6699.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

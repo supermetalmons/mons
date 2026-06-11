@@ -1,0 +1,106 @@
+{
+  "id": 4576,
+  "name": "Card #4576",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4576.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "01 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 39"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "011 fire ice split extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - pink fairy - drop"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 36"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "roger rabbit"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rose magenta - crucifix cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zamazenta V - 018/025"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4576.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

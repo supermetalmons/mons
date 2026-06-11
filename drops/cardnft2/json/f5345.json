@@ -1,0 +1,70 @@
+{
+  "id": 5345,
+  "name": "Card #5345",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5345.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ye_s wreck"
+    },
+    {
+      "trait_type": "top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black ink scratch"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokemon shiny sprite grid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "castlevania skeleton boss"
+    },
+    {
+      "trait_type": "right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "hero",
+      "value": "copium mask drawing"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sandile - 69/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5345.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

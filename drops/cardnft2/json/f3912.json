@@ -1,0 +1,98 @@
+{
+  "id": 3912,
+  "name": "Card #3912",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3912.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "milady nazi technology"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "making trading cards in my garage like chris chan"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 5"
+    },
+    {
+      "trait_type": "top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "center",
+      "value": "sacred cross black"
+    },
+    {
+      "trait_type": "top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gyarados - 31/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3912.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

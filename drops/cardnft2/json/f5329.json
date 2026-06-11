@@ -1,0 +1,62 @@
+{
+  "id": 5329,
+  "name": "Card #5329",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5329.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "forest path rainbow trail"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ancient scrolls"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "top center",
+      "value": "classroom shadows"
+    },
+    {
+      "trait_type": "top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "lego jester cabinet"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scyther - 4/168"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5329.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

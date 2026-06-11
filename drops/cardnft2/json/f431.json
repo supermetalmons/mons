@@ -1,0 +1,46 @@
+{
+  "id": 431,
+  "name": "Card #431",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0431.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Temptation - us044"
+    },
+    {
+      "trait_type": "center",
+      "value": "pixel drif outline"
+    },
+    {
+      "trait_type": "center",
+      "value": "bosch beggars and cripples"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0431.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

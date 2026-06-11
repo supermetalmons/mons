@@ -1,0 +1,62 @@
+{
+  "id": 3301,
+  "name": "Card #3301",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3301.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "pyramid head silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga lust"
+    },
+    {
+      "trait_type": "center",
+      "value": "cyan magenta scribble page"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "wojak esoterica"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokemon themed desserts"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Water Energy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3301.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

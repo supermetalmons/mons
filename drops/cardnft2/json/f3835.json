@@ -1,0 +1,78 @@
+{
+  "id": 3835,
+  "name": "Card #3835",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3835.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kirby fusion"
+    },
+    {
+      "trait_type": "top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sims phone icon"
+    },
+    {
+      "trait_type": "right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "alien"
+    },
+    {
+      "trait_type": "top left",
+      "value": "champions return to arms inventory"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "fishnet"
+    },
+    {
+      "trait_type": "center",
+      "value": "storm"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "light of destruction box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyrus's Conspiracy - 105/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3835.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

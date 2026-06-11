@@ -1,0 +1,54 @@
+{
+  "id": 198,
+  "name": "Card #198",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0198.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mox Emerald"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shark costume person"
+    },
+    {
+      "trait_type": "center",
+      "value": "Coat of Arms with a Skull engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton with crossbow"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0198.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

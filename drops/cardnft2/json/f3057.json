@@ -1,0 +1,54 @@
+{
+  "id": 3057,
+  "name": "Card #3057",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3057.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "don t dead open inside"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel statue illustration"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "wrightson zombie ink"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Revive - 89/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3057.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

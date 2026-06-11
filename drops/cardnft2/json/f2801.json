@@ -1,0 +1,46 @@
+{
+  "id": 2801,
+  "name": "Card #2801",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2801.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "itachi reaching hand sketch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokédex - 87/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2801.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

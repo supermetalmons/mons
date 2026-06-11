@@ -1,0 +1,82 @@
+{
+  "id": 2649,
+  "name": "Card #2649",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2649.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "top right",
+      "value": "old atlantis cultic activities"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark hallway flashlight"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Love Machine"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "right",
+      "value": "creepy masked figure"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "GeGeGe no Kitaro"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shieldon - 63/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2649.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

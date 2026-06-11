@@ -1,0 +1,54 @@
+{
+  "id": 1033,
+  "name": "Card #1033",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1033.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Itachi Uchiha - 5/3"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract cartoon faces"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "destiny figure with tank"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deadpool keychain"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sierpinski cube corner"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1033.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

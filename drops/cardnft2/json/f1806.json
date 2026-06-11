@@ -1,0 +1,58 @@
+{
+  "id": 1806,
+  "name": "Card #1806",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1806.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Persian - 56/130"
+    },
+    {
+      "trait_type": "border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "center",
+      "value": "intricate biomechanical engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Space Sheriff Sharivan"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dr slump arale motorcycle"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1806.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

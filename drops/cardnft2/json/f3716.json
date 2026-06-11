@@ -1,0 +1,118 @@
+{
+  "id": 3716,
+  "name": "Card #3716",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3716.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story curly and quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherries"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white rat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hatched dragon egg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Witches Flight"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hiei yu yu hakusho"
+    },
+    {
+      "trait_type": "hero",
+      "value": "femme fatale"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "making trading cards in my garage like chris chan"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fraxure - 110/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3716.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

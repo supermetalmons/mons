@@ -1,0 +1,86 @@
+{
+  "id": 8483,
+  "name": "Card #8483",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8483.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Jesus Icon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Leorio Paradinight"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "watercolor swatches"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "manga skeleton surprise"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "wojak esoterica"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "037 black cherry red extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "031 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "076 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Team Rocket Mewtwo - IMG_3273 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8483.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

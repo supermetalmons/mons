@@ -1,0 +1,70 @@
+{
+  "id": 2458,
+  "name": "Card #2458",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2458.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pocket monsters logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "hero",
+      "value": "holographic armored figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hero's Medal - 201/185"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2458.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

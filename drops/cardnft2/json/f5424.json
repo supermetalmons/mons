@@ -1,0 +1,50 @@
+{
+  "id": 5424,
+  "name": "Card #5424",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5424.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rufflet - 115/135"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5424.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

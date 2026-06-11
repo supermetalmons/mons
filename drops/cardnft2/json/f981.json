@@ -1,0 +1,70 @@
+{
+  "id": 981,
+  "name": "Card #981",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0981.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Baneful Gaze - 760 G21"
+    },
+    {
+      "trait_type": "center",
+      "value": "hand holding star engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "left",
+      "value": "valve baby"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Reaper Death Seal"
+    },
+    {
+      "trait_type": "top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ammo counter hud"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0981.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

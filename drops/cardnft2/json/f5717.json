@@ -1,0 +1,66 @@
+{
+  "id": 5717,
+  "name": "Card #5717",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5717.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "top right",
+      "value": "cherub drif sketches"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sitting superhero pixelated"
+    },
+    {
+      "trait_type": "hero",
+      "value": "mew joker card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Forbidden Word"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5717.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

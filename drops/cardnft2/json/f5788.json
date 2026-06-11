@@ -1,0 +1,70 @@
+{
+  "id": 5788,
+  "name": "Card #5788",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5788.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "top right",
+      "value": "price tag"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mystery box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "base card",
+      "value": "For Fun - OP14-037"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5788.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

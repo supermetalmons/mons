@@ -1,0 +1,54 @@
+{
+  "id": 9613,
+  "name": "Card #9613",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9613.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon pink umbrella man"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 fire ice split holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - vesica"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9613.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": 3705,
+  "name": "Card #3705",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3705.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "don t dead open inside"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mudkip"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "right",
+      "value": "sun moon mercury venus diagram"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "cartoon creatures border"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Diggersby - 112/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3705.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

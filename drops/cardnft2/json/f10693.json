@@ -1,0 +1,82 @@
+{
+  "id": 10693,
+  "name": "Card #10693",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10693.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pope butchered bacon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dratini team rocket texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 36"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pink purple watercolor drif body"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "058 black cherry red extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 46"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 09"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mega Gardevoir ex Full Art - IMG_3210 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digi egg"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10693.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

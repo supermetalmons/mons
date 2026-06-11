@@ -1,0 +1,54 @@
+{
+  "id": 9733,
+  "name": "Card #9733",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9733.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "hey man im sure you that the psyop play didnt really work out wondering you can help me frame this whole thing as performance let me know your"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Jolteon Jungle - card2072 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9733.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

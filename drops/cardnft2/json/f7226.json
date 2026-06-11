@@ -1,0 +1,70 @@
+{
+  "id": 7226,
+  "name": "Card #7226",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7226.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_rainbow_motion_blur"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "sheep in glass tank"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Espeon - IMG_3256 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7226.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

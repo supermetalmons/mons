@@ -1,0 +1,90 @@
+{
+  "id": 6839,
+  "name": "Card #6839",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6839.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "ultima"
+    },
+    {
+      "trait_type": "right",
+      "value": "cartoon detective sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "crucifix city"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dai shogi"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink drif plush"
+    },
+    {
+      "trait_type": "top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Vivi Ornitier"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sublime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Light blue bomb check"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mephistomon - DT-54"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6839.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

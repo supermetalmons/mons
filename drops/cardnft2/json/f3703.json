@@ -1,0 +1,198 @@
+{
+  "id": 3703,
+  "name": "Card #3703",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3703.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "cd mixtape edge"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "slots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jack frost sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elian"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Orange w hat"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Pokemon Illustrator Pikachu inverted mask"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hydreigon - 98/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3703.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

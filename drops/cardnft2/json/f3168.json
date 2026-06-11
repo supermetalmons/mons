@@ -1,0 +1,62 @@
+{
+  "id": 3168,
+  "name": "Card #3168",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3168.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta girl on tiger"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hamburger helper clock"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral staircase horror"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anatomical illustration of a neck"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Grass Energy - 162/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3168.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 3063,
+  "name": "Card #3063",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3063.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "right",
+      "value": "frazetta horse girl"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "drif bodies and drat sprites"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "center",
+      "value": "1639 shogi board"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vileplume - 69/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3063.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

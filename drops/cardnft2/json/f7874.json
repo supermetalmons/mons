@@ -1,0 +1,78 @@
+{
+  "id": 7874,
+  "name": "Card #7874",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7874.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Black Green Motion Blur Texture Background - card1673-34"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "alien creature head"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "drifella lv x"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camerupt sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Absol Team Magma vs Team Aqua - IMG_3477 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7874.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

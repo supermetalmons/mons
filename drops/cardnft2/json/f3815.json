@@ -1,0 +1,98 @@
+{
+  "id": 3815,
+  "name": "Card #3815",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3815.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "croagunk"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Farnese Hercules engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "333"
+    },
+    {
+      "trait_type": "left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - lapis gold - ankh"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "venoms charizard card"
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "based cardboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate pendant"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Professor Elm's Training Method - 79/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3815.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 4051,
+  "name": "Card #4051",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4051.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "morpho"
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wild cat"
+    },
+    {
+      "trait_type": "top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "needed a fresh restart"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragon flames"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - blood red black - drop"
+    },
+    {
+      "trait_type": "left",
+      "value": "red fishing guy"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ultimate muscle manga"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "japanese demon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Torterra - 58/131"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4051.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

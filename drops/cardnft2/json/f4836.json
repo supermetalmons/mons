@@ -1,0 +1,94 @@
+{
+  "id": 4836,
+  "name": "Card #4836",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4836.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "42 radiant yellow red clean wisp circle"
+    },
+    {
+      "trait_type": "left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "top right",
+      "value": "stadium cloud label"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sasuke black white"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "BigMamemon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal tat lsw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - PR us002"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4836.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

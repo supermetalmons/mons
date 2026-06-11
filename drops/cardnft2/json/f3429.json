@@ -1,0 +1,202 @@
+{
+  "id": 3429,
+  "name": "Card #3429",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3429.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "wcw faceoff collage"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bowser"
+    },
+    {
+      "trait_type": "top right",
+      "value": "judy garland graphite drawing"
+    },
+    {
+      "trait_type": "left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star burst"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red nabler purse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tomato"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Super Rod - 20/20"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihyvns4cb36cxa6u6smeiwtqs6sqpe7n2pzczfyba4vy2fcws2tty/3429.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

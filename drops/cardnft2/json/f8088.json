@@ -1,0 +1,82 @@
+{
+  "id": 8088,
+  "name": "Card #8088",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8088.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "death dealer preliminary"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "shadow mage"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 1"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Charizard G LV X Supreme Victors 143 147 inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8088.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

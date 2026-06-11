@@ -1,0 +1,62 @@
+{
+  "id": 4294,
+  "name": "Card #4294",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4294.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frazetta frodo wolf plate"
+    },
+    {
+      "trait_type": "center",
+      "value": "digimon world card shop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Reshiram - 14/73"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4294.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

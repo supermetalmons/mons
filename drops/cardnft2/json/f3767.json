@@ -1,0 +1,106 @@
+{
+  "id": 3767,
+  "name": "Card #3767",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3767.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "gta money counter"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh line stickers"
+    },
+    {
+      "trait_type": "right",
+      "value": "Injection Fairy Lily"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white px crucidrif"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "knight with shield"
+    },
+    {
+      "trait_type": "center",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "left",
+      "value": "purple mask creatures"
+    },
+    {
+      "trait_type": "top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario aura sphere"
+    },
+    {
+      "trait_type": "top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "teddiursa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Interviewer's Questions - 77/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3767.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

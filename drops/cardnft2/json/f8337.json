@@ -1,0 +1,82 @@
+{
+  "id": 8337,
+  "name": "Card #8337",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8337.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Fire Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "ugly"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "lapras_fossil_10_62_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8337.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

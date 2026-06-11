@@ -1,0 +1,86 @@
+{
+  "id": 9941,
+  "name": "Card #9941",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9941.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue_red_optical_tunnel"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "standing monkey"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "champions return to arms inventory"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deidara seated - card0401 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "deidara seated - card0401 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9941.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

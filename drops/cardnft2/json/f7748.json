@@ -1,0 +1,110 @@
+{
+  "id": 7748,
+  "name": "Card #7748",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7748.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ito waifu - card1673-18"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "penguin with blue crown"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "you cant beat a man hoods drifella daze"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small computer icon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "heavy rain logo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Zabuza Momochi inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7748.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

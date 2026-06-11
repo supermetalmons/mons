@@ -1,0 +1,78 @@
+{
+  "id": 2381,
+  "name": "Card #2381",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2381.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "Il Blud"
+    },
+    {
+      "trait_type": "left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "top center",
+      "value": "matrix numbers"
+    },
+    {
+      "trait_type": "top right",
+      "value": "kane mid air"
+    },
+    {
+      "trait_type": "center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Saint Paul engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ninja doraemon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pinball sprites"
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime keychain character"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "wireframe revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Electrike - 62/99"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2381.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

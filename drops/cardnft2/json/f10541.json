@@ -1,0 +1,62 @@
+{
+  "id": 10541,
+  "name": "Card #10541",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10541.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Frazetta Death Dealer Moon Warrior Background - card1673-19"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pegasus toon yugioh"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "marshmallon_yugioh_31305911_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "marshmallon_yugioh_31305911_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "alien giger figure"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "offense skulls badge"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "magic key"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10541.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

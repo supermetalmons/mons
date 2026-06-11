@@ -1,0 +1,54 @@
+{
+  "id": 3333,
+  "name": "Card #3333",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3333.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drif triptych in dilapidated museum"
+    },
+    {
+      "trait_type": "center",
+      "value": "orange gradient rectangle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dog knight pixel art"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hamburger helper clock"
+    },
+    {
+      "trait_type": "hero",
+      "value": "copium mask drawing"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pikachu - 48/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3333.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

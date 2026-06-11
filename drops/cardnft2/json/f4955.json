@@ -1,0 +1,62 @@
+{
+  "id": 4955,
+  "name": "Card #4955",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4955.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - orange fire - crescent"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "heat map corner"
+    },
+    {
+      "trait_type": "center",
+      "value": "Super Ghost Kamikaze Attack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "noise mc skin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kakashi Hatake - 229"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4955.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

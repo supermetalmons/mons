@@ -1,0 +1,86 @@
+{
+  "id": 5430,
+  "name": "Card #5430",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5430.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "center",
+      "value": "card frame concepts"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "top right",
+      "value": "jester face"
+    },
+    {
+      "trait_type": "top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "morchel"
+    },
+    {
+      "trait_type": "hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mossy spike ball"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pineco - 62/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5430.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

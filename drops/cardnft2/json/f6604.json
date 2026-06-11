@@ -1,0 +1,74 @@
+{
+  "id": 6604,
+  "name": "Card #6604",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6604.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "you are still too weak you dont have enough and you know something you never will"
+    },
+    {
+      "trait_type": "left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "hero",
+      "value": "twin peaks coffee scene"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gray safe"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gulf war 2"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sans papyrus stack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hidden Needles - N-199"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6604.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

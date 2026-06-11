@@ -1,0 +1,90 @@
+{
+  "id": 8262,
+  "name": "Card #8262",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8262.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue_yellow_cloud_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "digimon world card shop"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "blue spray"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kero anime drawer"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "purple sofa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "26 dark ruby violet orange holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "079 emerald violet dream extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "hidan_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8262.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 9926,
+  "name": "Card #9926",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9926.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "43 fire ice split holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini water - card1357 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dratini water - card1357 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9926.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

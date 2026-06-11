@@ -1,0 +1,102 @@
+{
+  "id": 8442,
+  "name": "Card #8442",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8442.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "spider warrior"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dore angel engraving"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "plastinated specimen"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester boxer baby drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "013 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "039 purple peach glow extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Goblin Zombie - IMG_3564 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8442.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 6238,
+  "name": "Card #6238",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6238.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zetsu - 3/3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "victorian woman reading"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wojak boy runescape shirt"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6238.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

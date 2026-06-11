@@ -1,0 +1,114 @@
+{
+  "id": 10356,
+  "name": "Card #10356",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10356.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko lavender magenta and charcoal blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "scribbled clown face drif"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "mareep"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow wave pattern"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red fishing guy"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 35"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - vesica"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "19 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "050 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "broly rampaging horror - card0773 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "broly rampaging horror - card0773 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "drifellaverse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10356.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

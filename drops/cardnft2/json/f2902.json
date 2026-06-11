@@ -1,0 +1,66 @@
+{
+  "id": 2902,
+  "name": "Card #2902",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2902.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "scapegoat"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "kurabbu grooming proof"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dore angel engraving"
+    },
+    {
+      "trait_type": "left",
+      "value": "orange bacon left"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Pazuzu"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fossil Excavation Kit - 101/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2902.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

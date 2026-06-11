@@ -1,0 +1,94 @@
+{
+  "id": 2682,
+  "name": "Card #2682",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2682.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "lego reaper"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard fire breath"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tanooki arale"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark matter web"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Beldum - 29/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2682.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

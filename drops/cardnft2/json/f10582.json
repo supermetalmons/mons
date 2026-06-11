@@ -1,0 +1,70 @@
+{
+  "id": 10582,
+  "name": "Card #10582",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10582.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kinnikuman wrestlers lineup"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "asian man gif"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suigetsu hozuki - card4774 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "suigetsu hozuki - card4774 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10582.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

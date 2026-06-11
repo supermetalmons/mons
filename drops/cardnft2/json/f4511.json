@@ -1,0 +1,62 @@
+{
+  "id": 4511,
+  "name": "Card #4511",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4511.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "resident evil health status"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crucidrifella digimon illustration"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "snake girl manga ink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker card small"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - PR us001"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4511.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

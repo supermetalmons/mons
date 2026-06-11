@@ -1,0 +1,94 @@
+{
+  "id": 7716,
+  "name": "Card #7716",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7716.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "barbarian watercolor head"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Nao Tsukiji"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "atari et"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo 2"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magikarp XY Promo - IMG_3489 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7716.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

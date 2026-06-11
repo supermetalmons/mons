@@ -1,0 +1,78 @@
+{
+  "id": 5043,
+  "name": "Card #5043",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5043.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "gambling in the garden"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "silver spheres installation"
+    },
+    {
+      "trait_type": "top right",
+      "value": "goku watching"
+    },
+    {
+      "trait_type": "top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon warrior jester"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 3"
+    },
+    {
+      "trait_type": "top center",
+      "value": "now and then, here and there"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eelektross - 46/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5043.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

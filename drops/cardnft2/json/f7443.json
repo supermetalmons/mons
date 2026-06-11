@@ -1,0 +1,114 @@
+{
+  "id": 7443,
+  "name": "Card #7443",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7443.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_rainbow_motion_blur"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "invader frazetta"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "manga dog experiment"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "umbreon drifella"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "money stack"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Jungle - card1634 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "larvitar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "daily tribune, wisconsin rapids 1961"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7443.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 2897,
+  "name": "Card #2897",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2897.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rgb pixels"
+    },
+    {
+      "trait_type": "left",
+      "value": "The Lonely House on Adachi Moor woodblock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "homunculus in flask"
+    },
+    {
+      "trait_type": "right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "center",
+      "value": "my first drifella"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Boss's Orders - 132/172"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2897.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

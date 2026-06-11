@@ -1,0 +1,78 @@
+{
+  "id": 8693,
+  "name": "Card #8693",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8693.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Yellow Impressionist Garden Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "multi eyed demon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "Beelzemon Blast Mode"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Articuno Fossil 2 of 62 - card0069 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8693.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

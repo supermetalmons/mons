@@ -1,0 +1,50 @@
+{
+  "id": 517,
+  "name": "Card #517",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0517.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mr. Mime - 22/64"
+    },
+    {
+      "trait_type": "center",
+      "value": "poor rich comparison"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "soldier with talmud in large backpack"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple plants in pots"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chibi clay character jump"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0517.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

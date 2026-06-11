@@ -1,0 +1,122 @@
+{
+  "id": 10490,
+  "name": "Card #10490",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10490.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sargent Woman By The Sea Background - card1673-52"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "kirby inhaling"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kadabra japanese name corner"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "psyduck charizard collage"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - vesica"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 20"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "giant chameleon - card0174 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "giant chameleon - card0174 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "alien triptych drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mother creep sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ff wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherries"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10490.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

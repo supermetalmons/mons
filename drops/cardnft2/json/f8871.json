@@ -1,0 +1,102 @@
+{
+  "id": 8871,
+  "name": "Card #8871",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8871.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "drif bodies and drat sprites"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "martini table black background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "onigiri plate"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dog knight pixel art"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "ys 1"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dragonite EX Evolutions 106 of 108 - IMG_3410 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowpoly knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pog face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8871.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

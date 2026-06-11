@@ -1,0 +1,90 @@
+{
+  "id": 8170,
+  "name": "Card #8170",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8170.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_pixel_camo_totem"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow twin dragonair"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gray stone sculpture fragment"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "045 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "garbodor_68_113_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8170.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

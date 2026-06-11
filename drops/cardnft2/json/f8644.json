@@ -1,0 +1,90 @@
+{
+  "id": 8644,
+  "name": "Card #8644",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8644.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "mew joker card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "campfire"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "spy cartoon character"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "black armored samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "salute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink angel slime"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kisame Hoshigaki - card4495 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8644.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

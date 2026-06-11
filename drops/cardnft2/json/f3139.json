@@ -1,0 +1,62 @@
+{
+  "id": 3139,
+  "name": "Card #3139",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3139.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "yugi mutou dark yugi"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "my son thinks the moon is a monster"
+    },
+    {
+      "trait_type": "center",
+      "value": "tree of life"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pikachu - 58/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3139.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

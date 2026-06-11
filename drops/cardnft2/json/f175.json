@@ -2,7 +2,7 @@
   "id": 175,
   "name": "Card #175",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_175.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0175.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jugo - 5/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ar nintendo ds cartridge"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_175.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0175.webp",
         "type": "image/webp"
       }
     ],

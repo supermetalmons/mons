@@ -1,0 +1,106 @@
+{
+  "id": 7594,
+  "name": "Card #7594",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7594.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_gold_plum_teal_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "croconaw"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "dune dark ritual scene"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "cherubs clouds ink sketch"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "spy cartoon character"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Anime Character Card - IMG_3549 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7594.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

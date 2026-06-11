@@ -1,0 +1,114 @@
+{
+  "id": 4830,
+  "name": "Card #4830",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4830.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "itachi_anbu_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 49"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "09 gentle pearl clean wisp heart"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "43 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "061 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 16"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 13"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Tactic against Sharingan Eye - PR 026"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4830.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

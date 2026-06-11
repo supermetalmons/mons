@@ -1,0 +1,70 @@
+{
+  "id": 9280,
+  "name": "Card #9280",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9280.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Meme Lords Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 39"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - saturn sigil"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sableye_10_101_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9280.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

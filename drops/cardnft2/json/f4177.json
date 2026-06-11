@@ -1,0 +1,90 @@
+{
+  "id": 4177,
+  "name": "Card #4177",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4177.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "top left",
+      "value": "7401% ApY"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small computer icon"
+    },
+    {
+      "trait_type": "right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "orc warrior"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "cartoon character sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "3d line digimon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frankenstein wrightson the modern prometheus"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Stoutland - 110/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4177.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

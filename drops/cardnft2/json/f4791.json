@@ -1,0 +1,58 @@
+{
+  "id": 4791,
+  "name": "Card #4791",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4791.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cave map on black"
+    },
+    {
+      "trait_type": "top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "queer as folk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Haku - N-265"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4791.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

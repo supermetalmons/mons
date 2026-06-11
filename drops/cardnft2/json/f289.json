@@ -1,0 +1,46 @@
+{
+  "id": 289,
+  "name": "Card #289",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0289.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kotetsu Hagane - 143"
+    },
+    {
+      "trait_type": "right",
+      "value": "foggy church graveyard"
+    },
+    {
+      "trait_type": "center",
+      "value": "gunstar heroes concept art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0289.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

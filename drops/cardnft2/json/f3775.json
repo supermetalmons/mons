@@ -1,0 +1,98 @@
+{
+  "id": 3775,
+  "name": "Card #3775",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3775.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "doodle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "left",
+      "value": "emmaciated angel"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baseball player manga"
+    },
+    {
+      "trait_type": "center",
+      "value": "gustav klimt sketch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "top right",
+      "value": "333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hunson Abadeer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chansey - 80/119"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3775.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

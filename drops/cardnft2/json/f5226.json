@@ -1,0 +1,82 @@
+{
+  "id": 5226,
+  "name": "Card #5226",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5226.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "white red flower black"
+    },
+    {
+      "trait_type": "right",
+      "value": "shadow mage"
+    },
+    {
+      "trait_type": "border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars"
+    },
+    {
+      "trait_type": "top center",
+      "value": "evil biscuit logo 2"
+    },
+    {
+      "trait_type": "top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "left",
+      "value": "lsw box sprites"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "nude frazetta girl 3"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alien figure on cloth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "puyo puyo sun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dratini - Delta Species 65/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5226.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "id": 4833,
+  "name": "Card #4833",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4833.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - sunset rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 10"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "46 psychic pink blue clean wisp circle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rainbow gradient 04 - crucifix cross"
+    },
+    {
+      "trait_type": "left",
+      "value": "white star"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kakashi reading book"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "magmar_ex_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - PR 004"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4833.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 8044,
+  "name": "Card #8044",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8044.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Armor - card1673-33"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kinnikuman wrestlers lineup"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "neco arc tank"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "099 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "58 blood orange magenta holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Shining Mew - IMG_3260 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8044.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

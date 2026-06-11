@@ -1,0 +1,146 @@
+{
+  "id": 10700,
+  "name": "Card #10700",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10700.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon monkey figures"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 06"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_03"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "geometric star pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "striped tiger shape"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow pixel outline star drif"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "watercolor drif wound"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - vesica"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holy gold - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - candy rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - drop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Gengar Neo Destiny 6 of 105 - IMG_3537 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_04"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_22"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_02"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10700.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

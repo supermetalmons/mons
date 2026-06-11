@@ -1,0 +1,106 @@
+{
+  "id": 5006,
+  "name": "Card #5006",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5006.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "chakra cat outline"
+    },
+    {
+      "trait_type": "left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ds at night"
+    },
+    {
+      "trait_type": "center",
+      "value": "orange painterly woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "top center",
+      "value": "19 yo avant nft collector"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "carp"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "buck rogers cover 1"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Octillery - 58/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5006.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

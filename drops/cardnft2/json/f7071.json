@@ -1,0 +1,54 @@
+{
+  "id": 7071,
+  "name": "Card #7071",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7071.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_serpent_shell_painting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "Booster Rauschenberg 1967 "
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Dragonite Team Rocket 5 of 82 - card0075 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7071.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

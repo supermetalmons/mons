@@ -1,0 +1,70 @@
+{
+  "id": 5746,
+  "name": "Card #5746",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5746.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "in service baby yoda "
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "hero",
+      "value": "pyramid head silhouette"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold flake amano 2"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Subjective - us070"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5746.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

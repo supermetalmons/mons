@@ -1,0 +1,106 @@
+{
+  "id": 4653,
+  "name": "Card #4653",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4653.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "haku - card4641 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "25 calm teal violet clean wisp ellipse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "biscuit engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Weavile - Team Plasma 66/116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4653.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

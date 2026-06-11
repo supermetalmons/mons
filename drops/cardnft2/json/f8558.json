@@ -1,0 +1,90 @@
+{
+  "id": 8558,
+  "name": "Card #8558",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8558.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 4"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "police officer arresting"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "itachi smiling blood"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Alakazam Star Crystal Guardians - IMG_3426 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8558.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

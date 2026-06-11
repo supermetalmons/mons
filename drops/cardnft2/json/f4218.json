@@ -1,0 +1,106 @@
+{
+  "id": 4218,
+  "name": "Card #4218",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4218.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "plastinated specimen"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "official game boy logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "center",
+      "value": "alien creature concept art"
+    },
+    {
+      "trait_type": "left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kabuto snake form"
+    },
+    {
+      "trait_type": "right",
+      "value": "orange bacon right"
+    },
+    {
+      "trait_type": "hero",
+      "value": "fantasy creature chains"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag gundam"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "biscuit mi note angel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Energy Search - 90/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4218.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

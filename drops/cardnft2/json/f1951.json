@@ -1,0 +1,54 @@
+{
+  "id": 1951,
+  "name": "Card #1951",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1951.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Goomy - 92/131"
+    },
+    {
+      "trait_type": "center",
+      "value": "moebius bat skull boxes"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "empty room wall"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Orko motu"
+    },
+    {
+      "trait_type": "right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "swarm of mice ceramic pattern"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1951.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

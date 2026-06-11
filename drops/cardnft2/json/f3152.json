@@ -1,0 +1,70 @@
+{
+  "id": 3152,
+  "name": "Card #3152",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3152.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "monster"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark angel figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "card vending machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "frazetta romance panel"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "never forgetti drawing"
+    },
+    {
+      "trait_type": "right",
+      "value": "no piplups sign"
+    },
+    {
+      "trait_type": "border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Energy - 165/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3152.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

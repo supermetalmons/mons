@@ -1,0 +1,90 @@
+{
+  "id": 8595,
+  "name": "Card #8595",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8595.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "watermelon_candy_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "alien tamagatchi"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "bubble mew"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "blue_eyes_white_dragon_yugioh_89631139_card_2 white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8595.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

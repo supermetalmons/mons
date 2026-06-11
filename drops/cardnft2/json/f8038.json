@@ -1,0 +1,102 @@
+{
+  "id": 8038,
+  "name": "Card #8038",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8038.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mint_red_aqua_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mega man"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat jester baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "53 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Zabuza Momochi Younger Days - card1062 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8038.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

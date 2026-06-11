@@ -1,0 +1,54 @@
+{
+  "id": 1272,
+  "name": "Card #1272",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1272.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mountain"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cory infinite mario clouds"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "spilled flower pot"
+    },
+    {
+      "trait_type": "top right",
+      "value": "metallic sphere with spikes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "center",
+      "value": "red cross text pattern"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1272.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

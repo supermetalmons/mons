@@ -1,0 +1,106 @@
+{
+  "id": 10162,
+  "name": "Card #10162",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10162.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Witches Flight"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "charizard sticker"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst violet - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - runic bind"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "taunt_l2_6_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "taunt_l2_6_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10162.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

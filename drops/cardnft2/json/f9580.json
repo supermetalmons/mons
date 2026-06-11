@@ -1,0 +1,74 @@
+{
+  "id": 9580,
+  "name": "Card #9580",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9580.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Embryo Planet Space Illustration Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white light - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 01"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini thunder jolt - card5226 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digi egg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9580.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

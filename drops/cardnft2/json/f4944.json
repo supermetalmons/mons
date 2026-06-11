@@ -1,0 +1,162 @@
+{
+  "id": 4944,
+  "name": "Card #4944",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4944.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 24"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "080 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "096 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 13"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 06"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 17"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 29"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shaman"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 32"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rock lee eight inner gates"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier zombie"
+    },
+    {
+      "trait_type": "right",
+      "value": "togetic at bat"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "life_herb_90_101_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kankuro - 059"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4944.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 7952,
+  "name": "Card #7952",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7952.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gothic Cathedral Night Background - card1673-41"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "ys chronicles sceencap"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black with snowflakes"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "manga shocked faces"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "058 black cherry red extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shaymin Lv X - card0350 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7952.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

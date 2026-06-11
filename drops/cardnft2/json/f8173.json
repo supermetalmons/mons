@@ -1,0 +1,90 @@
+{
+  "id": 8173,
+  "name": "Card #8173",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8173.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Bouquet Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "muscular anime character"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract human figure"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "pink stroke"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "naruto_uzumaki_custom_card_2 white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8173.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

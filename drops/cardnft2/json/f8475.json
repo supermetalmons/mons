@@ -1,0 +1,82 @@
+{
+  "id": 8475,
+  "name": "Card #8475",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8475.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mercy text"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "frankenstein ship"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bomberman sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Lam shifting eyes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Luster Dragon - IMG_3455 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8475.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

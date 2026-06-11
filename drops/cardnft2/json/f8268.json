@@ -1,0 +1,74 @@
+{
+  "id": 8268,
+  "name": "Card #8268",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8268.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "porygon gameboy corner"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "zombie cryptopunk"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "crowbar hl2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Kakashi Hatake black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8268.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

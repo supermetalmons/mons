@@ -1,0 +1,70 @@
+{
+  "id": 7960,
+  "name": "Card #7960",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7960.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Hell Mirror Scene Background - card1673-43"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drapion smoke"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "lego logo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark angel red glow"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Beldum - card5355 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7960.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

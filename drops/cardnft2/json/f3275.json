@@ -1,0 +1,74 @@
+{
+  "id": 3275,
+  "name": "Card #3275",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3275.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Gelus (πé╖πéÖπéºπâ⌐πé╣) manga page"
+    },
+    {
+      "trait_type": "top right",
+      "value": "1001 WAYS TO LIVE WITHOUT WORKING"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mickey mouse gas mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cybernetic head wires"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi gengar"
+    },
+    {
+      "trait_type": "left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Miltank - 94/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3275.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 8366,
+  "name": "Card #8366",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8366.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Infernal Warrior Banner Painting Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Miki Koishikawa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "064 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 dark cobalt pink sunset holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mudkip - IMG_3272 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8366.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

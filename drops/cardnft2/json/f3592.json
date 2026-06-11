@@ -1,0 +1,86 @@
+{
+  "id": 3592,
+  "name": "Card #3592",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3592.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "waddle dee spear"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "soldier with talmud in large backpack"
+    },
+    {
+      "trait_type": "right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif 2 blue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh line stickers"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dore angel engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gathering Herbs"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3592.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

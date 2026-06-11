@@ -1,0 +1,82 @@
+{
+  "id": 8097,
+  "name": "Card #8097",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8097.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_purple_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "cave story tiles"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blood drops"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "titan grabbing horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikki heads"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Orochimaru - card0162 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8097.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

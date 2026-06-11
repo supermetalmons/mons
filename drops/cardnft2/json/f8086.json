@@ -1,0 +1,82 @@
+{
+  "id": 8086,
+  "name": "Card #8086",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8086.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "opal_pastel_haze_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "arale phone lettuce"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Kimimaro"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Porygon black mask variant 8"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal tat lsw"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Uchiha Mangekyo inverted mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8086.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

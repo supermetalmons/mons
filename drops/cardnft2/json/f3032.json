@@ -1,0 +1,74 @@
+{
+  "id": 3032,
+  "name": "Card #3032",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3032.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bakura manga chess pieces"
+    },
+    {
+      "trait_type": "right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hypno - 23/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3032.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 7608,
+  "name": "Card #7608",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7608.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_teal_blue_lime_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Witches Flight"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "jester face"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "shadow in the moonlight"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 2"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red pink abstract sketch"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Clefable Jungle - card2289 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shining sonichu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink bunny tank"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7608.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

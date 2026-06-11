@@ -1,0 +1,46 @@
+{
+  "id": 1127,
+  "name": "Card #1127",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1127.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Prophecy"
+    },
+    {
+      "trait_type": "center",
+      "value": "color gradient swatches"
+    },
+    {
+      "trait_type": "hero",
+      "value": "armored astronaut sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1127.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

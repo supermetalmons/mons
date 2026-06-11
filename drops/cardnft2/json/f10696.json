@@ -1,0 +1,146 @@
+{
+  "id": 10696,
+  "name": "Card #10696",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10696.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon monkey figures"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "092 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - spiral"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract figure bacon 2"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "post supermoon energy"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gray diamond gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow galaxy portal"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_18"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 dark magician clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_02"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 34"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "42 radiant yellow red clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "eevee_101_149_card white mask transparent"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_17"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_16"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_14"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_29"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_15"
+    },
+    {
+      "trait_type": "over mask gradient stars",
+      "value": "sr_crazy_small_duplicate_gradient_stars_19"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "eevee_101_149_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "army teen baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10696.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 4377,
+  "name": "Card #4377",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4377.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hooded figures and mannequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gallade - 82/236"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4377.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

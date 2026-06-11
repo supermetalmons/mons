@@ -1,0 +1,98 @@
+{
+  "id": 10087,
+  "name": "Card #10087",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10087.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "shopping cart full packs"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "hand holding star engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "kino_s journey"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "jugo - card0175 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "blood energy sprite overlay - overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "jugo - card0175 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10087.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

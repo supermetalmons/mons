@@ -1,0 +1,50 @@
+{
+  "id": 9732,
+  "name": "Card #9732",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9732.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "digimon v12 mag cover"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "plusle - card2736 white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9732.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

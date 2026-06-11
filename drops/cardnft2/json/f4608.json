@@ -1,0 +1,154 @@
+{
+  "id": 4608,
+  "name": "Card #4608",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4608.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 10"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 23"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 19"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 48"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ammo counter hud"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "rising prototype slicing"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "you are still too weak you dont have enough and you know something you never will"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "hero",
+      "value": "joker abstract bats"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Carnage poncho"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fur Bearing Trout 107/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4608.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

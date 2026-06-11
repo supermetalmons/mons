@@ -1,0 +1,102 @@
+{
+  "id": 3997,
+  "name": "Card #3997",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3997.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "gold stars"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red crucifixion scene"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "fella royale"
+    },
+    {
+      "trait_type": "left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - pink fairy - flame"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sableye poncho red gem"
+    },
+    {
+      "trait_type": "hero",
+      "value": "electabuzz punch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pikachu revive"
+    },
+    {
+      "trait_type": "right",
+      "value": "lego drif"
+    },
+    {
+      "trait_type": "center",
+      "value": "leyendecker head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ancient Technical Machine [Rock] - 85/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3997.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

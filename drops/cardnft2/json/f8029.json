@@ -1,0 +1,74 @@
+{
+  "id": 8029,
+  "name": "Card #8029",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8029.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crown of thorns gem"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "army soldier panel"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Poppy Playtime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Metagross - IMG_3278 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8029.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

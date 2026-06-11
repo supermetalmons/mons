@@ -1,0 +1,62 @@
+{
+  "id": 5567,
+  "name": "Card #5567",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5567.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "top right",
+      "value": "333"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "watercolor drif reaper"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "based cardboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidoking - 45/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5567.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

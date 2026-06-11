@@ -1,0 +1,134 @@
+{
+  "id": 6804,
+  "name": "Card #6804",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6804.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "prophet of drip"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "retro space shooter game"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "base card",
+      "value": "MetalGreymon - Bo-80"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6804.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

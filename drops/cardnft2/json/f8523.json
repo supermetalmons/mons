@@ -1,0 +1,74 @@
+{
+  "id": 8523,
+  "name": "Card #8523",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8523.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "chaotic_baroque_battle_collage"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "furry star wars creature with cup"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "yugioh style gravestone SIMON GEORGE KONRAD HILL WILLiANS F5"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Mukuro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Black Skull Dragon - IMG_3460 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8523.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

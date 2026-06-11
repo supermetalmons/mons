@@ -1,0 +1,62 @@
+{
+  "id": 3879,
+  "name": "Card #3879",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3879.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract figure sketch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pepe cod meme"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "16 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tropius - 12/236"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3879.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

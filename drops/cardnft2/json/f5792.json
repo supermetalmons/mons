@@ -1,0 +1,70 @@
+{
+  "id": 5792,
+  "name": "Card #5792",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5792.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "angel drif egg"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "itachi smiling blood"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal tat lsw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidoqueen - DPBP#032"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5792.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

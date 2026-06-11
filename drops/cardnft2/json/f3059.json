@@ -1,0 +1,54 @@
+{
+  "id": 3059,
+  "name": "Card #3059",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3059.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy with nude girls frazetta"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magby - 58/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3059.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

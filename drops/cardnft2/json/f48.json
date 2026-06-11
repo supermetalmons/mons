@@ -2,7 +2,7 @@
   "id": 48,
   "name": "Card #48",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_48.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0048.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "goku dragon riding"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikki heads"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hitmonchan - 7/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_48.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0048.webp",
         "type": "image/webp"
       }
     ],

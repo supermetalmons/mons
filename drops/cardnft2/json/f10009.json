@@ -1,0 +1,94 @@
+{
+  "id": 10009,
+  "name": "Card #10009",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10009.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "chrono trigger holo card"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dice three dots"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - saturn sigil"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "no_wars_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "no_wars_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10009.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

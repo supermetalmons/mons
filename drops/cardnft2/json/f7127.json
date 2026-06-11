@@ -1,0 +1,58 @@
+{
+  "id": 7127,
+  "name": "Card #7127",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7127.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cyan_magenta_blur_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Shelgon black mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7127.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 9816,
+  "name": "Card #9816",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9816.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dawn"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "morchel"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese_jigglypuff_no_040_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9816.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

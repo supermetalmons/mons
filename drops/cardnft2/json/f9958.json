@@ -1,0 +1,102 @@
+{
+  "id": 9958,
+  "name": "Card #9958",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9958.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient candy acid nocturne blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 06"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "005 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "creepshow scroll guy"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Pinocchio drowning"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini water - card1357 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dratini water - card1357 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9958.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

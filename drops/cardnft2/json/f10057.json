@@ -1,0 +1,114 @@
+{
+  "id": 10057,
+  "name": "Card #10057",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10057.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Distressed Painted Shirt Texture Background - card1673-21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "57 fire ice split holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ankh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 dark ruby violet orange holo triangle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anna karina"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "angel amano art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "wojak boy runescape shirt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 vespertine purple peach clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "008 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black void - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "monster_reborn_yugioh_83764718_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10057.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

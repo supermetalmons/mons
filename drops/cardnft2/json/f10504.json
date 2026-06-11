@@ -1,0 +1,90 @@
+{
+  "id": 10504,
+  "name": "Card #10504",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10504.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "clay rpg figures"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "white star box"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "question bag"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 50"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_slowking_neo_destiny_20_105_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dark_slowking_neo_destiny_20_105_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "the fool imported 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10504.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

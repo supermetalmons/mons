@@ -1,0 +1,78 @@
+{
+  "id": 7978,
+  "name": "Card #7978",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7978.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "orange_purple_wave_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon breeders dragonite"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "petra adrenochrome meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "067 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "071 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mew Delta Species - IMG_3234 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7978.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

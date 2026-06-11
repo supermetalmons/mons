@@ -1,0 +1,58 @@
+{
+  "id": 3003,
+  "name": "Card #3003",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3003.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "millennium puzzle dialogue"
+    },
+    {
+      "trait_type": "left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixel dragon embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drain dratini theology"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Frozen City - 100/116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3003.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

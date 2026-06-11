@@ -1,0 +1,138 @@
+{
+  "id": 10830,
+  "name": "Card #10830",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10830.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_cobalt_pink_sunset_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_20"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "orange pink abstract sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow twin dragonair"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald green - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "07 dark magician clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_02"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_30"
+    },
+    {
+      "trait_type": "under mask aura eggs",
+      "value": "sr_under_mask_aura_eggs_ordered_random"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_slowking_neo_destiny_20_105_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester boxer baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10830.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

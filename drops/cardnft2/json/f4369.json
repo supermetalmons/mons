@@ -1,0 +1,114 @@
+{
+  "id": 4369,
+  "name": "Card #4369",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4369.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "left",
+      "value": "lsw box sprites"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "monkey ball game"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "puddies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging bed crimes of the future"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract colorful scribbles"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "center",
+      "value": "beach girls illustration"
+    },
+    {
+      "trait_type": "right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black question marks"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Whiscash - 54/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4369.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

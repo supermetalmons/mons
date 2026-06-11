@@ -1,0 +1,58 @@
+{
+  "id": 5768,
+  "name": "Card #5768",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5768.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "guzzlord_gx_sv71_sv94_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "top center",
+      "value": "9 tails evil smile"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3d grimer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vista - OP14-053"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5768.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

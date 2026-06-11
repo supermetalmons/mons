@@ -1,0 +1,66 @@
+{
+  "id": 1055,
+  "name": "Card #1055",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1055.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 02"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "paintball splatter smiley"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "right",
+      "value": "wplace st. paisios"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gamergate 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gamabunta - 176"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1055.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

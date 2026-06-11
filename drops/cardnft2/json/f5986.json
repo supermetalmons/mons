@@ -1,0 +1,74 @@
+{
+  "id": 5986,
+  "name": "Card #5986",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5986.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu glitch art"
+    },
+    {
+      "trait_type": "top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "basketball motion blur"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "martini table black background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Teddiursa - 122/189"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5986.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

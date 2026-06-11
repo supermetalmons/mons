@@ -1,0 +1,46 @@
+{
+  "id": 6220,
+  "name": "Card #6220",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6220.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rampageous Pig - 1/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "parker venom paint card"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shizuku sweepy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ghost in the shell fight scene"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6220.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 9891,
+  "name": "Card #9891",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9891.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "altered hermit tarot card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shino aburame - card0609 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "horse race test alt sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikki heads"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini finger puppet figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9891.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

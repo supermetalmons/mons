@@ -1,0 +1,82 @@
+{
+  "id": 8196,
+  "name": "Card #8196",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8196.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "card vending machine"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "biscuit engraving"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "the fool"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "bulma akira toriyama"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mr Qi"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Deidara - IMG_3243 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8196.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

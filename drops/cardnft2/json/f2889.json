@@ -1,0 +1,62 @@
+{
+  "id": 2889,
+  "name": "Card #2889",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2889.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bladerunner 2049 woman"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mario kart split screen"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "base card",
+      "value": "N - 96/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2889.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

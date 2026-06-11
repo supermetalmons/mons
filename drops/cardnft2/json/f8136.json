@@ -1,0 +1,106 @@
+{
+  "id": 8136,
+  "name": "Card #8136",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8136.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_serpent_shell_painting"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "desert shaman"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black red abstract painting"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cyan mid drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "070 cyan magenta gold extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "24 dragon red green clean wisp diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "057 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "zelda_ii_link_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8136.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

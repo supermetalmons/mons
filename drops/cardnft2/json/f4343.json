@@ -1,0 +1,98 @@
+{
+  "id": 4343,
+  "name": "Card #4343",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4343.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "Glenn"
+    },
+    {
+      "trait_type": "right",
+      "value": "pulled this text"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "is a fishman a snake"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy with nude girls frazetta"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragonite holo screentone"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "de kooning sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "titan grabbing horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "esoteric lessons steiner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "puyo puyo sun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hydreigon - 62/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4343.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

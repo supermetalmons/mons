@@ -1,0 +1,46 @@
+{
+  "id": 1785,
+  "name": "Card #1785",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1785.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Porygon - 39/102"
+    },
+    {
+      "trait_type": "left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bladerunner 2049 woman"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1785.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

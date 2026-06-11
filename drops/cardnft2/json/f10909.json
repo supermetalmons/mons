@@ -1,0 +1,182 @@
+{
+  "id": 10909,
+  "name": "Card #10909",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10909.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mint_gold_glow_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black noise void - abstract void sigil"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "012 purple peach glow extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_15"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black star pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "yellow red gradient stripes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "woven pattern grid"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_18"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "043 ruby violet flame extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "23 red soft holo holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kogas weezing japanese - card2743 white mask transparent"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_05"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_09"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_17"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_06"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_03"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_27"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "kogas weezing japanese - card2743 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toy phone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3d grimer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10909.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

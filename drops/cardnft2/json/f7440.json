@@ -1,0 +1,126 @@
+{
+  "id": 7440,
+  "name": "Card #7440",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7440.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Impressionist Yellow Green Water Lily Garden Background - card1673-2"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "cartoon creatures border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "un spaceship illustration"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "ooey gooey drifella chocolate chip cookie"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "super buu"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue clouds night sky"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Butterfree Jungle - card1997 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "daily tribune, wisconsin rapids 1961"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7440.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

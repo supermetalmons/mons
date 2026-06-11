@@ -1,0 +1,114 @@
+{
+  "id": 7788,
+  "name": "Card #7788",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7788.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Statue Patterned Room Background - card1673-20"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "greek statue hands covering eyes"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "goku watching"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini legendary collection inverted black mask"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "japanese demon box"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "crucifix city"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "A"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Base Set - card1790 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7788.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 10332,
+  "name": "Card #10332",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10332.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_pixel_camo_totem"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "budokai trunks future"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragonite holo screentone"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drif with midlady retardio pillow"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese_jigglypuff_no_040_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese_jigglypuff_no_040_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "eye engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal necklace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10332.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

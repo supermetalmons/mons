@@ -1,0 +1,74 @@
+{
+  "id": 4126,
+  "name": "Card #4126",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4126.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi pilot manga"
+    },
+    {
+      "trait_type": "left",
+      "value": "Flying Nimbus"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "furious sea king stats"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cave logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "capitalist painter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lapras - 79/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4126.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

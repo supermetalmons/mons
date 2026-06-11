@@ -1,0 +1,70 @@
+{
+  "id": 2886,
+  "name": "Card #2886",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2886.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "textured profile silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "right",
+      "value": "green dummy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "little flowers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sickly hand"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "drif with bloody margielas"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Café Master - 133/172"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2886.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 2161,
+  "name": "Card #2161",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2161.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "electabuzz punch"
+    },
+    {
+      "trait_type": "left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy upside down"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ninja doraemon"
+    },
+    {
+      "trait_type": "right",
+      "value": "body"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hamster and pointing finger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "furious sea king stats"
+    },
+    {
+      "trait_type": "top right",
+      "value": "manga smashing frog"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "hiei kurama silhouette"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Murkrow - 46/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2161.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

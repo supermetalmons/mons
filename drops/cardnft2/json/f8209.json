@@ -1,0 +1,94 @@
+{
+  "id": 8209,
+  "name": "Card #8209",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8209.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Snowy Creek Winter Woods Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cracked"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "067 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "068 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "072 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Itachi Uchiha inverted mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8209.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

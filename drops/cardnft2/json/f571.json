@@ -1,0 +1,42 @@
+{
+  "id": 571,
+  "name": "Card #571",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0571.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Flute - 86/102"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0571.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

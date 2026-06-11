@@ -1,0 +1,86 @@
+{
+  "id": 1183,
+  "name": "Card #1183",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1183.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "FR they are gay racist nft"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "zombie melting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby jesus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown - K/28"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1183.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

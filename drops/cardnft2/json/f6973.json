@@ -1,0 +1,62 @@
+{
+  "id": 6973,
+  "name": "Card #6973",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6973.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "cherub drif sketches"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cow and bird toy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "you are still too weak you dont have enough and you know something you never will"
+    },
+    {
+      "trait_type": "right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "center",
+      "value": "glowing doraemon ghosts"
+    },
+    {
+      "trait_type": "base card",
+      "value": "鋼伊吉 - LM111E02"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6973.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

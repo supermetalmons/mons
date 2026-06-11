@@ -1,0 +1,86 @@
+{
+  "id": 2925,
+  "name": "Card #2925",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2925.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "red nidoqueen trainer"
+    },
+    {
+      "trait_type": "right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokeball chain pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag gundam"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "center",
+      "value": "teddy bear soul"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Plumeria - 120/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2925.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

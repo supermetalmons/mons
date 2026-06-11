@@ -1,0 +1,98 @@
+{
+  "id": 8861,
+  "name": "Card #8861",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8861.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red yellow tulip engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi sasuke"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue line pattern"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Orochimaru - card0162 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8861.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

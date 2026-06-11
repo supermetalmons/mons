@@ -1,0 +1,74 @@
+{
+  "id": 5409,
+  "name": "Card #5409",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5409.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "cross with vines engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red sharingan eye"
+    },
+    {
+      "trait_type": "left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "white Jester Slime"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "homo noosphericus bodies"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ar nintendo ds cartridge"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hyper Potion - 127/144"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5409.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

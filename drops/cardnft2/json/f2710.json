@@ -1,0 +1,78 @@
+{
+  "id": 2710,
+  "name": "Card #2710",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2710.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "vague post king"
+    },
+    {
+      "trait_type": "left",
+      "value": "gray door number 7"
+    },
+    {
+      "trait_type": "top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "center",
+      "value": "chrono trigger island"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "hero",
+      "value": "slender man night"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Team Aqua Schemer - 69/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2710.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

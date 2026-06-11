@@ -1,0 +1,94 @@
+{
+  "id": 2701,
+  "name": "Card #2701",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2701.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "south park esoteric ink"
+    },
+    {
+      "trait_type": "right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "St. John the Baptist in the Wilderness engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "mewtwo ken sugimori"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "golden chalice snake"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kiryu text box"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "top center",
+      "value": "now and then, here and there"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Super Scoop Up - 100/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2701.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

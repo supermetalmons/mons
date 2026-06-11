@@ -1,0 +1,70 @@
+{
+  "id": 7319,
+  "name": "Card #7319",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7319.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cosmic_cyan_magenta_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red fishing guy"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "freaky nikki"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "needed a fresh restart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Drifblim - card3885 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiejy4gsu6v4zmfn4ymr26uokzkvigotieqqigahgboracew6bfxcu/7319.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

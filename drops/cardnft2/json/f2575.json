@@ -1,0 +1,62 @@
+{
+  "id": 2575,
+  "name": "Card #2575",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2575.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "small computer icon"
+    },
+    {
+      "trait_type": "left",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "friendly ghost dialogue"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue crystal glaze"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kaliacc drifella character art"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clemont - 59/83"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2575.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 5708,
+  "name": "Card #5708",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5708.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "deidara clay birds - card4722 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "right",
+      "value": "creepy masked figure"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark bacon abstract texture 6"
+    },
+    {
+      "trait_type": "left",
+      "value": "gambling in the garden"
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella black ops meme"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Leavanny - 3/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5708.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

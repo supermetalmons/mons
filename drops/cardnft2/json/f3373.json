@@ -1,0 +1,62 @@
+{
+  "id": 3373,
+  "name": "Card #3373",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3373.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Trader - 106/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3373.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 10230,
+  "name": "Card #10230",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10230.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - crescent"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "lycanroc anime face"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "purple orange hydra plush"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "jester character art"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "066 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - moon phases"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suicune_hgss21_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "suicune_hgss21_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10230.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

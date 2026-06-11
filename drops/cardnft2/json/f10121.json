@@ -1,0 +1,94 @@
+{
+  "id": 10121,
+  "name": "Card #10121",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10121.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacrificial eunich"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 07"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "weeds"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "52 fire ice split holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "marshmallon_yugioh_31305911_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful-5 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "marshmallon_yugioh_31305911_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10121.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

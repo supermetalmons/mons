@@ -1,0 +1,106 @@
+{
+  "id": 7742,
+  "name": "Card #7742",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7742.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Sky Between Trees Background - card1673-22"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "local game shop"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "slowpoke rape"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract sketch"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kakashi reading book"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Yoshi Arc Master Card - IMG_3551 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7742.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

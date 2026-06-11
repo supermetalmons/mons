@@ -1,0 +1,66 @@
+{
+  "id": 9747,
+  "name": "Card #9747",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9747.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_scribble_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "slowpoke rape"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple sunset field"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - neon rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "giant chameleon - card0174 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "captain"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9747.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

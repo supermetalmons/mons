@@ -1,0 +1,90 @@
+{
+  "id": 2413,
+  "name": "Card #2413",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2413.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "top right",
+      "value": "twin peaks giant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mr Qi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "spilled flower pot"
+    },
+    {
+      "trait_type": "right",
+      "value": "Sinister Serpent"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gray safe"
+    },
+    {
+      "trait_type": "left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black red blue paint smears"
+    },
+    {
+      "trait_type": "center",
+      "value": "saint with angels"
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Boss's Way - 73/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2413.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

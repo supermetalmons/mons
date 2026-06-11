@@ -1,0 +1,66 @@
+{
+  "id": 11125,
+  "name": "Card #11125",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11125.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Stormy Lake Smoke Landscape Background"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini legendary collection mask"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_three__firework_noise"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_one__noise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_mask_sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11125.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

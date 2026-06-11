@@ -1,0 +1,78 @@
+{
+  "id": 2427,
+  "name": "Card #2427",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2427.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "parappa the rapper"
+    },
+    {
+      "trait_type": "border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tylenol cartoon box"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "parappa the rapper cooking"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "hero",
+      "value": "horned stone creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "monster"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Natu - 55/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2427.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

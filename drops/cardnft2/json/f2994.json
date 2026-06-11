@@ -1,0 +1,122 @@
+{
+  "id": 2994,
+  "name": "Card #2994",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2994.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "milady with jaspers"
+    },
+    {
+      "trait_type": "hero",
+      "value": "onion knight toast"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue black abstract texture"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hr giger alien sketch"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kadabra japanese name corner"
+    },
+    {
+      "trait_type": "left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "happened in mgs2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hell hound"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "myst island"
+    },
+    {
+      "trait_type": "right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charmeleon - 28/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2994.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

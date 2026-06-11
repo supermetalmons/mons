@@ -1,0 +1,86 @@
+{
+  "id": 5325,
+  "name": "Card #5325",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5325.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "different mental states of being"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baroque"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i do not adhere to accelerationist ideologies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "mewtwo joker"
+    },
+    {
+      "trait_type": "left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella plush"
+    },
+    {
+      "trait_type": "top right",
+      "value": "shinigami"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cybernetic head wires"
+    },
+    {
+      "trait_type": "right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "center",
+      "value": "yugioh card backs"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [B] - 39/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5325.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

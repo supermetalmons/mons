@@ -1,0 +1,50 @@
+{
+  "id": 9776,
+  "name": "Card #9776",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9776.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "altered hermit tarot card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "karin - card4765 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif 2 blue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 99 heart"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9776.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

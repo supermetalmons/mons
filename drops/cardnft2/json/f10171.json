@@ -1,0 +1,102 @@
+{
+  "id": 10171,
+  "name": "Card #10171",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10171.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mars frazetta"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "sasuke black white"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "cowboy with nude girls frazetta"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "pirate skeleton manga panel"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 baroque gold clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 01 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "044 emerald violet dream extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - drop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deathmark - card1571 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "deathmark - card1571 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10171.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 9576,
+  "name": "Card #9576",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9576.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 38"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "038 fire ice split extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "10 calm teal violet clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "blue_eye_cartoon_dragon_yugioh_card_2 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella middle finger emoji"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9576.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

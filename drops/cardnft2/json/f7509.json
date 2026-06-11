@@ -1,0 +1,110 @@
+{
+  "id": 7509,
+  "name": "Card #7509",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7509.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "Goodybag dragon quest"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gothic cathedral silhouette"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shaman"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "spiked mace weapon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Base Set - card1790 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7509.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

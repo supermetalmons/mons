@@ -1,0 +1,110 @@
+{
+  "id": 10754,
+  "name": "Card #10754",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10754.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Snowy Creek Winter Woods Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "099 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "032 dark blood orange extra holo triangle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "small colorful figures"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gengar holo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "The Lonely House on Adachi Moor woodblock"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "forest path watercolor"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 calm teal violet clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_08"
+    },
+    {
+      "trait_type": "under mask embryos",
+      "value": "sr_over_mask_embryos"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kankuro - card4944 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tarot horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "1000x"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10754.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

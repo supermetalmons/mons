@@ -1,0 +1,102 @@
+{
+  "id": 10084,
+  "name": "Card #10084",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10084.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Meme Lords Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mamano hunter youko"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "parappa the rapper"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "alien skull profile"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "snake arm manga panel"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "They have slept in the forest too long"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke_uchiha_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasuke_uchiha_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10084.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

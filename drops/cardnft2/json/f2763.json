@@ -1,0 +1,70 @@
+{
+  "id": 2763,
+  "name": "Card #2763",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2763.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "right",
+      "value": "parappa the rapper"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "parappa the rapper cooking"
+    },
+    {
+      "trait_type": "center",
+      "value": "delicate hand engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "top right",
+      "value": "akira fight scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Switch - 95/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2763.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

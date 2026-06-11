@@ -1,0 +1,90 @@
+{
+  "id": 7624,
+  "name": "Card #7624",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7624.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_vertical_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "psyduck charizard collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "White Snake Sage"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mystery box"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "jester face"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Orochimaru inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pfp+102"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7624.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 10514,
+  "name": "Card #10514",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10514.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "watermelon_candy_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "guts berserker armor"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "game inventory panel"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "024 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shino aburame - card0609 white mask inverted transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "shino aburame - card0609 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "unown holo card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10514.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

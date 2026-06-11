@@ -1,0 +1,110 @@
+{
+  "id": 7775,
+  "name": "Card #7775",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7775.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "nude frazetta girl"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "red blue sparkles"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "you cant beat a man hoods drifella daze"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful-5 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dark Snorlax Team Rocket - IMG_3268 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7775.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

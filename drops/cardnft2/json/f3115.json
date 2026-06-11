@@ -1,0 +1,62 @@
+{
+  "id": 3115,
+  "name": "Card #3115",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3115.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "toon blue eyes w pegasus"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "left",
+      "value": "muscular anime character"
+    },
+    {
+      "trait_type": "top right",
+      "value": "phantom"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "myst island"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hope syringe figure"
+    },
+    {
+      "trait_type": "right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Morelull - 16/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3115.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

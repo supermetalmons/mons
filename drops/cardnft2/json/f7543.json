@@ -1,0 +1,114 @@
+{
+  "id": 7543,
+  "name": "Card #7543",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7543.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_serpent_shell_painting"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "pink kimono pattern"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "you cant beat a man hoods drifella daze"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "black white industrial scene"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink dinosaur bed"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "your imagination is stunted"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Synchro Dragon - IMG_3457 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7543.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

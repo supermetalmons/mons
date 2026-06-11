@@ -1,0 +1,74 @@
+{
+  "id": 9174,
+  "name": "Card #9174",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9174.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "toxic_slime_sunset_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 14"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "025 dark blood orange extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "munchlax_68_100_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl cuck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9174.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 10286,
+  "name": "Card #10286",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10286.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "lapras celebi pokemon garden art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "frankenstein"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "orange screaming faces"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - eye"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "darkrai_gx_88a_147_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon ghost pin"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "darkrai_gx_88a_147_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10286.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

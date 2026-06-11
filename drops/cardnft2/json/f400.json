@@ -1,0 +1,50 @@
+{
+  "id": 400,
+  "name": "Card #400",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0400.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kisame Hoshigaki 6/2"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "esrb everyone rating"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0400.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 247,
+  "name": "Card #247",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0247.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Written Test 053"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mariachi chibi"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "center",
+      "value": "monkey d luffy card"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0247.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

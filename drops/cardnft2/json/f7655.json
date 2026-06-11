@@ -1,0 +1,102 @@
+{
+  "id": 7655,
+  "name": "Card #7655",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7655.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "different mental states of being"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "stars sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "anime demon girl moon"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "kane mid air"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Giovannis Machoke Gym Challenge - card3970 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7655.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

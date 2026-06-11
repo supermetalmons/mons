@@ -1,0 +1,78 @@
+{
+  "id": 10049,
+  "name": "Card #10049",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10049.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "minecraft mushroom painting"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "naruto_shippuden_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "naruto_shippuden_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10049.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 2417,
+  "name": "Card #2417",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2417.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black brush strokes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "right",
+      "value": "space ghost thinking"
+    },
+    {
+      "trait_type": "hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dolphin in water"
+    },
+    {
+      "trait_type": "top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "top right",
+      "value": "water badge"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lightning Energy - 100/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2417.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

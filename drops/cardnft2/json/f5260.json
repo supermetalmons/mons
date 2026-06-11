@@ -1,0 +1,90 @@
+{
+  "id": 5260,
+  "name": "Card #5260",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5260.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "Beelzemon Blast Mode"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood samurai figure"
+    },
+    {
+      "trait_type": "left",
+      "value": "klimt death detail"
+    },
+    {
+      "trait_type": "top left",
+      "value": "melted figure"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "right",
+      "value": "majin Dabura figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "you ever just mint an nft"
+    },
+    {
+      "trait_type": "center",
+      "value": "bloody angel"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baby deer"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Max Potion - 128/145"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5260.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

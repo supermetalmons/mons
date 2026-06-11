@@ -1,0 +1,58 @@
+{
+  "id": 1808,
+  "name": "Card #1808",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1808.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's Gastly - 93/132"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cory infinite mario clouds"
+    },
+    {
+      "trait_type": "right",
+      "value": "neversoft logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "top right",
+      "value": "two headed cat"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lego reaper"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1808.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

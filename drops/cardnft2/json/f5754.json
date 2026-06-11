@@ -1,0 +1,70 @@
+{
+  "id": 5754,
+  "name": "Card #5754",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5754.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker quote"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus cross charcoal"
+    },
+    {
+      "trait_type": "center",
+      "value": "ink wash"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude girls on hand frazetta"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chain link fence"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Flannery - 139/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5754.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

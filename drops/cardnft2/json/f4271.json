@@ -1,0 +1,86 @@
+{
+  "id": 4271,
+  "name": "Card #4271",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4271.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "might and magic logo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dai shogi"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rainbow gradient 09 - crucifix cross"
+    },
+    {
+      "trait_type": "top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shattered glass"
+    },
+    {
+      "trait_type": "hero",
+      "value": "asuka red glove pose"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bosch biscuit yin yang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Communication - 98/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4271.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

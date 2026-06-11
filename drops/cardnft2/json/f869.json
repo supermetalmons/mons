@@ -1,0 +1,58 @@
+{
+  "id": 869,
+  "name": "Card #869",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0869.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Piccolo"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract sleeping figures"
+    },
+    {
+      "trait_type": "top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kakashi reading book"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "blue anime cleavage"
+    },
+    {
+      "trait_type": "right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hobbit sketch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0869.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

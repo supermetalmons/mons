@@ -1,0 +1,54 @@
+{
+  "id": 895,
+  "name": "Card #895",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0895.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Black Striking Drill - 30 of 44"
+    },
+    {
+      "trait_type": "center",
+      "value": "ff monster render"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0895.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

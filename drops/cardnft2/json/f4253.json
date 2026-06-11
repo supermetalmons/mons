@@ -1,0 +1,94 @@
+{
+  "id": 4253,
+  "name": "Card #4253",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4253.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "medusa face engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shadow wizar"
+    },
+    {
+      "trait_type": "top right",
+      "value": "333"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon clown warrior boy character design"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif triptych sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Walrein - 26/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4253.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

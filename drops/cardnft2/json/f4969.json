@@ -1,0 +1,138 @@
+{
+  "id": 4969,
+  "name": "Card #4969",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4969.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rose shadow - labyrinth"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 24"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 38"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "37 radiant yellow red clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "061 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "096 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snorunt comparison collage"
+    },
+    {
+      "trait_type": "right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "orc warrior"
+    },
+    {
+      "trait_type": "top left",
+      "value": "monster reborn pendant"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "murakami spray"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Neji Hyuga & Tenten - C011"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4969.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

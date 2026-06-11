@@ -1,0 +1,62 @@
+{
+  "id": 5224,
+  "name": "Card #5224",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5224.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "brigandine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Noctowl - 8/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5224.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

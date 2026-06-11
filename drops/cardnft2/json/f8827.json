@@ -1,0 +1,146 @@
+{
+  "id": 8827,
+  "name": "Card #8827",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8827.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_cobalt_pink_sunset_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "yellow star pattern"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "shocked anime character"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "yu gi oh 17 cover"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tekkonkinkreet city"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue japanese text box"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Eevee - IMG_3487 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi crow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8827.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

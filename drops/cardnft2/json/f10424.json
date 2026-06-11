@@ -1,0 +1,86 @@
+{
+  "id": 10424,
+  "name": "Card #10424",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10424.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "1000-Armed Avalokiteshvara"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "empty room corner"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "weavile - card4653 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "weavile - card4653 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "noise mc skin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10424.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

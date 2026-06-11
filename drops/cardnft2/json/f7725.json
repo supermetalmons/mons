@@ -1,0 +1,102 @@
+{
+  "id": 7725,
+  "name": "Card #7725",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7725.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Illuminated Cathedral Nave Background - card1673-44"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "greek vase warriors"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "purple graffiti wire fence"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract human figure"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "manga skeleton surprise"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "card frame concepts"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif apple body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Recall Trainer - card1730 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7725.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

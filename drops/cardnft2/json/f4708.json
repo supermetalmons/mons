@@ -1,0 +1,102 @@
+{
+  "id": 4708,
+  "name": "Card #4708",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4708.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - black noise void - abstract void sigil"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card game"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Ancient Gear Soldier"
+    },
+    {
+      "trait_type": "right",
+      "value": "shadow mage"
+    },
+    {
+      "trait_type": "center",
+      "value": "glitter pixel bokeh"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract colorful scribbles"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sharingan Eye - 007"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4708.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

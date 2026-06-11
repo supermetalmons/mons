@@ -1,0 +1,106 @@
+{
+  "id": 7587,
+  "name": "Card #7587",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7587.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "nude frazetta girl on tiger"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "sitting blue anime imp"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark mysterious figure"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "digimon tamers group"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black brush strokes"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "manga dog experiment"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kuwait 1991"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Rayquaza ex Deoxys - IMG_3445 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7587.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

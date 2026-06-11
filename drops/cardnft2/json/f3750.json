@@ -1,0 +1,82 @@
+{
+  "id": 3750,
+  "name": "Card #3750",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3750.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "arceus highway loops"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bubble mew"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dratini biscuit sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime angel cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yanma - 128/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3750.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

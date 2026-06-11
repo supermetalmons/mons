@@ -1,0 +1,82 @@
+{
+  "id": 7949,
+  "name": "Card #7949",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7949.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gengar Haunter Cemetery Graveyard Background - card1673-1"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "frazetta johnny dash comic"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Phantom Troupe spider tattoo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "duskull zapping larvitar"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl pin"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Japanese Soul Flash - IMG_3483 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7949.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

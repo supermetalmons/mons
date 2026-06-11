@@ -1,0 +1,62 @@
+{
+  "id": 9275,
+  "name": "Card #9275",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9275.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_spirit_wave_illustration"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "030 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Sasuke Uchiha - IMG_3526 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9275.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

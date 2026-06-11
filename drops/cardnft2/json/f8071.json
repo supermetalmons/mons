@@ -1,0 +1,74 @@
+{
+  "id": 8071,
+  "name": "Card #8071",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8071.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Snowy Creek Winter Woods Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dolphin in water"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "frazetta horse girl"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "7 hearts"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "anime fox girl sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mox_jet_magic_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8071.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

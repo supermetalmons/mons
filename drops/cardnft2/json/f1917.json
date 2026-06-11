@@ -1,0 +1,58 @@
+{
+  "id": 1917,
+  "name": "Card #1917",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1917.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Koga's Grimer - 78/132"
+    },
+    {
+      "trait_type": "center",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "center",
+      "value": "rose crystal glaze"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "crocodile heads in water"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hylics sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga cap back view"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1917.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 1439,
+  "name": "Card #1439",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1439.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Freewind Falcon - 1/1"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "unnamed david lynch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gold stars"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton warrior knight"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1439.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

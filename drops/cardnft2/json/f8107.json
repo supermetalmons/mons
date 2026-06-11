@@ -1,0 +1,90 @@
+{
+  "id": 8107,
+  "name": "Card #8107",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8107.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_dragon_wave_art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "character model progression"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 dark magician clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Japanese Dark Network - IMG_3405 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8107.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

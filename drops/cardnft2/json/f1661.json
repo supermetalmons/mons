@@ -1,0 +1,50 @@
+{
+  "id": 1661,
+  "name": "Card #1661",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1661.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Caterpie - 53/75"
+    },
+    {
+      "trait_type": "center",
+      "value": "ben franklin engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "light of destruction box"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1661.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

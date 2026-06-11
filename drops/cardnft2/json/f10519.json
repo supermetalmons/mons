@@ -1,0 +1,110 @@
+{
+  "id": 10519,
+  "name": "Card #10519",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10519.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dungeon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 lava violet ember holo moon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragon warrior jester"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "egyptian cat"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "057 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "27 dragon red green clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mekanorimon - card6793 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "mekanorimon - card6793 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "bulmas"
+    },
+    {
+      "trait_type": "top rare addon - left",
+      "value": "old man roshi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white rat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10519.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

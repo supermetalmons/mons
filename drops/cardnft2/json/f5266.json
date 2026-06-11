@@ -1,0 +1,66 @@
+{
+  "id": 5266,
+  "name": "Card #5266",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5266.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "Glenn"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "evangelion kabbalah tree"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red block"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Potion - 132/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5266.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

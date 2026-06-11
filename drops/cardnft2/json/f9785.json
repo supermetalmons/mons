@@ -1,0 +1,70 @@
+{
+  "id": 9785,
+  "name": "Card #9785",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9785.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "red blue yarn heart texture"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "purple mask creatures"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "south park esoteric ink"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mega Absol EX Black - IMG_3429 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9785.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 1525,
+  "name": "Card #1525",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1525.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Stantler - 76/111"
+    },
+    {
+      "trait_type": "center",
+      "value": "falling playing cards"
+    },
+    {
+      "trait_type": "top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "hero",
+      "value": "biscuit"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sparkles tattoo"
+    },
+    {
+      "trait_type": "left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1525.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

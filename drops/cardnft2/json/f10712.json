@@ -1,0 +1,142 @@
+{
+  "id": 10712,
+  "name": "Card #10712",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10712.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "46 magenta cyan gold holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "071 holo chrome pastel extra holo circle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gray circular pattern"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ninja stars kunai"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_20"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "061 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_12"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_under_mask_aura_eggs_ordered_random"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Time Wizard - IMG_3229 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_15"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_07"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_05"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_23"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10712.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 4933,
+  "name": "Card #4933",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4933.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "angelic layer"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario drawing"
+    },
+    {
+      "trait_type": "right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ninja Dog Squad"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4933.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

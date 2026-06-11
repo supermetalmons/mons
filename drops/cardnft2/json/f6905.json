@@ -1,0 +1,90 @@
+{
+  "id": 6905,
+  "name": "Card #6905",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6905.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Crazy stone dancer"
+    },
+    {
+      "trait_type": "top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hes choosing texas i can tell by the way"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pink apricot spray"
+    },
+    {
+      "trait_type": "top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Adventurer's Discovery - TG23/TG30"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6905.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

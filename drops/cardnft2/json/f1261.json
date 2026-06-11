@@ -1,0 +1,54 @@
+{
+  "id": 1261,
+  "name": "Card #1261",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1261.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swamp"
+    },
+    {
+      "trait_type": "top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "center",
+      "value": "chrono trigger island"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella iii dragon warrior boy sketch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1261.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

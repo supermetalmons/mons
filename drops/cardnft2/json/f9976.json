@@ -1,0 +1,94 @@
+{
+  "id": 9976,
+  "name": "Card #9976",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9976.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "orange_purple_wave_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - vesica"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 32"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 28"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "073 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9976.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 7697,
+  "name": "Card #7697",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7697.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "misa red"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "yugi mutou dark yugi"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark bacon abstract texture 6"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "green muscular fighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful-5 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tech deck bean jester"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic The Gathering Mox Sapphire - card0233 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7697.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 10175,
+  "name": "Card #10175",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10175.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blonde gray sd game card"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "chrono trigger island"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hylics sprite sheet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "disenchant - card1402 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad 712"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "disenchant - card1402 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10175.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

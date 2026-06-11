@@ -1,0 +1,98 @@
+{
+  "id": 10403,
+  "name": "Card #10403",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10403.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient jade amber purple blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "printer can do 45 cards at once"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "crochet flygon plush"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pikachu wooloo sleep"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "100 rainbow prism dawn extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "larvitar - card2943 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "larvitar - card2943 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "skeletor raising fists"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "noise mc skin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10403.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

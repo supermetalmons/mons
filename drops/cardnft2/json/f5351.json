@@ -1,0 +1,62 @@
+{
+  "id": 5351,
+  "name": "Card #5351",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5351.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "slide"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel waterfall"
+    },
+    {
+      "trait_type": "right",
+      "value": "body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dq slimes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "snake girl manga ink"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Voltorb - 67/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5351.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

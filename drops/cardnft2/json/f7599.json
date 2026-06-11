@@ -1,0 +1,110 @@
+{
+  "id": 7599,
+  "name": "Card #7599",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7599.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "emerald_violet_dream_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "sleeping chibi kid"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "chart golf"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "chalk sketch figures"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Charizard G LV X Supreme Victors 143 147 inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7599.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": 7851,
+  "name": "Card #7851",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7851.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Impressionist Yellow Green Water Lily Garden Background - card1673-2"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hamburger helper clock"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "muscular anime character"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "anime demon girl moon"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "katamari draw zannier"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pakkun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "44 dragon red green clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Rotom GX - IMG_3524 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7851.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

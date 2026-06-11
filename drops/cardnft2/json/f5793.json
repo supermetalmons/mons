@@ -1,0 +1,70 @@
+{
+  "id": 5793,
+  "name": "Card #5793",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5793.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "graphite spikes"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "card nft 2 pack opening"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi itachi 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scyther - Majestic Dawn 46/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5793.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

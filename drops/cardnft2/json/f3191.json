@@ -1,0 +1,50 @@
+{
+  "id": 3191,
+  "name": "Card #3191",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3191.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "eye pattern figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard x blue flames"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ivysaur - 30/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3191.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

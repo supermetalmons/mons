@@ -1,0 +1,114 @@
+{
+  "id": 2460,
+  "name": "Card #2460",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2460.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "empty room corner"
+    },
+    {
+      "trait_type": "hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bacon girl drif iii sketch"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime girl red black wings"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Roggenrola - 48/119"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2460.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

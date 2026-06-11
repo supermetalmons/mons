@@ -1,0 +1,70 @@
+{
+  "id": 1605,
+  "name": "Card #1605",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1605.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Flaaffy - 28/64"
+    },
+    {
+      "trait_type": "top center",
+      "value": "millennium puzzle dialogue"
+    },
+    {
+      "trait_type": "hero",
+      "value": "death stranding porter"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sierpinski cube corner"
+    },
+    {
+      "trait_type": "right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chrollo in white"
+    },
+    {
+      "trait_type": "center",
+      "value": "red abstract landscape"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deadpool keychain"
+    },
+    {
+      "trait_type": "top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1605.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

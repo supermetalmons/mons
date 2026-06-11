@@ -1,0 +1,54 @@
+{
+  "id": 6340,
+  "name": "Card #6340",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6340.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Thwackey - 012/072"
+    },
+    {
+      "trait_type": "center",
+      "value": "futuristic cityscape art deco"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink dinosaur bed"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "alien"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6340.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

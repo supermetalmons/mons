@@ -1,0 +1,114 @@
+{
+  "id": 7454,
+  "name": "Card #7454",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7454.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sargent Woman By The Sea Background - card1673-52"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "man in hazmat suit"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "anime fox girl sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Porygon black mask variant 7"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "astro boy chibi"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red blue black brushwork 3"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini topps mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal tat lsw"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7454.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

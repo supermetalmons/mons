@@ -1,0 +1,58 @@
+{
+  "id": 2319,
+  "name": "Card #2319",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2319.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple plants in pots"
+    },
+    {
+      "trait_type": "center",
+      "value": "stick figures trees diagram"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "esrb everyone rating"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "snake arm manga panel"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Meowth - 62/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2319.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

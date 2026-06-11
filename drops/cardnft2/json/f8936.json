@@ -1,0 +1,114 @@
+{
+  "id": 8936,
+  "name": "Card #8936",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8936.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ornate Palace Hall Ceiling Background - card1673-13"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "piranha plant head"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "energy symbols light"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "orange panel texture"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "robot chibi mascot black white"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "yugi mutou dark yugi"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kisame Hoshigaki - card4495 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8936.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

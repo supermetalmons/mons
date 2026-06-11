@@ -1,0 +1,110 @@
+{
+  "id": 10176,
+  "name": "Card #10176",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10176.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon characters"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "manga horror face bird"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "eagle"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "elemental_hero_bubbleman_yugioh_79979666_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "elemental_hero_bubbleman_yugioh_79979666_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10176.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -2,7 +2,7 @@
   "id": 110,
   "name": "Card #110",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_110.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0110.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,44 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "skeleton ghost green flames"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "$dragon dna"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baby deer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "umbreonfoxpunk drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dratini - 91/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_110.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0110.webp",
         "type": "image/webp"
       }
     ],

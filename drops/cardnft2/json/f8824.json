@@ -1,0 +1,142 @@
+{
+  "id": 8824,
+  "name": "Card #8824",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8824.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_gold_plum_teal_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "cartoon knight and kinnikuman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "evil empire banner"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragon quest purple villain costume"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract texture 5"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "springfield nuclear plant"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z Super Saiyan Gohan - IMG_3496 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3 (1)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pfp+102"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8824.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

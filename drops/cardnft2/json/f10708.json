@@ -1,0 +1,142 @@
+{
+  "id": 10708,
+  "name": "Card #10708",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10708.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mewtwo Purple Lab Capsule Background - card1673-32"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_06"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "_contact_sheet_preview_3"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "083 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "072 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "angel painting frame"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green burst "
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "colored palette stack"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "messy paint smear"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_20"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 50"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 03 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "under mask embryos",
+      "value": "sr_over_mask_embryos"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Dark Energy - IMG_3562 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Golden Boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10708.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

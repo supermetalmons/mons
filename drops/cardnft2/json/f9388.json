@@ -1,0 +1,58 @@
+{
+  "id": 9388,
+  "name": "Card #9388",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9388.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "White Lily Dark Floral Painting Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "miniryu lv 10 card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "09 gentle pearl clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Reshiram Black and White - IMG_3427 white mask"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9388.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

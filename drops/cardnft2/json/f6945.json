@@ -1,0 +1,62 @@
+{
+  "id": 6945,
+  "name": "Card #6945",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6945.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "right",
+      "value": "parappa the rapper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "empty stage background"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Passionate Personality, Tsukihi Araragi - NM/S24-E058 U"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6945.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

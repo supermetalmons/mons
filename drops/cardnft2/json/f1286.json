@@ -1,0 +1,54 @@
+{
+  "id": 1286,
+  "name": "Card #1286",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1286.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Brawler Zyler - 70/110"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract figure bacon 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "japanese art flowing hair"
+    },
+    {
+      "trait_type": "hero",
+      "value": "death stranding porter"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeleton figure with flowers"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jedi"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1286.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

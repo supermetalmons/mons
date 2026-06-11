@@ -1,0 +1,46 @@
+{
+  "id": 1277,
+  "name": "Card #1277",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1277.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mesa Pegasus - 1/1"
+    },
+    {
+      "trait_type": "top center",
+      "value": "graveyard examiner"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "neopets icons"
+    },
+    {
+      "trait_type": "left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1277.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

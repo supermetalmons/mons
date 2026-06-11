@@ -1,0 +1,66 @@
+{
+  "id": 4530,
+  "name": "Card #4530",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4530.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella with yoshis"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "barney shine"
+    },
+    {
+      "trait_type": "right",
+      "value": "swamp"
+    },
+    {
+      "trait_type": "top left",
+      "value": "vintage coffee carton"
+    },
+    {
+      "trait_type": "left",
+      "value": "motorcycle in traffic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hayate Gekko 4/3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4530.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 9463,
+  "name": "Card #9463",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9463.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Distressed Painted Shirt Texture Background - card1673-21"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "kino_s journey"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - claw"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "57 fire ice split holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "One Piece Emergency Set Sanji - IMG_3519 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "blood energy overlay",
+      "value": "blood energy2"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9463.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

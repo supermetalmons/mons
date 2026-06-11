@@ -1,0 +1,122 @@
+{
+  "id": 10105,
+  "name": "Card #10105",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10105.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Frazetta Death Dealer Moon Warrior Background - card1673-19"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Bakemon"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "plush fish skeleton"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "tylenol cartoon box"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "final fantasy sprites"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "killua and gon sketch black"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skull gravestone"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "athens fella"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract colorful scribbles"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - gold rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mr mime - card3086 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "mr mime - card3086 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10105.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

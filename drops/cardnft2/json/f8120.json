@@ -1,0 +1,102 @@
+{
+  "id": 8120,
+  "name": "Card #8120",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8120.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "smash bros commercial _99"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "chrollo engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "tanooki arale"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pimp 830"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red sharingan eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Yellow dragon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "090 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shinx_98_130_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8120.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 8653,
+  "name": "Card #8653",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8653.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Forest Water Lilies Background - card1673-7"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "goku and turtle"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "snowman sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon2 - card5232 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8653.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

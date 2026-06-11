@@ -1,0 +1,114 @@
+{
+  "id": 7639,
+  "name": "Card #7639",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7639.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue_yellow_cloud_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "shinji bacon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "furry star wars creature with cup"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Berserker"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "alien creature head"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "empty room wall"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "black knight helmet"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "pen scribble"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Gengar inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7639.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 10323,
+  "name": "Card #10323",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10323.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dali snake Watercolor Figure Background"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "nemesis holding man"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gotenks majin buu battle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue ethereal figures"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "marnie_208_202_trainer_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pakkun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "marnie_208_202_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10323.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

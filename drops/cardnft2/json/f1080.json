@@ -1,0 +1,98 @@
+{
+  "id": 1080,
+  "name": "Card #1080",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1080.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark industrial pipes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "luffy zoro tied"
+    },
+    {
+      "trait_type": "hero",
+      "value": "isobelle pascha kuma"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "david lynch explains"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lillith rise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Gregorian chant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Monkey King Enma 164"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1080.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 5925,
+  "name": "Card #5925",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5925.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bakura manga chess pieces"
+    },
+    {
+      "trait_type": "left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fire Energy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5925.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

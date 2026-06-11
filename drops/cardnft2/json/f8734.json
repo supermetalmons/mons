@@ -1,0 +1,46 @@
+{
+  "id": 8734,
+  "name": "Card #8734",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8734.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dali snake Watercolor Figure Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "atari et"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Rayquaza ex Deoxys - IMG_3445 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8734.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 2011,
+  "name": "Card #2011",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2011.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "top right",
+      "value": "mega man"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bat sketch dark"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokemon themed desserts"
+    },
+    {
+      "trait_type": "center",
+      "value": "orange painterly woman"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kakashi reading book"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kimimaro bone dagger"
+    },
+    {
+      "trait_type": "border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mantine - 74/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2011.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

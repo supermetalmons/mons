@@ -1,0 +1,130 @@
+{
+  "id": 8818,
+  "name": "Card #8818",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8818.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract paint swirl"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dolphin in water"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad 712"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jack frost sprite"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "064 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "011 fire ice split extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Itachi Uchiha inverted mask variant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8818.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

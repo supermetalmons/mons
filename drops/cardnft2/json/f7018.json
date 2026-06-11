@@ -1,0 +1,54 @@
+{
+  "id": 7018,
+  "name": "Card #7018",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7018.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Toy Store Anime Aisle Background - card1673-24"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "venoms charizard card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic Tigris - IMG_3510 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7018.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

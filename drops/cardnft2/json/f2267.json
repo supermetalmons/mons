@@ -1,0 +1,62 @@
+{
+  "id": 2267,
+  "name": "Card #2267",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2267.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tylenol cartoon box"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Ancient Gear Soldier"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kaliacc drifella character art"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragonair - 150/236"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2267.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

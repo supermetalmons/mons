@@ -1,0 +1,74 @@
+{
+  "id": 10245,
+  "name": "Card #10245",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10245.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bugsbunny grim reaper art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "ultraman starry silhouette"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dawn - card0218 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dawn - card0218 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10245.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

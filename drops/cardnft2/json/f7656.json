@@ -1,0 +1,106 @@
+{
+  "id": 7656,
+  "name": "Card #7656",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7656.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_full_spectrum_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "jesus mons"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white angels"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "touhou spell"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "life is boring so why not steal this card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Eevee Jungle - card1111 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7656.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

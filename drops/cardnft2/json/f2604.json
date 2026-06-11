@@ -1,0 +1,58 @@
+{
+  "id": 2604,
+  "name": "Card #2604",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2604.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cracked"
+    },
+    {
+      "trait_type": "top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy with nude girls frazetta"
+    },
+    {
+      "trait_type": "right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "center",
+      "value": "chibi itachi"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kecleon - 122/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2604.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

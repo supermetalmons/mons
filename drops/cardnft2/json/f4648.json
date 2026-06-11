@@ -1,0 +1,70 @@
+{
+  "id": 4648,
+  "name": "Card #4648",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4648.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "vampire anime character"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "39 psychic pink blue clean wisp rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gamestop handshake"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red scythe"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sharingan Eye - 048"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4648.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

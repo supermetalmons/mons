@@ -1,0 +1,102 @@
+{
+  "id": 10446,
+  "name": "Card #10446",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10446.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko teal and burnt red shadow blocks"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hawlucha sprite"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "plato bust geometric overlay"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Real human intelligence includes intuitive subconscious faculties and a capacity for freedom"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - triskelion"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "087 gold plum teal extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "hitmontop - card5151 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "hitmontop - card5151 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - left",
+      "value": "precious moments wedding"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Robot cat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10446.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

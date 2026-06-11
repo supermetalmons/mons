@@ -2,7 +2,7 @@
   "id": 186,
   "name": "Card #186",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_186.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0186.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kisame Hoshigaki - Water Clone Jutsu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "hero",
+      "value": "abstract humanoid silent hill sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sharingans"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "r2d2 partial illustration"
+    },
+    {
+      "trait_type": "left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_186.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0186.webp",
         "type": "image/webp"
       }
     ],

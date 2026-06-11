@@ -1,0 +1,62 @@
+{
+  "id": 9529,
+  "name": "Card #9529",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9529.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Forest Water Lilies Background - card1673-7"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 2"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - ankh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "040 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Beldum - card1905 halftone screenprint mask"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9529.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

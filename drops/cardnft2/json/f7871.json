@@ -1,0 +1,118 @@
+{
+  "id": 7871,
+  "name": "Card #7871",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7871.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "neon_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ghibli reeled in fish"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "paid rent for gallery"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi orochimaru and shikamaru"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "klimt death detail"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ship silhouette night"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "warbly wash line"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "army teen baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Noibat - IMG_3476 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7871.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

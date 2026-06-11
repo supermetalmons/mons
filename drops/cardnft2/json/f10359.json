@@ -1,0 +1,110 @@
+{
+  "id": 10359,
+  "name": "Card #10359",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10359.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gothic Cathedral Night Background - card1673-41"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "slime elasto blast"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "scattered balls"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "standing monkey"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 blood orange magenta holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "yamcha dragon ball z - card0878 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "yamcha dragon ball z - card0878 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "parker paint splatter wall"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "they should let me color frank millers batman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10359.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

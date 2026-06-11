@@ -1,0 +1,94 @@
+{
+  "id": 4190,
+  "name": "Card #4190",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4190.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragon flames"
+    },
+    {
+      "trait_type": "top right",
+      "value": "paint swatches"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "stacked logs corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "thankful quote"
+    },
+    {
+      "trait_type": "hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gallade - 81/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4190.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

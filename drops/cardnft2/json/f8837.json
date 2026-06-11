@@ -1,0 +1,114 @@
+{
+  "id": 8837,
+  "name": "Card #8837",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8837.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "neon_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "chrollo silhouette"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Itachi Uchiha inverted mask"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "filigree crown"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "baseball player manga"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "aavegotchi  land"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "azumarill_xy_103_146_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8837.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

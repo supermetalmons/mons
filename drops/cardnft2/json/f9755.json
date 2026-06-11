@@ -1,0 +1,62 @@
+{
+  "id": 9755,
+  "name": "Card #9755",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9755.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "black winged armored sd card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red dress oil sketch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 dark cobalt pink sunset holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 dragon red green clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "simpsons_ripped_blue_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9755.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

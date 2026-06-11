@@ -1,0 +1,110 @@
+{
+  "id": 7761,
+  "name": "Card #7761",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7761.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_gold_plum_teal_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragoonzard"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "yugioh line stickers"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "tombstone with arms"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "shadow lugia"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Uchiha Proof Of Genius inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowpoly knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif glitter bouncy ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Blue Eyes White Dragon - IMG_3230 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7761.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

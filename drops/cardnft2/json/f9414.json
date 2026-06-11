@@ -1,0 +1,62 @@
+{
+  "id": 9414,
+  "name": "Card #9414",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9414.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Suicune ex - IMG_3436 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9414.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

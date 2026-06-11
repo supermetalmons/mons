@@ -1,0 +1,110 @@
+{
+  "id": 3299,
+  "name": "Card #3299",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3299.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "brown fabric texture"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pleasure garden lodewijck 1584"
+    },
+    {
+      "trait_type": "right",
+      "value": "creepy masked figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "rustic armored figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ultima"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mecha line art sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camerupt sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Water Energy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3299.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

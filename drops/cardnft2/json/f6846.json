@@ -1,0 +1,70 @@
+{
+  "id": 6846,
+  "name": "Card #6846",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6846.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "metagross tank"
+    },
+    {
+      "trait_type": "left",
+      "value": "purple sofa"
+    },
+    {
+      "trait_type": "right",
+      "value": "solana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Seraphimon - DT-62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6846.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

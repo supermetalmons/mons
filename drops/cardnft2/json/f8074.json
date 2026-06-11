@@ -1,0 +1,94 @@
+{
+  "id": 8074,
+  "name": "Card #8074",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8074.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Black Green Motion Blur Texture Background - card1673-34"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Biscuit black mask"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "old man roshi"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "king of the shadow realm"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 psychic pink blue clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "068 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mew Delta Species - IMG_3234 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8074.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

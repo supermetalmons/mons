@@ -1,0 +1,46 @@
+{
+  "id": 6213,
+  "name": "Card #6213",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6213.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Genjutsu of Pain! - S18"
+    },
+    {
+      "trait_type": "center",
+      "value": "red abstract brushstrokes"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dratini biscuit sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6213.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

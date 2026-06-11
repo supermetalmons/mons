@@ -1,0 +1,62 @@
+{
+  "id": 6079,
+  "name": "Card #6079",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6079.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "eevee_101_149_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokerus"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime kid drinking"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frankenstein wrightson the modern prometheus"
+    },
+    {
+      "trait_type": "right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Politoed - 25/145"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6079.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

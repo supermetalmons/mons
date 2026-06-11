@@ -1,0 +1,54 @@
+{
+  "id": 6253,
+  "name": "Card #6253",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6253.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Earth Style: Headhunter Jutsu - 021 TP4"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kuwait 1991"
+    },
+    {
+      "trait_type": "hero",
+      "value": "gohan great saiyaman"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "left",
+      "value": "purple mask creatures"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6253.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

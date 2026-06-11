@@ -1,0 +1,94 @@
+{
+  "id": 8250,
+  "name": "Card #8250",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8250.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_dragon_wave_art"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rpg battle menu - trenton"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "ghost fleischer character"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful music notation diagram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini deviantart sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "046 purple peach glow extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "005 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "44 dragon red green clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "60 emerald violet dream holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara C1 - card0340 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8250.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

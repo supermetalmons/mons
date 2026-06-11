@@ -1,0 +1,62 @@
+{
+  "id": 369,
+  "name": "Card #369",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0369.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gaara of the Desert (Suit) - 4/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract sleeping figures"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shattered glass"
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0369.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 8424,
+  "name": "Card #8424",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8424.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_jungle_tiger_woman"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "house party nearby im bringing weird guys"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "sasuke curse mark - trenton"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "safety pins abstract design"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "parker venom paint card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "088 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "27 dragon red green clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 lava violet ember holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Dragonite Team Rocket 5 of 82 - card0075 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8424.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

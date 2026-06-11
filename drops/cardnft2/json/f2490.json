@@ -1,0 +1,58 @@
+{
+  "id": 2490,
+  "name": "Card #2490",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2490.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "one piece snail pattern"
+    },
+    {
+      "trait_type": "right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime demon girl moon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Braixen - 12/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2490.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

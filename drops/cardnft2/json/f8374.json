@@ -1,0 +1,82 @@
+{
+  "id": 8374,
+  "name": "Card #8374",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8374.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_cobalt_pink_sunset_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract mosaic pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "no war"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Blaines Charizard Gym Challenge 2 of 132 - IMG_3465 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8374.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 2094,
+  "name": "Card #2094",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2094.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "akira manga girl"
+    },
+    {
+      "trait_type": "center",
+      "value": "red cross text pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Trapinch - 67/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2094.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

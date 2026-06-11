@@ -1,0 +1,90 @@
+{
+  "id": 2307,
+  "name": "Card #2307",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2307.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "xfiles streetlight figures night"
+    },
+    {
+      "trait_type": "hero",
+      "value": "multi eyed demon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "jew milady"
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "center",
+      "value": "black blue abstract lines"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract colorful scribbles"
+    },
+    {
+      "trait_type": "left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Victreebel - 32/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2307.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

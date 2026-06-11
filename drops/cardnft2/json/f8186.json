@@ -1,0 +1,102 @@
+{
+  "id": 8186,
+  "name": "Card #8186",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8186.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "thorny branch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "7401% ApY"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "adam"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Love Machine"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "27 emerald violet dream holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "051 deep teal lime extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "096 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Eevee Jungle - card1111 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8186.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

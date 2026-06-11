@@ -1,0 +1,74 @@
+{
+  "id": 10074,
+  "name": "Card #10074",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10074.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Petra Flower Table Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "vampire anime character"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "masonic halloween lantern panel"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke uchiha - card0224 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon booster pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasuke uchiha - card0224 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10074.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

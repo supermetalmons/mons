@@ -1,0 +1,82 @@
+{
+  "id": 7963,
+  "name": "Card #7963",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7963.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_barbarian_warrior"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "blue connection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "A"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif glitter bouncy ball"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Fighting Energy Expedition - IMG_3475 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7963.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

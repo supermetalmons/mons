@@ -1,0 +1,54 @@
+{
+  "id": 6885,
+  "name": "Card #6885",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6885.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "center",
+      "value": "drone combat"
+    },
+    {
+      "trait_type": "left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Primordial Altar - 161/195"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6885.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

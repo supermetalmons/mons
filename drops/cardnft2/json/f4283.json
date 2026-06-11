@@ -1,0 +1,66 @@
+{
+  "id": 4283,
+  "name": "Card #4283",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4283.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "precious moments wedding"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "toriyama character sketch"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "embryos imported 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Communication - 98/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4283.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

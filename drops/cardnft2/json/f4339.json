@@ -1,0 +1,86 @@
+{
+  "id": 4339,
+  "name": "Card #4339",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4339.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "adam"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "36 fire ice split holo triangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chakra cat outline"
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Professor Souichi Tomoe"
+    },
+    {
+      "trait_type": "center",
+      "value": "Sine Cerere et Baccho friget Venus engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "search and destroy badge"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman exe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Monferno - 41/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4339.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 8990,
+  "name": "Card #8990",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8990.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract White Jar Painting Background - card1673-49"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gaara_of_the_desert_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "batman dark street scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8990.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

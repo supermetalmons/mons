@@ -1,0 +1,62 @@
+{
+  "id": 4669,
+  "name": "Card #4669",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4669.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "091 deep teal lime extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "beat up Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "death dealer preliminary"
+    },
+    {
+      "trait_type": "top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "vintage coffee carton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vessel for Dreams"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4669.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

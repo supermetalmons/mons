@@ -1,0 +1,90 @@
+{
+  "id": 7576,
+  "name": "Card #7576",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7576.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "red_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "weaponry"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "melting donald meme"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kuwait 1991"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "king kong cbd logo"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Splicers Metamorph Demon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mew Expedition - IMG_3254 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7576.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

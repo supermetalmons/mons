@@ -1,0 +1,66 @@
+{
+  "id": 9846,
+  "name": "Card #9846",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9846.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon pink umbrella man"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Real human intelligence includes intuitive subconscious faculties and a capacity for freedom"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke uchiha - card0224 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherries"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "garlic jr fig"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9846.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

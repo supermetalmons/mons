@@ -1,0 +1,90 @@
+{
+  "id": 4765,
+  "name": "Card #4765",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4765.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "heavy rain logo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anime hands loading gun"
+    },
+    {
+      "trait_type": "top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon ghost pin"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Karin - TP3 1189"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4765.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 935,
+  "name": "Card #935",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0935.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kiba Inuzuka - 241"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokemon card scattered"
+    },
+    {
+      "trait_type": "hero",
+      "value": "electabuzz punch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0935.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

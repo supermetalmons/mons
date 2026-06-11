@@ -1,0 +1,54 @@
+{
+  "id": 7192,
+  "name": "Card #7192",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7192.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Pikachu in Magikarp Poncho - IMG_3219 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7192.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

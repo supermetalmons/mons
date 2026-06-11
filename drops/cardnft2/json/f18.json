@@ -2,7 +2,7 @@
   "id": 18,
   "name": "Card #18",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_18.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0018.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bicycle - 117/135"
+    },
+    {
+      "trait_type": "hero",
+      "value": "splatterhouse mask monster"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon sushi art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "metagross tank"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink purple watercolor drif body"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_18.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0018.webp",
         "type": "image/webp"
       }
     ],

@@ -1,0 +1,54 @@
+{
+  "id": 9205,
+  "name": "Card #9205",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9205.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ito waifu - card1673-18"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "syrup jug"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black noise void - abstract void sigil"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gold_potion_140_149_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9205.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

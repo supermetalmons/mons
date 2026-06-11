@@ -1,0 +1,58 @@
+{
+  "id": 3159,
+  "name": "Card #3159",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3159.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifs bowing to jesus"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "purple blue goblins"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chikarita sticker"
+    },
+    {
+      "trait_type": "left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vileplume - 31/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3159.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

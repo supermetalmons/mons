@@ -1,0 +1,90 @@
+{
+  "id": 8033,
+  "name": "Card #8033",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8033.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "facepalm meme"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "bitcoins"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "yugi meme"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "025 dark blood orange extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 vespertine purple peach clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "19 blood orange magenta holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini rocket returns black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8033.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

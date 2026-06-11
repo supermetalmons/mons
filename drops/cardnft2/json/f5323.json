@@ -1,0 +1,114 @@
+{
+  "id": 5323,
+  "name": "Card #5323",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5323.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "top right",
+      "value": "strategy icons"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cracked"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink purple watercolor drif body"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shadow yoshitaka design"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [A] - 33/75"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5323.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

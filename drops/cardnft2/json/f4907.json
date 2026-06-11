@@ -1,0 +1,62 @@
+{
+  "id": 4907,
+  "name": "Card #4907",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4907.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "077 cobalt pink sunset extra holo rectangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "centipede arcade art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "ancient dice"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sage Art: Giant Rasengan"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4907.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

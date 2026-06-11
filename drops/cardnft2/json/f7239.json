@@ -1,0 +1,66 @@
+{
+  "id": 7239,
+  "name": "Card #7239",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7239.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon_pink_room_figure"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "terraria sprites"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Gargomon C100 - card1466 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7239.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

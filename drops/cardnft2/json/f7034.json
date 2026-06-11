@@ -1,0 +1,58 @@
+{
+  "id": 7034,
+  "name": "Card #7034",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7034.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silent Hill pt door - card1673-3"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dark Snorlax Team Rocket - IMG_3268 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7034.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

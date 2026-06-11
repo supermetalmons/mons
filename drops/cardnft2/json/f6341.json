@@ -1,0 +1,50 @@
+{
+  "id": 6341,
+  "name": "Card #6341",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6341.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mawile - 100/163"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink apricot spray"
+    },
+    {
+      "trait_type": "top right",
+      "value": "water badge"
+    },
+    {
+      "trait_type": "right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6341.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 10366,
+  "name": "Card #10366",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10366.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "watermelon_candy_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Freakazoid"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "angel amano art"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rose crystal glaze"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "056 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - alchemy fire"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "team_skull_grunt_149_149_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "team_skull_grunt_149_149_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "miniryu lv 10 card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10366.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

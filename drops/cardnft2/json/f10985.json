@@ -1,0 +1,154 @@
+{
+  "id": 10985,
+  "name": "Card #10985",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10985.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "demon bat and archangel"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_10"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_seven__momo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_six__lemon_orange_magenta"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract figure sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gray circular pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_07"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst violet - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_02"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "061 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Ancient Fairy Dragon - IMG_3452 white mask"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_01"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_26"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_21"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_12"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_14"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_18"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_three__neo_classical_balloons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10985.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

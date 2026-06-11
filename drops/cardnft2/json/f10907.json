@@ -1,0 +1,62 @@
+{
+  "id": 10907,
+  "name": "Card #10907",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10907.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ink Wash Panda Bamboo Background"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Torchic - IMG_3269 inverted white mask"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_mask_sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10907.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

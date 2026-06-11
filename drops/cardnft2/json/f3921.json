@@ -1,0 +1,62 @@
+{
+  "id": 3921,
+  "name": "Card #3921",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3921.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokemon shiny sprite grid"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "paint and stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gliscor - 5/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3921.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

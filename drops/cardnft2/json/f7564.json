@@ -1,0 +1,78 @@
+{
+  "id": 7564,
+  "name": "Card #7564",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7564.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "frieza pose"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful abstract caligraphy"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bubble planet"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Anime Character Card - IMG_3549 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grass and ruins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7564.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

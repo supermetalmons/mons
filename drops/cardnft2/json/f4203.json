@@ -1,0 +1,94 @@
+{
+  "id": 4203,
+  "name": "Card #4203",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4203.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "the batman chapter 2"
+    },
+    {
+      "trait_type": "left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "top center",
+      "value": "rearview fire"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "batou"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "unown holo card"
+    },
+    {
+      "trait_type": "right",
+      "value": "penguin with blue crown"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal necklace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Trust the hood blink"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Quagsire - 39/98"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4203.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

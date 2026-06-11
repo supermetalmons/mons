@@ -1,0 +1,178 @@
+{
+  "id": 10822,
+  "name": "Card #10822",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10822.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_15"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_06"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - lotus"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 37"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract figure bacon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow gradient rectangle 2"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_19"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_07"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - labyrinth"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Houndour - card2669 white mask"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_11"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_29"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_30"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_15"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_07"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_17"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10822.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

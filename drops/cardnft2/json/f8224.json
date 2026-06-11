@@ -1,0 +1,78 @@
+{
+  "id": 8224,
+  "name": "Card #8224",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8224.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Style Surreal Creature Landscape Background - card1673-5"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gotcha force a rank"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "apollo engraving"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "astro boy chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Piplup - IMG_3523 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8224.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

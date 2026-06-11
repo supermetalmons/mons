@@ -1,0 +1,58 @@
+{
+  "id": 3062,
+  "name": "Card #3062",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3062.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red block"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shelgon - 20/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3062.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

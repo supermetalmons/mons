@@ -1,0 +1,94 @@
+{
+  "id": 9340,
+  "name": "Card #9340",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9340.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_floral_bird_pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mecha line art sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "seedot"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "abstract painted humanoid figure"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "usagi"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "clay eyes"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 10 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - gold holy - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Darkrai VSTAR - IMG_3435 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9340.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

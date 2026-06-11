@@ -1,0 +1,102 @@
+{
+  "id": 4699,
+  "name": "Card #4699",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4699.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "right",
+      "value": "cartoon detective sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "green slime face"
+    },
+    {
+      "trait_type": "left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract colorful scribbles"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kanegon ultra q"
+    },
+    {
+      "trait_type": "hero",
+      "value": "manga action scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold precious moments pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Shadow mace"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chidori - 815"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4699.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

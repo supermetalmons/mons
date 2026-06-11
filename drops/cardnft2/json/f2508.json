@@ -1,0 +1,66 @@
+{
+  "id": 2508,
+  "name": "Card #2508",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2508.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "kurt angle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "mars argo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "skyrim 11 11 11"
+    },
+    {
+      "trait_type": "center",
+      "value": "pc98 woman"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Vivi Ornitier"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bronzong - 41/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2508.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

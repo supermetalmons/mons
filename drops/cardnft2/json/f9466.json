@@ -1,0 +1,70 @@
+{
+  "id": 9466,
+  "name": "Card #9466",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9466.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "vintage_anatomy_skeleton"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "shizuku hxh"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "chinese banknote corner"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "_contact_sheet_preview_3"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9466.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

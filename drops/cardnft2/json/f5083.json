@@ -1,0 +1,126 @@
+{
+  "id": 5083,
+  "name": "Card #5083",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5083.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "nosehair release manga panel"
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "top right",
+      "value": "crystallization"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "incredibly protected graded card"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mario kart split screen"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "what is this drugs"
+    },
+    {
+      "trait_type": "left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "top center",
+      "value": "shienryu"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "destroyed crystal charizard"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pokeballs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crawfish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Trapinch - 68/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5083.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

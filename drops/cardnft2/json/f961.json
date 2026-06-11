@@ -1,0 +1,98 @@
+{
+  "id": 961,
+  "name": "Card #961",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0961.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jiraiya - 218"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "center",
+      "value": "frazetta crucifix preliminaries"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral scratches"
+    },
+    {
+      "trait_type": "center",
+      "value": "arceus lv x"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue line pattern"
+    },
+    {
+      "trait_type": "hero",
+      "value": "green goblin sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "record of lodoss war"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "great balls of fire"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sims phone icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Drool harlequin"
+    },
+    {
+      "trait_type": "top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0961.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

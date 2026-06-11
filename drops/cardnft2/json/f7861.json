@@ -1,0 +1,114 @@
+{
+  "id": 7861,
+  "name": "Card #7861",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7861.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small fish"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "klonoa boss concept"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "3d line digimon"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "bullet hair"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Casey Abra - IMG_3559 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7861.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 10194,
+  "name": "Card #10194",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10194.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ito waifu - card1673-18"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "cable"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "buddha repeated"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 calm teal violet clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__third age armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 04 - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasori - card0380 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasori - card0380 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10194.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

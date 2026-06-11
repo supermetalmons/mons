@@ -1,0 +1,46 @@
+{
+  "id": 2176,
+  "name": "Card #2176",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2176.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "center",
+      "value": "black silhouette landscape"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke sword stance"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clefable - 40/68"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2176.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

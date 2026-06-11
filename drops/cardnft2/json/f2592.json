@@ -1,0 +1,70 @@
+{
+  "id": 2592,
+  "name": "Card #2592",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2592.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "zeni"
+    },
+    {
+      "trait_type": "left",
+      "value": "rayquaza orange smoke"
+    },
+    {
+      "trait_type": "top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "center",
+      "value": "messy paint smear"
+    },
+    {
+      "trait_type": "top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alien giger figure"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "japanese demon box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Raihan - 152/203"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2592.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

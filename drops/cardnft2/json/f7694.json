@@ -1,0 +1,94 @@
+{
+  "id": 7694,
+  "name": "Card #7694",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7694.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sacred Heart Floral Gold Background - card1673-47"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bulbafella"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "guts"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "what is this drugs"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Blue Eyes White Dragon - IMG_3491 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7694.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

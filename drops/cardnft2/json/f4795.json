@@ -1,0 +1,158 @@
+{
+  "id": 4795,
+  "name": "Card #4795",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4795.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 09"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 01"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 16"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 19"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "27 emerald violet dream holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 47"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 07"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "19 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "martini table black background"
+    },
+    {
+      "trait_type": "top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pink stroke"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "de kooning sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "manectric - card3405 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Utakata - 1597"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4795.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

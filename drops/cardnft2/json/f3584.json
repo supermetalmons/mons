@@ -1,0 +1,106 @@
+{
+  "id": 3584,
+  "name": "Card #3584",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3584.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "hero",
+      "value": "fantasy creature chains"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ultimate muscle manga"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Additional Blow - us049"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3584.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

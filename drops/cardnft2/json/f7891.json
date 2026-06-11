@@ -1,0 +1,90 @@
+{
+  "id": 7891,
+  "name": "Card #7891",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7891.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "vintage_anatomy_skeleton"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "chaos magic circle altar"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "two red teddy bears"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drifella card octagram "
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "card vending machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kisame Hoshigaki - card0400 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7891.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

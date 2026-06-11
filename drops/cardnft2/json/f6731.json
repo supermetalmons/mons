@@ -1,0 +1,46 @@
+{
+  "id": 6731,
+  "name": "Card #6731",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6731.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Red & Green - St-61"
+    },
+    {
+      "trait_type": "left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6731.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

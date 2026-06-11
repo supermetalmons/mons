@@ -1,0 +1,102 @@
+{
+  "id": 10193,
+  "name": "Card #10193",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10193.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Circular Mandala Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "The Farnese Hercules engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "un spaceship illustration"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "bad apple"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "order of free gardeners"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "zombie animitronic drifella demon"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "r2d2 partial illustration"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kankuro puppet - card0607 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "kankuro puppet - card0607 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10193.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

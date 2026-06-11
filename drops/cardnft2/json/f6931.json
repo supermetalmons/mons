@@ -1,0 +1,82 @@
+{
+  "id": 6931,
+  "name": "Card #6931",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6931.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crucidrifella digimon illustration"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "top right",
+      "value": "alien creature head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "center",
+      "value": "lightning tree silhouette"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Golden Girl frazetta"
+    },
+    {
+      "trait_type": "top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hikaru no go card box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Narfi, Betrayer King - KHM 329"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6931.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

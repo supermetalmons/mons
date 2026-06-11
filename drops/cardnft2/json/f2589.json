@@ -1,0 +1,66 @@
+{
+  "id": 2589,
+  "name": "Card #2589",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2589.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3 (1)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camo drif body"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract texture 5"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime girl shaved ice"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Stormy Mountains - 161/203"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2589.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

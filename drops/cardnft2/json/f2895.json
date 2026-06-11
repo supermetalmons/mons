@@ -1,0 +1,66 @@
+{
+  "id": 2895,
+  "name": "Card #2895",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2895.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "buck rogers cover 1"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiked god toji painting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "jesus mons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "hero",
+      "value": "astro boy chibi"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyrus's Initiative - 137/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2895.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

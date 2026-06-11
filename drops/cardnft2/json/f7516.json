@@ -1,0 +1,110 @@
+{
+  "id": 7516,
+  "name": "Card #7516",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7516.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "manga skeleton surprise"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "comic panel thinking peter parker"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anna karina"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hylics sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "fishnet"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drif iii chained test print"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Blue Eyes White Dragon - IMG_3491 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic chest sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7516.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

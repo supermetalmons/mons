@@ -1,0 +1,90 @@
+{
+  "id": 7658,
+  "name": "Card #7658",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7658.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_red_kimono_gold_screen"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "prayer card"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green radar screen"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "imagine popping a grey homunculus"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "warning text black background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "melting donald meme"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red black abstract corner"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini Gentle Wrap Ram inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7658.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

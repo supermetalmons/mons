@@ -1,0 +1,90 @@
+{
+  "id": 7580,
+  "name": "Card #7580",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7580.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mint_red_aqua_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "cute penguin"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yokai group"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "skeletal alien figure"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black abstract lines"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dragonite gb inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7580.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

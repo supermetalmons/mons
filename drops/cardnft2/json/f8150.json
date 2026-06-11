@@ -1,0 +1,82 @@
+{
+  "id": 8150,
+  "name": "Card #8150",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8150.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Forest Water Lilies Background - card1673-7"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dai shogi"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "music to kill"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "devil world"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "sonic level start"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grass and ruins"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "009 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "006 cobalt pink sunset extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Reshiram Black and White - IMG_3427 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8150.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

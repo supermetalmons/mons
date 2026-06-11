@@ -1,0 +1,38 @@
+{
+  "id": 11036,
+  "name": "Card #11036",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicttnaubgex6mle5zbtcsokt5bd56d5qre23ebdldkuybpltzjsmm/11036.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Chosen Pixel Mosaic"
+    },
+    {
+      "trait_type": "Source File",
+      "value": "pixel_mosaic_stack_165.png"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "pixel mosaic"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicttnaubgex6mle5zbtcsokt5bd56d5qre23ebdldkuybpltzjsmm/11036.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 4350,
+  "name": "Card #4350",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4350.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kids dont even know who they are"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ship silhouette night"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nuzleaf - 36/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4350.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

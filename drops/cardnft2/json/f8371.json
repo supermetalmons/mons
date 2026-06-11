@@ -1,0 +1,86 @@
+{
+  "id": 8371,
+  "name": "Card #8371",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8371.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "in service baby yoda "
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "hooded figure magic hand"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "captain"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "vertical magenta blue ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 gentle pearl clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Sasuke Uchiha - IMG_3526 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8371.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

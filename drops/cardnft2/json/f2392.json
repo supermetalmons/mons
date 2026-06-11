@@ -1,0 +1,66 @@
+{
+  "id": 2392,
+  "name": "Card #2392",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2392.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dice three dots"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hr giger biomechanical figures"
+    },
+    {
+      "trait_type": "hero",
+      "value": "suicune"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sheep head on plate"
+    },
+    {
+      "trait_type": "center",
+      "value": "soul eater moon clowns"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Omanyte - 60/75"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2392.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

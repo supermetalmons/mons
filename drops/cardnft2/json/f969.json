@@ -1,0 +1,54 @@
+{
+  "id": 969,
+  "name": "Card #969",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0969.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Silent Killing Jutsu"
+    },
+    {
+      "trait_type": "center",
+      "value": "digimon world card shop"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tokusatsu bug"
+    },
+    {
+      "trait_type": "right",
+      "value": "police officer arresting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime keychain character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red nabler purse"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0969.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

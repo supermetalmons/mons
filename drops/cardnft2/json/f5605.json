@@ -1,0 +1,94 @@
+{
+  "id": 5605,
+  "name": "Card #5605",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5605.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "31 nightcore rainbow clean wisp rectangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "tower of babel"
+    },
+    {
+      "trait_type": "left",
+      "value": "kirby inhaling"
+    },
+    {
+      "trait_type": "top right",
+      "value": "vegeta super saiyan battle"
+    },
+    {
+      "trait_type": "center",
+      "value": "godzilla breath attack"
+    },
+    {
+      "trait_type": "top center",
+      "value": "eye abstract painting"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi pilot manga"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady7"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rowlet - 2/15"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5605.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

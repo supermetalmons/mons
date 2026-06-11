@@ -1,0 +1,86 @@
+{
+  "id": 8600,
+  "name": "Card #8600",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8600.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "holographic_chrome_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "japanese toy protest"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "shinigami"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "muslim battle pass"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "090 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "083 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Minato Namikaze - IMG_3245 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8600.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

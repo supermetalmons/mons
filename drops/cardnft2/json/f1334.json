@@ -1,0 +1,50 @@
+{
+  "id": 1334,
+  "name": "Card #1334",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1334.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Warrior's Honor"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract cartoon faces"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ryuk manga panel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "spiked mace weapon"
+    },
+    {
+      "trait_type": "left",
+      "value": "drifella resurrection chart"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1334.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 8089,
+  "name": "Card #8089",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8089.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silent Hill pt door - card1673-3"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Vortex"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Fire Energy - card2435 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8089.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

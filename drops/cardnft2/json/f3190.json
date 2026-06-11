@@ -1,0 +1,58 @@
+{
+  "id": 3190,
+  "name": "Card #3190",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3190.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "pixelated abstract figure"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hikaru"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "white red flower black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Totodile - 85/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3190.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

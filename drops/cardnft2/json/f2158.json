@@ -1,0 +1,46 @@
+{
+  "id": 2158,
+  "name": "Card #2158",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2158.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple red daggers"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Booster Rauschenberg 1967 "
+    },
+    {
+      "trait_type": "base card",
+      "value": "Golbat - 29/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2158.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

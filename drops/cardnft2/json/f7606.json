@@ -1,0 +1,86 @@
+{
+  "id": 7606,
+  "name": "Card #7606",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7606.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mewtwo Purple Lab Capsule Background - card1673-32"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "metal knight little swag world"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "croagunk"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black gradient sky"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "alien figure on cloth"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Pain - IMG_3247 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7606.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

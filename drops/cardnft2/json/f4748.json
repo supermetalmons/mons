@@ -1,0 +1,54 @@
+{
+  "id": 4748,
+  "name": "Card #4748",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4748.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "hitmontop - card5151 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 637"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4748.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

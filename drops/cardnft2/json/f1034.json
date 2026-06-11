@@ -1,0 +1,58 @@
+{
+  "id": 1034,
+  "name": "Card #1034",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1034.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Fourth Hokage - 5/3"
+    },
+    {
+      "trait_type": "center",
+      "value": "green circle flowchart"
+    },
+    {
+      "trait_type": "center",
+      "value": "my first drifella"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gaara manga"
+    },
+    {
+      "trait_type": "top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "lizard possession"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1034.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

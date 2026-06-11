@@ -1,0 +1,134 @@
+{
+  "id": 10916,
+  "name": "Card #10916",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10916.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue mountain waterfall painting"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green damask pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red block 3"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - sun cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_24"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 07 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "16 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_fantasy_horseman_art_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dark_fantasy_horseman_art_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mifella emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10916.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

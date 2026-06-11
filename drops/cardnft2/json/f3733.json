@@ -1,0 +1,54 @@
+{
+  "id": 3733,
+  "name": "Card #3733",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3733.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white spray 2"
+    },
+    {
+      "trait_type": "left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon vampire face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vibrava - 109/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3733.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 10827,
+  "name": "Card #10827",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10827.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Earl candle Chart painting - card1673-35"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "zapdos - card2282 white mask inverted transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "foggy scene sh2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "parappa felt"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10827.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

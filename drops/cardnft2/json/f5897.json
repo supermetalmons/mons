@@ -1,0 +1,70 @@
+{
+  "id": 5897,
+  "name": "Card #5897",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5897.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "atari et"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "hero",
+      "value": "armored warrior with axe"
+    },
+    {
+      "trait_type": "right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 1"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark mysterious figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jiren, Fist of Justice - BT2-029"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5897.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

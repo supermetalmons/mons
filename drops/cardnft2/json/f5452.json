@@ -1,0 +1,134 @@
+{
+  "id": 5452,
+  "name": "Card #5452",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5452.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred heart lace card"
+    },
+    {
+      "trait_type": "hero",
+      "value": "electabuzz punch"
+    },
+    {
+      "trait_type": "left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "top left",
+      "value": "unown"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "misdreavus"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gengarios"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hr giger alien sketch"
+    },
+    {
+      "trait_type": "right",
+      "value": "togetic at bat"
+    },
+    {
+      "trait_type": "center",
+      "value": "wood block dratini"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Stufful - 181/236"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5452.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

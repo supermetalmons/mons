@@ -1,0 +1,90 @@
+{
+  "id": 7729,
+  "name": "Card #7729",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7729.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Charizard Lightning Battle Background - card1673-28"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "1000-Armed Avalokiteshvara"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "keldeo chinese card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hobbit sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "crt tv cart"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "now and then, here and there"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poison zigzagoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Drool harlequin"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Ralts - card2026 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7729.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

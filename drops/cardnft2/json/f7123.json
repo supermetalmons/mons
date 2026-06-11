@@ -1,0 +1,70 @@
+{
+  "id": 7123,
+  "name": "Card #7123",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7123.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "house party nearby im bringing weird guys"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black brush strokes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Chimchar - card5312 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7123.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

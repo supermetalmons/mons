@@ -1,0 +1,50 @@
+{
+  "id": 900,
+  "name": "Card #900",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0900.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Black Quick Blast - 5 of 8"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dice three dots"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi pilot manga"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0900.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

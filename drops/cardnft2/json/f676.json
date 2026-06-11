@@ -1,0 +1,42 @@
+{
+  "id": 676,
+  "name": "Card #676",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0676.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Orange Hip Throw - 17 of 38"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow wave pattern"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0676.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

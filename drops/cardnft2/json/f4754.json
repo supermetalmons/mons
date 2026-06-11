@@ -1,0 +1,62 @@
+{
+  "id": 4754,
+  "name": "Card #4754",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4754.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "30 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alien creature crouching"
+    },
+    {
+      "trait_type": "left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kiba Inuzuka (Childhood) - 869"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4754.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

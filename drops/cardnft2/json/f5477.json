@@ -1,0 +1,82 @@
+{
+  "id": 5477,
+  "name": "Card #5477",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5477.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold flake amano 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hooded figure dalle"
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker quote"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton with crossbow"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ps3 boomerang controller"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charmander - 82/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5477.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

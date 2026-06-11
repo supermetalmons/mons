@@ -1,0 +1,66 @@
+{
+  "id": 2805,
+  "name": "Card #2805",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2805.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "astronaut shoes"
+    },
+    {
+      "trait_type": "left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kids dont even know who they are"
+    },
+    {
+      "trait_type": "right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ivysaur - 30/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2805.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

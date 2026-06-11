@@ -1,0 +1,58 @@
+{
+  "id": 6174,
+  "name": "Card #6174",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6174.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - 6/0"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "retro game dialogue box"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "david lynch explains"
+    },
+    {
+      "trait_type": "right",
+      "value": "hokusai bamboo print"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robot detective illustration"
+    },
+    {
+      "trait_type": "top right",
+      "value": "morpho"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6174.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

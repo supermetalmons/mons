@@ -1,0 +1,94 @@
+{
+  "id": 4035,
+  "name": "Card #4035",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4035.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dog knight pixel art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Gelus (πé╖πéÖπéºπâ⌐πé╣) manga page"
+    },
+    {
+      "trait_type": "top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - orange fire - crucifix cross"
+    },
+    {
+      "trait_type": "right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "top right",
+      "value": "drifella evolution line"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lycanroc anime face"
+    },
+    {
+      "trait_type": "center",
+      "value": "ancient butterfly ulti"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "salute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Vortex"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chandelure - 13/145"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4035.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

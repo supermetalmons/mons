@@ -1,0 +1,66 @@
+{
+  "id": 2368,
+  "name": "Card #2368",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2368.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cezanne fruit bowl corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark creature chains"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred heart lace card"
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sci fi storyboard panels"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sceptile - 8/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2368.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

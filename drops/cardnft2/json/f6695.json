@@ -1,0 +1,94 @@
+{
+  "id": 6695,
+  "name": "Card #6695",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6695.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - white onyx - cuneiform tablet"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard x blue flames"
+    },
+    {
+      "trait_type": "top right",
+      "value": "strategy icons"
+    },
+    {
+      "trait_type": "top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "noivern - card3871 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl cuck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pimp 830"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown - 60"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6695.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

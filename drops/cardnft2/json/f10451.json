@@ -1,0 +1,86 @@
+{
+  "id": 10451,
+  "name": "Card #10451",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10451.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "esoteric meme breakdown pokemon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ahm the talking horse"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - claw"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "43 dark magician clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_fantasy_fairy_art_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dark_fantasy_fairy_art_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "abstract cityscape figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10451.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

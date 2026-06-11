@@ -1,0 +1,58 @@
+{
+  "id": 6915,
+  "name": "Card #6915",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6915.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dual swords abstract"
+    },
+    {
+      "trait_type": "center",
+      "value": "tree of life"
+    },
+    {
+      "trait_type": "base card",
+      "value": "MA-01"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6915.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

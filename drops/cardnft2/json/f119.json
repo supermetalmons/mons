@@ -2,7 +2,7 @@
   "id": 119,
   "name": "Card #119",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_119.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0119.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,32 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Oboro - 079"
+    },
+    {
+      "trait_type": "center",
+      "value": "poor rich comparison"
+    },
+    {
+      "trait_type": "top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "center",
+      "value": "buck rogers cover 1"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_119.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0119.webp",
         "type": "image/webp"
       }
     ],

@@ -1,0 +1,118 @@
+{
+  "id": 10415,
+  "name": "Card #10415",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10415.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blacky umbreon japanese pokemon get card"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cell dragon ball"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "crow puffer jacket"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "red gemstone corner"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue japanese text box"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen dratini"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 35"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suigetsu hozuki - card4774 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "suigetsu hozuki - card4774 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "moogle watercolor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10415.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

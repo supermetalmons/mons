@@ -1,0 +1,106 @@
+{
+  "id": 10421,
+  "name": "Card #10421",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10421.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Volcano Fire Sky Landscape Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__iron armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "26 dark ruby violet orange holo triangle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "goetheanum"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "angel halo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "glitter pixel bokeh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini altered - card6555 halftone screenprint mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dratini altered - card6555 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "sample text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10421.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

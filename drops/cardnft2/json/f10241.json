@@ -1,0 +1,98 @@
+{
+  "id": 10241,
+  "name": "Card #10241",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10241.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "081 emerald violet dream extra holo star"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "let me tell you that I love you That I think about you all the time"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 vespertine purple peach clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini thunder jolt - card5226 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dratini thunder jolt - card5226 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10241.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

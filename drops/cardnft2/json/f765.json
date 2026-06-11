@@ -1,0 +1,50 @@
+{
+  "id": 765,
+  "name": "Card #765",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0765.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tenten - us021"
+    },
+    {
+      "trait_type": "center",
+      "value": "sacred cross black"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red robot head"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "minecraft pixelated landscape"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0765.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 4140,
+  "name": "Card #4140",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4140.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "r2d2 partial illustration"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Chrono Trigger helmet"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red gemstone corner"
+    },
+    {
+      "trait_type": "hero",
+      "value": "manga action scene 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella with soul injection"
+    },
+    {
+      "trait_type": "top center",
+      "value": "evil biscuit logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidoran♀ - 70/112"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4140.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

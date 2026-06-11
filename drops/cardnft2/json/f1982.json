@@ -1,0 +1,62 @@
+{
+  "id": 1982,
+  "name": "Card #1982",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1982.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hitmontop - 113/214"
+    },
+    {
+      "trait_type": "center",
+      "value": "pointillism abstract pattern"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle 2"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sh2 silhouette"
+    },
+    {
+      "trait_type": "top right",
+      "value": "goku watching"
+    },
+    {
+      "trait_type": "top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "panda statue flowers"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1982.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

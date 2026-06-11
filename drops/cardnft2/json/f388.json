@@ -1,0 +1,98 @@
+{
+  "id": 388,
+  "name": "Card #388",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0388.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "king kong cbd logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black tank silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "top right",
+      "value": "garbage pail kids pack"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral scratches"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "base card",
+      "value": "A Shadow in the Moonlight - us077"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0388.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

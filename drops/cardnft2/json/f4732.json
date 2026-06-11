@@ -1,0 +1,150 @@
+{
+  "id": 4732,
+  "name": "Card #4732",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4732.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "050 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging bed crimes of the future"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "39 psychic pink blue clean wisp rectangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 35"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "096 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 23"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 19"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 02"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "biscuit tollo colored pencil mask"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple sunset field"
+    },
+    {
+      "trait_type": "top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "left",
+      "value": "lsw box sprites"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime intense stare"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark angel red glow"
+    },
+    {
+      "trait_type": "right",
+      "value": "Dende"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giant Spider - 873 TP2"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4732.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

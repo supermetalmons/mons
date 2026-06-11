@@ -1,0 +1,58 @@
+{
+  "id": 1471,
+  "name": "Card #1471",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1471.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Goochy - Style #4230"
+    },
+    {
+      "trait_type": "center",
+      "value": "metalgreymon card"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "joker cat aura"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "formula race cars illustration"
+    },
+    {
+      "trait_type": "left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1471.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

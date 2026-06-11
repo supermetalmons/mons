@@ -1,0 +1,74 @@
+{
+  "id": 8606,
+  "name": "Card #8606",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8606.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Dark Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pain"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "horror pikachu"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sneasel_25_111_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8606.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

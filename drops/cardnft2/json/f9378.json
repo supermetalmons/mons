@@ -1,0 +1,62 @@
+{
+  "id": 9378,
+  "name": "Card #9378",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9378.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Moon Black Cat Silhouette Background - card1673-23"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "japanese toy protest"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "04 dark magician clean wisp diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shaymin EX - IMG_3233 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman exe"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9378.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

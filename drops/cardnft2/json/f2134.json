@@ -1,0 +1,62 @@
+{
+  "id": 2134,
+  "name": "Card #2134",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2134.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Cupsy☆Yummy"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture"
+    },
+    {
+      "trait_type": "right",
+      "value": "skeleton ghost green flames"
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sonic silhouette corner"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "base card",
+      "value": "Treecko - 76/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2134.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

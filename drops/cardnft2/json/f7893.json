@@ -1,0 +1,86 @@
+{
+  "id": 7893,
+  "name": "Card #7893",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7893.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_rainbow_motion_blur"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella evolution line"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "skeletor raising fists"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bull skeleton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "099 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 blood orange magenta holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Lightning Energy Expedition - IMG_3419 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7893.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 4024,
+  "name": "Card #4024",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4024.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "075 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mon in room"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "larvitar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddy reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grail"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bulbasaur - 1/73"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4024.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 10521,
+  "name": "Card #10521",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10521.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "jesus px aura"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gray diamond gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 01"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "garbagemon - card6769 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "garbagemon - card6769 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10521.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

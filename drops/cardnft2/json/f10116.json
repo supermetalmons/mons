@@ -1,0 +1,98 @@
+{
+  "id": 10116,
+  "name": "Card #10116",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10116.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonite anime face"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "holographic armored figure"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi Suigetsu"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "027 toxic sunset extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "088 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "treecko - card3414 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "treecko - card3414 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10116.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

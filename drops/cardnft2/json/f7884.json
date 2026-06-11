@@ -1,0 +1,86 @@
+{
+  "id": 7884,
+  "name": "Card #7884",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7884.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "umbreon coin"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "mew trainer black mask"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "plush toy with bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime angel cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Swinub Neo Genesis - card2720 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7884.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

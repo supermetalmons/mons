@@ -1,0 +1,78 @@
+{
+  "id": 10652,
+  "name": "Card #10652",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10652.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient candy acid nocturne blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "anime warrior green hair"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "weeping angel statue"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drif iii banknote"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 nightcore rainbow clean wisp rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "diamond_holo_pikachu_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "diamond_holo_pikachu_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "9 tails evil smile"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10652.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

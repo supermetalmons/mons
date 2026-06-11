@@ -1,0 +1,122 @@
+{
+  "id": 2741,
+  "name": "Card #2741",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2741.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dark magician girl holographic"
+    },
+    {
+      "trait_type": "hero",
+      "value": "horned stone creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skiploom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cowboy kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stock market will collapse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hidden tv in chip bag"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gray tiled ceiling"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "frazetta johnny dash comic"
+    },
+    {
+      "trait_type": "right",
+      "value": "wplace st. paisios"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Personality Test - 102/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2741.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

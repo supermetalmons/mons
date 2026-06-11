@@ -1,0 +1,154 @@
+{
+  "id": 10735,
+  "name": "Card #10735",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10735.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Art Nouveau Spring Poster Background - card1673-53"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_19"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_02"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "small colorful figures"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "090 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_19"
+    },
+    {
+      "trait_type": "under mask embryos",
+      "value": "sr_over_mask_embryos"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kisame Hoshigaki - card0400 halftone screenprint mask"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_09"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_15"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_02"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_13"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_06"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_small_duplicate_gradient_stars_29"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp FBI"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10735.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

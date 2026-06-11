@@ -1,0 +1,46 @@
+{
+  "id": 1149,
+  "name": "Card #1149",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1149.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's Haunter - 58/132"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "budokai trunks future"
+    },
+    {
+      "trait_type": "right",
+      "value": "yellow cat cigarette"
+    },
+    {
+      "trait_type": "top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1149.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 6414,
+  "name": "Card #6414",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6414.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidorina - 45/102"
+    },
+    {
+      "trait_type": "center",
+      "value": "my first drifella"
+    },
+    {
+      "trait_type": "right",
+      "value": "japanese toy protest"
+    },
+    {
+      "trait_type": "left",
+      "value": "horror pikachu"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6414.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

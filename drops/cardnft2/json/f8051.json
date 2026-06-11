@@ -1,0 +1,98 @@
+{
+  "id": 8051,
+  "name": "Card #8051",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8051.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien earth fade away"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "sleeping chibi kid"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "croagunk"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "002 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "11 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "marshmallon_yugioh_31305911_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8051.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

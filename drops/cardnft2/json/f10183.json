@@ -1,0 +1,86 @@
+{
+  "id": 10183,
+  "name": "Card #10183",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10183.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "opal_pastel_haze_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sample text"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "record player sculpture"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract muscular figure circles"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - drop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese bellossom - card2310 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "daily tribune, wisconsin rapids 1961"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cerberus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese bellossom - card2310 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10183.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

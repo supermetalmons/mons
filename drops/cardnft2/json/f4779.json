@@ -1,0 +1,114 @@
+{
+  "id": 4779,
+  "name": "Card #4779",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4779.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "colored palette stack"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "right",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "center",
+      "value": "buddha repeated"
+    },
+    {
+      "trait_type": "top left",
+      "value": "thelema hello kitty"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kiryu text box"
+    },
+    {
+      "trait_type": "top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "giratina - card3421 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cobalt cad"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camerupt sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kakashi Hatake - 1176 TP3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4779.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

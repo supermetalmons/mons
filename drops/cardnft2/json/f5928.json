@@ -1,0 +1,62 @@
+{
+  "id": 5928,
+  "name": "Card #5928",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5928.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "yellow cat cigarette"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hannah hoch watercolor animal parade"
+    },
+    {
+      "trait_type": "top center",
+      "value": "now and then, here and there"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "center",
+      "value": "evil chip soul memory device"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Victini - 23/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5928.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

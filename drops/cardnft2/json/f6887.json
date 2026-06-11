@@ -1,0 +1,74 @@
+{
+  "id": 6887,
+  "name": "Card #6887",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6887.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "myst island"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white spray 1"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gilded Lightning Energy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6887.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

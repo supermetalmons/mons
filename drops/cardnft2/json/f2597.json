@@ -1,0 +1,94 @@
+{
+  "id": 2597,
+  "name": "Card #2597",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2597.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "what is this drugs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cerberus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "papyrus sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "hero",
+      "value": "blue armored mech"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crown of thorns gem"
+    },
+    {
+      "trait_type": "left",
+      "value": "gambling in the garden"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Expedition Uniform - 137/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2597.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

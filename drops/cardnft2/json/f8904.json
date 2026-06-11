@@ -1,0 +1,94 @@
+{
+  "id": 8904,
+  "name": "Card #8904",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8904.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Embryo Planet Space Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "red ring of death"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "i am creative at night"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "tree of death frazetta"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gengar ex - IMG_3216 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8904.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

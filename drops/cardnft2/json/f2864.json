@@ -1,0 +1,82 @@
+{
+  "id": 2864,
+  "name": "Card #2864",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2864.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bear face lick"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pip boy device"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon sprite chart"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "mega dragonite ex sar"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokeball chain pendant"
+    },
+    {
+      "trait_type": "right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime girl red black wings"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lucky Egg - 167/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2864.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

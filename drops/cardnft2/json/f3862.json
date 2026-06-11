@@ -1,0 +1,98 @@
+{
+  "id": 3862,
+  "name": "Card #3862",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3862.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "center",
+      "value": "St. John the Baptist in the Wilderness engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pink apricot spray"
+    },
+    {
+      "trait_type": "left",
+      "value": "comic panel thinking peter parker"
+    },
+    {
+      "trait_type": "top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "try making your heart flutter"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark creature chains"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ff wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dusclops - 39/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3862.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

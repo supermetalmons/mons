@@ -1,0 +1,86 @@
+{
+  "id": 8049,
+  "name": "Card #8049",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8049.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_green_purple_fire_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "warzone defeat screen"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "elegant padme profile"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Illustrator Pikachu black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8049.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

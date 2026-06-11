@@ -1,0 +1,54 @@
+{
+  "id": 4114,
+  "name": "Card #4114",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4114.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black armored samurai"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "NO EVOLUTION"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "robot ashley wood"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smeargle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Treecko - 76/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4114.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

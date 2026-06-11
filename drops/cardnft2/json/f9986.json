@@ -1,0 +1,82 @@
+{
+  "id": 9986,
+  "name": "Card #9986",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9986.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko deep blood wine and moss blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue burst"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "prototype"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "cleapus spindle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mossy spike ball"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9986.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

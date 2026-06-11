@@ -1,0 +1,110 @@
+{
+  "id": 9327,
+  "name": "Card #9327",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9327.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Peeling Paint Blue Wall Background - card1673-15"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "kino_s journey"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "millennium puzzle dialogue"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Fordite and Detroit agate"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "17th-century military engineering treatise"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "altaria ex"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 35"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 15"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Exodia the Forbidden One - IMG_3490 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9327.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

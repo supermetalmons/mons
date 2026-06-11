@@ -1,0 +1,54 @@
+{
+  "id": 548,
+  "name": "Card #548",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0548.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rakshasa Deathdealer - 192/269"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "eagle"
+    },
+    {
+      "trait_type": "right",
+      "value": "police officer arresting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0548.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 8407,
+  "name": "Card #8407",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8407.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_serpent_shell_painting"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jiraya"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "crumpled foil texture"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cave logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat jester baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "58 blood orange magenta holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon N Supporter - card2570 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8407.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

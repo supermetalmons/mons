@@ -1,0 +1,134 @@
+{
+  "id": 10483,
+  "name": "Card #10483",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10483.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Impressionist Yellow Green Water Lily Garden Background - card1673-2"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "rayquaza orange smoke"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen dratini"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "digimon world card shop"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "016 red prism ember extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 19"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - neon rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "050 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "banette altered - card6712 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "banette altered - card6712 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "sacrificial eunich"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mr Qi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10483.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

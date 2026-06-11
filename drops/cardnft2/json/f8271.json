@@ -1,0 +1,90 @@
+{
+  "id": 8271,
+  "name": "Card #8271",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8271.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red block 3"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel egg dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "37 fire ice split holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "014 holo chrome pastel extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "044 emerald violet dream extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Team Rocket Mewtwo - IMG_3273 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8271.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

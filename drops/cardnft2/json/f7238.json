@@ -1,0 +1,62 @@
+{
+  "id": 7238,
+  "name": "Card #7238",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7238.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silent Hill pt door - card1673-3"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen honor thy father"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon2 - card5232 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7238.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

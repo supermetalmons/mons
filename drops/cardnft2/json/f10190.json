@@ -1,0 +1,90 @@
+{
+  "id": 10190,
+  "name": "Card #10190",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10190.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "St George Slaying Dragon Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drapion smoke"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red blue gradient blur"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "batou"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "unown_68_105_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "unown_68_105_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10190.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

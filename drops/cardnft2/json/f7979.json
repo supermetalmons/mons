@@ -1,0 +1,94 @@
+{
+  "id": 7979,
+  "name": "Card #7979",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7979.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue eyes"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "different mental states of being"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tekkonkinkreet city"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colored scribble"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "skull crossbones flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "44 dark cobalt pink sunset holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 nightcore rainbow clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 red soft holo holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dragonite V - IMG_3215 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7979.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

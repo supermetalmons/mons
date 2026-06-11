@@ -1,0 +1,66 @@
+{
+  "id": 4078,
+  "name": "Card #4078",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4078.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rose magenta - crucifix cross"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dual swords abstract"
+    },
+    {
+      "trait_type": "top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Garbage rainbow hat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Random Receiver - 99/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4078.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

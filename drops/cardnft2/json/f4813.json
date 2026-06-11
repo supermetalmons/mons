@@ -1,0 +1,98 @@
+{
+  "id": 4813,
+  "name": "Card #4813",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4813.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "japanese folklore art"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "39 psychic pink blue clean wisp rectangle"
+    },
+    {
+      "trait_type": "hero",
+      "value": "trunks capsule corp shirt"
+    },
+    {
+      "trait_type": "top right",
+      "value": "eye hand gesture"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Massacre of the Innocents engraving"
+    },
+    {
+      "trait_type": "left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "krabby"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red sharingan eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Horsea - 30/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4813.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

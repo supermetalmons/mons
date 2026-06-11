@@ -1,0 +1,106 @@
+{
+  "id": 7540,
+  "name": "Card #7540",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7540.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "emmaciated angel"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "batman animated series red night bg"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "weeds"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "de kooning scribble"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Wigglytuff Jungle - card2303 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7540.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

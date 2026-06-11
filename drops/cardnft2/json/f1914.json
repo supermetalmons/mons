@@ -1,0 +1,50 @@
+{
+  "id": 1914,
+  "name": "Card #1914",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1914.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Haunter - 59/162"
+    },
+    {
+      "trait_type": "hero",
+      "value": "prototype"
+    },
+    {
+      "trait_type": "right",
+      "value": "pistol branch"
+    },
+    {
+      "trait_type": "left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "de kooning sketch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1914.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

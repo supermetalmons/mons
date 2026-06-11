@@ -1,0 +1,78 @@
+{
+  "id": 8092,
+  "name": "Card #8092",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8092.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Magi - card1673-31"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "king of the shadow realm"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "alfredo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi bomberman fighter"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "evil biscuit logo 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 dark cobalt pink sunset holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "062 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suspicious_food_tin_080_073_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8092.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

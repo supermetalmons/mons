@@ -1,0 +1,54 @@
+{
+  "id": 2670,
+  "name": "Card #2670",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2670.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rocket dratini black"
+    },
+    {
+      "trait_type": "hero",
+      "value": "carnival leyendecker"
+    },
+    {
+      "trait_type": "border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magneton - 35/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2670.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

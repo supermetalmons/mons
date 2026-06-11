@@ -1,0 +1,58 @@
+{
+  "id": 3802,
+  "name": "Card #3802",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3802.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "murnau_s faust"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hand in soil"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Donphan - 48/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3802.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

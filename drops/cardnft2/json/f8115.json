@@ -1,0 +1,82 @@
+{
+  "id": 8115,
+  "name": "Card #8115",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8115.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Classical Hunt Fruit Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "victorian woman reading"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "techno 3 metal pattern"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "homunculus in flask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Base Set - card1790 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8115.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

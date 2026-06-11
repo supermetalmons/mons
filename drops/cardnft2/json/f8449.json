@@ -1,0 +1,70 @@
+{
+  "id": 8449,
+  "name": "Card #8449",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8449.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Concert Crowd Silhouette Background - card1673-30"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "black question marks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "brigandine"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "motorcycle in traffic"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Witches Flight"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Mew EX Holon Phantoms inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8449.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

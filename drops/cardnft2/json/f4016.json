@@ -1,0 +1,102 @@
+{
+  "id": 4016,
+  "name": "Card #4016",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4016.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "right",
+      "value": "solana"
+    },
+    {
+      "trait_type": "top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "based cardboard"
+    },
+    {
+      "trait_type": "hero",
+      "value": "tyranitar"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sableye poncho red gem"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "murakami spray"
+    },
+    {
+      "trait_type": "left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "babyspiky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swellow - 46/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4016.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

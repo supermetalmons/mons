@@ -1,0 +1,82 @@
+{
+  "id": 2687,
+  "name": "Card #2687",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2687.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pip boy device"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "moai statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "top right",
+      "value": "piranha plant head"
+    },
+    {
+      "trait_type": "center",
+      "value": "falling playing cards"
+    },
+    {
+      "trait_type": "hero",
+      "value": "scraggy headbutt action"
+    },
+    {
+      "trait_type": "right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kanji stone carving frog"
+    },
+    {
+      "trait_type": "left",
+      "value": "killua windows player"
+    },
+    {
+      "trait_type": "border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Psychic Energy - 164/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2687.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

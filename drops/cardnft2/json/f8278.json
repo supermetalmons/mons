@@ -1,0 +1,82 @@
+{
+  "id": 8278,
+  "name": "Card #8278",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8278.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Tibetan thangka Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "jew milady"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black red abstract painting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddie 3319"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Akamaru - card3528 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8278.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

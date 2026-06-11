@@ -1,0 +1,50 @@
+{
+  "id": 1624,
+  "name": "Card #1624",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1624.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Abra - 65/130"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime intense stare"
+    },
+    {
+      "trait_type": "top right",
+      "value": "kurt angle"
+    },
+    {
+      "trait_type": "center",
+      "value": "digimon world card shop"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1624.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 2394,
+  "name": "Card #2394",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2394.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "isaac"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink bunny tank"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Goomy - 72/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2394.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

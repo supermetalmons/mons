@@ -1,0 +1,98 @@
+{
+  "id": 10345,
+  "name": "Card #10345",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10345.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "20 baroque gold clean wisp moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "10 lava violet ember holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 dark magician clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "card back collage altered - card6710 inverted white mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "card back collage altered - card6710 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "athens fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10345.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

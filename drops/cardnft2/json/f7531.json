@@ -1,0 +1,102 @@
+{
+  "id": 7531,
+  "name": "Card #7531",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7531.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cardboard celebi unknowns sketch"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "tshirt stain"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "phantom red heart"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "godzilla puppet"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Itachi Uchiha black mask"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "chibi itachi"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Ampharos Expedition - IMG_3473 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7531.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

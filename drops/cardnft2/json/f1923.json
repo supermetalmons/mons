@@ -1,0 +1,98 @@
+{
+  "id": 1923,
+  "name": "Card #1923",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1923.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Digger - 75/82"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "center",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon warrior jester"
+    },
+    {
+      "trait_type": "top center",
+      "value": "graveyard examiner"
+    },
+    {
+      "trait_type": "hero",
+      "value": "red armored cannon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "All Might weakened"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "frazetta romance panel"
+    },
+    {
+      "trait_type": "right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "one piece reactions"
+    },
+    {
+      "trait_type": "left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Patamon eating an apple"
+    },
+    {
+      "trait_type": "top left",
+      "value": "house party nearby im bringing weird guys"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1923.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

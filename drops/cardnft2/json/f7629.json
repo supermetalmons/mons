@@ -1,0 +1,102 @@
+{
+  "id": 7629,
+  "name": "Card #7629",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7629.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ninja doraemon"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract figure sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "icy landscape"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hylics sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "smug ash meme"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Noibat - IMG_3476 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7629.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

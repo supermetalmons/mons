@@ -1,0 +1,110 @@
+{
+  "id": 6992,
+  "name": "Card #6992",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6992.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "different mental states of being"
+    },
+    {
+      "trait_type": "right",
+      "value": "creepy masked figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3d grimer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "manga skeleton surprise"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "NO EVOLUTION"
+    },
+    {
+      "trait_type": "center",
+      "value": "navy floral batik pattern"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple tree"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crow puffer jacket"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cyan magenta scribble page"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Astral Confrontation - 006/361"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6992.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 4819,
+  "name": "Card #4819",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4819.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragonite rider"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "different mental states of being"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue star light trails"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "stars on black"
+    },
+    {
+      "trait_type": "top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pixelated building and fence"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Choji Akimichi - 434"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4819.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

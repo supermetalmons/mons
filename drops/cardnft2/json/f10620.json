@@ -1,0 +1,70 @@
+{
+  "id": 10620,
+  "name": "Card #10620",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10620.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "screensaver tubes"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "039 purple peach glow extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - dark rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese dark jester altered - card6703 inverted white mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese dark jester altered - card6703 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10620.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

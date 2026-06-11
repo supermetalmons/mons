@@ -1,0 +1,70 @@
+{
+  "id": 6039,
+  "name": "Card #6039",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6039.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "scapegoat"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colored scribble"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Toguro  manga"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yellow dice eyes"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frank ocean"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy rainbow"
+    },
+    {
+      "trait_type": "right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Anko Mitarashi - 918"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6039.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 6372,
+  "name": "Card #6372",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6372.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Slakoth - 80/100"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "center",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "gold arrow button"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6372.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 4407,
+  "name": "Card #4407",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4407.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "magic key"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "center",
+      "value": "black pink abstract texture"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "left",
+      "value": "shrug emoji oh well"
+    },
+    {
+      "trait_type": "top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "druid-8 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cubone - 90/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4407.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

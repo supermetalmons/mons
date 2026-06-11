@@ -1,0 +1,66 @@
+{
+  "id": 5453,
+  "name": "Card #5453",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5453.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "center",
+      "value": "charizard sticker"
+    },
+    {
+      "trait_type": "left",
+      "value": "spiky hair duo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pleasure garden lodewijck 1584"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robotic samurai cloak"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "basquiat skull"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nickit - 125/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5453.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 4948,
+  "name": "Card #4948",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4948.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "37 fire ice split holo heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pikachu revive"
+    },
+    {
+      "trait_type": "top center",
+      "value": "drifella card game"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark creature chains"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "right",
+      "value": "Miki Koishikawa"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Curse Mark Jutsu 084"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4948.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

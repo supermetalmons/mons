@@ -1,0 +1,62 @@
+{
+  "id": 4776,
+  "name": "Card #4776",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4776.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "sasuke uchiha lightning - card0376 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black maze"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "080 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "game critique 14 april cover sugimori"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - TP2 1019"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4776.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

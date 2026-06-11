@@ -1,0 +1,70 @@
+{
+  "id": 11118,
+  "name": "Card #11118",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11118.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient parchment crimson sapphire blocks"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "purple ruins magic card - card1579 white mask transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_seven__scum"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "purple ruins magic card - card1579 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "lord megadeath dialogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11118.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

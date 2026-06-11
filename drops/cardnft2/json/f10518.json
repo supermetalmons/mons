@@ -1,0 +1,102 @@
+{
+  "id": 10518,
+  "name": "Card #10518",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10518.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "kurabbu grooming proof"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red abstract brushstrokes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "055 rainbow prism dawn extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "085 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "cartoon_black_devil_girl_yugioh_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "cartoon_black_devil_girl_yugioh_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "clay figures tea party"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon sketch"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10518.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

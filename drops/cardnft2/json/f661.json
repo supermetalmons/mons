@@ -1,0 +1,54 @@
+{
+  "id": 661,
+  "name": "Card #661",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0661.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Red Driving Jab - 9 of 30"
+    },
+    {
+      "trait_type": "hero",
+      "value": "totoro and friends"
+    },
+    {
+      "trait_type": "left",
+      "value": "motorcycle in traffic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dice logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark industrial pipes"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0661.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

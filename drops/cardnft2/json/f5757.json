@@ -1,0 +1,54 @@
+{
+  "id": 5757,
+  "name": "Card #5757",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5757.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "beldum_sv30_sv94_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Torchic - RC5/RC25"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5757.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

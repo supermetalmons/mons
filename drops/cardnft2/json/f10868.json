@@ -1,0 +1,138 @@
+{
+  "id": 10868,
+  "name": "Card #10868",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10868.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "070 cyan magenta gold extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_16"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "27 dragon red green clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "052 cobalt pink sunset extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "014 holo chrome pastel extra holo triangle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "game boy color battle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red abstract brushstrokes"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract texture"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - water drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "099 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - triskelion"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_15"
+    },
+    {
+      "trait_type": "under mask embryos",
+      "value": "sr_over_mask_embryos"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "life_herb_90_101_trainer_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "life_herb_90_101_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici6fvht7adhnhzv3mmr5lbtwgbnpdvxykx5jkhoe2bcxp6x2pcri/10868.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

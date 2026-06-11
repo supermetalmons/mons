@@ -1,0 +1,94 @@
+{
+  "id": 7683,
+  "name": "Card #7683",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7683.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hope syringe figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "never forgetti drawing"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "melting donald meme"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "soldier drawing"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pixel castle map"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "lego drif"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "petra emoji cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Recall Trainer - card1730 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red blood moth drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7683.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

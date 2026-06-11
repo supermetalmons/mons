@@ -1,0 +1,86 @@
+{
+  "id": 4979,
+  "name": "Card #4979",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4979.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "right",
+      "value": "crowbar hl2"
+    },
+    {
+      "trait_type": "top left",
+      "value": "waddle dee spear"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "hero",
+      "value": "yu gi oh 17 cover"
+    },
+    {
+      "trait_type": "center",
+      "value": "dungeon path"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pixelated building and fence"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goat face heisenberg pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kimimaro - 927"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4979.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

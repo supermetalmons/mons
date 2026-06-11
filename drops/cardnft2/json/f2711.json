@@ -1,0 +1,58 @@
+{
+  "id": 2711,
+  "name": "Card #2711",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2711.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "top right",
+      "value": "metallic sphere with spikes"
+    },
+    {
+      "trait_type": "right",
+      "value": "megami tensei"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "egyptian cat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Reversal Trigger - 86/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2711.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

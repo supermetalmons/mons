@@ -1,0 +1,110 @@
+{
+  "id": 7847,
+  "name": "Card #7847",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7847.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Fechin Impressionist Woman Portrait Background - card1673-54"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skeleton engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dj bruce lee"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "solana"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hikaru"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "One Piece Monkey D Luffy - IMG_3421 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7847.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

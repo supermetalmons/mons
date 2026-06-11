@@ -1,0 +1,54 @@
+{
+  "id": 1759,
+  "name": "Card #1759",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1759.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Max Revive - 117/132"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gray tiled ceiling"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "explosion tower"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel statue illustration"
+    },
+    {
+      "trait_type": "right",
+      "value": "orange bacon right"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1759.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

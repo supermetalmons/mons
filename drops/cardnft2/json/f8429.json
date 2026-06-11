@@ -1,0 +1,86 @@
+{
+  "id": 8429,
+  "name": "Card #8429",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8429.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Petra Flower Table Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anime angel warrior"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "yugi mutou dark yugi"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "scavenger"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zombie warrior card border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "et_heads_sticker_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8429.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

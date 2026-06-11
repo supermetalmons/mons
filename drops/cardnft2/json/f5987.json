@@ -1,0 +1,70 @@
+{
+  "id": 5987,
+  "name": "Card #5987",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5987.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Space Sheriff Sharivan"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "incredibly protected graded card"
+    },
+    {
+      "trait_type": "top center",
+      "value": "severed head"
+    },
+    {
+      "trait_type": "hero",
+      "value": "metal knight little swag world"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pepe cod meme"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Bandai Super Mario Bros Keshi figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eevee - 119/189"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5987.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

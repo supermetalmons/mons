@@ -1,0 +1,94 @@
+{
+  "id": 8453,
+  "name": "Card #8453",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8453.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mint_gold_glow_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "anime scooter boy sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mamano hunter youko"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "persona bear character"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "incredibly protected graded card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "086 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu Base Set - card1790 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8453.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

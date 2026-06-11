@@ -2,7 +2,7 @@
   "id": 155,
   "name": "Card #155",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_155.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0155.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Three-Section Staff"
+    },
+    {
+      "trait_type": "center",
+      "value": "green night vision alien cave"
+    },
+    {
+      "trait_type": "hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cave logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_155.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0155.webp",
         "type": "image/webp"
       }
     ],

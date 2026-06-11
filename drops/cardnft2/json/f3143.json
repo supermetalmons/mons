@@ -1,0 +1,78 @@
+{
+  "id": 3143,
+  "name": "Card #3143",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3143.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "yellow star pattern"
+    },
+    {
+      "trait_type": "top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "nude frazetta girl 3"
+    },
+    {
+      "trait_type": "hero",
+      "value": "asuka red glove pose"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "it s dangerous to trench alone"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "japanese demon box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rare Candy - 100/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3143.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

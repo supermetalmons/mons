@@ -1,0 +1,66 @@
+{
+  "id": 2728,
+  "name": "Card #2728",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2728.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "black starry pattern"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "right",
+      "value": "nude frazetta girl 2"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "eye pattern figure"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "top left",
+      "value": "waddle dee spear"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Fall of the Rebel Angels engraving"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drain dratini theology"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown [B] - 39/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2728.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

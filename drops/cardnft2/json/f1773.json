@@ -1,0 +1,70 @@
+{
+  "id": 1773,
+  "name": "Card #1773",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1773.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's ESP - 117/132"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ninja doraemon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kakashi zabuza manga"
+    },
+    {
+      "trait_type": "left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging cocoon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "unicorn ring engraving"
+    },
+    {
+      "trait_type": "right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1773.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

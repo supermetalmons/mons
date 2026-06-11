@@ -1,0 +1,50 @@
+{
+  "id": 1014,
+  "name": "Card #1014",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1014.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Deidara - 6/2"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shark costume person"
+    },
+    {
+      "trait_type": "center",
+      "value": "Coat of Arms with a Skull engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "relief"
+    },
+    {
+      "trait_type": "top right",
+      "value": "1001 WAYS TO LIVE WITHOUT WORKING"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1014.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

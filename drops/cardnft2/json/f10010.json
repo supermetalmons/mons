@@ -1,0 +1,94 @@
+{
+  "id": 10010,
+  "name": "Card #10010",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicttnaubgex6mle5zbtcsokt5bd56d5qre23ebdldkuybpltzjsmm/10010.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "deep_sea_neon_coral_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "meat computer"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "cloud anime sketch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holy gold - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white onyx - cuneiform tablet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "tsukuyomi - card0603 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "tsukuyomi - card0603 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicttnaubgex6mle5zbtcsokt5bd56d5qre23ebdldkuybpltzjsmm/10010.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

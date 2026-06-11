@@ -1,0 +1,78 @@
+{
+  "id": 8193,
+  "name": "Card #8193",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8193.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Embryo Planet Space Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "alien skeleton sculpture"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon N Supporter - card2570 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8193.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

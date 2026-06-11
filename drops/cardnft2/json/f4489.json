@@ -1,0 +1,90 @@
+{
+  "id": 4489,
+  "name": "Card #4489",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4489.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white px crucidrif"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crucidrifella digimon illustration"
+    },
+    {
+      "trait_type": "top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "wayne hylics"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Gelato Pique x Dragon Quest Draky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gathering Herbs 031"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4489.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 5070,
+  "name": "Card #5070",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5070.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "red dragon cloud pattern"
+    },
+    {
+      "trait_type": "right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "forest graffiti point cloud"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red scythe"
+    },
+    {
+      "trait_type": "border",
+      "value": "desprez archway"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "substance"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Beldum - 84/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5070.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 7882,
+  "name": "Card #7882",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7882.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Magi - card1673-31"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "indie horror rpg text"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mudkip"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 psychic pink blue clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Uchiha Proof Of Genius inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7882.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

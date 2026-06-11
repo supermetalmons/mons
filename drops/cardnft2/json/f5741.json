@@ -1,0 +1,70 @@
+{
+  "id": 5741,
+  "name": "Card #5741",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5741.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chained tortured chimchar"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "46 psychic pink blue clean wisp circle"
+    },
+    {
+      "trait_type": "left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bad apple"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ys 1"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Banette - 091/217"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5741.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

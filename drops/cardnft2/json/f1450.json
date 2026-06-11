@@ -1,0 +1,54 @@
+{
+  "id": 1450,
+  "name": "Card #1450",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1450.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Samite Healer - 1/1"
+    },
+    {
+      "trait_type": "center",
+      "value": "1639 shogi board"
+    },
+    {
+      "trait_type": "center",
+      "value": "bamboo and berries pattern"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bear face lick"
+    },
+    {
+      "trait_type": "top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cow"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1450.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

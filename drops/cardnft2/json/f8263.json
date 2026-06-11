@@ -1,0 +1,82 @@
+{
+  "id": 8263,
+  "name": "Card #8263",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8263.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_red_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "yugioh chibi figures"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue line pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "atari et"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "cute penguin"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Robot cat"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Girafarig - card1945 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8263.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

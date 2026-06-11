@@ -1,0 +1,82 @@
+{
+  "id": 8387,
+  "name": "Card #8387",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8387.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink White Drip Texture Background - card1673-42"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pulled this text"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "champions return to arms pinup dark elf"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "armored astronaut sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cybernetic head wires"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Chainsaw Man Denji - IMG_3521 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8387.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

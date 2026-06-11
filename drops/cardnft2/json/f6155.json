@@ -1,0 +1,58 @@
+{
+  "id": 6155,
+  "name": "Card #6155",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6155.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - N-224"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue clouds night sky"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh style gravestone SIMON GEORGE KONRAD HILL WILLiANS F5"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red black abstract corner"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red blue sparkles"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6155.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

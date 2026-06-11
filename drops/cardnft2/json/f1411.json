@@ -1,0 +1,54 @@
+{
+  "id": 1411,
+  "name": "Card #1411",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1411.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragonair - 36/70"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Venezuelan gojo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle 2"
+    },
+    {
+      "trait_type": "right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "top left",
+      "value": "godzilla puppet"
+    },
+    {
+      "trait_type": "top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1411.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

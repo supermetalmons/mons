@@ -1,0 +1,86 @@
+{
+  "id": 10335,
+  "name": "Card #10335",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10335.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Buddhist Guardian Deity Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifloon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful music notation diagram"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese naruto trainer - card3851 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese naruto trainer - card3851 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "angel sculpture head"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "birthday cake"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10335.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

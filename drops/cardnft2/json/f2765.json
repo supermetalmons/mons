@@ -1,0 +1,86 @@
+{
+  "id": 2765,
+  "name": "Card #2765",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2765.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel armor engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dude im a fucking goblin i dont care im going to take your shit and then kill you"
+    },
+    {
+      "trait_type": "left",
+      "value": "aigis fight"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dark creature chains"
+    },
+    {
+      "trait_type": "top right",
+      "value": "phantom"
+    },
+    {
+      "trait_type": "right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nude vampirella"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dodonpachi black label"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "touhou spell"
+    },
+    {
+      "trait_type": "border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "giger skull graphite airbrush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Porygon - 39/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2765.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

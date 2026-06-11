@@ -1,0 +1,50 @@
+{
+  "id": 1358,
+  "name": "Card #1358",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1358.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mesa Falcon - 1/1"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dark angel girl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "melted figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1358.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

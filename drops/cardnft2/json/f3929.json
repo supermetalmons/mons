@@ -1,0 +1,110 @@
+{
+  "id": 3929,
+  "name": "Card #3929",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3929.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Aliens are demons Ai are demons Angels are demons"
+    },
+    {
+      "trait_type": "top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "top right",
+      "value": "scavenger"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "hero",
+      "value": "keldeo chinese card"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "apollo engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Malamar - 46/98"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3929.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

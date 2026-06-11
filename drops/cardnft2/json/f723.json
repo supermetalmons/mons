@@ -1,0 +1,58 @@
+{
+  "id": 723,
+  "name": "Card #723",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0723.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blue Rush - 9 of 13"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i am creative at night"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "blurry osrs"
+    },
+    {
+      "trait_type": "right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "top right",
+      "value": "This video features a person repeatedly striking their head with a hammer-like object."
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddy reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0723.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

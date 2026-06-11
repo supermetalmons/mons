@@ -1,0 +1,102 @@
+{
+  "id": 4650,
+  "name": "Card #4650",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4650.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "japanese_jigglypuff_no_040_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - orange fire - triangle"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark angel figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pain sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy black"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kimimaro bone dagger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kankuro - 738"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4650.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

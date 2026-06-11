@@ -1,0 +1,86 @@
+{
+  "id": 8212,
+  "name": "Card #8212",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8212.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Cherries Dark Room Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "wish it was a game"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lets rock"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cobalt cad"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Deoxys - IMG_3434 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8212.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

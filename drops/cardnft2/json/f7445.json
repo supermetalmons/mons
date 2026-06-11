@@ -1,0 +1,146 @@
+{
+  "id": 7445,
+  "name": "Card #7445",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7445.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "chaotic_baroque_battle_collage"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark angel figure"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "black armored samurai"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "tyranitar"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Piplup - IMG_3523 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi sasuke 4"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star burst"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7445.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

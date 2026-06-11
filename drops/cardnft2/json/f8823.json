@@ -1,0 +1,102 @@
+{
+  "id": 8823,
+  "name": "Card #8823",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8823.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cinderace_ex_rainbow_pokemon_card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dual swords abstract"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "commander Rasso"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini legendary collection inverted black mask"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "19 yo avant nft collector"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "medieval armored figure"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Kogas Ninja Trick Gym Challenge - card2195 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8823.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

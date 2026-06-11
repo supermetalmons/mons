@@ -1,0 +1,110 @@
+{
+  "id": 7490,
+  "name": "Card #7490",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7490.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Tortue of Christ - card1673-4"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue clouds night sky"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "aivazovsky"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "manga comic strip"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini rocket returns black mask"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Jirachi - IMG_3263 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bald head"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7490.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

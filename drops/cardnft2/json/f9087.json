@@ -1,0 +1,46 @@
+{
+  "id": 9087,
+  "name": "Card #9087",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9087.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dratini Legendary Collection 107 of 110 - card0110 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9087.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

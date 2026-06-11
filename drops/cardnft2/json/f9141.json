@@ -1,0 +1,62 @@
+{
+  "id": 9141,
+  "name": "Card #9141",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9141.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "044 emerald violet dream extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 07"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "015 gold plum teal extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "toxapex_gx_154_145_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9141.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

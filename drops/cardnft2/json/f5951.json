@@ -1,0 +1,62 @@
+{
+  "id": 5951,
+  "name": "Card #5951",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5951.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "local game shop"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shopping cart full packs"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Raizen"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ferrothorn - 80/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5951.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

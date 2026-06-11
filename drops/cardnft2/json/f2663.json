@@ -1,0 +1,74 @@
+{
+  "id": 2663,
+  "name": "Card #2663",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2663.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract lines"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pip boy device"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gray tiled ceiling"
+    },
+    {
+      "trait_type": "center",
+      "value": "red starry portal"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime girl red black wings"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "tree background"
+    },
+    {
+      "trait_type": "right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red skeletal creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wingull - 77/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2663.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

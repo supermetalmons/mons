@@ -1,0 +1,78 @@
+{
+  "id": 2290,
+  "name": "Card #2290",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2290.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime scooter boy sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "krabby"
+    },
+    {
+      "trait_type": "right",
+      "value": "Kimimaro"
+    },
+    {
+      "trait_type": "border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "top right",
+      "value": "f zero logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "charizard sticker"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clefairy Doll - 70/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2290.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

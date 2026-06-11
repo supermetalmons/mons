@@ -1,0 +1,66 @@
+{
+  "id": 9782,
+  "name": "Card #9782",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9782.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "11 gentle pearl clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - gold rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "07 black cherry glow holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sableye - card5646 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gligar"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9782.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

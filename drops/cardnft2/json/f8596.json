@@ -1,0 +1,78 @@
+{
+  "id": 8596,
+  "name": "Card #8596",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8596.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "assassin"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue line pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "shinji manga"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Japanese Flareon Gold Star white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grass and ruins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Allister Trainer - IMG_3444 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8596.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

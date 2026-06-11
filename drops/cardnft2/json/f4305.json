@@ -1,0 +1,94 @@
+{
+  "id": 4305,
+  "name": "Card #4305",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4305.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "terriermon digimon card"
+    },
+    {
+      "trait_type": "left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink dinosaur bed"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "scraggy headbutt action"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple sunset field"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "druid-8 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Energy Retrieval - 81/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4305.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

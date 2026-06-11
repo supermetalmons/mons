@@ -1,0 +1,98 @@
+{
+  "id": 8292,
+  "name": "Card #8292",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8292.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Angel Cloud Rococo Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "centipede arcade art"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kneeling NEO humanoid robot"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Spike Spiegel"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unidentified mon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "063 emerald violet dream extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Poliwhirl Base Set - card1607 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8292.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

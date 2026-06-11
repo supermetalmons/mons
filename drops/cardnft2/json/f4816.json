@@ -1,0 +1,114 @@
+{
+  "id": 4816,
+  "name": "Card #4816",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4816.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - turquoise ash - saturn sigil"
+    },
+    {
+      "trait_type": "top right",
+      "value": "akira fight scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dragon ball logo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink abstract corner"
+    },
+    {
+      "trait_type": "right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "left",
+      "value": "valve baby"
+    },
+    {
+      "trait_type": "top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "drifella sketch signed e biscuit"
+    },
+    {
+      "trait_type": "hero",
+      "value": "pixelated abstract figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon sketch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Raigo's Blessing"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4816.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

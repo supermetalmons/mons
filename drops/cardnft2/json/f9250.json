@@ -1,0 +1,58 @@
+{
+  "id": 9250,
+  "name": "Card #9250",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9250.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silent Hill pt door - card1673-3"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Charizard gold star mask"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "047 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "083 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "john_fitzgerald_kennedy_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9250.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

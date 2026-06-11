@@ -1,0 +1,62 @@
+{
+  "id": 2659,
+  "name": "Card #2659",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2659.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "top right",
+      "value": "abstract mosaic pattern"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "retro game dialogue box"
+    },
+    {
+      "trait_type": "center",
+      "value": "red blue spiral circle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Spoink - 74/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2659.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

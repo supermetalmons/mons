@@ -1,0 +1,70 @@
+{
+  "id": 5917,
+  "name": "Card #5917",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5917.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "018 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "resident evil typewriter save"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "basquiat skull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Team Skull Grunt - 133/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5917.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

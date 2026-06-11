@@ -1,0 +1,90 @@
+{
+  "id": 10422,
+  "name": "Card #10422",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10422.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko neon green soft blocks"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "uwu chain"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "mushroom underside view"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ghibli drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "043 ruby violet flame extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - bone and ruby - alchemy fire"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "catch_mew_nintendo_power_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "catch_mew_nintendo_power_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "filigree crown"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "woven pattern grid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10422.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

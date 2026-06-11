@@ -1,0 +1,74 @@
+{
+  "id": 6900,
+  "name": "Card #6900",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6900.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dodonpachi black label"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "game critique 14 april cover sugimori"
+    },
+    {
+      "trait_type": "top center",
+      "value": "marin chinese"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "right",
+      "value": "fbi drif family guy meme"
+    },
+    {
+      "trait_type": "left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "center",
+      "value": "pc98 woman"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gotcha force a rank"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mawile - 9/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6900.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

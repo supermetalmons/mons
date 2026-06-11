@@ -1,0 +1,94 @@
+{
+  "id": 8536,
+  "name": "Card #8536",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8536.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "van gogh postman cutout"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "lego blocks wojak"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "092 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 lava violet ember holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "043 ruby violet flame extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini rocket returns inverted mask variant 4"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8536.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

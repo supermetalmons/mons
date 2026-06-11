@@ -1,0 +1,70 @@
+{
+  "id": 2499,
+  "name": "Card #2499",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2499.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "spiral spiral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "right",
+      "value": "money stack"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred hearts bw"
+    },
+    {
+      "trait_type": "top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jedi"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chatot - Majestic Dawn 55/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2499.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

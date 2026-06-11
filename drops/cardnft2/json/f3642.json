@@ -1,0 +1,86 @@
+{
+  "id": 3642,
+  "name": "Card #3642",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3642.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork 3"
+    },
+    {
+      "trait_type": "left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "hero",
+      "value": "asuka red glove pose"
+    },
+    {
+      "trait_type": "top right",
+      "value": "price tag"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghost fleischer character"
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hanabi Hyuga & Hiashi Hyuga - us113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3642.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

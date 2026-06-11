@@ -1,0 +1,106 @@
+{
+  "id": 6683,
+  "name": "Card #6683",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6683.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "vague post king"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pixel castle map"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple tree"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "hero",
+      "value": "chibi itachi"
+    },
+    {
+      "trait_type": "left",
+      "value": "kirby inhaling"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red scythe"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unknown Pokémon card"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6683.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

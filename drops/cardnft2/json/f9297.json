@@ -1,0 +1,86 @@
+{
+  "id": 9297,
+  "name": "Card #9297",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9297.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "083 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose magenta - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "087 gold plum teal extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "24 red soft holo holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 14"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 12"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Clefable Jungle - card2289 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9297.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

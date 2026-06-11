@@ -1,0 +1,102 @@
+{
+  "id": 5608,
+  "name": "Card #5608",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5608.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi sasuke"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - white onyx - spiral"
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "right",
+      "value": "foggy church graveyard"
+    },
+    {
+      "trait_type": "top right",
+      "value": "evil ethereum"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "center",
+      "value": "dungeon path"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel phone"
+    },
+    {
+      "trait_type": "top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white rat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji bro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini deviantart sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pangoro - XY50"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5608.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

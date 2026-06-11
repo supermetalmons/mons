@@ -1,0 +1,66 @@
+{
+  "id": 5315,
+  "name": "Card #5315",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5315.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drif with midlady retardio pillow"
+    },
+    {
+      "trait_type": "left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "hero",
+      "value": "L cross roses anime"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chimchar - 56/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5315.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 9911,
+  "name": "Card #9911",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9911.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Angel Cloud Rococo Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "47 fire ice split holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 dark ruby violet orange holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__void knight armor jester diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "obelisk_the_tormentor_yugioh_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "obelisk_the_tormentor_yugioh_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9911.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

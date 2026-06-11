@@ -1,0 +1,98 @@
+{
+  "id": 7635,
+  "name": "Card #7635",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7635.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Sky Between Trees Background - card1673-22"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "itachi reaching hand sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Chrollo Lucilfer"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark magician knight"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "sheep in glass tank"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dragonite EX Evolutions 106 of 108 - IMG_3410 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ralts sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7635.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 637,
+  "name": "Card #637",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0637.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Anko Mitarashi - 313"
+    },
+    {
+      "trait_type": "center",
+      "value": "black blue abstract lines"
+    },
+    {
+      "trait_type": "top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "seedot"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ribcage diagram"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "character model progression"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0637.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 7814,
+  "name": "Card #7814",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7814.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "collectible city"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "stone warrior statues"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "golden chalice snake"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon vampire face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Darkness Energy unknown set - card0074 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7814.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

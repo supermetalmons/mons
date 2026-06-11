@@ -1,0 +1,62 @@
+{
+  "id": 9487,
+  "name": "Card #9487",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9487.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Embryo Medical Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "black and white rugged man"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "world hierarchy pyramid"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 47"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon2 - card5232 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Hypnotized gentleman"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9487.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

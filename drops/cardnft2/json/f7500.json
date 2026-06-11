@@ -1,0 +1,98 @@
+{
+  "id": 7500,
+  "name": "Card #7500",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7500.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "emerald_violet_dream_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pokemon mystery dungeon scene"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "toon world monsters"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "metallic sphere with spikes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Poliwhirl Base Set 38 of 102 - card0556 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7500.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

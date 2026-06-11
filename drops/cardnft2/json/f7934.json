@@ -1,0 +1,74 @@
+{
+  "id": 7934,
+  "name": "Card #7934",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7934.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "aqua_red_blob_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "orange spiral"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi goblin group"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pixelated building and fence"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green drif body"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mew ex - IMG_3220 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7934.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

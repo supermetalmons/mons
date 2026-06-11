@@ -1,0 +1,70 @@
+{
+  "id": 5511,
+  "name": "Card #5511",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5511.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "angel statue black background"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "top center",
+      "value": "orange panel texture"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "haunted terrorism"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Erika's Tangela - 79/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5511.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

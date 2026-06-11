@@ -1,0 +1,58 @@
+{
+  "id": 4196,
+  "name": "Card #4196",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4196.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "monster reborn pendant"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Unai no Tomo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "blue water mtg"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "esoteric lessons steiner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Aggron - 59/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4196.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

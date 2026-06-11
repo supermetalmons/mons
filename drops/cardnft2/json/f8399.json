@@ -1,0 +1,82 @@
+{
+  "id": 8399,
+  "name": "Card #8399",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8399.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Tortue of Christ - card1673-4"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "turtle gan"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pokemon themed desserts"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gay bud"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "marshmallon_yugioh_31305911_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8399.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

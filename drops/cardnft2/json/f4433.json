@@ -1,0 +1,62 @@
+{
+  "id": 4433,
+  "name": "Card #4433",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4433.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rocket dratini black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "right",
+      "value": "Miki Koishikawa"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red crucifixion scene"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "top center",
+      "value": "now and then, here and there"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magnemite - 53/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4433.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

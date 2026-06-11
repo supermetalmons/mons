@@ -2,7 +2,7 @@
   "id": 106,
   "name": "Card #106",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_106.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0106.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Assassination of the Kazekage"
+    },
+    {
+      "trait_type": "center",
+      "value": "snow capped trees"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue purple gradient rectangle"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "order of free gardeners"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "stone warrior statues"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smash bros commercial _99"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_106.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0106.webp",
         "type": "image/webp"
       }
     ],

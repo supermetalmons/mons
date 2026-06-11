@@ -1,0 +1,82 @@
+{
+  "id": 7906,
+  "name": "Card #7906",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7906.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "L cross roses anime"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink dinosaur bed"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold precious moments pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pancake sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Shroud of Turin Unique Magic Artifact - IMG_3221 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7906.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

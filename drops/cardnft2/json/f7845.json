@@ -1,0 +1,114 @@
+{
+  "id": 7845,
+  "name": "Card #7845",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7845.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_red_kimono_gold_screen"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "chibi ultraman weightlifting"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "furry star wars creature with cup"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "color gradient swatches"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "zabuza"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester boxer baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pocket Monsters Mewtwo File No 147 - IMG_3224 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7845.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

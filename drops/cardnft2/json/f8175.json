@@ -1,0 +1,86 @@
+{
+  "id": 8175,
+  "name": "Card #8175",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8175.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ancient Gold Pokeball Glyph Background - card1673-25"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "thelema hello kitty"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "ultimate entertainment bundle box"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "henteko doujin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omen statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "53 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon French Dark Haunter Spectrum obscur Team Rocket - card3080 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8175.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 5783,
+  "name": "Card #5783",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5783.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "dude im a fucking goblin i dont care im going to take your shit and then kill you"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "spider warrior"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "center",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "umbreonfoxpunk drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kikunojo - OP14-023"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5783.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

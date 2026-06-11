@@ -1,0 +1,90 @@
+{
+  "id": 8048,
+  "name": "Card #8048",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8048.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Garden Bridge Painting Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "jesus astrological chart"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "krabby"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "mew trainer black mask"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "lego logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "29 dark ruby violet orange holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "022 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Alakazam Star Crystal Guardians - IMG_3426 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8048.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

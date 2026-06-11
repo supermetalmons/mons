@@ -1,0 +1,94 @@
+{
+  "id": 7968,
+  "name": "Card #7968",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7968.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Art Nouveau Spring Poster Background - card1673-53"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "doodle"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "9 11 anime eyes meme"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "cd mixtape edge"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "04 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pocket Monsters Mewtwo File No 147 - IMG_3224 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7968.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

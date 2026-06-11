@@ -1,0 +1,78 @@
+{
+  "id": 7965,
+  "name": "Card #7965",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7965.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "eye hand gesture"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue tree pattern fabric"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red fishing guy"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zodiac signs holographic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Sasuke Uchiha - card0394 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7965.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

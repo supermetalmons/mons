@@ -1,0 +1,50 @@
+{
+  "id": 887,
+  "name": "Card #887",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0887.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Black Front Kick - 68"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dude im a fucking goblin i dont care im going to take your shit and then kill you"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hamster and pointing finger"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0887.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

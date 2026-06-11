@@ -1,0 +1,94 @@
+{
+  "id": 7769,
+  "name": "Card #7769",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7769.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_red_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "chibi itachi"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "buizel"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "desert shaman"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "golden sunburst lighter"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "motorcycle in traffic"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic The Gathering Wall of Water - card1542 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7769.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 7619,
+  "name": "Card #7619",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7619.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "Flying Nimbus"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "rising prototype slicing"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "spy cartoon character"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "taped dratini"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Coat of Arms with a Skull engraving"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Space Sheriff Sharivan"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Casey Abra - IMG_3559 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7619.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

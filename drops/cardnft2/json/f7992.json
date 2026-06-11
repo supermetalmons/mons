@@ -1,0 +1,82 @@
+{
+  "id": 7992,
+  "name": "Card #7992",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7992.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chained tortured chimchar"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "green red pastel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Electrode Jungle - card2296 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7992.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

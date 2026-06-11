@@ -1,0 +1,122 @@
+{
+  "id": 5321,
+  "name": "Card #5321",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5321.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "great dragon dq card"
+    },
+    {
+      "trait_type": "right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "left",
+      "value": "old man roshi"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "without twin with twin"
+    },
+    {
+      "trait_type": "top left",
+      "value": "majora fish bone guitar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface mimikyu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue namekian chrono trigger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "center",
+      "value": "look at the bottom right corner"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "killua gon computer meme"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Frost Rotom - 41/156"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5321.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

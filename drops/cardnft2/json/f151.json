@@ -2,7 +2,7 @@
   "id": 151,
   "name": "Card #151",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_151.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0151.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,36 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Leaf Instant Move Jutsu 045"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "center",
+      "value": "weaponry"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "why stop making games"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_151.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0151.webp",
         "type": "image/webp"
       }
     ],

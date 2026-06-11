@@ -1,0 +1,54 @@
+{
+  "id": 9051,
+  "name": "Card #9051",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9051.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Adam Eve Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "rock lee eight inner gates"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Espeon - IMG_3259 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9051.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

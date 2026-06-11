@@ -1,0 +1,102 @@
+{
+  "id": 7863,
+  "name": "Card #7863",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7863.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_ruby_violet_orange_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini rocket returns black mask"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "chinese banknote corner"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "╨╜╨╡╤ä╨╛╤Ç, ╨╜╤Å╤ê╨║╨░, ╨░╨╗╤é╤â╤ê╨║╨░"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "babyspiky"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mega Charizard ex - IMG_3228 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7863.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

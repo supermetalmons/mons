@@ -2,7 +2,7 @@
   "id": 188,
   "name": "Card #188",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_188.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0188.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,48 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gensho - 4/3"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "without twin with twin"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alien creature Deacon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ultraman starry silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "center",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_188.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0188.webp",
         "type": "image/webp"
       }
     ],

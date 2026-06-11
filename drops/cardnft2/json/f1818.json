@@ -1,0 +1,54 @@
+{
+  "id": 1818,
+  "name": "Card #1818",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1818.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blaine's Growlithe - 62/132"
+    },
+    {
+      "trait_type": "top center",
+      "value": "orange panel texture"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "brigandine"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super buu"
+    },
+    {
+      "trait_type": "left",
+      "value": "frieza pose"
+    },
+    {
+      "trait_type": "top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1818.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

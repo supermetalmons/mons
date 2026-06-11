@@ -1,0 +1,86 @@
+{
+  "id": 7756,
+  "name": "Card #7756",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7756.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note angel biscuit - card1673-37"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "warhol flowers"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drif iii banknote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red sharingan eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini legendary collection black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7756.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

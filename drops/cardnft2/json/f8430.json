@@ -1,0 +1,90 @@
+{
+  "id": 8430,
+  "name": "Card #8430",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8430.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Cave Skull Candle Ritual Background - card1673-8"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "burning rangers"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orange bacon right"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "scott pilgrim surprised faces"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "syrup jug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ps9 controller"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "028 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Kurenai Yuhi - IMG_3242 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8430.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

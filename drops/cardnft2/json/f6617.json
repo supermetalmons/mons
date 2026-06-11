@@ -1,0 +1,66 @@
+{
+  "id": 6617,
+  "name": "Card #6617",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6617.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "angel statue illustration"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pain sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "medieval figures and symbols"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Darkness Energy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6617.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

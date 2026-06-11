@@ -1,0 +1,98 @@
+{
+  "id": 5327,
+  "name": "Card #5327",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5327.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cat shadow bear digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Poppy Playtime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragon ball goku bulma"
+    },
+    {
+      "trait_type": "left",
+      "value": "godfather logo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien triptych drif iii"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dj bruce lee"
+    },
+    {
+      "trait_type": "hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "center",
+      "value": "haunter gengar negative art"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giovanni's Nidorina - 44/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5327.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

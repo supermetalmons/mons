@@ -1,0 +1,66 @@
+{
+  "id": 5493,
+  "name": "Card #5493",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5493.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "frieza pose"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Poppy Playtime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drif with midlady retardio pillow"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Spearow - 92/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5493.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

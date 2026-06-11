@@ -1,0 +1,102 @@
+{
+  "id": 4749,
+  "name": "Card #4749",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4749.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "red robot head"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 12"
+    },
+    {
+      "trait_type": "top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ammo counter hud"
+    },
+    {
+      "trait_type": "center",
+      "value": "Saint Christopher Facing Right engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "thresh"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "barney shine"
+    },
+    {
+      "trait_type": "left",
+      "value": "orange bacon left"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "dark_fantasy_horseman_art_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "captain"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3 (1)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dagger note"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Biscuit - 90Z"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4749.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

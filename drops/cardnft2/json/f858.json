@@ -1,0 +1,42 @@
+{
+  "id": 858,
+  "name": "Card #858",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0858.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "King Kai's Calming - 238"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0858.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

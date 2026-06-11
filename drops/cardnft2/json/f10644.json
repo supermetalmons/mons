@@ -1,0 +1,66 @@
+{
+  "id": 10644,
+  "name": "Card #10644",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10644.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note Drifella - card1673-38"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hamburger helper clock"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "veemon rookie - card6841 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "veemon rookie - card6841 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top center",
+      "value": "computer crochet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10644.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

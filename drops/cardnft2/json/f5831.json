@@ -1,0 +1,70 @@
+{
+  "id": 5831,
+  "name": "Card #5831",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5831.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "crochet flygon plush"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime intense stare"
+    },
+    {
+      "trait_type": "center",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Gregorian chant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Talion's Messenger - 1/3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5831.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

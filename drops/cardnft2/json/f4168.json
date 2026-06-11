@@ -1,0 +1,86 @@
+{
+  "id": 4168,
+  "name": "Card #4168",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4168.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "ar nintendo ds cartridge"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "super buu"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - emerald green - crucifix cross"
+    },
+    {
+      "trait_type": "left",
+      "value": "dark game screenshot"
+    },
+    {
+      "trait_type": "center",
+      "value": "soul eater moon clowns"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white spray 1"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Plume Fossil - 82/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4168.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 7928,
+  "name": "Card #7928",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7928.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Kaleidoscope Rust Pattern Background - card1673-48"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Chiaotzu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Poppy Playtime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Two Tails - card0342 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7928.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

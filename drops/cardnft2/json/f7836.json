@@ -1,0 +1,118 @@
+{
+  "id": 7836,
+  "name": "Card #7836",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7836.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_cobalt_pink_sunset_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "7401% ApY"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "david lynch explains"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gray tiled ceiling"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pimp 830"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly haunter gengar anime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "42 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu ANA Airlines Promo - IMG_3223 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7836.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

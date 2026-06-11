@@ -1,0 +1,78 @@
+{
+  "id": 9380,
+  "name": "Card #9380",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9380.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "deep_sea_neon_coral_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kuriboh hello there meme"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red blue black brushwork 3"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - carnelian sun - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "004 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Gotenks Kamikaze Ghost - card2424 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif 2 blue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9380.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

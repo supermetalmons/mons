@@ -1,0 +1,78 @@
+{
+  "id": 8343,
+  "name": "Card #8343",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8343.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon dark landscape"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "nagato pain machine"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "drifella with yoshis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon Team Rocket - card1781 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8343.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

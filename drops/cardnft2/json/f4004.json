@@ -1,0 +1,86 @@
+{
+  "id": 4004,
+  "name": "Card #4004",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4004.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "teardrop embryo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "unnamed david lynch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "weaponry"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract lines"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Setzer Gabbiani yoshitaka"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Chiaotzu"
+    },
+    {
+      "trait_type": "left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "happened in mgs2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "base card",
+      "value": "PlusPower - 11/30"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4004.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

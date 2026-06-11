@@ -1,0 +1,78 @@
+{
+  "id": 8090,
+  "name": "Card #8090",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8090.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shiny mew"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aiai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Fire Energy - card2435 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8090.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

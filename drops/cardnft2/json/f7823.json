@@ -1,0 +1,114 @@
+{
+  "id": 7823,
+  "name": "Card #7823",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7823.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "girl on robot ashley wood"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zodiac signs holographic"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen shattered glass"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon booster pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon vampire face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Gaia the Fierce Knight - IMG_3470 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7823.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

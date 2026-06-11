@@ -1,0 +1,90 @@
+{
+  "id": 9661,
+  "name": "Card #9661",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9661.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon pink umbrella man"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "frazetta johnny dash comic"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "baseball player manga"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red blue black brushwork 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - crescent"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - cyan shadow - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ruby magenta - drop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Orochimaru - card0162 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tomato"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Grill zooka"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9661.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

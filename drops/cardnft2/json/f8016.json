@@ -1,0 +1,90 @@
+{
+  "id": 8016,
+  "name": "Card #8016",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8016.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "purple_magenta_green_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "bloody angel"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "angel amano art"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "silver letter e"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red masked wrestler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Kushina Uzumaki - IMG_3244 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8016.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

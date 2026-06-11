@@ -1,0 +1,114 @@
+{
+  "id": 10673,
+  "name": "Card #10673",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10673.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Distressed Painted Shirt Texture Background - card1673-21"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "083 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "093 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "058 black cherry red extra holo triangle"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue black abstract texture"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow holo card"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "color gradient blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "095 dark blood orange extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Gargomon C100 - card1466 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10673.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 5785,
+  "name": "Card #5785",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5785.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bacon girl drif iii sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "commander Rasso"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Setzer Gabbiani"
+    },
+    {
+      "trait_type": "center",
+      "value": "colored pixel line drifella 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Issho - EB04-022"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5785.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

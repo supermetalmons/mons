@@ -1,0 +1,78 @@
+{
+  "id": 4200,
+  "name": "Card #4200",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4200.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "batman dark street scene"
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "top right",
+      "value": "back story speech bubble"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "right",
+      "value": "pokemon card stack"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mechanical spider tank"
+    },
+    {
+      "trait_type": "left",
+      "value": "comic panel thinking peter parker"
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu glitch art 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Galvantula - 51/135"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4200.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 8617,
+  "name": "Card #8617",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8617.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mars frazetta"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Exodia the Forbidden One"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "weeping angel statue"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "depression label"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "masonic halloween lantern panel"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "secret of mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "vertical magenta blue ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "008 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "066 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card_3 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8617.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 8918,
+  "name": "Card #8918",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8918.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "holographic_chrome_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "spray guy"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue water mtg"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cory infinite mario clouds"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "black drif plush"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "invader frazetta"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pleasure garden lodewijck 1584"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu neo gen - card1881 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camo drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink moto creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "buff pikachu"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8918.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

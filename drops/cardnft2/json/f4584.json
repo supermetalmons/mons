@@ -1,0 +1,90 @@
+{
+  "id": 4584,
+  "name": "Card #4584",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4584.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "58 blood orange magenta holo moon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "petra adrenochrome meme"
+    },
+    {
+      "trait_type": "right",
+      "value": "ultimate muscle logo"
+    },
+    {
+      "trait_type": "top center",
+      "value": "desert shaman"
+    },
+    {
+      "trait_type": "top right",
+      "value": "two headed cat"
+    },
+    {
+      "trait_type": "left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime scooter boy sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story curly and quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Shadow mace"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Reality Bender Janemba - P-076 PR"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4584.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

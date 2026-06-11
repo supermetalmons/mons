@@ -1,0 +1,78 @@
+{
+  "id": 8549,
+  "name": "Card #8549",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8549.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "red_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "angel sculpture head"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chair"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chovey nintendog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini dragon holo mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8549.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

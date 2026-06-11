@@ -1,0 +1,106 @@
+{
+  "id": 4838,
+  "name": "Card #4838",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4838.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "drapion - card2167 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "062 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "hero",
+      "value": "suicune"
+    },
+    {
+      "trait_type": "top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "toriyama character sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pain"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "center",
+      "value": "joker collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - US101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4838.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

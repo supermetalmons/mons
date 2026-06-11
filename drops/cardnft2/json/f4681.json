@@ -1,0 +1,50 @@
+{
+  "id": 4681,
+  "name": "Card #4681",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4681.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gothic cathedral silhouette"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "temari wind attack - card4535 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mangekyo Sharingan"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4681.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

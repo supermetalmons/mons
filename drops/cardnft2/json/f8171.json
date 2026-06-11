@@ -1,0 +1,74 @@
+{
+  "id": 8171,
+  "name": "Card #8171",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8171.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Earl swag - card1673-11"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "graveyard examiner"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "haunter gengar negative art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "twin peaks giant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Gengar inverted mask variant 3"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8171.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

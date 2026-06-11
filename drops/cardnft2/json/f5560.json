@@ -1,0 +1,70 @@
+{
+  "id": 5560,
+  "name": "Card #5560",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5560.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "monster_reborn_yugioh_83764718_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "right",
+      "value": "yoda black lotus mtg"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gynoug"
+    },
+    {
+      "trait_type": "center",
+      "value": "trader retard baby drif"
+    },
+    {
+      "trait_type": "top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "gold arrow button"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digi egg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pink slump reaper"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Electabuzz - 20/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5560.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

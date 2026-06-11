@@ -1,0 +1,46 @@
+{
+  "id": 1595,
+  "name": "Card #1595",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1595.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidorino - 37/102"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "luffy zoro tied"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pixel castle map"
+    },
+    {
+      "trait_type": "right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1595.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

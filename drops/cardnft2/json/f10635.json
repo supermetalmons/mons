@@ -1,0 +1,54 @@
+{
+  "id": 10635,
+  "name": "Card #10635",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10635.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silver Blue Feather Texture Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shellmon - card6721 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "shellmon - card6721 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10635.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

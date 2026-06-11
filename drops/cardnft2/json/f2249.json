@@ -1,0 +1,58 @@
+{
+  "id": 2249,
+  "name": "Card #2249",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2249.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "right",
+      "value": "megami tensei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "rainbow goal text"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "manga dog experiment"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Foongus - 12/114"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2249.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

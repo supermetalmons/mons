@@ -1,0 +1,54 @@
+{
+  "id": 846,
+  "name": "Card #846",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0846.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Krillin® the Warrior - 3 of 14"
+    },
+    {
+      "trait_type": "center",
+      "value": "lowbie dip pen test"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi white wizard bakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink bunny tank"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pink stroke"
+    },
+    {
+      "trait_type": "center",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0846.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

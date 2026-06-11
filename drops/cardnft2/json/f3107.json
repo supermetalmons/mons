@@ -1,0 +1,78 @@
+{
+  "id": 3107,
+  "name": "Card #3107",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3107.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "naruto snowboard"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "top center",
+      "value": "noise circle blur"
+    },
+    {
+      "trait_type": "center",
+      "value": "exodia and god cards"
+    },
+    {
+      "trait_type": "left",
+      "value": "purple sofa"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frankenstein wrightson the modern prometheus"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime masked demon"
+    },
+    {
+      "trait_type": "right",
+      "value": "spy cartoon character"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Double Rainbow Energy - 88/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3107.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

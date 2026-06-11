@@ -1,0 +1,46 @@
+{
+  "id": 863,
+  "name": "Card #863",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0863.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragon Ball Z - Collection Dragon Ball Z Serie 2"
+    },
+    {
+      "trait_type": "center",
+      "value": "fantasy battle scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "abstract demon collage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hand holding green snake"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0863.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

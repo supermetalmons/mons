@@ -1,0 +1,46 @@
+{
+  "id": 2521,
+  "name": "Card #2521",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2521.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract pastel strokes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smeargle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Communication - 99/114"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2521.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

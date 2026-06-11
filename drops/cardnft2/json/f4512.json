@@ -1,0 +1,94 @@
+{
+  "id": 4512,
+  "name": "Card #4512",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4512.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "1001 WAYS TO LIVE WITHOUT WORKING"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shadow yoshitaka design"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robotic mech warrior"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark bacon abstract texture 6"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "itachi reaching hand sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Fantastic Planet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime couple kiss"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sakura Haruno - N-US004"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4512.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

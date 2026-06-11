@@ -1,0 +1,58 @@
+{
+  "id": 504,
+  "name": "Card #504",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0504.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Psychic Energy - 95/108"
+    },
+    {
+      "trait_type": "border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "center",
+      "value": "frankenstein ship"
+    },
+    {
+      "trait_type": "center",
+      "value": "godzilla breath attack"
+    },
+    {
+      "trait_type": "top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "facepalm meme"
+    },
+    {
+      "trait_type": "right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0504.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

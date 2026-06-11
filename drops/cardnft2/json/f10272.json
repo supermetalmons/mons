@@ -1,0 +1,106 @@
+{
+  "id": 10272,
+  "name": "Card #10272",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10272.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - claw"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blue mana - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 sage green gold clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 dark cobalt pink sunset holo circle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "mountain dew bottles"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red black abstract corner"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "you ever just mint an nft"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "cofagrigus - card2149 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gollisipod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "cofagrigus - card2149 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10272.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

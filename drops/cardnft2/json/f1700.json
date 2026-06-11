@@ -1,0 +1,58 @@
+{
+  "id": 1700,
+  "name": "Card #1700",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1700.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidorina - 53/130"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold floral pattern fabric"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "╨╜╨╡╤ä╨╛╤Ç, ╨╜╤Å╤ê╨║╨░, ╨░╨╗╤é╤â╤ê╨║╨░"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "left",
+      "value": "godfather logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "standing monkey"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1700.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

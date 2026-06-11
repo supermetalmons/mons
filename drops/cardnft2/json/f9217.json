@@ -1,0 +1,70 @@
+{
+  "id": 9217,
+  "name": "Card #9217",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9217.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Samurai Battle Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skeleton engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cybernetic head wires"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "094 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 21"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_fantasy_horseman_art_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9217.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

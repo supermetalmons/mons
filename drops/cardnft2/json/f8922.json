@@ -1,0 +1,102 @@
+{
+  "id": 8922,
+  "name": "Card #8922",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8922.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue crystal glaze"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Kimimaro"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Charizard Expedition - IMG_3277 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8922.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

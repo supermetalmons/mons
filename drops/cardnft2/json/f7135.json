@@ -1,0 +1,66 @@
+{
+  "id": 7135,
+  "name": "Card #7135",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7135.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Bouquet Background - card1673-10"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "skeleton figure with flowers"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "aigis fight"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Charizard Expedition - IMG_3277 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7135.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

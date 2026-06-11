@@ -1,0 +1,98 @@
+{
+  "id": 4037,
+  "name": "Card #4037",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4037.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "center",
+      "value": "dratini neck pillow"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "bear silhouette comparison"
+    },
+    {
+      "trait_type": "top right",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokemon calendar sketch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red star os"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi junk synchron"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pansage - 12/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4037.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

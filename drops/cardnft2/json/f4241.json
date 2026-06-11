@@ -1,0 +1,90 @@
+{
+  "id": 4241,
+  "name": "Card #4241",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4241.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "blurry osrs"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nagato pain machine"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "killua gon computer meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "slime elasto blast"
+    },
+    {
+      "trait_type": "right",
+      "value": "Sinister Serpent"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "warbly wash line"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Metapod - 47/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4241.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 398,
+  "name": "Card #398",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0398.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kimimaro - 254"
+    },
+    {
+      "trait_type": "top center",
+      "value": "taped string"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pocket monsters logo"
+    },
+    {
+      "trait_type": "right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0398.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

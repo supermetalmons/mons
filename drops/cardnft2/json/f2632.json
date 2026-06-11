@@ -1,0 +1,78 @@
+{
+  "id": 2632,
+  "name": "Card #2632",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2632.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "purple alien creature"
+    },
+    {
+      "trait_type": "top right",
+      "value": "kane mid air"
+    },
+    {
+      "trait_type": "border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kids playing cards collage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ultimate muscle manga"
+    },
+    {
+      "trait_type": "right",
+      "value": "jonny comic panel"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel armor engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sparkling Robe - 99/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2632.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

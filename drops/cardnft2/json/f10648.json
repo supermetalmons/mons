@@ -1,0 +1,50 @@
+{
+  "id": 10648,
+  "name": "Card #10648",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10648.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Snowy Creek Winter Woods Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "batou"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Japanese Blue Eyes White Dragon - IMG_3491 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10648.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

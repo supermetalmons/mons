@@ -1,0 +1,74 @@
+{
+  "id": 5344,
+  "name": "Card #5344",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5344.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "glitter pixel bokeh"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "retro game dialogue box"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "left",
+      "value": "shin chan group"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red ring of death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "right",
+      "value": "milady nazi technology"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giovanni's Nidoran ♀ - 75/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5344.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

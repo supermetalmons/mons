@@ -1,0 +1,66 @@
+{
+  "id": 2618,
+  "name": "Card #2618",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2618.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "metropolis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "center",
+      "value": "watercolor cart scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "giger holding alien head"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dugtrio - 077/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2618.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 5022,
+  "name": "Card #5022",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5022.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "white star box"
+    },
+    {
+      "trait_type": "left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "right",
+      "value": "g-red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Hypnotized gentleman"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mazoku yusuke sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "f zero logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "center",
+      "value": "bloody cheetah cub"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "mars argo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Slowpoke - 67/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5022.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

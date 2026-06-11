@@ -1,0 +1,58 @@
+{
+  "id": 741,
+  "name": "Card #741",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0741.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Revealing the Ending 389"
+    },
+    {
+      "trait_type": "center",
+      "value": "red pink abstract sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "top right",
+      "value": "building rubble cars smoke"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "skulls barthel"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0741.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

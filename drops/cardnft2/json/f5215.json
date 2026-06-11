@@ -1,0 +1,66 @@
+{
+  "id": 5215,
+  "name": "Card #5215",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5215.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "frazetta johnny dash comic"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pikachu revive"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "samurai crouching sword"
+    },
+    {
+      "trait_type": "center",
+      "value": "black silhouette landscape"
+    },
+    {
+      "trait_type": "right",
+      "value": "castle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dratini sprites"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alien sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hypno - 25/112"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5215.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

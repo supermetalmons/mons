@@ -1,0 +1,74 @@
+{
+  "id": 2786,
+  "name": "Card #2786",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2786.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "king kong cbd logo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Blackwing Armed Wing"
+    },
+    {
+      "trait_type": "center",
+      "value": "itachi sharingan"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif glitter bouncy ball"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Totodile - 81/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2786.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

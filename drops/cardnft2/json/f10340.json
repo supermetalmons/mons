@@ -1,0 +1,98 @@
+{
+  "id": 10340,
+  "name": "Card #10340",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10340.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady boy oil"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cafe de l enfer facade"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "white star box"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 10"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 vespertine purple peach clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "065 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deidara - card0389 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "deidara - card0389 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "nagato pain machine"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella middle finger emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini evolved"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10340.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 10279,
+  "name": "Card #10279",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10279.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "togetic japanese pokemon get card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "021 emerald violet dream extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "088 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 02 - crucifix cross"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark hallway creature"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shaman"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "vampire arale"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card_3 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "itachi_uchiha_custom_card_3 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10279.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

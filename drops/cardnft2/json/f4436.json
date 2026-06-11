@@ -1,0 +1,90 @@
+{
+  "id": 4436,
+  "name": "Card #4436",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4436.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "crucidrifella statue"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dvd anime girl"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "batman animated series red night bg"
+    },
+    {
+      "trait_type": "top left",
+      "value": "your heart is a vortex"
+    },
+    {
+      "trait_type": "center",
+      "value": "super mario world star road"
+    },
+    {
+      "trait_type": "hero",
+      "value": "bulma akira toriyama"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chikorita - 59/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4436.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

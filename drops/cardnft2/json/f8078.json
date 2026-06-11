@@ -1,0 +1,98 @@
+{
+  "id": 8078,
+  "name": "Card #8078",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8078.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_yellow_scribble_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "eye hand gesture"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mercy text"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zombie hands reaching"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small gold pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "captain"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "25 calm teal violet clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "005 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Articuno Fossil 2 of 62 - card0069 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8078.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 7501,
+  "name": "Card #7501",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7501.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_purple_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "cd mixtape edge"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "veiled"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "baroque"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Booster Rauschenberg 1967 "
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "counterspell lego frame"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Poliwrath - IMG_3253 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink angel slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7501.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

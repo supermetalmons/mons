@@ -1,0 +1,70 @@
+{
+  "id": 6977,
+  "name": "Card #6977",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6977.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dore angel engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "falling playing cards"
+    },
+    {
+      "trait_type": "hero",
+      "value": "eva statue"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "card suits"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Card Soldiers - 105/204"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6977.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 314,
+  "name": "Card #314",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0314.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fire Style: Fireball Jutsu"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ninja doraemon"
+    },
+    {
+      "trait_type": "right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "left",
+      "value": "green trilobite engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0314.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

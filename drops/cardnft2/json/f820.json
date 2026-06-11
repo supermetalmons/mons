@@ -1,0 +1,42 @@
+{
+  "id": 820,
+  "name": "Card #820",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0820.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yamcha® the Battler - 85"
+    },
+    {
+      "trait_type": "center",
+      "value": "pokemon card scattered"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "frazetta museum"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0820.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

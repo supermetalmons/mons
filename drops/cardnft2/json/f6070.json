@@ -1,0 +1,70 @@
+{
+  "id": 6070,
+  "name": "Card #6070",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6070.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - black gold - bolt"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Kimimaro bone dagger"
+    },
+    {
+      "trait_type": "top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "center",
+      "value": "1000-Armed Avalokiteshvara"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi pilot manga"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "bladee paint"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "syaoran doll"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Betrayal - 820"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6070.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

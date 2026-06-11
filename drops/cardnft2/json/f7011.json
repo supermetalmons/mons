@@ -1,0 +1,54 @@
+{
+  "id": 7011,
+  "name": "Card #7011",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7011.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "girl on robot ashley wood"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "burnt pancake yugioh pan"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy upside down"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Gengar Neo Destiny 6 of 105 - IMG_3537 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif glitter bouncy ball"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7011.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

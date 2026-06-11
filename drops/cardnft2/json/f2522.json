@@ -1,0 +1,66 @@
+{
+  "id": 2522,
+  "name": "Card #2522",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2522.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red 3d bike"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "purple blue goblins"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "top center",
+      "value": "evil biscuit logo 2"
+    },
+    {
+      "trait_type": "right",
+      "value": "crowbar hl2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "skulls barthel"
+    },
+    {
+      "trait_type": "hero",
+      "value": "athens fella"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Accelgor - 9/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2522.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

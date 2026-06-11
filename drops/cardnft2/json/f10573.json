@@ -1,0 +1,74 @@
+{
+  "id": 10573,
+  "name": "Card #10573",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10573.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold celestial serpent dragon art"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hr giger alien sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ultima"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "Mangekyo Sharingan"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 28"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "the fifth kazekage - card0377 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "the fifth kazekage - card0377 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "larvitar"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10573.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

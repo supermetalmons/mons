@@ -1,0 +1,94 @@
+{
+  "id": 10086,
+  "name": "Card #10086",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10086.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Samurai Battle Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "warehouse skate park"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "The Sudarium of Saint Veronica engraving"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "teardrop embryo"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "51 red soft holo holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 lava violet ember holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 sage green gold clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sakura haruno pink - card4753 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sakura haruno pink - card4753 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10086.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

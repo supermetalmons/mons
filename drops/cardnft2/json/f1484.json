@@ -1,0 +1,58 @@
+{
+  "id": 1484,
+  "name": "Card #1484",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1484.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Brock's Onix - 69/132"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "soldier with talmud in large backpack"
+    },
+    {
+      "trait_type": "right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Church Servant"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kong silhouette drawing"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1484.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

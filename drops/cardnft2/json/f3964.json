@@ -1,0 +1,114 @@
+{
+  "id": 3964,
+  "name": "Card #3964",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3964.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red pink abstract sketch"
+    },
+    {
+      "trait_type": "border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "minmay"
+    },
+    {
+      "trait_type": "left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji set theory sign"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink angel slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Ophanimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fox embroidery"
+    },
+    {
+      "trait_type": "center",
+      "value": "screaming pope painting"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue flame eyes"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime angel warrior"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Brock's Geodude - 66/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3964.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

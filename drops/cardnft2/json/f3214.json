@@ -1,0 +1,106 @@
+{
+  "id": 3214,
+  "name": "Card #3214",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3214.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "center",
+      "value": "trust the plan drifella reaper"
+    },
+    {
+      "trait_type": "top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "moogle watercolor"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ooey gooey drifella chocolate chip cookie"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "thankful quote"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dove"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story curly and quote"
+    },
+    {
+      "trait_type": "hero",
+      "value": "armored warrior with axe"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lt. Surge's Spearow - 52/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3214.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

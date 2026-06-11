@@ -1,0 +1,118 @@
+{
+  "id": 10226,
+  "name": "Card #10226",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10226.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "gohan great saiyaman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Bone Daddy"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mesprit"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "empty room corner"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue pool garden scene"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "sonic silhouette corner"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "crochet flygon plush"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 01 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 03"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 48"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "restless bones - card1499 white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "holo drif body"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "restless bones - card1499 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10226.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

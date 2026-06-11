@@ -1,0 +1,66 @@
+{
+  "id": 4792,
+  "name": "Card #4792",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4792.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "right",
+      "value": "hokusai bamboo print"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "083 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Unai no Tomo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dragonite and scyther anime"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "marnie_208_202_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe aura sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zabuza Momochi - F7T1 103 JNS"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4792.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

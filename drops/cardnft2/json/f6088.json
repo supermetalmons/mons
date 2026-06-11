@@ -1,0 +1,70 @@
+{
+  "id": 6088,
+  "name": "Card #6088",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6088.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "steak fries cocktail"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ye_s wreck"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "skull gravestone"
+    },
+    {
+      "trait_type": "top right",
+      "value": "9 11 anime eyes meme"
+    },
+    {
+      "trait_type": "left",
+      "value": "shiny mew"
+    },
+    {
+      "trait_type": "top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chiyobbaba"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Qwilfish - 49/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6088.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

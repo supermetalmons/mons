@@ -1,0 +1,90 @@
+{
+  "id": 4682,
+  "name": "Card #4682",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4682.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "esoteric meme breakdown pokemon"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "44 dark cobalt pink sunset holo heart"
+    },
+    {
+      "trait_type": "top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "left",
+      "value": "white star"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepy clown suit"
+    },
+    {
+      "trait_type": "top right",
+      "value": "desktop icons"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "blue winged avatar"
+    },
+    {
+      "trait_type": "top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Earth Style: Weighted Boulder Jutsu - 925"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4682.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

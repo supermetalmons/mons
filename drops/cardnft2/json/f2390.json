@@ -1,0 +1,90 @@
+{
+  "id": 2390,
+  "name": "Card #2390",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2390.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract texture"
+    },
+    {
+      "trait_type": "top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "calligraphy"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella plush"
+    },
+    {
+      "trait_type": "center",
+      "value": "ghostly figure with wolf face"
+    },
+    {
+      "trait_type": "left",
+      "value": "black boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "owls on pine branch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien triptych drif iii"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "right",
+      "value": "applause logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "jester face"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sandile - 69/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2390.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

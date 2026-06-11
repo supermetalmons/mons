@@ -1,0 +1,114 @@
+{
+  "id": 7850,
+  "name": "Card #7850",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7850.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bacon dark landscape"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "rising prototype slicing"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red poppy field painting"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small fish"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "shizuku hxh"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "training room button"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 lava violet ember holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Poliwhirl Base Set - card1607 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7850.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

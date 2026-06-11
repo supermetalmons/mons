@@ -1,0 +1,114 @@
+{
+  "id": 7691,
+  "name": "Card #7691",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7691.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_jungle_tiger_woman"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crucifixion cameo pendant"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dr slump arale jeep"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue tree pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella in electric chair"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Fordite and Detroit agate"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "arale phone lettuce"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiggler"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Sasuke Uchiha - card0394 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7691.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

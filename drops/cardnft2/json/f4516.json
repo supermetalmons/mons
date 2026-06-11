@@ -1,0 +1,66 @@
+{
+  "id": 4516,
+  "name": "Card #4516",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4516.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "top left",
+      "value": "godzilla puppet"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "left 4 dead"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "top center",
+      "value": "19 yo avant nft collector"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "message icon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clematis Dance: Flower - 253"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4516.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

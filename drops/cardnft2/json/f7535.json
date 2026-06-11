@@ -1,0 +1,114 @@
+{
+  "id": 7535,
+  "name": "Card #7535",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7535.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "shadow yoshitaka design"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "kabbalistic tree diagram"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "comic panel thinking peter parker"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "mewtwo ken sugimori"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mole pixel"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "phantump pimp"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drif iii emoji"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Girafarig - card1945 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "abra sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue namekian chrono trigger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7535.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

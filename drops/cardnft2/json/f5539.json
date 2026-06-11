@@ -1,0 +1,62 @@
+{
+  "id": 5539,
+  "name": "Card #5539",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5539.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "10 lava violet ember holo rounded rectangle"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh line stickers"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract sketch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "19 yo avant nft collector"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyclone Energy - 99/115"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5539.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

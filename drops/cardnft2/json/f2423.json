@@ -1,0 +1,62 @@
+{
+  "id": 2423,
+  "name": "Card #2423",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2423.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "crumpled foil texture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "creepy long armed figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "top right",
+      "value": "garbage pail kids pack"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kaliacc drifella character art"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Majin Buu's Kamikaze Ghost - 22 of 46"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2423.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

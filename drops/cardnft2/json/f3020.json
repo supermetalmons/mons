@@ -1,0 +1,70 @@
+{
+  "id": 3020,
+  "name": "Card #3020",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3020.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Shock Troops Advance under Gas"
+    },
+    {
+      "trait_type": "center",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "elegant padme profile"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "steal her look"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shelgon - 41/97"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3020.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

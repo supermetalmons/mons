@@ -1,0 +1,46 @@
+{
+  "id": 562,
+  "name": "Card #562",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0562.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bursting Balloon - 97/122"
+    },
+    {
+      "trait_type": "border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "top center",
+      "value": "7 hearts"
+    },
+    {
+      "trait_type": "right",
+      "value": "police officer arresting"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0562.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

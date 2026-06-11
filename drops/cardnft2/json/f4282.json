@@ -1,0 +1,106 @@
+{
+  "id": 4282,
+  "name": "Card #4282",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4282.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "top right",
+      "value": "This video features a person repeatedly striking their head with a hammer-like object."
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue kimono dragon design"
+    },
+    {
+      "trait_type": "left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract lines"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood samurai figure"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sans papyrus stack"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "orange purple wave lines"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus through the realms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp 333 mini"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Professor Elm's Training Method - 100/123"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4282.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 1383,
+  "name": "Card #1383",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1383.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Plague Rats"
+    },
+    {
+      "trait_type": "center",
+      "value": "music to kill"
+    },
+    {
+      "trait_type": "hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Tonberry"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1383.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

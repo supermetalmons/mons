@@ -1,0 +1,98 @@
+{
+  "id": 8133,
+  "name": "Card #8133",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8133.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Style Surreal Creature Landscape Background - card1673-5"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "prussian troops 1871"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yellow dice eyes"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "zun sunnymilk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Grill zooka"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "023 emerald violet dream extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "55 fire ice split holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "metagross_2_17_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8133.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

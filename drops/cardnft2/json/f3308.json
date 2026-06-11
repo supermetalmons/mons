@@ -1,0 +1,58 @@
+{
+  "id": 3308,
+  "name": "Card #3308",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3308.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "center",
+      "value": "slide"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shark costume person"
+    },
+    {
+      "trait_type": "right",
+      "value": "purple orange hydra plush"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Flareon - 35/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3308.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

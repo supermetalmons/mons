@@ -1,0 +1,50 @@
+{
+  "id": 9642,
+  "name": "Card #9642",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9642.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - candy rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shattering spree - card5822 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9642.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

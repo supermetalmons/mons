@@ -1,0 +1,54 @@
+{
+  "id": 1859,
+  "name": "Card #1859",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1859.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragonair - 50/108"
+    },
+    {
+      "trait_type": "border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "right",
+      "value": "creepy masked figure"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink monkey keshi figures"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "snake arm manga panel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1859.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

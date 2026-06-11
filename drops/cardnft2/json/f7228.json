@@ -1,0 +1,58 @@
+{
+  "id": 7228,
+  "name": "Card #7228",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7228.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "baby angel oil"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skyrim 11 11 11"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon2 - card5232 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7228.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

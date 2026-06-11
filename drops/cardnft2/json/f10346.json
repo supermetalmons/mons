@@ -1,0 +1,98 @@
+{
+  "id": 10346,
+  "name": "Card #10346",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10346.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold celestial serpent dragon art"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "metal rider slime knight dq card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "aivazovsky"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "godzilla breath attack"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "unown_68_105_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "unown_68_105_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "monster reborn pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "umbreonfoxpunk drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10346.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

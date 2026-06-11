@@ -1,0 +1,94 @@
+{
+  "id": 8938,
+  "name": "Card #8938",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8938.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silent Hill pt door - card1673-3"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "spiked collar beast"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white spray 1"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "mountain dew bottles"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark bacon abstract texture 6"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic The Gathering Mox Sapphire - card0233 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8938.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

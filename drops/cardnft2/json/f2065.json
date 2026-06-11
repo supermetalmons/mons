@@ -1,0 +1,74 @@
+{
+  "id": 2065,
+  "name": "Card #2065",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2065.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "ghost in the shell fight scene"
+    },
+    {
+      "trait_type": "right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red blue black brushwork 2"
+    },
+    {
+      "trait_type": "hero",
+      "value": "toon rabbit manga"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "atari et"
+    },
+    {
+      "trait_type": "border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Bandai Super Mario Bros Keshi figure"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "search and destroy badge"
+    },
+    {
+      "trait_type": "top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mewtwo Spirit Link - 144/162"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2065.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

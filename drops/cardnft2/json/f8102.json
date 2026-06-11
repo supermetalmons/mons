@@ -1,0 +1,90 @@
+{
+  "id": 8102,
+  "name": "Card #8102",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8102.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_green_purple_fire_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "japanese dratini base set mask"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "totoro and friends"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moeshit dreamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "030 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 nightcore rainbow clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 emerald violet dream holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Nobleman of Crossout - IMG_3453 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8102.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

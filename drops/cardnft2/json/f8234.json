@@ -1,0 +1,86 @@
+{
+  "id": 8234,
+  "name": "Card #8234",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8234.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "blood drops"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "sierpinski pyramid"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "veiled"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Pain Deva Path and Konan - IMG_3246 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8234.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

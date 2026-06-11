@@ -1,0 +1,66 @@
+{
+  "id": 3238,
+  "name": "Card #3238",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3238.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hooded figures and mannequin"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hidden tv in chip bag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby bat crucifix drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "center",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract texture 5"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Murkrow - 46/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3238.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

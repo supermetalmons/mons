@@ -1,0 +1,130 @@
+{
+  "id": 8819,
+  "name": "Card #8819",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8819.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "purple_magenta_green_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "fella royale"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "price tag"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "black tank silhouette"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "064 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "23 nightcore rainbow clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "60 emerald violet dream holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Uzumaki Nine Tails - IMG_3531 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8819.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

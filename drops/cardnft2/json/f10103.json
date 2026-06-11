@@ -1,0 +1,114 @@
+{
+  "id": 10103,
+  "name": "Card #10103",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10103.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko antique gold and charcoal blocks"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "spiderman lizard fight"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "lego drif"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 3"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "the art of conspiracy"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract colorful brushstroke"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "alien creature concept art"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "meat computer"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cardboard celebi unknowns sketch"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 31"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 33"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sage_mode_naruto_custom_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sage_mode_naruto_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10103.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

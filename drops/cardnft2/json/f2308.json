@@ -1,0 +1,82 @@
+{
+  "id": 2308,
+  "name": "Card #2308",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2308.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "blue wave border"
+    },
+    {
+      "trait_type": "center",
+      "value": "green circle flowchart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bubble mew"
+    },
+    {
+      "trait_type": "top center",
+      "value": "7 hearts"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black armored samurai"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "hero",
+      "value": "spiked collar beast"
+    },
+    {
+      "trait_type": "top right",
+      "value": "f zero logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mr. Mime - 27/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2308.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

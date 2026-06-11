@@ -1,0 +1,98 @@
+{
+  "id": 7724,
+  "name": "Card #7724",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7724.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "rayquaza orange smoke"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "chainsawman manga"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer b"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dragonite - IMG_3275 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7724.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

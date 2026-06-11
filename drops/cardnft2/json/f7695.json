@@ -1,0 +1,106 @@
+{
+  "id": 7695,
+  "name": "Card #7695",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7695.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "creepy long armed figure"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "9 tails evil smile"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "chibi itachi"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi gengar"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "terriermon digimon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yume nikki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "girl and ogre"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragonite EX XY Evolutions 72 108 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7695.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

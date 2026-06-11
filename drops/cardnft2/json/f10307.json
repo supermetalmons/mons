@@ -1,0 +1,98 @@
+{
+  "id": 10307,
+  "name": "Card #10307",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10307.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small computer icon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "077 cobalt pink sunset extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 dark ruby violet orange holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "033 deep teal lime extra holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "konan - card1089 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "konan - card1089 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10307.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

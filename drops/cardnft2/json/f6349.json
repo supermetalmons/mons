@@ -1,0 +1,50 @@
+{
+  "id": 6349,
+  "name": "Card #6349",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6349.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Snivy - 6/113"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Kikaider"
+    },
+    {
+      "trait_type": "left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6349.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

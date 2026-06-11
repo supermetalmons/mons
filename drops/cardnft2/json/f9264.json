@@ -1,0 +1,70 @@
+{
+  "id": 9264,
+  "name": "Card #9264",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9264.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Saint Margaret with the Dragon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic chaos dark magician"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Raid of Akatsuki - card3550 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Icedancer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9264.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

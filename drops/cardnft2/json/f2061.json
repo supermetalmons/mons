@@ -1,0 +1,86 @@
+{
+  "id": 2061,
+  "name": "Card #2061",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2061.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "angry manga man"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bear face lick"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "manga comic strip"
+    },
+    {
+      "trait_type": "border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "secret of mana"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi itachi 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cardboard celebi unknowns sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Double Magma Energy - 34/34"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2061.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

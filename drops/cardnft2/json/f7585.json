@@ -1,0 +1,110 @@
+{
+  "id": 7585,
+  "name": "Card #7585",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7585.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_green_purple_fire_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen shattered glass"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hobbit sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "embryo fetus guy"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "grim engraving"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mew Delta Species - IMG_3234 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dunks"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kadabra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7585.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

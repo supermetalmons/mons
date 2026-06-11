@@ -1,0 +1,50 @@
+{
+  "id": 2217,
+  "name": "Card #2217",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2217.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nemesis holding man"
+    },
+    {
+      "trait_type": "right",
+      "value": "floating square hole"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chris chan freemason type shit"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fairy Drop - 99/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2217.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

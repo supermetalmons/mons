@@ -1,0 +1,94 @@
+{
+  "id": 5646,
+  "name": "Card #5646",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5646.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "gengar pikachu sketch"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - amethyst violet - crucifix cross"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "batman skyline"
+    },
+    {
+      "trait_type": "left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sotc colossus 14"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "wish it was a game"
+    },
+    {
+      "trait_type": "top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime ditto"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime angel cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bladee emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif apple body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sableye - 35/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5646.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

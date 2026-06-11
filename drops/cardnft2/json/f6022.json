@@ -1,0 +1,74 @@
+{
+  "id": 6022,
+  "name": "Card #6022",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6022.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ooey gooey drifella chocolate chip cookie"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "that must hurt kankuro and temari"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hand holding green snake"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "scribbled clown face drif"
+    },
+    {
+      "trait_type": "center",
+      "value": "The Farnese Hercules engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini finger puppet figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scraggy - 041/073"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6022.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

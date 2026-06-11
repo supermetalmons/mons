@@ -2,7 +2,7 @@
   "id": 148,
   "name": "Card #148",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_148.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0148.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Delivery - 171"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "batman animated series red night bg"
+    },
+    {
+      "trait_type": "left",
+      "value": "masonic halloween lantern panel"
+    },
+    {
+      "trait_type": "top right",
+      "value": "9 11 anime eyes meme"
+    },
+    {
+      "trait_type": "top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "center",
+      "value": "gengar snorlax dream"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_148.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0148.webp",
         "type": "image/webp"
       }
     ],

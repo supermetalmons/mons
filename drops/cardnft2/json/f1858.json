@@ -1,0 +1,50 @@
+{
+  "id": 1858,
+  "name": "Card #1858",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1858.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ekans - 56/82"
+    },
+    {
+      "trait_type": "hero",
+      "value": "shukaku face closeup"
+    },
+    {
+      "trait_type": "center",
+      "value": "gengar snorlax dream"
+    },
+    {
+      "trait_type": "left",
+      "value": "purple mask creatures"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mlg pro circuit"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1858.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

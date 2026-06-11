@@ -1,0 +1,62 @@
+{
+  "id": 1579,
+  "name": "Card #1579",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1579.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Exile"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pikachu ponyta celebi collage"
+    },
+    {
+      "trait_type": "top center",
+      "value": "surreal eye and skulls"
+    },
+    {
+      "trait_type": "center",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ancient relief sculpture"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1579.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

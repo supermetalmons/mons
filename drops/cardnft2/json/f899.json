@@ -1,0 +1,62 @@
+{
+  "id": 899,
+  "name": "Card #899",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0899.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Android 19, Recalled - 2 of 3"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "heat map corner"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Exodia the Forbidden One"
+    },
+    {
+      "trait_type": "center",
+      "value": "ink wash"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black maze"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ball engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "strategy icons"
+    },
+    {
+      "trait_type": "top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0899.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

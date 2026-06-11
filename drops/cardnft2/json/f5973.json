@@ -1,0 +1,74 @@
+{
+  "id": 5973,
+  "name": "Card #5973",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5973.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shark costume person"
+    },
+    {
+      "trait_type": "top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pain sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract colorful swirl"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ghibli drif"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sitting superhero pixelated"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cherub drifella"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "frost rotom - card5321 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Unown Q - 49/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5973.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

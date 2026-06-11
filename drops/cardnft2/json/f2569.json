@@ -1,0 +1,78 @@
+{
+  "id": 2569,
+  "name": "Card #2569",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2569.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "disturbing dream"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "mars argo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mummy sprite"
+    },
+    {
+      "trait_type": "border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bat sketch dark"
+    },
+    {
+      "trait_type": "hero",
+      "value": "medieval figures carrying bundles"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Crushing Hammer - 159/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2569.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

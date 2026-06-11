@@ -1,0 +1,98 @@
+{
+  "id": 10378,
+  "name": "Card #10378",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10378.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Illuminated Cathedral Nave Background - card1673-44"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "spiked frame"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "zombie hands reaching"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 19"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "46 psychic pink blue clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "zombie token - card0553 white mask transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "zombie token - card0553 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green mech bug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10378.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 361,
+  "name": "Card #361",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0361.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Deidara - 6/2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black sink counter"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baby deer"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "right",
+      "value": "sun moon mercury venus diagram"
+    },
+    {
+      "trait_type": "left",
+      "value": "tombstone with arms"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dratini sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0361.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

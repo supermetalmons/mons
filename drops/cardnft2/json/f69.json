@@ -2,7 +2,7 @@
   "id": 69,
   "name": "Card #69",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_69.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0069.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,96 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "drif with bloody margielas"
+    },
+    {
+      "trait_type": "left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "top center",
+      "value": "spiked frame"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rgb pixels"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "empty room wall"
+    },
+    {
+      "trait_type": "right",
+      "value": "spray guy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "batman animated series red night bg"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract sketch"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red rider motorcycle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "camerupt sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Articuno - 2/110"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_69.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0069.webp",
         "type": "image/webp"
       }
     ],

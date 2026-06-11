@@ -1,0 +1,102 @@
+{
+  "id": 9937,
+  "name": "Card #9937",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9937.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ito waifu - card1673-18"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red abstract landscape"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "075 cyan magenta gold extra holo star"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "091 deep teal lime extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "030 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dragonair wrap - card3390 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "blood energy overlay",
+      "value": "blood energy2"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dragonair wrap - card3390 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9937.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

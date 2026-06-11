@@ -1,0 +1,78 @@
+{
+  "id": 8612,
+  "name": "Card #8612",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8612.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pastel Abstract Canvas Texture Background - card1673-36"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "anime face sketch duo"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "kane mid air"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Venom Maw"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magikarp XY Promo - IMG_3489 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8612.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

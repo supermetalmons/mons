@@ -1,0 +1,62 @@
+{
+  "id": 7017,
+  "name": "Card #7017",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7017.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cinderace_ex_rainbow_pokemon_card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow twin dragonair"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "alien creature concept art"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Sasuke Uchiha - card0394 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gible"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7017.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

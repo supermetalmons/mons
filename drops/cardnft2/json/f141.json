@@ -2,7 +2,7 @@
   "id": 141,
   "name": "Card #141",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_141.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0141.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,84 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "center",
+      "value": "saint with angels"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "blue bombs"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fe6 pegasus concept art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "monster reborn pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherries"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sakura Haruno - N-US004"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_141.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0141.webp",
         "type": "image/webp"
       }
     ],

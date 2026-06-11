@@ -1,0 +1,58 @@
+{
+  "id": 553,
+  "name": "Card #553",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0553.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zombie - 005/014 T"
+    },
+    {
+      "trait_type": "top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "giratina"
+    },
+    {
+      "trait_type": "right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "top right",
+      "value": "kurt angle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hungry"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0553.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

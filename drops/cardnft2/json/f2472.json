@@ -1,0 +1,78 @@
+{
+  "id": 2472,
+  "name": "Card #2472",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2472.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cow and bird toy"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "hero",
+      "value": "darkrai close up"
+    },
+    {
+      "trait_type": "center",
+      "value": "pointillism park scene"
+    },
+    {
+      "trait_type": "left",
+      "value": "ghostface scream costume"
+    },
+    {
+      "trait_type": "top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "right",
+      "value": "spray guy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ivysaur - 30/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4bsmknigw4uuufe2ffowzkmy5jyndppx7rnoo54rj7mqducu2t4/2472.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

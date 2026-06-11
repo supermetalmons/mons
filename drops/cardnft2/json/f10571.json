@@ -1,0 +1,78 @@
+{
+  "id": 10571,
+  "name": "Card #10571",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10571.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cart boy"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 radiant yellow red clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "12 vespertine purple peach clean wisp heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 01"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - moon silver - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drifella teen honor thy father"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deidara - card0389 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "deidara - card0389 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "orange elite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10571.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

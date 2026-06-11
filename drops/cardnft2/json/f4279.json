@@ -1,0 +1,102 @@
+{
+  "id": 4279,
+  "name": "Card #4279",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4279.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker card corner"
+    },
+    {
+      "trait_type": "top center",
+      "value": "classroom shadows"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wild cat"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Gotenks ghost trio"
+    },
+    {
+      "trait_type": "right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kamen rider figure"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "giger skull graphite airbrush"
+    },
+    {
+      "trait_type": "border",
+      "value": "gothic ii"
+    },
+    {
+      "trait_type": "hero",
+      "value": "XYZ Dragon Cannon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Burned Tower - 71/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4279.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

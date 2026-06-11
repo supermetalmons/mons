@@ -1,0 +1,86 @@
+{
+  "id": 8422,
+  "name": "Card #8422",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8422.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drif iii banknote"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "post supermoon energy"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "gumby"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Sinister Serpent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag gundam"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "100 rainbow prism dawn extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark magician clean wisp moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "taomon_digimon_dp400_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8422.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

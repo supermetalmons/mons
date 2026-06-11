@@ -1,0 +1,90 @@
+{
+  "id": 4780,
+  "name": "Card #4780",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4780.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga lust"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 13"
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "homo noosphericus bodies"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel waterfall"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gaara manga"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "the magic you are looking for"
+    },
+    {
+      "trait_type": "hero",
+      "value": "biscuit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hinata Hyuga (Childhood) - 865"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4780.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

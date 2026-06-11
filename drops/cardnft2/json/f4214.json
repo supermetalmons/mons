@@ -1,0 +1,82 @@
+{
+  "id": 4214,
+  "name": "Card #4214",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4214.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "cyborg head profile"
+    },
+    {
+      "trait_type": "right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon knight and kinnikuman"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "misa red"
+    },
+    {
+      "trait_type": "top left",
+      "value": "jack frost persona"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drainer"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dune dark ritual scene"
+    },
+    {
+      "trait_type": "center",
+      "value": "red blue spiral circle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella plush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Primeape - 39/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4214.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 8560,
+  "name": "Card #8560",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8560.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Earl swag - card1673-11"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "brown fabric texture"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini Delta Species Hypnotic Gaze inverted mask variant 2"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "garbage pail kids pack"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mifella emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara C1 - card0340 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8560.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

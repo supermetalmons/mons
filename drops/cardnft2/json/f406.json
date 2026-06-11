@@ -1,0 +1,50 @@
+{
+  "id": 406,
+  "name": "Card #406",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0406.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Yamato - 5/4"
+    },
+    {
+      "trait_type": "center",
+      "value": "sacred cross black"
+    },
+    {
+      "trait_type": "hero",
+      "value": "suicune"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple birds"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0406.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

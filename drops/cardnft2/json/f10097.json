@@ -1,0 +1,82 @@
+{
+  "id": 10097,
+  "name": "Card #10097",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10097.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Buddhist Guardian Deity Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "biscuit tollo colored pencil mask"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "robot detective illustration"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "tshirt stain"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "druid-8 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "coal"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "itachi_uchiha_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10097.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

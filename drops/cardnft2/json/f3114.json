@@ -1,0 +1,94 @@
+{
+  "id": 3114,
+  "name": "Card #3114",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3114.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby jesus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star block"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "center",
+      "value": "charizard sticker"
+    },
+    {
+      "trait_type": "top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yokai group"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "nude frazetta girl 3"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink japanese menu icons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "life on mars earth comic"
+    },
+    {
+      "trait_type": "top left",
+      "value": "playstation network logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ribombee - 96/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3114.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

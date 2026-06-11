@@ -1,0 +1,70 @@
+{
+  "id": 9224,
+  "name": "Card #9224",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9224.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rainbow wheel"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "029 black cherry red extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "35 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Cubone Arc Master Card - IMG_3554 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tailow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9224.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

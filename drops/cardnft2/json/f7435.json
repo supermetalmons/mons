@@ -1,0 +1,106 @@
+{
+  "id": 7435,
+  "name": "Card #7435",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7435.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_peacock_rainbow_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "what is this drugs"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dratini rocket black mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shyguy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bagged sonic plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7435.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

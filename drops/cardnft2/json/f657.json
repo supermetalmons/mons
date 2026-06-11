@@ -1,0 +1,94 @@
+{
+  "id": 657,
+  "name": "Card #657",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0657.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "your imagination is stunted"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "man in white coat"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - black void - crucifix cross"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dai shogi"
+    },
+    {
+      "trait_type": "center",
+      "value": "17th-century military engineering treatise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted green-2 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kisame Hoshigaki - 6/2"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0657.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

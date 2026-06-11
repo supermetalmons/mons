@@ -1,0 +1,58 @@
+{
+  "id": 687,
+  "name": "Card #687",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0687.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Time Is A Warrior's Tool - 8 of 8"
+    },
+    {
+      "trait_type": "center",
+      "value": "paintball splatter smiley"
+    },
+    {
+      "trait_type": "right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0687.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

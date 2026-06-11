@@ -1,0 +1,90 @@
+{
+  "id": 5017,
+  "name": "Card #5017",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5017.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "hero",
+      "value": "purple alien creature"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract texture 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "top right",
+      "value": "strategy icons"
+    },
+    {
+      "trait_type": "right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "ghost fleischer character"
+    },
+    {
+      "trait_type": "left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "center",
+      "value": "dungeon path"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poliwag - 59/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5017.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

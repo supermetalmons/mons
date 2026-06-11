@@ -1,0 +1,98 @@
+{
+  "id": 7496,
+  "name": "Card #7496",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7496.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "comet scythe engraving"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "star level grid"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "cave story hud border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "one piece reactions"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG The First Hokage - card4487 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small american flag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow bitcoin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pakkun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7496.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

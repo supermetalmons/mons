@@ -1,0 +1,58 @@
+{
+  "id": 4468,
+  "name": "Card #4468",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4468.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sprite sheet lightning attack"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "cartoon creatures border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostface cake drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sableye - 105/185"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4468.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

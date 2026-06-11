@@ -1,0 +1,50 @@
+{
+  "id": 1783,
+  "name": "Card #1783",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1783.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Erika's Exeggcute - 77/132"
+    },
+    {
+      "trait_type": "center",
+      "value": "shining gyarados"
+    },
+    {
+      "trait_type": "center",
+      "value": "drone combat"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Bandai Super Mario Bros Keshi figure"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1783.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

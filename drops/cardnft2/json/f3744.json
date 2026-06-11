@@ -1,0 +1,102 @@
+{
+  "id": 3744,
+  "name": "Card #3744",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3744.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "red fishing guy"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "in service baby yoda "
+    },
+    {
+      "trait_type": "border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "squirtle splash"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sprite sheet lightning attack"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "manga shocked faces"
+    },
+    {
+      "trait_type": "hero",
+      "value": "blonde warrior mask"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Raizen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidoran ♀ - Jungle 57/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibmbfz4zxsezcziuztm5puzyakg4redntnf4rkexm2opsox4mrji4/3744.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

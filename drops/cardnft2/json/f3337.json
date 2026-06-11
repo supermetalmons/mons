@@ -1,0 +1,78 @@
+{
+  "id": 3337,
+  "name": "Card #3337",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3337.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "warzone defeat screen"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ornate pillar heart"
+    },
+    {
+      "trait_type": "left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "neon sketch figures"
+    },
+    {
+      "trait_type": "top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "black starry pattern"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "top center",
+      "value": "un spaceship illustration"
+    },
+    {
+      "trait_type": "hero",
+      "value": "wrightson batman"
+    },
+    {
+      "trait_type": "right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "red scythe"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lilligant - 8/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3337.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

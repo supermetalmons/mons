@@ -1,0 +1,78 @@
+{
+  "id": 8022,
+  "name": "Card #8022",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8022.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dali snake Watercolor Figure Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi pilot manga"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "The Lonely House on Adachi Moor woodblock"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "mothra"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif glitter bouncy ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite clawbearer"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deem_light_yugioh_18190572_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8022.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

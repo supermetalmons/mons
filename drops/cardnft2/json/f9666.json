@@ -1,0 +1,54 @@
+{
+  "id": 9666,
+  "name": "Card #9666",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9666.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "sd pc art card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__bronze armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__mithril armor jester diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dragonite V - IMG_3215 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9666.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

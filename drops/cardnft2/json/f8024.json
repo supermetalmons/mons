@@ -1,0 +1,74 @@
+{
+  "id": 8024,
+  "name": "Card #8024",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8024.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silver Blue Feather Texture Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dragonite EX XY Evolutions 72 108 inverted mask"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "snorunt comparison collage"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drifella card game"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Darkness Energy unknown set - card0074 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8024.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

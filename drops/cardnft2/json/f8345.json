@@ -1,0 +1,74 @@
+{
+  "id": 8345,
+  "name": "Card #8345",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8345.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Embryo Planet Space Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "archer sculpture engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dr doom"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Reaper Death Seal"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "The Sudarium of Saint Veronica engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Orochimaru - IMG_3530 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8345.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

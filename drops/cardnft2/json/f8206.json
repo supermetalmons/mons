@@ -1,0 +1,78 @@
+{
+  "id": 8206,
+  "name": "Card #8206",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8206.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Creature Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "net and yoohoo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract pastel strokes"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "card vending machine"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "broken blade poem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "black_lotus_magic_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8206.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

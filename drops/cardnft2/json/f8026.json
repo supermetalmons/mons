@@ -1,0 +1,78 @@
+{
+  "id": 8026,
+  "name": "Card #8026",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8026.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mi note angel biscuit - card1673-37"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "muscular buu"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mesprit"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "black white industrial scene"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "deity flames"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Phantomon Ultimate Level - IMG_3511 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8026.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

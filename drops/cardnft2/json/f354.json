@@ -1,0 +1,58 @@
+{
+  "id": 354,
+  "name": "Card #354",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0354.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Purrloin - RC13/RC25"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink purple watercolor drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sableye poncho red gem"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "yugioh style gravestone SIMON GEORGE KONRAD HILL WILLiANS F5"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0354.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

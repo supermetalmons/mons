@@ -1,0 +1,94 @@
+{
+  "id": 7898,
+  "name": "Card #7898",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7898.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gengar Haunter Cemetery Graveyard Background - card1673-1"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "it s dangerous to trench alone"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "never forgetti drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "07 dark magician clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "059 fire ice split extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "33 dark cobalt pink sunset holo ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Shining Mew - IMG_3260 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7898.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

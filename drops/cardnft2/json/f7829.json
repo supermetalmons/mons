@@ -1,0 +1,110 @@
+{
+  "id": 7829,
+  "name": "Card #7829",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7829.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "drifella dragon solfus girl knight"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kochanovich"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "batgirl"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "goku watching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "HAL Laboratory"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon ghost pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "happened in mgs2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "esoteric lessons steiner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Gargomon C100 - card1466 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7829.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 6459,
+  "name": "Card #6459",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6459.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "center",
+      "value": "havana syndrome diagram"
+    },
+    {
+      "trait_type": "right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's Gastly - 93/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6459.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

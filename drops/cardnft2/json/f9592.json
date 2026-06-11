@@ -1,0 +1,78 @@
+{
+  "id": 9592,
+  "name": "Card #9592",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9592.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dark Forest Creature Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pc98 woman"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "camel cigarette pack"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 dark red glow clean wisp star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "53 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - ankh"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "49 black cherry glow holo rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "shino aburame - card0609 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblvlezmhgmclcprnngji3qsz3nt6u4aze2skuhtwua3f4m4b5h3m/9592.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

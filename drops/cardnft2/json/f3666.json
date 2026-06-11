@@ -1,0 +1,86 @@
+{
+  "id": 3666,
+  "name": "Card #3666",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3666.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "pink stroke"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anatomical illustration of a neck"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green drif body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wartortle - 65/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3666.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

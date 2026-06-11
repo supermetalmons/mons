@@ -1,0 +1,86 @@
+{
+  "id": 9827,
+  "name": "Card #9827",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9827.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "guess what i never went to art school meme"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "back of canvas frame"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "sam hyde gunman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "def jam logo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "de kooning sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "scattered balls"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "080 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 psychic pink blue clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "zetsu - card4762 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon booster pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones emo"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9827.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 6141,
+  "name": "Card #6141",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6141.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gastly - 36/111"
+    },
+    {
+      "trait_type": "hero",
+      "value": "green muscular fighter"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "charizard meme group"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tylenol cartoon box"
+    },
+    {
+      "trait_type": "left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "top left",
+      "value": "scapegoat"
+    },
+    {
+      "trait_type": "left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "center",
+      "value": "capitalist painter"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6141.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

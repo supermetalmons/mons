@@ -1,0 +1,86 @@
+{
+  "id": 7892,
+  "name": "Card #7892",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7892.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gengar Haunter Cemetery Graveyard Background - card1673-1"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small gray speakers"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "runescape inventory icons"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "unnamed david lynch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "london club card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "026 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "02 blood orange magenta holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "079 emerald violet dream extra holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Super Card Game Time Patrol Trunks - card0770 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7892.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

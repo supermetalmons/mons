@@ -1,0 +1,86 @@
+{
+  "id": 8637,
+  "name": "Card #8637",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8637.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Fechin Impressionist Woman Portrait Background - card1673-54"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "probably deleted"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini rocket returns inverted mask variant 3"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "jesus mons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "43 fire ice split holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "013 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Chikorita Neo Genesis - card1637 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8637.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

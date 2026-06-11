@@ -1,0 +1,62 @@
+{
+  "id": 294,
+  "name": "Card #294",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0294.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pass Permit - 056"
+    },
+    {
+      "trait_type": "center",
+      "value": "gothic cathedral silhouette"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepy mask claws sky"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "arceus highway loops"
+    },
+    {
+      "trait_type": "right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "top right",
+      "value": "pink skulls and red paint"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sublime"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0294.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 7563,
+  "name": "Card #7563",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7563.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_green_camo_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "you ever just mint an nft"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "titan grabbing horse"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "manga smashing frog"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "sacred heart lace card"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "poke holo manga cover"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Dragonite Kairyu black mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7563.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

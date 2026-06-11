@@ -1,0 +1,126 @@
+{
+  "id": 8888,
+  "name": "Card #8888",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8888.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_gold_plum_teal_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "anime house street"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "duskull zapping larvitar"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skeleton engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "sam hyde gunman"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Togekiss VMAX - IMG_3506 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime angel cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "peach drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8888.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

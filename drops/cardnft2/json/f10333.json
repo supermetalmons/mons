@@ -1,0 +1,130 @@
+{
+  "id": 10333,
+  "name": "Card #10333",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10333.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ryuk card"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "metagross tank"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anbu"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "jonny comic panel"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "starry night silhouette"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "pikachu revive"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "11 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "019 holo chrome pastel extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "23 red soft holo holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "eevee_sv41_sv94_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "eevee_sv41_sv94_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "baby drif digimon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10333.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

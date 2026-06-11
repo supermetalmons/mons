@@ -1,0 +1,90 @@
+{
+  "id": 10032,
+  "name": "Card #10032",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10032.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "card nft 2 rainbow"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "blurry osrs"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "abstract mosaic pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "35 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "24 red soft holo holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "m_charizard_ex_evolutions_101_108_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "m_charizard_ex_evolutions_101_108_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10032.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

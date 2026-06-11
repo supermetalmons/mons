@@ -1,0 +1,62 @@
+{
+  "id": 5773,
+  "name": "Card #5773",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5773.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "megami tensei"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "moogle watercolor"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred hearts engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Shiki Fu╠äjin (Dead Demon Consuming Seal)"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "tanooki arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gladius - OP14-062"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5773.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

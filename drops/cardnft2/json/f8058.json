@@ -1,0 +1,82 @@
+{
+  "id": 8058,
+  "name": "Card #8058",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8058.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "gengar trainer sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "i jest"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cave map on black"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "solidgoldmagikarp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Girafarig - card1945 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8058.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

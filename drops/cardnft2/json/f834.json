@@ -1,0 +1,46 @@
+{
+  "id": 834,
+  "name": "Card #834",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0834.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Frieza's Finger Tip Energy Blast - 10 of 21"
+    },
+    {
+      "trait_type": "center",
+      "value": "intricate biomechanical engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chinese banknote corner"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0834.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

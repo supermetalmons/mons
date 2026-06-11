@@ -1,0 +1,78 @@
+{
+  "id": 5438,
+  "name": "Card #5438",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5438.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "yellow dice eyes"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "right",
+      "value": "old ghoul cigarettes"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "solid snake illustration"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "center",
+      "value": "entei 7 of hearts"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gligar - 80/149"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5438.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

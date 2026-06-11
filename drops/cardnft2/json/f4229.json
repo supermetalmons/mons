@@ -1,0 +1,98 @@
+{
+  "id": 4229,
+  "name": "Card #4229",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4229.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dude im a fucking goblin i dont care im going to take your shit and then kill you"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Super Zarbon"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "center",
+      "value": "tree of life"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Exodia the Forbidden One"
+    },
+    {
+      "trait_type": "right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kigen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokédex HANDY910is - 114/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4229.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

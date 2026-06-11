@@ -1,0 +1,94 @@
+{
+  "id": 3813,
+  "name": "Card #3813",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3813.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "7401% ApY"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - black gold - claw"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nagato pain machine"
+    },
+    {
+      "trait_type": "top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Massacre of the Innocents engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Grave Protector"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Phantom Troupe spider tattoo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Team Magma Admin - 29/34"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3813.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

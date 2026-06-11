@@ -1,0 +1,90 @@
+{
+  "id": 7514,
+  "name": "Card #7514",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7514.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colored scribble"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "infernape electivire battle"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "clay figures tea party"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "opal roman soldier bust"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "green blue soundwave strip"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue purple gradient rectangle"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hidden tv in chip bag"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Bulma Son Goku Chi Chi - IMG_3517 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7514.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

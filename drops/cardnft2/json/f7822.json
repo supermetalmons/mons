@@ -1,0 +1,102 @@
+{
+  "id": 7822,
+  "name": "Card #7822",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7822.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Toy Store Anime Aisle Background - card1673-24"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "demiurge meme"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "yellow orb column"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "sierpinski cube corner"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "anime house street"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "penguin with blue crown"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "red blue black brushwork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikaru swag site"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pichu sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Phantomon Ultimate Level - IMG_3511 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7822.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

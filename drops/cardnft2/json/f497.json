@@ -1,0 +1,50 @@
+{
+  "id": 497,
+  "name": "Card #497",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0497.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rowlet - 2/15"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon sprite chart"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging cocoon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "dragon ball goku bulma"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0497.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

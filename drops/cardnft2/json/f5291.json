@@ -1,0 +1,74 @@
+{
+  "id": 5291,
+  "name": "Card #5291",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5291.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "foggy graveyard crosses"
+    },
+    {
+      "trait_type": "hero",
+      "value": "suicune"
+    },
+    {
+      "trait_type": "top center",
+      "value": "thorny branch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gengar texture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "playstation buttons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bacon girl drif iii sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Seaking - 047/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5291.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

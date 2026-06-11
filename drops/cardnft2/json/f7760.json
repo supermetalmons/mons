@@ -1,0 +1,106 @@
+{
+  "id": 7760,
+  "name": "Card #7760",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7760.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_red_kimono_gold_screen"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pastel injured angel with cross"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mole pixel"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "thelema hello kitty"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "castle pixel art"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Nao Tsukiji"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "XYZ Dragon Cannon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "buff pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Grill zooka"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Trainer black mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7760.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

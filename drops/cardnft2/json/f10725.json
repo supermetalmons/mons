@@ -1,0 +1,174 @@
+{
+  "id": 10725,
+  "name": "Card #10725",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10725.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dungeon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_small_duplicate_gradient_stars_29"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "002 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ice silver - claw"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful pixel scatter"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark bacon abstract texture 6"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red abstract figure"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - turquoise ash - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "_contact_sheet_preview_1"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_gradient_block_pastel_to_dark_16"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "power freeze - card6808 white mask transparent"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_24"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_26"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_01"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_02"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "power freeze - card6808 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tas glitch mario"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nazi zombies"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherry blossoms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red sharingan eye"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10725.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

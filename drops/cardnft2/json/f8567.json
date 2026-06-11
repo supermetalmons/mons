@@ -1,0 +1,98 @@
+{
+  "id": 8567,
+  "name": "Card #8567",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8567.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Fechin Impressionist Woman Portrait Background - card1673-54"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "manga shocked faces"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mega man"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "undertale frog sprite"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "028 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 lava violet ember holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_fantasy_horseman_art_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8567.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

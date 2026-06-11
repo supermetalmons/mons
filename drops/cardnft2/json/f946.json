@@ -1,0 +1,54 @@
+{
+  "id": 946,
+  "name": "Card #946",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0946.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Parasitic Demon Jutsu 241"
+    },
+    {
+      "trait_type": "center",
+      "value": "killua gon chibi sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "forest campfire smoke art"
+    },
+    {
+      "trait_type": "hero",
+      "value": "twin peaks coffee scene"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "facepalm meme"
+    },
+    {
+      "trait_type": "right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0946.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

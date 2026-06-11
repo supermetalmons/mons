@@ -1,0 +1,94 @@
+{
+  "id": 7529,
+  "name": "Card #7529",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7529.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_warrior_wave_art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orange bacon right"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "noise circle blur"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "jester print drifella"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "it s dangerous to trench alone"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "shizuku fan art"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Nobleman of Crossout - IMG_3453 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "master emerald"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pale emoji demon bat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7529.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

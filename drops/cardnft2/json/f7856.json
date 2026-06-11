@@ -1,0 +1,102 @@
+{
+  "id": 7856,
+  "name": "Card #7856",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7856.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Distressed Painted Shirt Texture Background - card1673-21"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "batman animated series red night bg"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Cupsy☆Yummy"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "neo wax bloom"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue tree pattern fabric"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "008 cobalt pink sunset extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "42 radiant yellow red clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shuckle Neo Genesis - card1956 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7856.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 231,
+  "name": "Card #231",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0231.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Great Ninja 088"
+    },
+    {
+      "trait_type": "hero",
+      "value": "gundam head illustration"
+    },
+    {
+      "trait_type": "left",
+      "value": "godfather logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "desktop icons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "top left",
+      "value": "low poly snorlax"
+    },
+    {
+      "trait_type": "center",
+      "value": "look at the bottom right corner"
+    },
+    {
+      "trait_type": "right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0231.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

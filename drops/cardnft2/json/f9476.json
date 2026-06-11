@@ -1,0 +1,86 @@
+{
+  "id": 9476,
+  "name": "Card #9476",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9476.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Armor - card1673-33"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shaman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow twin dragonair"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 11"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - gold holy - drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - labyrinth"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - ocean blue - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini neo destiny inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9476.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

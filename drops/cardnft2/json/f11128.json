@@ -1,0 +1,66 @@
+{
+  "id": 11128,
+  "name": "Card #11128",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11128.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Jesus Icon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_seven__peachy_cobalt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mew ex - IMG_3237 halftone screenprint mask"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "dual swords abstract"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "simple_bottom_center_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia4tiw6n2omz3vhncab5nsj5euycga33hw4wt553loqgee3n3azji/11128.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 4960,
+  "name": "Card #4960",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4960.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "017 black cherry red extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "green frog knight"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "watercolor block"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "watercolor drif wound"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "haunted terrorism"
+    },
+    {
+      "trait_type": "hero",
+      "value": "umbreon drifella"
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cracked windows number two"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cute box girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giant stone golem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Earth Style: Mud Wall"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4960.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

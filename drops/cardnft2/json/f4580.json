@@ -1,0 +1,98 @@
+{
+  "id": 4580,
+  "name": "Card #4580",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4580.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "015 gold plum teal extra holo heart"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "gengar moon silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "silver letter e"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "martini table black background"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "syrup jug"
+    },
+    {
+      "trait_type": "right",
+      "value": "duskull zapping larvitar"
+    },
+    {
+      "trait_type": "top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pitchfork toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowpoly knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "druid-8 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red gengar"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cleffa - 20/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih2ji245tjfp4mli5fuu2ftr7anbxm7ksbia5lp5y53sqc3eehpqa/4580.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

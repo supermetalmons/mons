@@ -1,0 +1,82 @@
+{
+  "id": 3920,
+  "name": "Card #3920",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3920.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gray safe"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ascii cat gun"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract clown figures"
+    },
+    {
+      "trait_type": "hero",
+      "value": "obito manga panel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "foggy graveyard crosses"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smeargles art study"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "summoned skull figure"
+    },
+    {
+      "trait_type": "right",
+      "value": "solana"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black starry background"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chakra cat outline"
+    },
+    {
+      "trait_type": "left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Marowak - 63/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3920.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

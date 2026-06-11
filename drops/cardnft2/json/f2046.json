@@ -1,0 +1,82 @@
+{
+  "id": 2046,
+  "name": "Card #2046",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2046.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "panda adventure title screen"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "clay figures tea party"
+    },
+    {
+      "trait_type": "hero",
+      "value": "jester character art"
+    },
+    {
+      "trait_type": "center",
+      "value": "killua gon chibi sketch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Sol Justitiae (Sun of Justice)  engraving"
+    },
+    {
+      "trait_type": "left",
+      "value": "Goodybag dragon quest"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fighter character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Teal Mask Ogerpon - 024/167"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2046.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

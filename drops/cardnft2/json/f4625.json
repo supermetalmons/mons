@@ -1,0 +1,102 @@
+{
+  "id": 4625,
+  "name": "Card #4625",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4625.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 39"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "facepalm meme"
+    },
+    {
+      "trait_type": "left",
+      "value": "toriyama toy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dvd anime girl"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smash bros commercial _99"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "watercolor block"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "puddies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "astro boy chibi"
+    },
+    {
+      "trait_type": "center",
+      "value": "Concentric Rinds"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "henteko doujin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "engraved revolver"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Spirit Veil 129/165"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4625.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 5377,
+  "name": "Card #5377",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5377.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "center",
+      "value": "bamboo and berries pattern"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pink japanese menu icons"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "printer can do 45 cards at once"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "smeargle sketch art"
+    },
+    {
+      "trait_type": "right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "left",
+      "value": "department store girl card"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "kabbalistic tree diagram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "megaman robot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif apple body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Venonat - 63/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5377.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

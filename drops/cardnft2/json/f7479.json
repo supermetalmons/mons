@@ -1,0 +1,102 @@
+{
+  "id": 7479,
+  "name": "Card #7479",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7479.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "desert_rainbow_dusk_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "frazetta johnny dash comic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "happy mew playe date vignette"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gothic cathedral silhouette"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kakashi reading book"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Charizard G LV X Supreme Victors 143 147 inverted mask"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skull gravestone"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "alien figure on cloth"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Bagon - card2989 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7479.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

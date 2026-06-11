@@ -1,0 +1,54 @@
+{
+  "id": 1611,
+  "name": "Card #1611",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1611.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Squirtle - 68/82"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pip boy device"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "metagross tank"
+    },
+    {
+      "trait_type": "left",
+      "value": "rayquaza orange smoke"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yellow dice eyes"
+    },
+    {
+      "trait_type": "center",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1611.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

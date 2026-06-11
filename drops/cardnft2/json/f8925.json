@@ -1,0 +1,102 @@
+{
+  "id": 8925,
+  "name": "Card #8925",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8925.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "fantasy_cloaked_figures_waterfall"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "cd mixtape edge"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "cable"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "cyan blue drif ak"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "sacred hearts bw"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "possi 1816"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Illustrator Pikachu inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8925.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

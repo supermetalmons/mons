@@ -1,0 +1,50 @@
+{
+  "id": 6209,
+  "name": "Card #6209",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6209.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ninja Art: Super Beast Scroll \"Falcon\""
+    },
+    {
+      "trait_type": "center",
+      "value": "capitalist painter"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chakra cat outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cartoon ghost pin"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue purple gradient rectangle"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6209.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 878,
+  "name": "Card #878",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0878.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragon Ball Z - Is it Defeat or Victory that Waits in the Dark?"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story bosses"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bandai logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0878.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

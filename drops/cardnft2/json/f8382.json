@@ -1,0 +1,78 @@
+{
+  "id": 8382,
+  "name": "Card #8382",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8382.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "watermelon_candy_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "water energy holographic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "absol"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 3"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "blue_eye_cartoon_dragon_yugioh_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8382.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

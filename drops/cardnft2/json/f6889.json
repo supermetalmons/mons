@@ -1,0 +1,70 @@
+{
+  "id": 6889,
+  "name": "Card #6889",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6889.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "left",
+      "value": "fly frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sonic rei"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "seasons and elements"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drif iii girl harlequinn"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ds at night"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sephirothmon - BT12-065"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6889.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

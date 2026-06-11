@@ -1,0 +1,106 @@
+{
+  "id": 8884,
+  "name": "Card #8884",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8884.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "333 Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "tiny mole in hand"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "ancient rune fragments"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "duskull zapping larvitar"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Setzer Gabbiani yoshitaka"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "playstation buttons"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini neo destiny black mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jest midget"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8884.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": 10006,
+  "name": "Card #10006",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10006.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "togetic japanese pokemon get card"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow twin dragonair"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "tombstone with arms"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese team rocket trainer - card2332 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese team rocket trainer - card2332 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10006.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": 9999,
+  "name": "Card #9999",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9999.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Japanese Crane Blossom Painting Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rune armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "063 emerald violet dream extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "46 magenta cyan gold holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - moon phases"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "saint with angels"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue burst background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - crescent"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - flame"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 48"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "032 dark blood orange extra holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "kankuro - card4944 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "kankuro - card4944 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9999.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

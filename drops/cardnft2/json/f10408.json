@@ -1,0 +1,82 @@
+{
+  "id": 10408,
+  "name": "Card #10408",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10408.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_violet_aqua_coral_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "based cardboard"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragon warrior jester"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "energy_switch_90_112_trainer_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "energy_switch_90_112_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "horse head figures sketch"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "wrightson alien"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10408.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 906,
+  "name": "Card #906",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0906.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Red Lifting Kick - 9 of 19"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "wcw faceoff collage"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "muscular person in school uniform"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw3molqn5qxqagvukpbz7pc3i6zvam5rhnivxkcjnz624qolmapm/0906.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

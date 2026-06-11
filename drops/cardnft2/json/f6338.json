@@ -1,0 +1,58 @@
+{
+  "id": 6338,
+  "name": "Card #6338",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6338.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Galarian Rapidash - 082/202"
+    },
+    {
+      "trait_type": "center",
+      "value": "Saint Christopher Facing Right engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokerus"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime kid drinking"
+    },
+    {
+      "trait_type": "left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6338.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

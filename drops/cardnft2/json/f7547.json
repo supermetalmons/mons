@@ -1,0 +1,106 @@
+{
+  "id": 7547,
+  "name": "Card #7547",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7547.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Impressionist Yellow Green Water Lily Garden Background - card1673-2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon trainers and team"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "one piece jewish conspiracy"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "arale phone lettuce"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "esrb everyone rating"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red starry portal"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Caveman Cutout"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Aipom Neo Genesis - card1765 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sleepy slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7547.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

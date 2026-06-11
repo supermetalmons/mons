@@ -1,0 +1,102 @@
+{
+  "id": 7878,
+  "name": "Card #7878",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7878.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "ornate_floral_heart_pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black intricate pattern"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "wedding flowers and birds"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "malevich"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chopper sitting cloud"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "arale riding dino"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hell hound"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Killing Machine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 dark ruby violet orange holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 psychic pink blue clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Diglett Base Set 47 of 102 - card1513 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7878.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 5131,
+  "name": "Card #5131",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5131.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3d grimer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "right",
+      "value": "lego drif"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Blackwing Armed Wing"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alchemist armor"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark landscape painting"
+    },
+    {
+      "trait_type": "left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "energy symbols light"
+    },
+    {
+      "trait_type": "top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "orange elite"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mecha line art sketch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swinub - 26/135"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5131.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

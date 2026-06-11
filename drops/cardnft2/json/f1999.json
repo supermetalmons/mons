@@ -1,0 +1,58 @@
+{
+  "id": 1999,
+  "name": "Card #1999",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1999.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wooper - 38/98"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mario kart split screen"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ar nintendo ds cartridge"
+    },
+    {
+      "trait_type": "top left",
+      "value": "godzilla puppet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "what is this drugs"
+    },
+    {
+      "trait_type": "center",
+      "value": "black dragon tattoo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1999.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

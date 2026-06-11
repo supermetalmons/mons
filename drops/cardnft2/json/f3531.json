@@ -1,0 +1,62 @@
+{
+  "id": 3531,
+  "name": "Card #3531",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3531.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "Beelzemon Blast Mode"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hopium logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pikachu ponyta celebi collage"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "monkey ball game"
+    },
+    {
+      "trait_type": "right",
+      "value": "yellow cat cigarette"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke Uchiha - 116"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3531.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

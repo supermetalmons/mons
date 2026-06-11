@@ -1,0 +1,98 @@
+{
+  "id": 7512,
+  "name": "Card #7512",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7512.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "hidden tv in chip bag"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pixel castle map"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shaman"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black brush strokes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Luster Dragon - IMG_3455 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif iii card back"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu zombie skull art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7512.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

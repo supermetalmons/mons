@@ -1,0 +1,66 @@
+{
+  "id": 4138,
+  "name": "Card #4138",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4138.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pikachu wooloo sleep"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract watercolor hand"
+    },
+    {
+      "trait_type": "hero",
+      "value": "precious moments nativity"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "I cant believe the elites are raping and eating babies dratini is going viral on ig rn"
+    },
+    {
+      "trait_type": "top right",
+      "value": "evil ethereum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poliwhirl - 68/115"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4138.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

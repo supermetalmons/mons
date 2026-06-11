@@ -1,0 +1,86 @@
+{
+  "id": 7899,
+  "name": "Card #7899",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7899.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ancient dice"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "charizard fire breath"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "deity flames"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate square"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Clown crucidrifella new"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dialga Lv X - card0386 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7899.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

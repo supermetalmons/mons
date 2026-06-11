@@ -1,0 +1,62 @@
+{
+  "id": 4700,
+  "name": "Card #4700",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4700.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "island - card1254 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "left",
+      "value": "The Lonely House on Adachi Moor woodblock"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kaws gloves"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Garbage rainbow hat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Leaf Lightning Fist - 347"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4700.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

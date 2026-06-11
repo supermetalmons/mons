@@ -1,0 +1,58 @@
+{
+  "id": 2112,
+  "name": "Card #2112",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2112.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "buddha repeated"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eraserhead baby vitamin"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "training room button"
+    },
+    {
+      "trait_type": "right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "center",
+      "value": "exodia and god cards"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Altaria - 049/073"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2112.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

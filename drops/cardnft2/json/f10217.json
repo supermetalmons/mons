@@ -1,0 +1,102 @@
+{
+  "id": 10217,
+  "name": "Card #10217",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10217.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Buddhist Guardian Deity Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "tshirt stain"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "kabbalistic tree diagram"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "001 rainbow prism dawn extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "totodile - card5023 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flaffy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "totodile - card5023 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10217.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

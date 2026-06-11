@@ -1,0 +1,78 @@
+{
+  "id": 9667,
+  "name": "Card #9667",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9667.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_rainbow_motion_blur"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "tokusatsu bug"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "is a fishman a snake"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red abstract landscape"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 07 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 03 - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Hamtaro Scene Card - IMG_3547 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "change of heart hologram"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9667.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 7797,
+  "name": "Card #7797",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7797.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "birds texture"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "3 banknote corner"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "erikas dragonair mask"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bulbafella"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "unintelligible dogshit slop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dead celebi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif general sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Charmander Full Art - IMG_3414 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7797.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

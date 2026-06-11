@@ -1,0 +1,86 @@
+{
+  "id": 8185,
+  "name": "Card #8185",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8185.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Embryo Medical Illustration Background"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "blurry osrs"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "broken blade poem"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Vampire Bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "phantasy star iv"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Kabuto Yakushi - IMG_3533 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8185.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

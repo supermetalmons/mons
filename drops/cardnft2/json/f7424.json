@@ -1,0 +1,102 @@
+{
+  "id": 7424,
+  "name": "Card #7424",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7424.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_spirit_wave_illustration"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "un spaceship illustration"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "red gemstone corner"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "robot ashley wood"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "regice pokemon"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "plastic chair shadow"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mudkip - IMG_3272 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grail"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7424.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

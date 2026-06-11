@@ -1,0 +1,50 @@
+{
+  "id": 1120,
+  "name": "Card #1120",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1120.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Scyther - 46/75"
+    },
+    {
+      "trait_type": "top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "right",
+      "value": "parappa the rapper"
+    },
+    {
+      "trait_type": "top right",
+      "value": "animal crossing leaf icon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kakashi zabuza manga"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifqwpf6tjcsrxfenlsahbxu7ed7p3xeq5ahssqjipbflu6oxeqdj4/1120.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

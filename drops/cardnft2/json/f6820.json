@@ -1,0 +1,50 @@
+{
+  "id": 6820,
+  "name": "Card #6820",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6820.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mushroomon - DT-37"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "BigMamemon"
+    },
+    {
+      "trait_type": "center",
+      "value": "red mew gameboy"
+    },
+    {
+      "trait_type": "top left",
+      "value": "godzilla puppet"
+    },
+    {
+      "trait_type": "center",
+      "value": "gilded mons board"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigobdzqbj3nggsqmkfmitmnutg7xtijguqdlba5ln6ehk3hcra3py/6820.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

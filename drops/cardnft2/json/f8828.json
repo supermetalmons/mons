@@ -1,0 +1,130 @@
+{
+  "id": 8828,
+  "name": "Card #8828",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8828.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mars frazetta"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "Goodybag dragon quest"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "bitcoins"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "frazetta tiger ink"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "noise circle blur"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Prisoner Iron Mask"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "drifellas island logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "swarm of mice ceramic pattern"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Ancient Fairy Dragon - IMG_3452 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zebra gangster goon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8828.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

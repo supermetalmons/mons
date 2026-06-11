@@ -1,0 +1,86 @@
+{
+  "id": 6648,
+  "name": "Card #6648",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6648.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "moai statue"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sitting superhero pixelated"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ghibli reeled in fish"
+    },
+    {
+      "trait_type": "hero",
+      "value": "dragonite anime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "entei"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Gatomon girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blue general"
+    },
+    {
+      "trait_type": "altered",
+      "value": "true"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Galaxy Foil"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid4ij4a6kj3fhnn37n3l2uu2uq5bsxzd42ptenllmokhd3ou75ytm/6648.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

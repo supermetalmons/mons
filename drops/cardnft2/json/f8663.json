@@ -1,0 +1,74 @@
+{
+  "id": 8663,
+  "name": "Card #8663",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8663.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silver Blue Feather Texture Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "centipede arcade art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "cracked"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "d-terminal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Togekiss VMAX - IMG_3506 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8663.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

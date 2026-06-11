@@ -1,0 +1,106 @@
+{
+  "id": 7787,
+  "name": "Card #7787",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7787.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Impressionist Yellow Green Water Lily Garden Background - card1673-2"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "aivazovsky"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "eevee meme"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rgb pixel blur arrows"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Gelato Pique x Dragon Quest Draky"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "guts"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pikachu wooloo sleep"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghoul head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi 3d"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Minato Namikaze - IMG_3245 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7787.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

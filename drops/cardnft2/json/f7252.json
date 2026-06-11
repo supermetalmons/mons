@@ -1,0 +1,58 @@
+{
+  "id": 7252,
+  "name": "Card #7252",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7252.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "dune dark ritual scene"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Frieza the Master - card0844 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Plaid bat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7252.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

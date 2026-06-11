@@ -1,0 +1,106 @@
+{
+  "id": 9353,
+  "name": "Card #9353",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9353.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "fantasy_cloaked_figures_waterfall"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kids dont even know who they are"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "natural landscape"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "lego reaper"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "sh2 silhouette"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wrightson batman"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "onigiri plate"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "flying saucers"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dragon quest v logo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "013 black cherry red extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 06 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 39"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald black - alchemy fire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blue mana - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon Japanese LadyDevimon - IMG_3500 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9353.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 7553,
+  "name": "Card #7553",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7553.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Pazuzu"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "beat up Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "gray stone sculpture fragment"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chrono trigger logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cell dragon ball"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dark Muk Team Rocket - card2769 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7553.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

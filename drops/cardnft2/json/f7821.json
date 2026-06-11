@@ -1,0 +1,98 @@
+{
+  "id": 7821,
+  "name": "Card #7821",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7821.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_magenta_cyan_gold_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "gengar pikachu sketch"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pink orange swirl"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "wcw faceoff collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow dratini pattern"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "thangka thousand buddhas"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple plants in pots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "triforce heros"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raw beef"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "07 black cherry glow holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Kabuto Fossil - card1974 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7821.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

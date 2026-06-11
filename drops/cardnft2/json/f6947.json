@@ -1,0 +1,62 @@
+{
+  "id": 6947,
+  "name": "Card #6947",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6947.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime character sitting"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "net and yoohoo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "hero",
+      "value": "drifella plush"
+    },
+    {
+      "trait_type": "right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pixel drif outline"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Treasure - T 0018"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6947.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

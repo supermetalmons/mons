@@ -1,0 +1,174 @@
+{
+  "id": 5549,
+  "name": "Card #5549",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5549.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-58"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-175"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 04"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 43"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 47"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "25 lava violet ember holo moon"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "18 dark magician clean wisp star"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 32"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 10"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - rose shadow - saturn sigil"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 34"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - pastel rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 25"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 40"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - blue mana - bolt"
+    },
+    {
+      "trait_type": "top center",
+      "value": "stranger things silhouette"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "eagle"
+    },
+    {
+      "trait_type": "right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiderweb with gems"
+    },
+    {
+      "trait_type": "left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "yugioh card swirl"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton with crossbow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hooded guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droplet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pog face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Carnage poncho"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue namekian chrono trigger"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eevee - 84/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5549.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

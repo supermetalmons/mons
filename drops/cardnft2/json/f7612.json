@@ -1,0 +1,102 @@
+{
+  "id": 7612,
+  "name": "Card #7612",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7612.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_scribble_gradient"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "armored warrior with axe"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gustav klimt sketch"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "yellow cat cigarette"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "the magic you are looking for"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate dark frame"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Eevee - IMG_3487 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7612.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

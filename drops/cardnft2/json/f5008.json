@@ -1,0 +1,74 @@
+{
+  "id": 5008,
+  "name": "Card #5008",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5008.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "pain sketch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful abstract pastel scribbles"
+    },
+    {
+      "trait_type": "border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "right",
+      "value": "tshirt stain"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baroque"
+    },
+    {
+      "trait_type": "center",
+      "value": "Mangekyo Sharingan"
+    },
+    {
+      "trait_type": "top right",
+      "value": "eye hand gesture"
+    },
+    {
+      "trait_type": "left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Surskit - 76/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5008.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

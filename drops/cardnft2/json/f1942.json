@@ -1,0 +1,54 @@
+{
+  "id": 1942,
+  "name": "Card #1942",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1942.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Snubbull - 74/111"
+    },
+    {
+      "trait_type": "center",
+      "value": "exodia and god cards"
+    },
+    {
+      "trait_type": "top left",
+      "value": "godzilla puppet"
+    },
+    {
+      "trait_type": "right",
+      "value": "ultimate muscle logo"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi gaara"
+    },
+    {
+      "trait_type": "top right",
+      "value": "spider tattoo eight"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1942.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

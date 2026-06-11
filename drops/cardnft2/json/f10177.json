@@ -1,0 +1,90 @@
+{
+  "id": 10177,
+  "name": "Card #10177",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10177.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Saint Margaret with the Dragon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval dance of death"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black cat house collage"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Cell Absorbs Lt.Surge"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "27 emerald violet dream holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "084 cyan magenta gold extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "11 gentle pearl clean wisp triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gaara and shukaku - card4790 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black toon blue eyes drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gaara and shukaku - card4790 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10177.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

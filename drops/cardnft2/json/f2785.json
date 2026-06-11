@@ -1,0 +1,54 @@
+{
+  "id": 2785,
+  "name": "Card #2785",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2785.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "White Snake Sage"
+    },
+    {
+      "trait_type": "center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "circular chess board"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyndaquil - 57/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2785.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

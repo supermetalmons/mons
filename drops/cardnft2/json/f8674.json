@@ -1,0 +1,74 @@
+{
+  "id": 8674,
+  "name": "Card #8674",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8674.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Green Moss Forest Texture Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "warning text black background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "hooded figures and mannequin"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hokusai bamboo print"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "my first drifella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raichu meme face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Sasuke Uchiha - card0376 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8674.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

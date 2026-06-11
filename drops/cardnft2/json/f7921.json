@@ -1,0 +1,94 @@
+{
+  "id": 7921,
+  "name": "Card #7921",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7921.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_magenta_cyan_gold_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "armored astronaut sketch"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Chrono Trigger helmet"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "eye abstract painting"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hanging cocoon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ringo air gear"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red drif egg sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "52 fire ice split holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "096 black cherry red extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "07 black cherry glow holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Recall Trainer - card1730 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7921.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

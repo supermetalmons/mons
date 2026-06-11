@@ -1,0 +1,78 @@
+{
+  "id": 9971,
+  "name": "Card #9971",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9971.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "neon mask in dark"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy black"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "choji akimichi - card3574 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross sublime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "club penguin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mi note elder dratini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "choji akimichi - card3574 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9971.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -2,7 +2,7 @@
   "id": 154,
   "name": "Card #154",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_154.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0154.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,84 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clematis Dance: Vine - 252"
+    },
+    {
+      "trait_type": "border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "center",
+      "value": "metal rider slime knight dq card"
+    },
+    {
+      "trait_type": "center",
+      "value": "jesus through the realms"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hockey mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "hero",
+      "value": "zabuza"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "that must hurt kankuro and temari"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "der reise zombies"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pastel injured angel with cross"
+    },
+    {
+      "trait_type": "left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "right",
+      "value": "Kimimaro"
+    },
+    {
+      "trait_type": "top right",
+      "value": "barbarian watercolor head"
+    },
+    {
+      "trait_type": "top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hamtaro"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "center",
+      "value": "red cross text pattern"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_154.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0154.webp",
         "type": "image/webp"
       }
     ],

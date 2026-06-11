@@ -1,0 +1,110 @@
+{
+  "id": 7644,
+  "name": "Card #7644",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7644.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "vampire arale"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "prototype"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blue clouds night sky"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "twin peaks giant"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "poke holo manga cover"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful abstract pastel scribbles"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Akamaru - card3528 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7644.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

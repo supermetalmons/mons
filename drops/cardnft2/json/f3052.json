@@ -1,0 +1,58 @@
+{
+  "id": 3052,
+  "name": "Card #3052",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3052.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Judge Death"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse with knife"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "lego blocks wojak"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "center",
+      "value": "Dragon Devouring the Companions of Cadmus engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Beedrill - 17/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3052.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

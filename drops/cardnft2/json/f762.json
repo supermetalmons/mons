@@ -1,0 +1,54 @@
+{
+  "id": 762,
+  "name": "Card #762",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0762.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sand Armor"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Phantom Troupe spider tattoo"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lizard sketch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0762.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

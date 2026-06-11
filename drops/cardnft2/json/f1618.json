@@ -1,0 +1,42 @@
+{
+  "id": 1618,
+  "name": "Card #1618",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1618.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ledian - 39/111"
+    },
+    {
+      "trait_type": "center",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1618.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "id": 10344,
+  "name": "Card #10344",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10344.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "frazetta_jungle_tiger_woman"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "anime demon girl moon"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "umbreon glow"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pointillism abstract pattern"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "020 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "39 psychic pink blue clean wisp rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "parasect altered - card6707 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "parasect altered - card6707 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "glowing green ghost outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10344.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

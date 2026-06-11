@@ -1,0 +1,62 @@
+{
+  "id": 6932,
+  "name": "Card #6932",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6932.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "haunter gengar negative art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "top right",
+      "value": "baby angel oil"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "petra raindrop"
+    },
+    {
+      "trait_type": "left",
+      "value": "ancient dice"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Demon God Putine, Mindwiped Malevolence - P-375 PR"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6932.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

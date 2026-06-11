@@ -1,0 +1,50 @@
+{
+  "id": 1677,
+  "name": "Card #1677",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1677.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giovanni's Nidoran ♂ - 76/132"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "resident evil typewriter save"
+    },
+    {
+      "trait_type": "top right",
+      "value": "akira fight scene"
+    },
+    {
+      "trait_type": "center",
+      "value": "miniryu lv 10 card"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1677.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

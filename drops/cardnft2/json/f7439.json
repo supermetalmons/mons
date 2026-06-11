@@ -1,0 +1,130 @@
+{
+  "id": 7439,
+  "name": "Card #7439",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7439.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Green Burst Texture Background - card1673-45"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "foggy church graveyard"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "robotic samurai cloak"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "goku and turtle"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "desktop icons"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "furry star wars creature with cup"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu ANA Airlines Promo - IMG_3223 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red green blob"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi dragon knight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby jesus drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7439.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

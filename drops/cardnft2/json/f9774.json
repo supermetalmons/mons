@@ -1,0 +1,62 @@
+{
+  "id": 9774,
+  "name": "Card #9774",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9774.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Toy Store Anime Aisle Background - card1673-24"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "kiryu text box"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "043 ruby violet flame extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "tsukuyomi black flames - card4922 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "daily tribune, wisconsin rapids 1961"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9774.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

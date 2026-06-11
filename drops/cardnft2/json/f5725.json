@@ -1,0 +1,70 @@
+{
+  "id": 5725,
+  "name": "Card #5725",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5725.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "surreal eye and skulls"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "top left",
+      "value": "blue cat plush smoking cigs"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "╨╜╨╡╤ä╨╛╤Ç, ╨╜╤Å╤ê╨║╨░, ╨░╨╗╤é╤â╤ê╨║╨░"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful abstract pastel scribbles"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi itachi 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rothko reaper toji buddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "base card",
+      "value": "No Talent Whatsoever! - US061"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5725.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

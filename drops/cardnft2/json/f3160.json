@@ -1,0 +1,62 @@
+{
+  "id": 3160,
+  "name": "Card #3160",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3160.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "left",
+      "value": "dragonite earrings"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "anime kid drinking"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bulbasaur - 44/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3160.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 378,
+  "name": "Card #378",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0378.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "kid graffiti"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "St. John the Baptist in the Wilderness engraving"
+    },
+    {
+      "trait_type": "right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anamnesis brain cd"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sword icons black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demon egg baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kabuto Yakushi 6/3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0378.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

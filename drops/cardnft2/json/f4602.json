@@ -1,0 +1,106 @@
+{
+  "id": 4602,
+  "name": "Card #4602",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4602.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - purple void - bolt"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ceiling light bulb"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "kurabbu grooming proof"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hungry"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Leorio Paradinight"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "eye in pancake"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "left",
+      "value": "pixelated craft mother house street"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "shining gyarados"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sickly hand"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "biscuit mi note angel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Here Comes Team Rocket! - 15/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihf43cnm2k2pldogvf4tqpbzcqiktdtqyipqohgq67irhg3w6p3zq/4602.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 4378,
+  "name": "Card #4378",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4378.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "Gelus (πé╖πéÖπéºπâ⌐πé╣) manga page"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "nightmare on elm street hud"
+    },
+    {
+      "trait_type": "left",
+      "value": "machamp ditto"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "right",
+      "value": "duskull zapping larvitar"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kneeling NEO humanoid robot"
+    },
+    {
+      "trait_type": "hero",
+      "value": "blue armored figure"
+    },
+    {
+      "trait_type": "top right",
+      "value": "life is boring so why not steal this card"
+    },
+    {
+      "trait_type": "center",
+      "value": "ghastly misprint"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Light Fantasy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred cross black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crucified gabumon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Loudred - 84/119"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4378.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

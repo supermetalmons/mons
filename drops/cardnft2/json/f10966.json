@@ -1,0 +1,126 @@
+{
+  "id": 10966,
+  "name": "Card #10966",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10966.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silver Blue Feather Texture Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "60 emerald violet dream holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "001 rainbow prism dawn extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 08"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful snowflakes holographic"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_five__drif_1"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 07 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "064 emerald violet dream extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "under mask aura eggs",
+      "value": "sr_under_mask_aura_eggs_ordered_random"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mega Gengar ex - IMG_3227 halftone screenprint mask"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "elite_seven__life"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ledyba"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 5"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Wine Vampire"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10966.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

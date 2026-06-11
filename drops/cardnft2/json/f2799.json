@@ -1,0 +1,54 @@
+{
+  "id": 2799,
+  "name": "Card #2799",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2799.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "anime elf"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "buck rogers cover 1"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "center",
+      "value": "tree green paint wall"
+    },
+    {
+      "trait_type": "top center",
+      "value": "balloons"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Squirtle - 63/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2799.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

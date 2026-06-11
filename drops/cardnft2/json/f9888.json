@@ -1,0 +1,94 @@
+{
+  "id": 9888,
+  "name": "Card #9888",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9888.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "jawbone and incorrupt tongue of Saint Anthony of Padua"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "campfire"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Uchiha Mangekyo inverted mask variant 2"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "crochet flygon plush"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gamer drif"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Gelus (πé╖πéÖπéºπâ⌐πé╣) manga page"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "035 toxic sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 48"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white light - crucifix cross"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Ultra Digivolve Power Option inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ff wizard"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted Clown crucidrifella new"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9888.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

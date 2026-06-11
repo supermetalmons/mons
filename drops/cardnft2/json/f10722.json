@@ -1,0 +1,134 @@
+{
+  "id": 10722,
+  "name": "Card #10722",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10722.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Cherries Dark Room Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "15 calm teal violet clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "26 calm teal violet clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_06"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 lava violet ember holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - runic bind"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red black abstract painting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract paint marks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "19 blood orange magenta holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - holo rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_21"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dratini delta 2- card5226 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_07"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_29"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_01"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_18"
+    },
+    {
+      "trait_type": "over mask gradient icons",
+      "value": "sr_crazy_blood_droplet_field_deep_red_pink_purple_24"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10722.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

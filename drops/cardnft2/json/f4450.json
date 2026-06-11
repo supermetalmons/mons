@@ -1,0 +1,94 @@
+{
+  "id": 4450,
+  "name": "Card #4450",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4450.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "pulled this text"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cosmic blaster and umbrella"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "seedot"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Setzer Gabbiani yoshitaka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bimbo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe emo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Combee - 9/98"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4450.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

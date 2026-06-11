@@ -1,0 +1,102 @@
+{
+  "id": 7640,
+  "name": "Card #7640",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7640.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Peeling Paint Blue Wall Background - card1673-15"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "cyan blue drif ak"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "game critique 14 april cover sugimori"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sith eyes"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Pazuzu"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "kurapika chains"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Gengar black mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tribal archer silhouette"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7640.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

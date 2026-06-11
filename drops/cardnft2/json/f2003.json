@@ -1,0 +1,66 @@
+{
+  "id": 2003,
+  "name": "Card #2003",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2003.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp effervescent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pip boy device"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton knight manga"
+    },
+    {
+      "trait_type": "border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "slowpoke rape"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "charizard meme group"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Buizel - 28/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2003.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

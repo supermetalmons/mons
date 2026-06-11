@@ -1,0 +1,70 @@
+{
+  "id": 2113,
+  "name": "Card #2113",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2113.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "godzilla breath attack"
+    },
+    {
+      "trait_type": "hero",
+      "value": "splatterhouse mask monster"
+    },
+    {
+      "trait_type": "top center",
+      "value": "geometric star pattern"
+    },
+    {
+      "trait_type": "right",
+      "value": "turtle chef with spoon"
+    },
+    {
+      "trait_type": "border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chakras aura plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic - trenton"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "eye in pancake"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Oranguru - 119/159"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2113.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

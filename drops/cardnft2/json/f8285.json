@@ -1,0 +1,102 @@
+{
+  "id": 8285,
+  "name": "Card #8285",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8285.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_yellow_scribble_gradient"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "i do not adhere to accelerationist ideologies"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drifella card game"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel harp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Cream Fox"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "079 emerald violet dream extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "17 gentle pearl clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "005 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "vertical magenta blue ellipse"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Aipom Neo Genesis - card1765 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8285.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

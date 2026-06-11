@@ -1,0 +1,118 @@
+{
+  "id": 10710,
+  "name": "Card #10710",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10710.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Cherries Dark Room Background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - claw"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "21 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow holo card"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "watercolor drif wound"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "star shapes black background"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "27 emerald violet dream holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "01 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - candy rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - lotus"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "066 rainbow prism dawn extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 33"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "dark_fantasy_fairy_art_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "dark_fantasy_fairy_art_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Jasmine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "grail"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10710.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 1482,
+  "name": "Card #1482",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1482.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fyndhorn Brownie - 1/1"
+    },
+    {
+      "trait_type": "center",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "purple rectangle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smeargles art study"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "crt tv cart"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1482.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

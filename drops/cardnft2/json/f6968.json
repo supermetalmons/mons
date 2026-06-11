@@ -1,0 +1,66 @@
+{
+  "id": 6968,
+  "name": "Card #6968",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6968.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "malevich"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon warrior jester"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hikaru no go card box"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "rising prototype slicing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "base card",
+      "value": "MBF-P02"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6968.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

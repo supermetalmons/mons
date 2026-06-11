@@ -1,0 +1,74 @@
+{
+  "id": 2247,
+  "name": "Card #2247",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2247.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario drawing"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Massacre of the Innocents engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "metagross tank"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dripping purple knife"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "party hat baroque sunburst 2"
+    },
+    {
+      "trait_type": "top center",
+      "value": "techno 3 metal pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "green sky rocky landscape"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gible - 68/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2247.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

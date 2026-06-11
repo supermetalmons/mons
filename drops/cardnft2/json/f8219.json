@@ -1,0 +1,74 @@
+{
+  "id": 8219,
+  "name": "Card #8219",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8219.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "enchanted swamp frazetta"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "baby embryos"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pleidian billy meier girl"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "houndour"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "carnival leyendecker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Sasuke Uchiha Proof Of Genius inverted mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8219.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

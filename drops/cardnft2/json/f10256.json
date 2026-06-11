@@ -1,0 +1,130 @@
+{
+  "id": 10256,
+  "name": "Card #10256",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10256.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "orange_purple_wave_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "hiei kurama silhouette"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "purple graffiti wire fence"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "back of canvas frame"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "alchemy and occult"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bat mobile"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dripping purple knife"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "carnival leyendecker"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 40"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "022 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__adamant armor jester diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "black_lotus_magic_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "e reaper emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dark dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "togepi sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Grill zooka"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "black_lotus_magic_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10256.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

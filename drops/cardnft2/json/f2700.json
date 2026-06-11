@@ -1,0 +1,74 @@
+{
+  "id": 2700,
+  "name": "Card #2700",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2700.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "center",
+      "value": "music to kill"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "owls on pine branch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hunson Abadeer"
+    },
+    {
+      "trait_type": "top left",
+      "value": "cave story tiles"
+    },
+    {
+      "trait_type": "right",
+      "value": "mouse face blue cap"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Dragon Devouring the Companions of Cadmus engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Venezuelan gojo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kuriboh hello there meme"
+    },
+    {
+      "trait_type": "top center",
+      "value": "back of canvas frame"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Catcher - 95/98"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2700.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

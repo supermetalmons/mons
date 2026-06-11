@@ -1,0 +1,90 @@
+{
+  "id": 7522,
+  "name": "Card #7522",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7522.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "chibi 3d furry"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Patamon eating an apple"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Berserker"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Sasuke Uchiha - IMG_3526 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sakura"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver nred dragon skeleton sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7522.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

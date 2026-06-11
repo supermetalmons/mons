@@ -1,0 +1,58 @@
+{
+  "id": 671,
+  "name": "Card #671",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0671.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Red Back Kick - 1 of 3"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract cartoon faces"
+    },
+    {
+      "trait_type": "center",
+      "value": "horse head figures sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frank ocean"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "net and yoohoo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "top left",
+      "value": "vintage coffee carton"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighnc3w7uveh72dc3odlqet2lsktygbeq25jm3ihz5vs7qdeh7qny/0671.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

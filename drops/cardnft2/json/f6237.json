@@ -1,0 +1,54 @@
+{
+  "id": 6237,
+  "name": "Card #6237",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6237.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sakura Haruno - 991"
+    },
+    {
+      "trait_type": "center",
+      "value": "massive, unquantifiable energy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ys chronicles sceencap"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "steal her look"
+    },
+    {
+      "trait_type": "right",
+      "value": "cats moon quote"
+    },
+    {
+      "trait_type": "top left",
+      "value": "champions return to arms inventory"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6237.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

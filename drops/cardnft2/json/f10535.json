@@ -1,0 +1,70 @@
+{
+  "id": 10535,
+  "name": "Card #10535",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10535.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract White Jar Painting Background - card1673-49"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yoshistory item blocks"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "zabuza momochi - card3608 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "zabuza momochi - card3608 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "based cardboard"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "Patamon eating an apple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10535.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

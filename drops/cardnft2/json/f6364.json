@@ -1,0 +1,46 @@
+{
+  "id": 6364,
+  "name": "Card #6364",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6364.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Arbok - 31/62"
+    },
+    {
+      "trait_type": "center",
+      "value": "malevich"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6364.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

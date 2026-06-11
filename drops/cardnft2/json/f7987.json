@@ -1,0 +1,74 @@
+{
+  "id": 7987,
+  "name": "Card #7987",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7987.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady girl oil"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful abstract caligraphy"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Meteor B Dragon"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "mars argo"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "un spaceship illustration"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Blaines Charizard Gym Challenge 2 of 132 - IMG_3465 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7987.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

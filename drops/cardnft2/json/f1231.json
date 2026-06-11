@@ -1,0 +1,54 @@
+{
+  "id": 1231,
+  "name": "Card #1231",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1231.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Parapet"
+    },
+    {
+      "trait_type": "hero",
+      "value": "muscular buu"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "what is this drugs"
+    },
+    {
+      "trait_type": "right",
+      "value": "space ghost thinking"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1231.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

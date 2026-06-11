@@ -1,0 +1,106 @@
+{
+  "id": 7534,
+  "name": "Card #7534",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7534.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "mega man"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "black star"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "puddies"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "horned stone creature"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "diamond plate texture"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Alien Baltan"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "whimsical creature illustration"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dratini neo destiny inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toy phone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shining sonichu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7534.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

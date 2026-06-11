@@ -1,0 +1,54 @@
+{
+  "id": 1905,
+  "name": "Card #1905",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1905.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Beldum - 28/101"
+    },
+    {
+      "trait_type": "center",
+      "value": "black intricate pattern"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "steve rodgers in black jacket"
+    },
+    {
+      "trait_type": "hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Rebecca"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1905.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

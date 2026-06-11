@@ -1,0 +1,58 @@
+{
+  "id": 10539,
+  "name": "Card #10539",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10539.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dawn"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "the ultimate evil majin buu - card5874 black halftone transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "black red blue paint smears"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wineglass"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10539.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

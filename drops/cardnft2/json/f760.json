@@ -1,0 +1,66 @@
+{
+  "id": 760,
+  "name": "Card #760",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0760.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Crow - 054"
+    },
+    {
+      "trait_type": "center",
+      "value": "dinosaur skeleton collage"
+    },
+    {
+      "trait_type": "left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "take the green herb prompt"
+    },
+    {
+      "trait_type": "hero",
+      "value": "piccolo energy swirl"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi bomberman fighter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lex meme"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokemon themed desserts"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0760.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

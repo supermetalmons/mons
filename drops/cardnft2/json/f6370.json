@@ -1,0 +1,54 @@
+{
+  "id": 6370,
+  "name": "Card #6370",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6370.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Snubbull - 74/115"
+    },
+    {
+      "trait_type": "center",
+      "value": "squirtle splash"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Commandramon"
+    },
+    {
+      "trait_type": "right",
+      "value": "def jam logo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6370.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

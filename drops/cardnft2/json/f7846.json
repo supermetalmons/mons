@@ -1,0 +1,90 @@
+{
+  "id": 7846,
+  "name": "Card #7846",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7846.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sacred Heart Floral Gold Background - card1673-47"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "corner embellish"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "pokemon themed desserts"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "alchemy and occult"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "black and white rugged man"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "z-blade scythe"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "frankenstein ship"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spinda smoking blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Sasuke Uchiha and Itachi Uchiha - card3624 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7846.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

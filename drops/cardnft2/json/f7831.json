@@ -1,0 +1,98 @@
+{
+  "id": 7831,
+  "name": "Card #7831",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7831.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Blue Pink Dream Castle Background - card1673-51"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black spray 1"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "half-life"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "tyranitar"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red black abstract corner"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "lizard rider"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skyrim 11 11 11"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dark hallway creature"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold pattern black rectangle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue general"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "biscuit mi note angel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Charizard Expedition - IMG_3277 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7831.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

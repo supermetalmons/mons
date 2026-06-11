@@ -1,0 +1,78 @@
+{
+  "id": 9902,
+  "name": "Card #9902",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9902.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "bugsbunny grim reaper art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chrollo in white"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "japanese dragonite in clouds mask"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese_gengar_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "perfect blue stalker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue star circle"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese_gengar_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9902.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

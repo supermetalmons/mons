@@ -1,0 +1,54 @@
+{
+  "id": 1274,
+  "name": "Card #1274",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1274.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Phantom Monster - 3/3"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "hero",
+      "value": "gohan great saiyaman"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "goku dragon riding"
+    },
+    {
+      "trait_type": "center",
+      "value": "river film fulton"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid7n63yttnwkzlzpl5llr4vrswe4775w5iakbji3grhuspkf34xnu/1274.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

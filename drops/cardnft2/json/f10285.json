@@ -1,0 +1,82 @@
+{
+  "id": 10285,
+  "name": "Card #10285",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10285.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Style Flower Garden Background - card1673-50"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "minecraft ghast meme"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "robot runaway"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi Suigetsu"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "011 fire ice split extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "48 psychic pink blue clean wisp heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "lapras_fossil_10_62_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drif monster delivery"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "lapras_fossil_10_62_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10285.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

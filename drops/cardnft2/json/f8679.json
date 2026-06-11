@@ -1,0 +1,78 @@
+{
+  "id": 8679,
+  "name": "Card #8679",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8679.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Saint Margaret with the Dragon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "filigree crown"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ashita no joe label"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Cassiopeia Trainer - IMG_3474 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8679.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

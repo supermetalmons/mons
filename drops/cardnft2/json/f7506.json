@@ -1,0 +1,90 @@
+{
+  "id": 7506,
+  "name": "Card #7506",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7506.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink Moon Black Cat Silhouette Background - card1673-23"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "neon mask in dark"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "life is boring so why not steal this card"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "some kind of angel kabbalah"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dark Dragonair Team Rocket 33 82 white mask"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "i m sorry i can t"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon German Houndour Hunduster Neo Discovery - card0060 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bosch biscuit yin yang"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7506.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

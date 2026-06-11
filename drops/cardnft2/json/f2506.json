@@ -1,0 +1,66 @@
+{
+  "id": 2506,
+  "name": "Card #2506",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2506.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "octopus eyeball creature"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ooey gooey drifella chocolate chip cookie"
+    },
+    {
+      "trait_type": "top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "baby yoshi sprites"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "sierpinski cube corner"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "one piece reactions"
+    },
+    {
+      "trait_type": "center",
+      "value": "look at the bottom right corner"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragonair - 50/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2506.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 5292,
+  "name": "Card #5292",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5292.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dq slimes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "left",
+      "value": "shin chan group"
+    },
+    {
+      "trait_type": "right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "top center",
+      "value": "spiked frame"
+    },
+    {
+      "trait_type": "center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "foxy animatronic"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "misa black"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clobbopus - 111/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5292.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

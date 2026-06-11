@@ -1,0 +1,82 @@
+{
+  "id": 8525,
+  "name": "Card #8525",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8525.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Stormy Lake Smoke Landscape Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "judy garland graphite drawing"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "stars on black"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "moth bug"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "two creatures in a drain pipe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Wally Supporter - card0200 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8525.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

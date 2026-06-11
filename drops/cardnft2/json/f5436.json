@@ -1,0 +1,74 @@
+{
+  "id": 5436,
+  "name": "Card #5436",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5436.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu - trenton"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel painting frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chovey nintendog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "disc buddy reaper"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "deity flames"
+    },
+    {
+      "trait_type": "left",
+      "value": "ganondorf"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "question bag"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jigglypuff - 65/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5436.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

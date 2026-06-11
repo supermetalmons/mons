@@ -1,0 +1,90 @@
+{
+  "id": 5570,
+  "name": "Card #5570",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5570.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "003 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "hero",
+      "value": "akatsuki lineup manga"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gold gundam"
+    },
+    {
+      "trait_type": "top right",
+      "value": "slime elasto blast"
+    },
+    {
+      "trait_type": "right",
+      "value": "teardrop embryo"
+    },
+    {
+      "trait_type": "top left",
+      "value": "smm pixel art icons"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "money man reaper fishing"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella middle finger emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini finger puppet figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blk poliwhirl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Noctowl - 42/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5570.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

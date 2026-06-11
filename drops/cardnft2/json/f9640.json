@@ -1,0 +1,62 @@
+{
+  "id": 9640,
+  "name": "Card #9640",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9640.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "chrono trigger holo card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "vega 1850"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "your choices dont matter"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pokemon calendar sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "3 stars"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pocket Monsters Mewtwo File No 150 - IMG_3486 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigtneeogsk76azev2r2icgw4t4kj2d4yklncsjaqy5nyvglre3lqe/9640.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

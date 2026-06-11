@@ -1,0 +1,46 @@
+{
+  "id": 3184,
+  "name": "Card #3184",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3184.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sierpinski pyramid"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Concentric Rinds"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dive Ball - 125/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3184.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 4417,
+  "name": "Card #4417",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4417.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "Flying Nimbus"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi character speech bubble"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "empty stage background"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple plants in pots"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Blue sporty gun"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tentacool - 66/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieowtnhfagery4tfixpb4mcmelvpcwyxdli2223qt6uquu2p677wa/4417.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

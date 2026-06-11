@@ -1,0 +1,58 @@
+{
+  "id": 436,
+  "name": "Card #436",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0436.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sasuke's Curse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "resident evil health status"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "why stop making games"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pink kimono pattern"
+    },
+    {
+      "trait_type": "center",
+      "value": "pink hearts blur"
+    },
+    {
+      "trait_type": "right",
+      "value": "pyramid turtle"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0436.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

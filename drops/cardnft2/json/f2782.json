@@ -1,0 +1,86 @@
+{
+  "id": 2782,
+  "name": "Card #2782",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2782.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "riolu sprite sheet"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "johnny comet comic"
+    },
+    {
+      "trait_type": "top right",
+      "value": "gulf war 2"
+    },
+    {
+      "trait_type": "border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drif triptych sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue white dragon card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker concept drif body"
+    },
+    {
+      "trait_type": "hero",
+      "value": "skeleton with crossbow"
+    },
+    {
+      "trait_type": "center",
+      "value": "silver cross purple gem"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Booster Rauschenberg 1967 "
+    },
+    {
+      "trait_type": "left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pokémon Breeder - 76/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2782.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

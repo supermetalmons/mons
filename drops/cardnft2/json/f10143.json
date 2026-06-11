@@ -1,0 +1,82 @@
+{
+  "id": 10143,
+  "name": "Card #10143",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10143.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Rainbow Collage Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "the fool imported 2"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "retarded drifella digimon champion"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "hydreigon - card3703 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mole sunglasses"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful samurai sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small character with gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg zestful"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "hydreigon - card3703 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10143.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

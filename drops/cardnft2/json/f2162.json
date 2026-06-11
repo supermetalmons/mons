@@ -1,0 +1,70 @@
+{
+  "id": 2162,
+  "name": "Card #2162",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2162.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "golden puzzle box"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "green orc warrior"
+    },
+    {
+      "trait_type": "top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Prisoner Iron Mask"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "strategy icons"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "politoed eating rice balls"
+    },
+    {
+      "trait_type": "right",
+      "value": "majin Dabura figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poké Drawer + - 89/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2162.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

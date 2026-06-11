@@ -1,0 +1,70 @@
+{
+  "id": 2251,
+  "name": "Card #2251",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2251.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "godfather logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sharingans"
+    },
+    {
+      "trait_type": "right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red abstract brushstrokes"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "purple blue goblins"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "golden puzzle box"
+    },
+    {
+      "trait_type": "top right",
+      "value": "asian man gif"
+    },
+    {
+      "trait_type": "center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swablu - 79/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2251.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

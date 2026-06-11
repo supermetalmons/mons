@@ -1,0 +1,78 @@
+{
+  "id": 2282,
+  "name": "Card #2282",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2282.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ornate angel burst"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "soldier sketch corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling sun icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wooper injured"
+    },
+    {
+      "trait_type": "left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "right",
+      "value": "pulled this text"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime fox girl sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon mc escher"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zapdos - 30/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2282.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

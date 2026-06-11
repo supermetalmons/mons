@@ -1,0 +1,94 @@
+{
+  "id": 9948,
+  "name": "Card #9948",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9948.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Classical Hunt Fruit Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "purple graffiti wire fence"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "uwu chain"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - amethyst void - eye horus style"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blue mana - bolt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "phantasmal forces - card1256 black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "evolved emoji"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pink slump reaper"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "phantasmal forces - card1256 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9948.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

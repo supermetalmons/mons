@@ -1,0 +1,86 @@
+{
+  "id": 5148,
+  "name": "Card #5148",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5148.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "tiny mole in hand"
+    },
+    {
+      "trait_type": "hero",
+      "value": "trunks capsule corp shirt"
+    },
+    {
+      "trait_type": "right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "top center",
+      "value": "geometric star pattern"
+    },
+    {
+      "trait_type": "top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "left",
+      "value": "small suitcase"
+    },
+    {
+      "trait_type": "border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract paint smears"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hard Charm - 119/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5148.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

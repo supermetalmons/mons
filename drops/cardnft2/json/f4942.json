@@ -1,0 +1,66 @@
+{
+  "id": 4942,
+  "name": "Card #4942",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4942.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "eye hand gesture"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "041 black cherry red extra holo heart"
+    },
+    {
+      "trait_type": "top center",
+      "value": "classroom shadows"
+    },
+    {
+      "trait_type": "left",
+      "value": "emmaciated angel"
+    },
+    {
+      "trait_type": "center",
+      "value": "evangelion kabbalah tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue namekian chrono trigger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Fire Style: Fireball Jutsu - 212"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7bxsbzvwqh2ucbuwnsghatkzhpkanlciyobag4da334x7wqbyxy/4942.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

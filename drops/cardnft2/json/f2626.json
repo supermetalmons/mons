@@ -1,0 +1,90 @@
+{
+  "id": 2626,
+  "name": "Card #2626",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2626.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "center",
+      "value": "chalk sketch figures"
+    },
+    {
+      "trait_type": "right",
+      "value": "yellow duck"
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta girl on tiger"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepy mask claws sky"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "metropolis"
+    },
+    {
+      "trait_type": "left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "abstract pastel texture"
+    },
+    {
+      "trait_type": "top center",
+      "value": "possi 1816"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lucky Energy - 158/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2626.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

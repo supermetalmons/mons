@@ -1,0 +1,102 @@
+{
+  "id": 10159,
+  "name": "Card #10159",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10159.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "opal_pastel_haze_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "angel holo sticker"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "colorful music notation diagram"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "keldeo chinese card"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "FF general"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "crucidrifella statue"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "metal rider slime knight dq card"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sushi platter miniature"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "026 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "009 toxic sunset extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 18"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "crobat - card4143 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Green Miner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "crobat - card4143 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10159.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

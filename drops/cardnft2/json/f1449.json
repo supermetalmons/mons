@@ -1,0 +1,50 @@
+{
+  "id": 1449,
+  "name": "Card #1449",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1449.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Healing Salve"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract pastel strokes"
+    },
+    {
+      "trait_type": "right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibu5gqltrq7vgadlbdhnkbipw5h67wpibahuxkji5ms34skwjck3u/1449.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

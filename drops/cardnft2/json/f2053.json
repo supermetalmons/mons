@@ -1,0 +1,78 @@
+{
+  "id": 2053,
+  "name": "Card #2053",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2053.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "life is boring so why not steal this card"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bottle on gray background"
+    },
+    {
+      "trait_type": "hero",
+      "value": "angry manga man"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract figure bacon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "gengar trainer sketch"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Treecko - 6/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2053.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

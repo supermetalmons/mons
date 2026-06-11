@@ -2,7 +2,7 @@
   "id": 122,
   "name": "Card #122",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_122.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0122.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,40 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Choji Akimichi - us016"
+    },
+    {
+      "trait_type": "hero",
+      "value": "wolf samurai sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "dolphin in water"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smash bros commercial _99"
+    },
+    {
+      "trait_type": "top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "center",
+      "value": "haunted terrorism"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_122.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0122.webp",
         "type": "image/webp"
       }
     ],

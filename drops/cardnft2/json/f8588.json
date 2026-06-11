@@ -1,0 +1,86 @@
+{
+  "id": 8588,
+  "name": "Card #8588",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8588.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_rainbow_motion_blur"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "small popcorn bucket"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pixel line bat dq card"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "alien creature head"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "malevich"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white sparkle cluster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "qbert character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_anbu_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8588.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

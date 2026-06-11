@@ -1,0 +1,94 @@
+{
+  "id": 8550,
+  "name": "Card #8550",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8550.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_ruby_violet_orange_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ultraman pose"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "gengar"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "deep dish pizza slice"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "orange elite"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "charizard sketch flames"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magenta daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherub w gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "032 dark blood orange extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 dark ruby violet orange holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Butterfree Jungle - card1997 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8550.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

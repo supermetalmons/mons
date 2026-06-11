@@ -1,0 +1,54 @@
+{
+  "id": 1594,
+  "name": "Card #1594",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1594.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "cute penguin"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Chrollo Lucilfer"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "joker quote"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Patamon - DP 200"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1594.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

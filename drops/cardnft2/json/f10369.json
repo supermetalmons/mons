@@ -1,0 +1,102 @@
+{
+  "id": 10369,
+  "name": "Card #10369",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10369.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Silver Blue Feather Texture Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lets rock"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "aura eggs"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "robot detective illustration"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 26"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - ouroboros"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 red soft holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "23 red soft holo holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "forest green - card1273 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "forest green - card1273 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "hand holding star engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fish"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bald head"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10369.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 853,
+  "name": "Card #853",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0853.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Earth Dragon Ball Combat 189"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini outline"
+    },
+    {
+      "trait_type": "hero",
+      "value": "galactus silver surfer comic"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy black"
+    },
+    {
+      "trait_type": "top right",
+      "value": "half-life"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chibi clay character jump"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "homunculus in jar"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie6mtlcm64rebvyxy2ti5k56d7xzib5icbsrdszu4dr6q65hrwlqy/0853.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

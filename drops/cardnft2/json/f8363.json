@@ -1,0 +1,78 @@
+{
+  "id": 8363,
+  "name": "Card #8363",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8363.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Flower Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "ammo counter hud"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Chrono Trigger helmet"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "bacon crucidrifella"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toulouse lautrec painting"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gold floral pattern 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jack frost sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "asuka lighter"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Team Rocket Mewtwo - IMG_3273 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8363.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 8188,
+  "name": "Card #8188",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8188.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "vintage_anatomy_skeleton"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "Flying Nimbus"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black blue abstract texture"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "black question marks"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black star"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cowboy kid"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "06 blood orange magenta holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "050 red prism ember extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "036 fire ice split extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Aerodactyl - card2311 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8188.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

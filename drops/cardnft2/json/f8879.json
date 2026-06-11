@@ -1,0 +1,90 @@
+{
+  "id": 8879,
+  "name": "Card #8879",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8879.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "white star"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "foggy graveyard crosses"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "seasons and elements"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "mars watercolor preliminary"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red black abstract corner"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Reshiram Black and White - IMG_3427 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue namekian chrono trigger"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8879.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

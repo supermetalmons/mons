@@ -1,0 +1,110 @@
+{
+  "id": 7511,
+  "name": "Card #7511",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7511.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_red_black_gradient"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "aliens and man sitting"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white spray 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "disturbing dream"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pinball table game"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "chakras tattoo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "YuGiOh Silent Magician LV8 - IMG_3456 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "golden grotesque face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zorua figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "japanese text panel"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicrcwia5xftn6kv7lssaa7apmlfe7kzxkdjuqitefw4362qq3kkmy/7511.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

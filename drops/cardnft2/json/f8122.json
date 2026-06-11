@@ -1,0 +1,90 @@
+{
+  "id": 8122,
+  "name": "Card #8122",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8122.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Adam Eve Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "sparkling flower power icons"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "final fantasy sprites"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "vampire bat munch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robbie rabbit"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 emerald violet dream holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "068 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Poliwrath - IMG_3253 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8122.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

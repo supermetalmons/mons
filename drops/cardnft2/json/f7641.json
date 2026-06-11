@@ -1,0 +1,106 @@
+{
+  "id": 7641,
+  "name": "Card #7641",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7641.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Bosch Style Surreal Creature Landscape Background - card1673-5"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "skull crossbones flag"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark mysterious figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anomalous phenomena book"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "girafarig"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Politoed - IMG_3258 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini chibi set logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Orange w hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal skull drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duskull"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7641.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

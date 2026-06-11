@@ -1,0 +1,58 @@
+{
+  "id": 7250,
+  "name": "Card #7250",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7250.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_spirit_wave_illustration"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "groot funko pop"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "classroom shadows"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Crobat - card4131 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7250.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

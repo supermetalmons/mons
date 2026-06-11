@@ -1,0 +1,70 @@
+{
+  "id": 9252,
+  "name": "Card #9252",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9252.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "black bear bunny digi baby"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "campfire"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "028 gold plum teal extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "098 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "29 calm teal violet clean wisp moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Heretical Icon - IMG_3527 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9252.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

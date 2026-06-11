@@ -1,0 +1,54 @@
+{
+  "id": 1651,
+  "name": "Card #1651",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1651.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rattata - 61/102"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baby deer"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "squirtle with food bowl"
+    },
+    {
+      "trait_type": "left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibphhz6b6yns732encfaygpdtajai2t6qsndqcd6exwetctfje2gi/1651.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

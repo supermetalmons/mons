@@ -1,0 +1,70 @@
+{
+  "id": 9192,
+  "name": "Card #9192",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9192.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sacred Heart Floral Gold Background - card1673-47"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "swamp man carrying woman"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 23"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "051 deep teal lime extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 baroque gold clean wisp moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "005 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Swampert ex - IMG_3539 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink outline figure"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahehcej5zfyrs7fz2hxpq2yudyingyculygj3d7jsxc2kz6rmv24/9192.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

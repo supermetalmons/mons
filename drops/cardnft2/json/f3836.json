@@ -1,0 +1,66 @@
+{
+  "id": 3836,
+  "name": "Card #3836",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3836.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "morpho"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime girl red black wings"
+    },
+    {
+      "trait_type": "center",
+      "value": "angel painting frame"
+    },
+    {
+      "trait_type": "hero",
+      "value": "umbreon drifella"
+    },
+    {
+      "trait_type": "right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blk poliwhirl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cynthia's Guidance - 136/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3836.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

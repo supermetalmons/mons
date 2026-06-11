@@ -1,0 +1,54 @@
+{
+  "id": 1567,
+  "name": "Card #1567",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1567.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sabrina's Slowpoke - 95/132"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yokai group"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ink"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "without twin with twin"
+    },
+    {
+      "trait_type": "right",
+      "value": "chew until you die gumball"
+    },
+    {
+      "trait_type": "left",
+      "value": "pillar engraving"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1567.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

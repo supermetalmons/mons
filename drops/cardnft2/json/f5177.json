@@ -1,0 +1,82 @@
+{
+  "id": 5177,
+  "name": "Card #5177",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5177.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "Prisoner Iron Mask"
+    },
+    {
+      "trait_type": "right",
+      "value": "purple orange hydra plush"
+    },
+    {
+      "trait_type": "center",
+      "value": "s drip dragon"
+    },
+    {
+      "trait_type": "top right",
+      "value": "cherub drif sketches"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "green rectangle"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "frazetta crucifix preliminaries"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "angel egg dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crown of thorns gem"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pupitar - Neo Discovery 45/75"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5177.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

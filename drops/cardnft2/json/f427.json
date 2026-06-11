@@ -1,0 +1,62 @@
+{
+  "id": 427,
+  "name": "Card #427",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0427.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Baiu - 2/0"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard fire breath"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pinball sprites"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "top right",
+      "value": "lego logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold floral pattern fabric"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0427.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

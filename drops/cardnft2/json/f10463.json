@@ -1,0 +1,82 @@
+{
+  "id": 10463,
+  "name": "Card #10463",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10463.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow dratini pattern"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "spy cartoon character"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pocket monsters logo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "snivy - card0461 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "snivy - card0461 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "lego clone trooper icon"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "kochanovich"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Robot cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Rainbow diamond"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10463.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 9897,
+  "name": "Card #9897",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9897.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_floral_bird_pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon breeders dragonite"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - violet cyan - moon phases"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "injection_fairy_lily_yugioh_79575620_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "injection_fairy_lily_yugioh_79575620_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeievt2ofytqbhowbjbbucc6z22v4hnm5svp2x46upn3mcp3vrnydfa/9897.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

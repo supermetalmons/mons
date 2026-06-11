@@ -1,0 +1,98 @@
+{
+  "id": 10184,
+  "name": "Card #10184",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10184.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "watermelon_candy_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - purple void - bolt"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "44 dragon red green clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "40 radiant yellow red clean wisp rectangle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "foggy dark figure"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "angel statue illustration"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "homo noosphericus bodies"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black gold - eye"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Zabuza Momochi inverted mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Skull Ninja"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mog (Moogle) mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "zabuza momochi - card3608 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10184.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

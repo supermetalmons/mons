@@ -1,0 +1,78 @@
+{
+  "id": 5092,
+  "name": "Card #5092",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5092.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "dratini biscuit sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Witches Flight"
+    },
+    {
+      "trait_type": "right",
+      "value": "angry mokey"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sai kyo kanji"
+    },
+    {
+      "trait_type": "center",
+      "value": "glitter pixel bokeh"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Freakazoid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted nazi drif"
+    },
+    {
+      "trait_type": "top center",
+      "value": "marin chinese"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bagon - 53/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5092.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

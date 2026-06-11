@@ -1,0 +1,78 @@
+{
+  "id": 8047,
+  "name": "Card #8047",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8047.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Flower Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "evangelion rei asuka label"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella evolution line"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dranzer v"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gardevoir_v_070_073_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8047.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

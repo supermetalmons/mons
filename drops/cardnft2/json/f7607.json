@@ -1,0 +1,102 @@
+{
+  "id": 7607,
+  "name": "Card #7607",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7607.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ito waifu - card1673-18"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "happy mew playe date vignette"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dratini dragon holo mask"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "alien gargoyle sculpture"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "question bag"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonite art"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "dissociation"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Unown M Neo Discovery - card1139 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "MetalGreymon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Ryuk harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Digitamamon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg circle last frame"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "newgrounds logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small wooden door"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "unicorn emoji"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7607.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 3309,
+  "name": "Card #3309",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3309.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "dratini neck pillow"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "top right",
+      "value": "sims phone icon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "crown of thorns gem"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kids playing cards collage"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Metal Energy - 95/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3309.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

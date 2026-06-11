@@ -1,0 +1,110 @@
+{
+  "id": 10947,
+  "name": "Card #10947",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10947.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "lava_violet_ember_gradient"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - spiral"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - aurora rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "the art of conspiracy"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue line pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_seven__uv"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite_three__firework_noise"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "vertical magenta blue ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "22 red soft holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "08 vespertine purple peach clean wisp ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "50 emerald violet dream holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_water_droplet_field_cyan_blue_purple_08"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Itachi Uchiha - IMG_3239 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "three star orb"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby digi dog drif iii"
+    },
+    {
+      "trait_type": "Archetype",
+      "value": "dense_aura_mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahwyibylvpo5z27a4f3e4qolhyhxsbcyolia7rsnxu45gf3nky7e/10947.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 5030,
+  "name": "Card #5030",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5030.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stars sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Painter demon chick"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "vampire anime character"
+    },
+    {
+      "trait_type": "hero",
+      "value": "steelix pixel art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "natural landscape"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wailmer - 69/92"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5030.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

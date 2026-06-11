@@ -1,0 +1,70 @@
+{
+  "id": 2116,
+  "name": "Card #2116",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2116.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "shell skull carving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "9 tails evil smile"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "top right",
+      "value": "desktop icons"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "right",
+      "value": "Berserker"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract chainlink pattern"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Starly - 110/159"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2116.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 3334,
+  "name": "Card #3334",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3334.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "a dark room"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper skull halloween pin"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "vampire anime character"
+    },
+    {
+      "trait_type": "top center",
+      "value": "cracked windows number two"
+    },
+    {
+      "trait_type": "center",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "stone cell"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "needed a fresh restart"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred cross black"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kakashi reading book"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pikachu - 39/99"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3334.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

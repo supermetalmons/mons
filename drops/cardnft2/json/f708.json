@@ -1,0 +1,54 @@
+{
+  "id": 708,
+  "name": "Card #708",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0708.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dragon Ball Z - Hero Collection 232"
+    },
+    {
+      "trait_type": "center",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "right",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "left",
+      "value": "melting donald meme"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "center",
+      "value": "tree of life"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0708.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

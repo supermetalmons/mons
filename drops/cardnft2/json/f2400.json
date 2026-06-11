@@ -1,0 +1,66 @@
+{
+  "id": 2400,
+  "name": "Card #2400",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2400.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow yugioh card collage"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "angry bunny sketch"
+    },
+    {
+      "trait_type": "top right",
+      "value": "anime fox girl sketch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cell dragon ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "compassionate cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sans eating hotdog"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Spheal - 65/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblouvhgvbkgwpfn7u4ppjnw7elqpnscjp2acgw5qwklaq4espimi/2400.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": 2764,
+  "name": "Card #2764",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2764.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "red blue sparkles"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "japanese folklore art"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "youve been liquidated crucifella white engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ceej chao"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink clear crystal jester figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bacon fella"
+    },
+    {
+      "trait_type": "border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "hero",
+      "value": "aerodactyl anime art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "green radar screen"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract brush strokes"
+    },
+    {
+      "trait_type": "right",
+      "value": "finn red sword"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gastly - 50/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2764.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

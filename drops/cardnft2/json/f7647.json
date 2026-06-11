@@ -1,0 +1,86 @@
+{
+  "id": 7647,
+  "name": "Card #7647",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7647.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gothic Cathedral Night Background - card1673-41"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "3 banknote corner"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "graveyard examiner"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "might and magic logo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark blastoise holo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "skyrim spell hands"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Mew ex - IMG_3220 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Icedancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7647.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

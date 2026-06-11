@@ -1,0 +1,86 @@
+{
+  "id": 8395,
+  "name": "Card #8395",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8395.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Baroque Church Interior Painting Background - card1673-6"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shredder tv screen"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "messy paint smear"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "jason window smash"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pulled this text"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "melmut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clefairy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bald head"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Kogas Ninja Trick Gym Challenge - card2195 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8395.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

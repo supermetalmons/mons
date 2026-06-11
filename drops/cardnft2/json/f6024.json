@@ -1,0 +1,74 @@
+{
+  "id": 6024,
+  "name": "Card #6024",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6024.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "colored palette stack"
+    },
+    {
+      "trait_type": "top right",
+      "value": "barbarian watercolor head"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ugly"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "gundam style mech card"
+    },
+    {
+      "trait_type": "right",
+      "value": "body"
+    },
+    {
+      "trait_type": "top center",
+      "value": "now and then, here and there"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charizard - 001/015"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6024.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

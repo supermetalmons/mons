@@ -1,0 +1,58 @@
+{
+  "id": 6254,
+  "name": "Card #6254",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6254.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "The Light and the Darkness - USO51"
+    },
+    {
+      "trait_type": "top center",
+      "value": "abstract iguana pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pegasus toon yugioh"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black tank silhouette"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "sonic cake"
+    },
+    {
+      "trait_type": "top left",
+      "value": "a dark room"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6254.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

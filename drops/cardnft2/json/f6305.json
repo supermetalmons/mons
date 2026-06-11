@@ -1,0 +1,66 @@
+{
+  "id": 6305,
+  "name": "Card #6305",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6305.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wiglett - 047/162"
+    },
+    {
+      "trait_type": "hero",
+      "value": "shukaku face closeup"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "moogle watercolor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kochanovich"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mudkip"
+    },
+    {
+      "trait_type": "top left",
+      "value": "shadow yoshitaka design"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract horned figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "relief"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6305.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

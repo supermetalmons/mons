@@ -1,0 +1,50 @@
+{
+  "id": 1985,
+  "name": "Card #1985",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1985.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Goldeen - 55/109"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shizuku fan art"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "right",
+      "value": "doodle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pikachu revive"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1985.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

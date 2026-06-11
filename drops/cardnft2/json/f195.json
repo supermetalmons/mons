@@ -2,7 +2,7 @@
   "id": 195,
   "name": "Card #195",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_195.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0195.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,48 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Suiko - 2/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "safety pins abstract design"
+    },
+    {
+      "trait_type": "top center",
+      "value": "springfield nuclear plant"
+    },
+    {
+      "trait_type": "hero",
+      "value": "ashley wood girl and robot"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rpg battle menu"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ammonium nitrate bag"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_195.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0195.webp",
         "type": "image/webp"
       }
     ],

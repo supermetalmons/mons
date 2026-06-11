@@ -1,0 +1,94 @@
+{
+  "id": 7609,
+  "name": "Card #7609",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7609.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "enchanted swamp frazetta"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "Concentric Rinds"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "croconaw"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "majin Dabura figure"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "zeni"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "dragonair card text"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Illustrator Pikachu inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby meteor dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7609.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

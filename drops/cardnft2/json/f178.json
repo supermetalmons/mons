@@ -2,7 +2,7 @@
   "id": 178,
   "name": "Card #178",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_178.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0178.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,44 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Shiin - 2/1"
+    },
+    {
+      "trait_type": "border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pluto"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "is your child texting borg"
+    },
+    {
+      "trait_type": "left",
+      "value": "cd mixtape edge"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Super Zarbon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_178.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0178.webp",
         "type": "image/webp"
       }
     ],

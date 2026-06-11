@@ -1,0 +1,66 @@
+{
+  "id": 7240,
+  "name": "Card #7240",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7240.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gengar Haunter Cemetery Graveyard Background - card1673-1"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "body"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "clay chibi face"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pocket Monsters Alakazam File No 064 - IMG_3479 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme guy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small ornate pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7240.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": 8803,
+  "name": "Card #8803",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8803.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cyan_magenta_blur_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "plastic chair shadow"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "light_azumarill_neo_destiny_13_105_card white mask transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicvvet5axcck3btko3armxvvkrancti35gnpuhad6hriys32gjyrm/8803.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

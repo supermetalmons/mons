@@ -2,7 +2,7 @@
   "id": 77,
   "name": "Card #77",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_77.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0077.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,84 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baseball player manga"
+    },
+    {
+      "trait_type": "right",
+      "value": "chibi buggy"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "062 rainbow prism dawn extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark red crosses and swords"
+    },
+    {
+      "trait_type": "left",
+      "value": "city escape"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Commandramon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "I cant believe the elites are raping and eating babies dratini is going viral on ig rn"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga pill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixelated gift box"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mega Mawile EX - 162/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_77.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0077.webp",
         "type": "image/webp"
       }
     ],

@@ -1,0 +1,122 @@
+{
+  "id": 7447,
+  "name": "Card #7447",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7447.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pastel swag boy"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wolf samurai sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "anime angel divider"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "horror pikachu"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "mega dragonite ex sar"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Anbu Captain - IMG_3528 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bosch biscuit yin yang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "milk carton eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pfp+102"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Falkner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moggle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugioh card"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7447.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

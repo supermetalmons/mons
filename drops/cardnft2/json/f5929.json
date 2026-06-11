@@ -1,0 +1,62 @@
+{
+  "id": 5929,
+  "name": "Card #5929",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5929.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Unai no Tomo"
+    },
+    {
+      "trait_type": "right",
+      "value": "bitcoins"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Gregorian chant"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful pixel stars"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mewtwo stadium"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exeggcute"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Natu - 28/108"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5929.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 5838,
+  "name": "Card #5838",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5838.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kuwait 1991"
+    },
+    {
+      "trait_type": "left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line glitch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ship silhouette night"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella demon bat collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Virtue of Courage - M 0157"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidemq4xk7sny5ruuhttqwqtkrozyq47qd7ftt3kk66prhfghf6d5a/5838.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

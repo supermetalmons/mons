@@ -1,0 +1,46 @@
+{
+  "id": 6413,
+  "name": "Card #6413",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6413.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pupitar - 38/95"
+    },
+    {
+      "trait_type": "center",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeletor raising fists"
+    },
+    {
+      "trait_type": "top right",
+      "value": "spider tattoo eight"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigzcjihmhtskfnffbvcjdiq6gtwsd3cthnzawbacxz3a52vrcmvbi/6413.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

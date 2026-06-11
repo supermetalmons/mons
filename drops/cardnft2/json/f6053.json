@@ -1,0 +1,70 @@
+{
+  "id": 6053,
+  "name": "Card #6053",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6053.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue black abstract texture"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "The Adoration of the Shepherds engraving"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "hyper real crucifella"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime warrior green hair"
+    },
+    {
+      "trait_type": "top left",
+      "value": "hungry"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Gelato Pique x Dragon Quest Draky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Buddy-Buddy Poffin - 184/217"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6053.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

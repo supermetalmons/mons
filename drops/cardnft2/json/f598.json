@@ -1,0 +1,50 @@
+{
+  "id": 598,
+  "name": "Card #598",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0598.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - 6/0"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker card small"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeletal alien figure"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stock market will collapse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0598.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

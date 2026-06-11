@@ -1,0 +1,106 @@
+{
+  "id": 7710,
+  "name": "Card #7710",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7710.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_pixel_camo_totem"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "darkrai art"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "grass engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red black abstract corner"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pack a punched shotgun"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "were i to have a soul what would i gain from it"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel pokemon npcs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "time traveler patch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Metagross - IMG_3278 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7710.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

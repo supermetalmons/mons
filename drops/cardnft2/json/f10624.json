@@ -1,0 +1,54 @@
+{
+  "id": 10624,
+  "name": "Card #10624",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10624.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "jesus tears"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colorful light burst"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sasuke uchiha lightning - card0376 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sasuke uchiha lightning - card0376 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chrono pendulum"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidzktygju3dkptzrruolf74dej427shwo4tbka6zjd2jdx64suhwe/10624.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

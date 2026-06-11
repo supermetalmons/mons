@@ -1,0 +1,54 @@
+{
+  "id": 1950,
+  "name": "Card #1950",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1950.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "きのみ - ☆"
+    },
+    {
+      "trait_type": "center",
+      "value": "enderman gathering"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "hero",
+      "value": "alfonso x of castille"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1950.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

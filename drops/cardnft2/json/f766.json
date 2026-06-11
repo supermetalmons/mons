@@ -1,0 +1,66 @@
+{
+  "id": 766,
+  "name": "Card #766",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0766.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Palm Healing Jutsu - 132"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arcade kid"
+    },
+    {
+      "trait_type": "top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Spike Spiegel"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "watercolor drif reaper"
+    },
+    {
+      "trait_type": "center",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rose ten card corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alien creature crouching"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0766.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": 5521,
+  "name": "Card #5521",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5521.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "red flame border"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "51 red soft holo holo capsule"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dai shogi"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "shino aburame goggles - card4839 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kirby fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vermilion City Gym - 120/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5521.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

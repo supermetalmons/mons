@@ -1,0 +1,78 @@
+{
+  "id": 3225,
+  "name": "Card #3225",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3225.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "hero",
+      "value": "horned stone creature"
+    },
+    {
+      "trait_type": "left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "runescape trade scam"
+    },
+    {
+      "trait_type": "center",
+      "value": "chrollo engraving"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragonite holy texture"
+    },
+    {
+      "trait_type": "right",
+      "value": "togetic at bat"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bakura manga chess pieces"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "creepy link"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "top left",
+      "value": "card vending machine"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Marcha de Pokémon - 102/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3225.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

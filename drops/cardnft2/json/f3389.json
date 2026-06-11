@@ -1,0 +1,70 @@
+{
+  "id": 3389,
+  "name": "Card #3389",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3389.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dratini - 26/102"
+    },
+    {
+      "trait_type": "background",
+      "value": "DEAD INSIDE cardboard graffiti"
+    },
+    {
+      "trait_type": "border",
+      "value": "pokemon card template dratini 26/102"
+    },
+    {
+      "trait_type": "hero",
+      "value": "white-haired pointed-ear elf"
+    },
+    {
+      "trait_type": "right",
+      "value": "sailor schoolgirl muscle man with staff"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bandaged mummy engraving (b&w)"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red charizard-style pokemon card"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "small pokemon cards / brown owl creature"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue voodoo doll with halo and pins"
+    },
+    {
+      "trait_type": "reconstructed",
+      "value": "true"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3389.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

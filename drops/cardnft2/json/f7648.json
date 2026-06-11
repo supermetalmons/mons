@@ -1,0 +1,102 @@
+{
+  "id": 7648,
+  "name": "Card #7648",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7648.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract Woman Figure Painting Background - card1673-16"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "Pain Painter"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "ugly"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "de kooning scribble"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "retarded drifella digimon champion"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Sabrinas Drowzee Gym Challenge - card2715 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goat face heisenberg pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "file cabinet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "retarded-4 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scizor scissors"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7648.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

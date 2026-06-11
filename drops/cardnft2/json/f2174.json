@@ -1,0 +1,90 @@
+{
+  "id": 2174,
+  "name": "Card #2174",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2174.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu glitch art"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "it s dangerous to trench alone"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark abstract floral"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "teddiursa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kris deltarune"
+    },
+    {
+      "trait_type": "hero",
+      "value": "anime warrior green hair"
+    },
+    {
+      "trait_type": "border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "red apples row"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gold stars"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "jew milady"
+    },
+    {
+      "trait_type": "top left",
+      "value": "vintage coffee carton"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rainbow stars row"
+    },
+    {
+      "trait_type": "right",
+      "value": "creepy masked figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gothorita - 71/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidjq6mek3abssb5stps24fszq3d5kaefafhhi43e2jfsbbx3kkuvm/2174.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

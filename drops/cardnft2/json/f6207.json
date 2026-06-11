@@ -1,0 +1,42 @@
+{
+  "id": 6207,
+  "name": "Card #6207",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6207.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Kaji - Land of Waves"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "frazetta museum"
+    },
+    {
+      "trait_type": "center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6207.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

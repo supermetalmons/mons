@@ -1,0 +1,98 @@
+{
+  "id": 10430,
+  "name": "Card #10430",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10430.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Gengar Shadow Doorway Background - card1673-26"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "drifella sketch signed e biscuit"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dusknoir"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pointillism park scene"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "060 emerald violet dream extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 36"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - green poison - eye"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "marnie_208_202_trainer_card white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "marnie_208_202_trainer_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "green blue soundwave strip"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "car battler joe logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "slowpoke arbok fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10430.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 10534,
+  "name": "Card #10534",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10534.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "sprite can"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese_gengar_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese_gengar_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "great balls of fire"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "fang youre blocked"
+    },
+    {
+      "trait_type": "top rare addon - left",
+      "value": "soldier rat figurine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cyan mid drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigcp3katzj4oap7u7guoft3eecpvv5s36bkaet762cseoq3exfdxm/10534.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

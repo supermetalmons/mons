@@ -1,0 +1,70 @@
+{
+  "id": 6979,
+  "name": "Card #6979",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6979.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "blue connection"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "bart simpson doodle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mifella emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dark magician girl"
+    },
+    {
+      "trait_type": "top center",
+      "value": "manga eye sketch"
+    },
+    {
+      "trait_type": "center",
+      "value": "matrix green hallway"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella in electric chair"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hatchling Bean - 105/131"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6979.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

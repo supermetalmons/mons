@@ -1,0 +1,134 @@
+{
+  "id": 10458,
+  "name": "Card #10458",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10458.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "black winged armored sd card"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "astroboy heads"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "sperm meet egg"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "black sink counter"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "angel halo"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shadow sonic eating hotdog"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "de kooning sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "barbed wire line"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "carnival leyendecker"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "003 dark blood orange extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 05"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "093 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "026 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "38 dark red glow clean wisp circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "choji akimichi water - card3591 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "choji akimichi water - card3591 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom right",
+      "value": "anime kid drinking"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "medusa face engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red eyes "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "giratina plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Blokhead"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10458.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

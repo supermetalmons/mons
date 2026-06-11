@@ -1,0 +1,106 @@
+{
+  "id": 7730,
+  "name": "Card #7730",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7730.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Anime Sky Between Trees Background - card1673-22"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "beat up Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "gundam head illustration"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Dende"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "blue rectangle black"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shin chan group"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "price tag"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad #333"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Alakazam Star Crystal Guardians - IMG_3426 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7730.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

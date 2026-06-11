@@ -1,0 +1,54 @@
+{
+  "id": 373,
+  "name": "Card #373",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0373.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ukon (State 1) - 1/3"
+    },
+    {
+      "trait_type": "center",
+      "value": "unicorn ring engraving"
+    },
+    {
+      "trait_type": "hero",
+      "value": "mew joker card"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "spider warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star semi"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigqprwlag7hp2ajha5hogncobfacvolq75vuldfvzph5nbl5dvuly/0373.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

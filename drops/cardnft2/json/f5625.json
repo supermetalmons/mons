@@ -1,0 +1,62 @@
+{
+  "id": 5625,
+  "name": "Card #5625",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5625.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "35 lava violet ember holo circle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "slime elasto blast"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "barney shine"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "david lynch explains"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "undead tree"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi ninja character"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cherries"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Arbok - 2/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5625.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

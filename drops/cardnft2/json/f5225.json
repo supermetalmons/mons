@@ -1,0 +1,62 @@
+{
+  "id": 5225,
+  "name": "Card #5225",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5225.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "top right",
+      "value": "1001 WAYS TO LIVE WITHOUT WORKING"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract sleeping figures"
+    },
+    {
+      "trait_type": "left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wolf head door knocker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "biscuit mi note angel"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dratini - Delta Species 66/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5225.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

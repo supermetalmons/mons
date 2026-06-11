@@ -1,0 +1,82 @@
+{
+  "id": 8064,
+  "name": "Card #8064",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8064.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sargent Watercolor Flowers Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "the fool imported 2"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "akira fight scene"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "redrum wall writing"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "nes style character path"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini wrapped around a charmander"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "024 rainbow prism dawn extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dragonite V - IMG_3215 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8064.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

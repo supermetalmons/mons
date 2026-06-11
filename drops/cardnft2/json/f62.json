@@ -2,7 +2,7 @@
   "id": 62,
   "name": "Card #62",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_62.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0062.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,36 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wally's Compassion - 176/132"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "shadow on sand"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy rainbow"
+    },
+    {
+      "trait_type": "right",
+      "value": "jonny comic panel"
+    },
+    {
+      "trait_type": "top right",
+      "value": "strategy icons"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_62.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicx2kqodx3nnblul52ea3eb2oj6t23yczsemoscbvoo5c3jh7bg6u/0062.webp",
         "type": "image/webp"
       }
     ],

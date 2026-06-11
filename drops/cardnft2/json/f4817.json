@@ -1,0 +1,54 @@
+{
+  "id": 4817,
+  "name": "Card #4817",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4817.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-228"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-133"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gaara of the Desert (Suit) - 1088"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4817.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 7877,
+  "name": "Card #7877",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7877.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Earl swag - card1673-11"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "raindrop ripple pattern"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "viewer gold blue border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "jew milady"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "wobbuffet crying"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "prophet of drip"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "halloween cat pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Light Crystal Card - IMG_3546 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7877.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

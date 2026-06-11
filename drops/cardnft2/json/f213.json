@@ -1,0 +1,54 @@
+{
+  "id": 213,
+  "name": "Card #213",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0213.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Swinub - 031/189"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "magic spell"
+    },
+    {
+      "trait_type": "left",
+      "value": "tombstone with arms"
+    },
+    {
+      "trait_type": "top left",
+      "value": "pink kimono pattern"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Bone Daddy"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deidara clay bird"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0213.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

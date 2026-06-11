@@ -1,0 +1,98 @@
+{
+  "id": 7615,
+  "name": "Card #7615",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7615.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_dark_magenta_cyan_gold_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "joker quote"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "energy symbols dark"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "toriyama"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Super Zarbon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "drone combat"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "mario music notes"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Dragon Ball Z CCG Gotenks Kamikaze Ghost - card2424 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire pin"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7615.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

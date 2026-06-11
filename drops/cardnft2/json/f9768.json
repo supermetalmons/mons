@@ -1,0 +1,50 @@
+{
+  "id": 9768,
+  "name": "Card #9768",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9768.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "starving monk"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "pink apricot spray"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Sabrinas Psychic Control Gym Challenge - card1715 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Light blue bomb check"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9768.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

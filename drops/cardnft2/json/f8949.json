@@ -1,0 +1,146 @@
+{
+  "id": 8949,
+  "name": "Card #8949",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8949.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Buddhist Guardian Deity Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "de kooning sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "╨╜╨╡╤ä╨╛╤Ç, ╨╜╤Å╤ê╨║╨░, ╨░╨╗╤é╤â╤ê╨║╨░"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Super Zarbon"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ultima"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "samurai crouching sword"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "krabby"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Kabuto Fossil - card1974 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "clementine-9"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi tobi akatsuki"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mr Qi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryos"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "buff pikachu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kid pix ad libs"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sentret"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Lam shifting eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wiz kid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Plaid bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsd buddha statue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester boxer baby drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8949.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

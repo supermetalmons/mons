@@ -1,0 +1,58 @@
+{
+  "id": 2971,
+  "name": "Card #2971",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2971.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract dark collage"
+    },
+    {
+      "trait_type": "hero",
+      "value": "robotic mech warrior"
+    },
+    {
+      "trait_type": "top center",
+      "value": "aivazovsky"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nuked gameboy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "snake girl manga ink"
+    },
+    {
+      "trait_type": "top right",
+      "value": "empty dining room painting"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Allister - 146/185"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2971.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

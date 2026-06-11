@@ -1,0 +1,94 @@
+{
+  "id": 8905,
+  "name": "Card #8905",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8905.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady boy oil"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "shopping cart full packs"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "who would win meme"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gandalf laptop"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "brain transplant"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anatomical illustration of a neck"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pikachu glitch art"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Gaara of the Desert - card0369 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag pack buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "may sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini neon outline"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8905.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

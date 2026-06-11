@@ -1,0 +1,46 @@
+{
+  "id": 8779,
+  "name": "Card #8779",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8779.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "paint and stars"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Porygon Z - card2331 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8779.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

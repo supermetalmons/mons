@@ -1,0 +1,78 @@
+{
+  "id": 3265,
+  "name": "Card #3265",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3265.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "aivazovsky"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Gelato Pique x Dragon Quest Draky"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shaman"
+    },
+    {
+      "trait_type": "left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "center",
+      "value": "jester print"
+    },
+    {
+      "trait_type": "border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hi snorlax"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red abstract collage"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "energy symbols dark"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Horsea - 84/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3265.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

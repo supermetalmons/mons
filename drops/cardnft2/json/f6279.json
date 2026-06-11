@@ -1,0 +1,50 @@
+{
+  "id": 6279,
+  "name": "Card #6279",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6279.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Switch - 102/113"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "thresh"
+    },
+    {
+      "trait_type": "left",
+      "value": "lsw box sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "porygon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6279.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

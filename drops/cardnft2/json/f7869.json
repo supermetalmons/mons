@@ -1,0 +1,102 @@
+{
+  "id": 7869,
+  "name": "Card #7869",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7869.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "purple_magenta_green_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Jelly Jiggler"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "childs play kfaraday"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "manga horror face bird"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "vega 1850"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "paintball splatter smiley"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "King Dice"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted dragon warrior boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Dragonite clawbearer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small black bird screeching"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "043 ruby violet flame extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dragonair - card1411 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7869.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

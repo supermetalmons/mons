@@ -1,0 +1,122 @@
+{
+  "id": 10711,
+  "name": "Card #10711",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10711.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Sunny Cottage Garden Path Background - card1673-9"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "005 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 27"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - emerald green - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "raindrop ripple pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "yellow abstract pattern"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "duplicated guy w gun from a cool painting"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_14"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "sr_crazy_shimmer_glitter_icons_22"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "002 red prism ember extra holo capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - pink fairy - triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "001 rainbow prism dawn extra holo capsule"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "drapion - card2167 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "drapion - card2167 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "squirtle squad pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "New SR Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiafpcijzwz44xfokdzc2xaq7eeqzlfhgymyc6i4ysbqt3236b4v4e/10711.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

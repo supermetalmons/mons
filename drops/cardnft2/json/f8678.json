@@ -1,0 +1,86 @@
+{
+  "id": 8678,
+  "name": "Card #8678",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8678.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "storm_amber_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Frieren"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "neon sketch figures"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "melted figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "ryuk info"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "orc warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hunson Abadeer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "007 cobalt pink sunset extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Charizard VMAX - card0040 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8678.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

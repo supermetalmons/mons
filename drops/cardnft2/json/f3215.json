@@ -1,0 +1,78 @@
+{
+  "id": 3215,
+  "name": "Card #3215",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3215.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "killzone mercenary ps vita"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ultraman starry silhouette"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "yellow star pattern"
+    },
+    {
+      "trait_type": "right",
+      "value": "pencil"
+    },
+    {
+      "trait_type": "top center",
+      "value": "warning text black background"
+    },
+    {
+      "trait_type": "left",
+      "value": "two penguins low poly"
+    },
+    {
+      "trait_type": "border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen you cant beat a man"
+    },
+    {
+      "trait_type": "center",
+      "value": "falling playing cards"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stars sketch"
+    },
+    {
+      "trait_type": "hero",
+      "value": "scully with reflective glasses"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Persian - 42/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3215.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

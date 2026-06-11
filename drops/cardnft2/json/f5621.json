@@ -1,0 +1,70 @@
+{
+  "id": 5621,
+  "name": "Card #5621",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5621.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "small pixelated map"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-62"
+    },
+    {
+      "trait_type": "top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "flying pikachu nirvana"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "susie sketches"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mary"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright green digimon figure"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dark Arbok - 2/82"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5621.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

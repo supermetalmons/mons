@@ -1,0 +1,98 @@
+{
+  "id": 10212,
+  "name": "Card #10212",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10212.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sith eyes"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pleasure garden lodewijck 1584"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 30"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "46 magenta cyan gold holo holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "45 prism dawn rainbow holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "cartoon_black_devil_girl_yugioh_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mobster"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shadow smoking"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "cartoon_black_devil_girl_yugioh_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10212.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

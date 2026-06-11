@@ -1,0 +1,62 @@
+{
+  "id": 9499,
+  "name": "Card #9499",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9499.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Jesus Icon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "drapion smoke"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tekkonkinkreet city"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Mudkip - card2986 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood drop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small yellow beta sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9499.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": 9744,
+  "name": "Card #9744",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9744.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "sd black no border card"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "hell crucidrif"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "drifella card game"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "spirit egg diagram"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "Kyrie eleison"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 03"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mox_jet_magic_card white mask transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "3d grimer"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibqq5g2n6mwuxrptinj3oekm3lhj7droiixvk4yuv72gz5xjnlhyq/9744.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

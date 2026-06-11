@@ -1,0 +1,66 @@
+{
+  "id": 5015,
+  "name": "Card #5015",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5015.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ivysaur"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elekid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross vespertine"
+    },
+    {
+      "trait_type": "right",
+      "value": "anime robot and wrestler"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fallout ghoul dialogue"
+    },
+    {
+      "trait_type": "left",
+      "value": "playboi demonic"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Misty's Horsea - 86/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5015.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

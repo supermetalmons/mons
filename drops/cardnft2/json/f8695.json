@@ -1,0 +1,106 @@
+{
+  "id": 8695,
+  "name": "Card #8695",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8695.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Buddhist Guardian Deity Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "psychoenergetics definition text"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "manga green cat"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "yugi mutou dark yugi"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pistol branch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black starry pattern"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Doomed bando"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hunson Abadeer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "teddiursa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "panda statue flowers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "A"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "07 dark magician clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 vespertine purple peach clean wisp diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "soft pastel rainbow rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "36 fire ice split holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Deidara - card1014 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8695.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": 5653,
+  "name": "Card #5653",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5653.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bomberman sprite sheet"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "A Dead Trench Sentry"
+    },
+    {
+      "trait_type": "pixel line outline",
+      "value": "taomon_digimon_dp400_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cave story enemy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Venomoth - 29/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiahkmb4zdcnlhzfwwfknbk6mmb5y2vz4sfdnw6qvp3ptzcnoh7jxa/5653.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 10137,
+  "name": "Card #10137",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10137.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Rainbow Sacred Geometry Pyramid Background - card1673-46"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "exhausted goku"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "biscuit name"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "gundam style mech card"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "look at the bottom right corner"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "big tex"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "black bear silhouette"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "purple mask creatures"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Meteor B Dragon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragon quest clear creature figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "monster_reborn_yugioh_83764718_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10137.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

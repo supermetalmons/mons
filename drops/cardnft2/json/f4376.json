@@ -1,0 +1,90 @@
+{
+  "id": 4376,
+  "name": "Card #4376",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4376.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "top right",
+      "value": "shot crosshair"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "unnamed david lynch"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rock lee eight inner gates"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark abstract texture"
+    },
+    {
+      "trait_type": "top left",
+      "value": "devil world"
+    },
+    {
+      "trait_type": "hero",
+      "value": "shizuku hxh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "key girl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holo sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Quilladin 4/39"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4376.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

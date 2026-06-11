@@ -1,0 +1,46 @@
+{
+  "id": 573,
+  "name": "Card #573",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0573.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Dimension Valley - 93/119"
+    },
+    {
+      "trait_type": "hero",
+      "value": "alfonso x of castille"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "friendly ghost dialogue"
+    },
+    {
+      "trait_type": "top right",
+      "value": "shot crosshair"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiffeeapteodxmxefv7xudw75ik6ivsy3no7cxv4juh53p6z553l7u/0573.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

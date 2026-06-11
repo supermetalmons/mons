@@ -1,0 +1,94 @@
+{
+  "id": 7451,
+  "name": "Card #7451",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7451.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "watercolor swatches"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "phantom red heart"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Dratini legendary collection black mask"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sableye reaction"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon uap signal"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dark magician card"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Magikarp XY Promo - IMG_3489 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "withered wojak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mossy spike ball"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Garbage rainbow hat"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7451.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 2981,
+  "name": "Card #2981",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2981.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple sunset field"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "childs play kfaraday"
+    },
+    {
+      "trait_type": "border",
+      "value": "caution"
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral galaxy stars"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "top right",
+      "value": "mesprit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester painter drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "right",
+      "value": "japanese toy protest"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sandslash - 21/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifmguwjx77lsrj44xedzn6skjekobhskq2eaafgrbwgeyhn7i2lle/2981.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

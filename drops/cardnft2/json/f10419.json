@@ -1,0 +1,82 @@
+{
+  "id": 10419,
+  "name": "Card #10419",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10419.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "summit"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark abstract texture 3"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "sonic silhouette corner"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "bloody angel"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "raikou - card4147 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "raikou - card4147 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - left",
+      "value": "jirachi concept art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Shadow mace"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hatched dragon egg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Carnage poncho"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tojiangelkid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Bloody hat jump"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10419.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

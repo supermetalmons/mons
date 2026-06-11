@@ -1,0 +1,70 @@
+{
+  "id": 7246,
+  "name": "Card #7246",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7246.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_pixel_camo_totem"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red rectangle black background"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Orochimaru inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "machine wolf drif champion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "scythe psychic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Red spiky dj"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiblcwveznvbeslpxdx4ostwysgdv3cvvokjs4vaisch2sw4c7r4ja/7246.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": 7718,
+  "name": "Card #7718",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7718.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "i wish i was in a cabin with my hot wife"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "giger skull graphite airbrush"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "purple cyclops figure"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pink purple watercolor drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pikachu balloons sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "meme cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Black Witch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dharma wheel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Sasori - card0380 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7718.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

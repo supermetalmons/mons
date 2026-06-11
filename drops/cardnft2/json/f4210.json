@@ -1,0 +1,54 @@
+{
+  "id": 4210,
+  "name": "Card #4210",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4210.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "elixir"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Chibi Demon Angel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Splicers Metamorph Demon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "center",
+      "value": "drifella iii logo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Feebas 43/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4210.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

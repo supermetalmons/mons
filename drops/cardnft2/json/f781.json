@@ -1,0 +1,54 @@
+{
+  "id": 781,
+  "name": "Card #781",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0781.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Red Lifting Kick - 9 of 19"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "i hate being bipolar text"
+    },
+    {
+      "trait_type": "right",
+      "value": "krillin falling"
+    },
+    {
+      "trait_type": "left",
+      "value": "dr slump arale jeep"
+    },
+    {
+      "trait_type": "top right",
+      "value": "dragon ball manga fight scene"
+    },
+    {
+      "trait_type": "top left",
+      "value": "twisted creature model"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0781.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

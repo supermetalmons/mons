@@ -1,0 +1,50 @@
+{
+  "id": 9069,
+  "name": "Card #9069",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9069.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_and_sasuke_uchiha_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "crucifix city"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pistol branch"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9069.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

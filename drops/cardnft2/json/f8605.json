@@ -1,0 +1,74 @@
+{
+  "id": 8605,
+  "name": "Card #8605",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8605.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "pokesav glitch screen"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pegasus toon yugioh"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hanging bed crimes of the future"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "green slime face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp dark red"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Arceus - card2444 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8605.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

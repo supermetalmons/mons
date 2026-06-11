@@ -1,0 +1,62 @@
+{
+  "id": 5557,
+  "name": "Card #5557",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5557.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "embryo in egg"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ornate brown chair"
+    },
+    {
+      "trait_type": "top left",
+      "value": "predator missile"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "death dealer preliminary"
+    },
+    {
+      "trait_type": "top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood and water emoji"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rocket's Admin - 86/109"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihk2q2dq3ao3n227efwufm3dvtjghuuqimjsm3lp7vkwnzs5nxv4m/5557.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

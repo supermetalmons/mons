@@ -1,0 +1,62 @@
+{
+  "id": 5707,
+  "name": "Card #5707",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5707.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "latias flight scene"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "001 rainbow prism dawn extra holo capsule"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen honor thy father"
+    },
+    {
+      "trait_type": "top center",
+      "value": "shinji bacon"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "may shetches"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby blunt bat drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Zapdos - 15/62"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif7oz7uncjzjavsa3po4xvh6pe3glr4uryimskuqeuwf5bpau5vpi/5707.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

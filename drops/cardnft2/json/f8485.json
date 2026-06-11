@@ -1,0 +1,82 @@
+{
+  "id": 8485,
+  "name": "Card #8485",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8485.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "abstract_rainbow_motion_blur"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Pokemon Illustrator Pikachu inverted mask"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "klimt the park 1910"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shizuku sweepy"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hawlucha sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ninja crazy bones"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Totodile - card5023 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8485.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

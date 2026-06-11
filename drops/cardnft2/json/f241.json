@@ -1,0 +1,94 @@
+{
+  "id": 241,
+  "name": "Card #241",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0241.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "crimzon clover"
+    },
+    {
+      "trait_type": "hero",
+      "value": "nurse"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "center",
+      "value": "grass engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "zun sunnymilk"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "infinity nikki"
+    },
+    {
+      "trait_type": "left",
+      "value": "orange bacon left"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 1"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "n95 punk"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vampire slime"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toji keyboard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini deviantart sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 6"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Biscuit - 0/3"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihex755a5p6fvnjyzs2y3ys7g26lcb7pgtmehlwtvoiil3f36geae/0241.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

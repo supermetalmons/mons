@@ -1,0 +1,46 @@
+{
+  "id": 471,
+  "name": "Card #471",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0471.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Oshawott - 21/25"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cow and bird toy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mechanical spider tank"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "kurabbu grooming proof"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0471.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

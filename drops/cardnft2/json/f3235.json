@@ -1,0 +1,82 @@
+{
+  "id": 3235,
+  "name": "Card #3235",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3235.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "ufo video dvd"
+    },
+    {
+      "trait_type": "border",
+      "value": "manuscript"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cory infinite mario clouds"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange hat drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixel horse"
+    },
+    {
+      "trait_type": "top right",
+      "value": "help text"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "red black grid frame"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "yellow book"
+    },
+    {
+      "trait_type": "right",
+      "value": "hedgehog in coffee cup"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crucidrifella digimon illustration"
+    },
+    {
+      "trait_type": "left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "center",
+      "value": "black red abstract painting"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wartortle - 42/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3235.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

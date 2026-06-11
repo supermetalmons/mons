@@ -1,0 +1,78 @@
+{
+  "id": 8599,
+  "name": "Card #8599",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8599.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Bouquet Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "search and destroy badge"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "masonic halloween lantern panel"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "digimon whale sticker"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terriermon hooded"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "piplup ice sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross artheaux"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kisame Hoshigaki - card0400 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic3amzsh44ft55esvi42tvtqobz7zhj4hyfr63wvrrqbn5mkxfyua/8599.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

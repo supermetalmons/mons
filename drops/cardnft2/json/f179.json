@@ -2,7 +2,7 @@
   "id": 179,
   "name": "Card #179",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/card_179.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0179.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -12,12 +12,52 @@
     {
       "trait_type": "redeemed",
       "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "spider tattoo eight"
+    },
+    {
+      "trait_type": "right",
+      "value": "sprite sheet and color palette"
+    },
+    {
+      "trait_type": "border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "black tank silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "monster reborn pendant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hikki heads"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki - 1/0"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/card_179.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeied2ho6ufy7piamk5vb722shwn7xdghnrjwfg5skd2wjuakyt2qee/0179.webp",
         "type": "image/webp"
       }
     ],

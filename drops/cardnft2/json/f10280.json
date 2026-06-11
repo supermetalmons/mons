@@ -1,0 +1,94 @@
+{
+  "id": 10280,
+  "name": "Card #10280",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10280.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "opal_pastel_haze_gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "engraved cameo brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "watercolor drif reaper"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "black intricate pattern 2"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - black void - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "006 cobalt pink sunset extra holo diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "phantasmal forces - card1256 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "phantasmal forces - card1256 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10280.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

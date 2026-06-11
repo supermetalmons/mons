@@ -1,0 +1,58 @@
+{
+  "id": 1887,
+  "name": "Card #1887",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1887.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Magmar - 019/172"
+    },
+    {
+      "trait_type": "center",
+      "value": "evangelion kabbalah tree"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "goblins eating feast"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "killua gon computer meme"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Meteor B Dragon"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1887.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

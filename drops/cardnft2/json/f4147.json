@@ -1,0 +1,94 @@
+{
+  "id": 4147,
+  "name": "Card #4147",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4147.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "castle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "deadpool keychain"
+    },
+    {
+      "trait_type": "top center",
+      "value": "alien triptych drif iii"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "22 sage green gold clean wisp capsule"
+    },
+    {
+      "trait_type": "hero",
+      "value": "kagemaru himeno togetic sketch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "persona bear character"
+    },
+    {
+      "trait_type": "top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "center",
+      "value": "green circle flowchart"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "shizuku fan art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus through the realms"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mr Qi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "star stickers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Raikou - 32/73"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4147.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

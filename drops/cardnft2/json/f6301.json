@@ -1,0 +1,58 @@
+{
+  "id": 6301,
+  "name": "Card #6301",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6301.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Eevee Bag"
+    },
+    {
+      "trait_type": "center",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "center",
+      "value": "chainsawman manga"
+    },
+    {
+      "trait_type": "top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "money man reaper fishing"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "magic key"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6301.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

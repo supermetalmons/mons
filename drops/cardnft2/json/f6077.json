@@ -1,0 +1,74 @@
+{
+  "id": 6077,
+  "name": "Card #6077",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6077.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black knight helmet"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sleepy stone"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy brawl painting"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "skeletor raising fists"
+    },
+    {
+      "trait_type": "center",
+      "value": "baby bud illustration"
+    },
+    {
+      "trait_type": "border",
+      "value": "garden of earthly delights"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Booster Rauschenberg 1967 "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gray drif body"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Man-Beast Transformation Combo"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6077.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

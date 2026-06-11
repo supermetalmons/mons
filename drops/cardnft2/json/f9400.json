@@ -1,0 +1,102 @@
+{
+  "id": 9400,
+  "name": "Card #9400",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9400.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pastel swag boy"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "soldier with claymore"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "incredibly protected graded card"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "garbage pail kids pack"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "ghost in the shell fight scene"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "Harle chrono cross"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "delicate pink flowers"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi Setzer Gabbiani"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "085 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "031 ruby violet flame extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 45"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "088 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Trainer Fossil Excavation - IMG_3261 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidhvyy3fx24wrvmb65kqwry4lh6pnh7m4mms626fe7pbm5gxc6i4a/9400.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

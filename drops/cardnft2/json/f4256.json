@@ -1,0 +1,74 @@
+{
+  "id": 4256,
+  "name": "Card #4256",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4256.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "aigis fight"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "orange elite"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixelated alien"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rauschenberg xray collage"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pink oval gradient"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "apollo engraving"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "top left",
+      "value": "lego reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful animal embroidery"
+    },
+    {
+      "trait_type": "center",
+      "value": "frankenstein"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Crobat - 14/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia442wiuf5tam3juffmwcaburgklgnxgtufi3x5zhlso6xrzdrnfa/4256.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 8056,
+  "name": "Card #8056",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8056.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_emerald_red_blue_gradient"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white spray 2"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "ghost in the shell figure"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "wplace st. paisios"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "nara puppy"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue checkered border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "play horse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester print poncho drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "088 emerald violet dream extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "52 fire ice split holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "076 red prism ember extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "30 emerald violet dream holo heart"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gengar Topps - IMG_3480 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibbo2fajlxsdmfhkhmlgzskrstdjhkd2t4cxfd2ekwrpa65b63td4/8056.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

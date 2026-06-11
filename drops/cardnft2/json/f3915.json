@@ -1,0 +1,106 @@
+{
+  "id": 3915,
+  "name": "Card #3915",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3915.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "cracked windows number two"
+    },
+    {
+      "trait_type": "left",
+      "value": "gabite"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "074 dark blood orange extra holo heart"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "white px crucidrif"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "watercolor swatches"
+    },
+    {
+      "trait_type": "top left",
+      "value": "gotcha force a rank"
+    },
+    {
+      "trait_type": "right",
+      "value": "space ghost thinking"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold flake amano 2"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "barney shine"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow boots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "apple cores"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Dark crucidrif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp dragon warrior boy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rhyperior - 76/160"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigif6folmyvk2jd4ruq7c3gdkasuaul2d4zopcw6csi3ruufpxk2a/3915.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

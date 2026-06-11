@@ -1,0 +1,58 @@
+{
+  "id": 7035,
+  "name": "Card #7035",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7035.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mint_red_aqua_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonite anime face"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Flareon Gold Star inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3awiy2avzqgf5pkw7myuep4n3g65bsp6j2n6ut7gcrgwafejelu/7035.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

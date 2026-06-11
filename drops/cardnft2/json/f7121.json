@@ -1,0 +1,66 @@
+{
+  "id": 7121,
+  "name": "Card #7121",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7121.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif 2 regarded"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "seedot"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "realistic heart"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "jack black sketch"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Darkrai VSTAR - IMG_3435 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh7bcrvp7uhwclrdwetytvbarkyy3cmcgzpbeneisjy7p467bbri/7121.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

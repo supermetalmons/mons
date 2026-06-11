@@ -1,0 +1,74 @@
+{
+  "id": 5314,
+  "name": "Card #5314",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5314.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "superhero transformation sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blue Orange"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Monster enrg jest"
+    },
+    {
+      "trait_type": "center",
+      "value": "orange screaming faces"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chibi orochimaru and shikamaru"
+    },
+    {
+      "trait_type": "right",
+      "value": "pluto puppies sketches"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepy mask claws sky"
+    },
+    {
+      "trait_type": "top right",
+      "value": "small computer icon"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "ray gun"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Chimchar - 57/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5314.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

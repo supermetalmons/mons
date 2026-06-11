@@ -1,0 +1,62 @@
+{
+  "id": 411,
+  "name": "Card #411",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0411.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Akaboshi - 3/0"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hanging flowers and birds"
+    },
+    {
+      "trait_type": "hero",
+      "value": "go go ackman gun collage"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "metropolis"
+    },
+    {
+      "trait_type": "top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yung thug aura ghost drif"
+    },
+    {
+      "trait_type": "center",
+      "value": "energy symbols light"
+    },
+    {
+      "trait_type": "center",
+      "value": "alien creature concept art"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0411.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

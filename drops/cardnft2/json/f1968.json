@@ -1,0 +1,58 @@
+{
+  "id": 1968,
+  "name": "Card #1968",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1968.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Starly - Majestic Dawn 75/100"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant 2"
+    },
+    {
+      "trait_type": "hero",
+      "value": "fantasy mage illustration"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "mars argo"
+    },
+    {
+      "trait_type": "right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "top left",
+      "value": "waddle dee spear"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "kong silhouette drawing"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1968.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

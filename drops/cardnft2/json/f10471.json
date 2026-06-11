@@ -1,0 +1,102 @@
+{
+  "id": 10471,
+  "name": "Card #10471",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10471.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko lavender magenta and charcoal blocks"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "14 dark ruby violet orange holo circle"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "yugioh card backs"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gengar holo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pleasure garden lodewijck 1584"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__steel armor jester diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "m_charizard_ex_evolutions_101_108_card black halftone transparent"
+    },
+    {
+      "trait_type": "blood energy overlay",
+      "value": "blood energy2"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "m_charizard_ex_evolutions_101_108_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "miniryu lv 10 card"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple shocked skeleton sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bright-10"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "puyo puyo sun"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10471.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

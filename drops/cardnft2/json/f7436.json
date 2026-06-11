@@ -1,0 +1,134 @@
+{
+  "id": 7436,
+  "name": "Card #7436",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7436.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "japanese_ghost_portrait_black_robe"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "dr slump arale motorcycle"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "you ever just mint an nft"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "drifella iii dragon warrior boy sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "slowpoke rape"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "magus chrono trigger holographic"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "chimera ant battle"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "vampire anime character"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Japanese Attack Capsule Card - IMG_3545 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hiei fire baby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "harvest moon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Gay bud"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small mechanical part"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "stars solid"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red cross"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "henteko doujin logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chivil reading book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shining sonichu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haunter sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiritual warfare"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Drool harlequin"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7436.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

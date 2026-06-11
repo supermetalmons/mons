@@ -1,0 +1,90 @@
+{
+  "id": 7929,
+  "name": "Card #7929",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7929.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "elite conspiracy upside down"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hr giger biomechanical figures"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "pink monkey keshi figures"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red windows cathedral"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "milady nazi technology"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Cream Pup"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "57 fire ice split holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "012 purple peach glow extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "34 dark cobalt pink sunset holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "027 toxic sunset extra holo triangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Bagon - card2989 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7929.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

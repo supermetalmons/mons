@@ -1,0 +1,94 @@
+{
+  "id": 10343,
+  "name": "Card #10343",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10343.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Bouquet Still Life Background"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "energy symbols light"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "homo noosphericus bodies"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "itachi smiling blood"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 44"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "59 red soft holo holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sneasel - card4415 white mask transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sneasel - card4415 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "tcg"
+    },
+    {
+      "trait_type": "top rare addon - right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "duke nukem sitting"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spy kids castle"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10343.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

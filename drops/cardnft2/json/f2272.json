@@ -1,0 +1,58 @@
+{
+  "id": 2272,
+  "name": "Card #2272",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2272.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "alien tamagatchi"
+    },
+    {
+      "trait_type": "border",
+      "value": "glitch triangle pattern"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "drifella 1 trust the plan black"
+    },
+    {
+      "trait_type": "top center",
+      "value": "thorny branch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini rainbow outline 3"
+    },
+    {
+      "trait_type": "top left",
+      "value": "yugi meme"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Prinplup - Majestic Dawn 44/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2272.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

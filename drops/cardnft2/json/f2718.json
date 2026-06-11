@@ -1,0 +1,74 @@
+{
+  "id": 2718,
+  "name": "Card #2718",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2718.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "slender man night"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Chrollo Lucilfer"
+    },
+    {
+      "trait_type": "right",
+      "value": "megami tensei"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "beat up Kazuma Kuwabara"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chinese banknote corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red lego figure"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "giger skull graphite airbrush"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "left",
+      "value": "rayquaza orange smoke"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poké Kid - 173/202"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2718.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

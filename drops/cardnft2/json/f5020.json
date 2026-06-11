@@ -1,0 +1,74 @@
+{
+  "id": 5020,
+  "name": "Card #5020",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5020.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "desert shaman"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "metal rider slime knight dq card"
+    },
+    {
+      "trait_type": "top right",
+      "value": "kane mid air"
+    },
+    {
+      "trait_type": "center",
+      "value": "alien egg giger art"
+    },
+    {
+      "trait_type": "hero",
+      "value": "blue armored figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small green frog"
+    },
+    {
+      "trait_type": "right",
+      "value": "jonny comic panel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "furious sea king stats"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "probably deleted"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Horsea - Delta Species 50/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5020.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

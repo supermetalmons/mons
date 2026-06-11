@@ -1,0 +1,74 @@
+{
+  "id": 10219,
+  "name": "Card #10219",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10219.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Precious moments Room Mural Doorway Background - card1673-39"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "unown holo card"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "printer can do 45 cards at once"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "itachi_uchiha_custom_card_3 white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyan px drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross drive"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emojipack stars"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "itachi_uchiha_custom_card_3 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7rsofkjsh6gfhx7j4mknxzj5azhwwllxrxaogqigphp76nptare/10219.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

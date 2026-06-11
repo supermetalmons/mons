@@ -1,0 +1,66 @@
+{
+  "id": 3304,
+  "name": "Card #3304",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3304.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rainbow dratini pattern"
+    },
+    {
+      "trait_type": "hero",
+      "value": "joker abstract bats"
+    },
+    {
+      "trait_type": "top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "right",
+      "value": "dark figure with book"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drif triptych in dilapidated museum"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mountain dew bottles"
+    },
+    {
+      "trait_type": "top right",
+      "value": "six swords tarot"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Haxorus - 88/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3304.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

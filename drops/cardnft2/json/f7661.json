@@ -1,0 +1,114 @@
+{
+  "id": 7661,
+  "name": "Card #7661",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7661.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "mint_red_aqua_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "the x files logo"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "scavenger"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "indian on horse ink"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "Jupiter's Eagle Bringing Water of the Styx to Psyche engraving"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blox drifella statue"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Reaper Death Seal"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "icedancer burst"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "trunks capsule corp shirt"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dark Umbreon Team Rocket - IMG_3274 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad 712"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyarados ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp toji disc buddie pitchfork"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dunks"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bellsprout"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reaper bat drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7661.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

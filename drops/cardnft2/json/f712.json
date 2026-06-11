@@ -1,0 +1,50 @@
+{
+  "id": 712,
+  "name": "Card #712",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0712.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hero Collection Dragonball Z Series Part 3 - 321"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "ye_s wreck"
+    },
+    {
+      "trait_type": "right",
+      "value": "small theater entrance"
+    },
+    {
+      "trait_type": "top left",
+      "value": "disco heat logo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black snorlax plush"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeia2iwpp6w5p4feuj3hcz77yxnjstbs72batrlreh3te3nfijg5t6m/0712.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

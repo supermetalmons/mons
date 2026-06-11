@@ -1,0 +1,90 @@
+{
+  "id": 3832,
+  "name": "Card #3832",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3832.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "colorful abstract caligraphy"
+    },
+    {
+      "trait_type": "top center",
+      "value": "killua card face"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "lord megadeath dialogue"
+    },
+    {
+      "trait_type": "right",
+      "value": "hellraiser ghostbusters"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "hero",
+      "value": "hooded figure with sword"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "frazetta frodo wolf plate"
+    },
+    {
+      "trait_type": "center",
+      "value": "slide"
+    },
+    {
+      "trait_type": "top right",
+      "value": "4u pixel art"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "burai2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "moon sculpture mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted venom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sailor moon anime girl"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vullaby - 57/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifdj2bya2kynsfzclwkj6ha2rthtxcw63rich5tijjpqubgdxzd7e/3832.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

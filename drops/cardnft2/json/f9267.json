@@ -1,0 +1,110 @@
+{
+  "id": 9267,
+  "name": "Card #9267",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9267.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "zombie px milady boy oil"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "piccolo energy swirl"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "astronaut shoes"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "holographic hearts pattern"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gold bar"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "drone warfare is cowardly"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "terriermon digimon card"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "in service baby yoda "
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "bathing ape"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "018 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "31 nightcore rainbow clean wisp rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "052 cobalt pink sunset extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "026 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Shuckle Neo Genesis - card1956 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "manga eye closeup"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "record"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieb5hyhixvpsxdydnvgfbbnuu6u3u7j2x6yfhbebdqriks44wfgom/9267.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

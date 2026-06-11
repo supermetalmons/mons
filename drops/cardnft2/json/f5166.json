@@ -1,0 +1,74 @@
+{
+  "id": 5166,
+  "name": "Card #5166",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5166.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "bear silhouette comparison"
+    },
+    {
+      "trait_type": "top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "snake girl manga ink"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hiei yu yu hakusho"
+    },
+    {
+      "trait_type": "right",
+      "value": "gengar hiding"
+    },
+    {
+      "trait_type": "top left",
+      "value": "kabuto"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "center",
+      "value": "glowing doraemon ghosts"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Marowak - 63/146"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5166.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

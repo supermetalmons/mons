@@ -1,0 +1,86 @@
+{
+  "id": 8282,
+  "name": "Card #8282",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8282.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Meme Lords Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "ytd portfolio"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "parappa the rapper"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "angel silhouette engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "wizard with book"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "skeleton fly rider"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goomy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "god bless this shit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad chibi poncho boy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Grill zooka"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Dark Umbreon Team Rocket - IMG_3274 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8282.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

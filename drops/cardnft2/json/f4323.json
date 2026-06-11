@@ -1,0 +1,106 @@
+{
+  "id": 4323,
+  "name": "Card #4323",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4323.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "meme drawing confrontation"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pixelated alien"
+    },
+    {
+      "trait_type": "top center",
+      "value": "kuwait 1991"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "rock lee eight inner gates"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke sword stance"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel waterfall"
+    },
+    {
+      "trait_type": "right",
+      "value": "pluto puppies sketches"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "susie sketches"
+    },
+    {
+      "trait_type": "top left",
+      "value": "a dark room"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bacon condom"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "colorful ninja figures"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "waffle"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pixelated posed woman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Devimon mini figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smiling pumpkin wizard"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones emo"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Grovyle - 39/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeighfbk6mr6pxuqdhsj25o4ixyt4mnd46wwzc76i52umg3loquge7a/4323.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

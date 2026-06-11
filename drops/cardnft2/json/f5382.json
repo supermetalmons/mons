@@ -1,0 +1,62 @@
+{
+  "id": 5382,
+  "name": "Card #5382",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5382.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "facepalm meme"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "hiei kurama silhouette"
+    },
+    {
+      "trait_type": "top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "left",
+      "value": "jake book table"
+    },
+    {
+      "trait_type": "top center",
+      "value": "spiked frame"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snoopy x files"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Charmander - 48/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5382.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

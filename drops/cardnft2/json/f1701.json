@@ -1,0 +1,58 @@
+{
+  "id": 1701,
+  "name": "Card #1701",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1701.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Nidoran ♂ - 55/102"
+    },
+    {
+      "trait_type": "hero",
+      "value": "abstract painted humanoid figure"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "doom soldier"
+    },
+    {
+      "trait_type": "right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small insect"
+    },
+    {
+      "trait_type": "center",
+      "value": "pointillism park scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "i m sorry i can t"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiezcnn2v4yejvnk2wier44rnph5pixyqdzai5hqyz2fy56jqamski/1701.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

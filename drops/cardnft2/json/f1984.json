@@ -1,0 +1,58 @@
+{
+  "id": 1984,
+  "name": "Card #1984",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1984.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lightning Energy"
+    },
+    {
+      "trait_type": "center",
+      "value": "colorful fence grass"
+    },
+    {
+      "trait_type": "hero",
+      "value": "medieval armored figure"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Chiaotzu"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "alien"
+    },
+    {
+      "trait_type": "top right",
+      "value": "mole pixel"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidektdd6w5e5fxefvcf3hfifahm4izystdx3sfb6rgmz5olfufqai/1984.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

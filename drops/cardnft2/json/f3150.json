@@ -1,0 +1,62 @@
+{
+  "id": 3150,
+  "name": "Card #3150",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3150.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "sasuke drifella black"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stock market will collapse"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "px milady 2"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "top left",
+      "value": "risky dice card"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Glenn"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Energy Recycler - 123/145"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3150.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

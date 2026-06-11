@@ -1,0 +1,78 @@
+{
+  "id": 5193,
+  "name": "Card #5193",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5193.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "spiked frame"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "forest graffiti point cloud"
+    },
+    {
+      "trait_type": "left",
+      "value": "DB Cooper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mifella emoji pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold shuppet"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "top left",
+      "value": "agumon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "gengar trainer sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "try making your heart flutter"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Poké Ball - 113/127"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5193.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

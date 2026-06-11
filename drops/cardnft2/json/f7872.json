@@ -1,0 +1,114 @@
+{
+  "id": 7872,
+  "name": "Card #7872",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7872.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_purple_orange_blocks"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "green radar screen"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pokemon sushi art"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dodonpachi black label"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "billie eilish and murakami"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragonite and scyther anime"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "jesus face engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "that must hurt kankuro and temari"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cobalt cad"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted carnage aaa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "demiurge drawing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "embryo in egg 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Cream Spots"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "082 fire ice split extra holo diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Ditto Topps - IMG_3481 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7872.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

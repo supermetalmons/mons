@@ -1,0 +1,110 @@
+{
+  "id": 7734,
+  "name": "Card #7734",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7734.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "saturated_gold_plum_teal_gradient"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "paintball splatter smiley"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "OMG obelisk"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skyrim 11 11 11"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella iv logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hope syringe figure"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "neon mask in dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Chained rogue"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "packapunch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blunt"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac simple"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shine sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cyndaquil sticker"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Dratini delta 2- card5226 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7734.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

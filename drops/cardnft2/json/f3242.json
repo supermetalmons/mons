@@ -1,0 +1,54 @@
+{
+  "id": 3242,
+  "name": "Card #3242",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3242.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "green dummy"
+    },
+    {
+      "trait_type": "center",
+      "value": "Saint Jerome engraving"
+    },
+    {
+      "trait_type": "border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "esoteric meme breakdown pokemon"
+    },
+    {
+      "trait_type": "hero",
+      "value": "sasuke sword stance"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Meowth - Jungle 56/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicaqr3i3xrvkk3fi2rb57xdu6h5jplxtrw6aisnb5p6q5fbnai3wa/3242.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

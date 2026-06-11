@@ -1,0 +1,54 @@
+{
+  "id": 3198,
+  "name": "Card #3198",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3198.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "twin peaks coffee scene"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "anna karina"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "diamond plate texture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "This video features a person repeatedly striking their head with a hammer-like object."
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Cupsy☆Yummy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lanturn - 38/111"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeie7dziaiqzznwha7rsoyiwnsxgnsu6r5nv42v5fhrczuzeazxls2y/3198.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

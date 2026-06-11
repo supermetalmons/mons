@@ -1,0 +1,54 @@
+{
+  "id": 1849,
+  "name": "Card #1849",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1849.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rapidash - 44/64"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "luffy zoro tied"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "black knight helmet"
+    },
+    {
+      "trait_type": "right",
+      "value": "guy with spike club"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ornate pillar heart"
+    },
+    {
+      "trait_type": "center",
+      "value": "haunter gengar negative art"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1849.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

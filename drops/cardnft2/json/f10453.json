@@ -1,0 +1,78 @@
+{
+  "id": 10453,
+  "name": "Card #10453",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10453.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "purple_magenta_green_gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "helicopter in field"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "ape escape logo"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "dragon clown boy statue"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "mox pearl - card0204 black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "mox pearl - card0204 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top left",
+      "value": "sailor moon ride"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wolf armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Cherry blossom teddy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10453.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 1396,
+  "name": "Card #1396",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1396.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Darkwatch Elves - 99/143"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "official game boy logo"
+    },
+    {
+      "trait_type": "center",
+      "value": "white bacon"
+    },
+    {
+      "trait_type": "right",
+      "value": "Injection Fairy Lily"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "one piece reactions"
+    },
+    {
+      "trait_type": "top left",
+      "value": "Gelus (πé╖πéÖπéºπâ⌐πé╣) manga page"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdp3lnoq6tekykwu3ersidp3pehizxrawrcnv7zsquprzzuxfon4/1396.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

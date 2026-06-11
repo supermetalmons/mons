@@ -1,0 +1,50 @@
+{
+  "id": 1571,
+  "name": "Card #1571",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1571.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Deathmark - 077/249"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "what did he see baby yoda"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crow puffer jacket"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue purple abstract figure"
+    },
+    {
+      "trait_type": "left",
+      "value": "kirby inhaling"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1571.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

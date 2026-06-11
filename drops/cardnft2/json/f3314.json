@@ -1,0 +1,74 @@
+{
+  "id": 3314,
+  "name": "Card #3314",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3314.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "scribbled clown face drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "left",
+      "value": "masonic halloween lantern panel"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "things going kind of good"
+    },
+    {
+      "trait_type": "hero",
+      "value": "killer instinct fulgore"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "river film fulton"
+    },
+    {
+      "trait_type": "right",
+      "value": "green leather creature"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "muscular person in school uniform"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "dr slump arale dragon"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sandshrew - Majestic Dawn 75/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3314.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

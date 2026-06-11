@@ -1,0 +1,66 @@
+{
+  "id": 2236,
+  "name": "Card #2236",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2236.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "blood and bones"
+    },
+    {
+      "trait_type": "right",
+      "value": "slam dunk anime player"
+    },
+    {
+      "trait_type": "left",
+      "value": "dr slump arale jeep"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy rainbow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "rainbow gradient rectangle"
+    },
+    {
+      "trait_type": "top right",
+      "value": "angel drif egg"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bulbafella"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Double Colorless Energy - 114/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2236.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

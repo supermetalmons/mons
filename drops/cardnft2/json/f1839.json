@@ -1,0 +1,54 @@
+{
+  "id": 1839,
+  "name": "Card #1839",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1839.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Cyndaquil - 57/111"
+    },
+    {
+      "trait_type": "center",
+      "value": "stick figures trees diagram"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "the batman chapter 2"
+    },
+    {
+      "trait_type": "top center",
+      "value": "pokemon berry sprites"
+    },
+    {
+      "trait_type": "right",
+      "value": "feather sculpture staircase"
+    },
+    {
+      "trait_type": "top right",
+      "value": "webpisces"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihulauq2dye267wryrovyiaodcrr7hlkda43vm3h4rzoplt2k2era/1839.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

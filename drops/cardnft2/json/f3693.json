@@ -1,0 +1,70 @@
+{
+  "id": 3693,
+  "name": "Card #3693",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3693.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus cross charcoal"
+    },
+    {
+      "trait_type": "center",
+      "value": "red abstract landscape"
+    },
+    {
+      "trait_type": "left",
+      "value": "aigis fight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rs character rune armor"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "chibi cyborg"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gold stars"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "blue japanese text box"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Staravia - 64/130"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifiq2wc5vglm7mm4lnvgflhho56yk6yvkjwkv7vxvyqfzzwplhk3i/3693.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

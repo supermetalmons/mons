@@ -1,0 +1,90 @@
+{
+  "id": 4860,
+  "name": "Card #4860",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4860.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "058 black cherry red extra holo triangle"
+    },
+    {
+      "trait_type": "top left",
+      "value": "ufo robot drawing"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Pazuzu"
+    },
+    {
+      "trait_type": "right",
+      "value": "dq slimes"
+    },
+    {
+      "trait_type": "left",
+      "value": "tk"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cave map on black"
+    },
+    {
+      "trait_type": "center",
+      "value": "geometric human figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp nazi drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones dragon ener"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Red Grainy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Porygon2 - 49/106"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid5ka4bsnkofsilze7x7zxpqkrnegjn7p4ix4hrh2mzfyhpifhfvy/4860.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

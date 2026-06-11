@@ -1,0 +1,42 @@
+{
+  "id": 6148,
+  "name": "Card #6148",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6148.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Weedle - 86/112"
+    },
+    {
+      "trait_type": "center",
+      "value": "tour guide pixel line"
+    },
+    {
+      "trait_type": "center",
+      "value": "flowers hearts shaymin"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6148.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "id": 8933,
+  "name": "Card #8933",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8933.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Angel Cloud Rococo Painting Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "pen scribble"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "alien creature crouching"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "abstract dark paint splatter"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "sasuke curse mark"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red blue black brushwork 2"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kadabra japanese name corner"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "red line drawing phone"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Illustrator Pikachu inverted mask variant 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haropla"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "owg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red fbi drif sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bus gamer (very bad anime)"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dragonite figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "absol"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "haze"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold precious moments pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pink slump reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raven"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "omanyte"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8933.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

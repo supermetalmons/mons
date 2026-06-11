@@ -1,0 +1,90 @@
+{
+  "id": 10377,
+  "name": "Card #10377",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10377.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "gold gradient"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "scribbled clown face drif"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "akira kneeling red cape"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "1639 shogi board"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "fantasy mage illustration"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "085 cobalt pink sunset extra holo star"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "sabrinas gastly purple - card2402 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "sabrinas gastly purple - card2402 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "Splicers Metamorph Demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bastard px milady"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Gray Mossy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted red-3 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Hypnotized gentleman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Jester lilac complex"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10377.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

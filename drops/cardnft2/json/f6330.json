@@ -1,0 +1,46 @@
+{
+  "id": 6330,
+  "name": "Card #6330",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6330.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Hoppip - 002/203"
+    },
+    {
+      "trait_type": "top center",
+      "value": "19 yo avant nft collector"
+    },
+    {
+      "trait_type": "center",
+      "value": "buck rogers cover 1"
+    },
+    {
+      "trait_type": "center",
+      "value": "jesus cross charcoal"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibhzn4dma6gtr25arbknrutu7kgtwaghtstb6mc3obt26wuukxtey/6330.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

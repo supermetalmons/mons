@@ -1,0 +1,90 @@
+{
+  "id": 4112,
+  "name": "Card #4112",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4112.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "Flukeman plush"
+    },
+    {
+      "trait_type": "left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "jesus mons"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "embryos imported 2"
+    },
+    {
+      "trait_type": "top right",
+      "value": "yellow dice eyes"
+    },
+    {
+      "trait_type": "right",
+      "value": "onigiri plate"
+    },
+    {
+      "trait_type": "center",
+      "value": "rocket dratini black"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shining sonichu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "droid lego"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "eva sketch"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted 99 heart"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Sableye - 35/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4112.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

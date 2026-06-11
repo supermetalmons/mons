@@ -1,0 +1,70 @@
+{
+  "id": 3515,
+  "name": "Card #3515",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3515.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sacred cross black"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "record player sculpture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi head"
+    },
+    {
+      "trait_type": "left",
+      "value": "anime snail with hat"
+    },
+    {
+      "trait_type": "right",
+      "value": "small white birdhouse"
+    },
+    {
+      "trait_type": "top center",
+      "value": "fish duct tape"
+    },
+    {
+      "trait_type": "hero",
+      "value": "aerodactyl anime art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Caveman Cutout"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Mizuki - 009"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeic632o6jxz5ngnqpwfei57csob2tiqkokww77jofxgzv5dj5ehwl4/3515.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": 8214,
+  "name": "Card #8214",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8214.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "bear face lick"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "circular chess board"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "money stack"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "water energy holographic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "kecleon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Crazy stone dancer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "regal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "green drif body"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "azumarill_xy_103_146_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicyidjumhov6lcyfr5tzjcheehrnmoo734waxdwvz3jltws6f53p4/8214.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

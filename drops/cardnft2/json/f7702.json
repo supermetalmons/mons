@@ -1,0 +1,102 @@
+{
+  "id": 7702,
+  "name": "Card #7702",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7702.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "fantasy_cloaked_figures_waterfall"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "i wish i was in a cabin with my hot wife"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "baby pointing up"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "record of lodoss war"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "colorful sufobi toys"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "bosch beggars and cripples"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "revolver skirt"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "water ripples"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "black pink abstract texture"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "alcremie strawberry form"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "guitar buddha"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini anime scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Shadow mace"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Digimon To Champion Digivolve - IMG_3505 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7702.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

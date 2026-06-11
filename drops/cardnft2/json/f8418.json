@@ -1,0 +1,94 @@
+{
+  "id": 8418,
+  "name": "Card #8418",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8418.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Abstract Woman Figure Painting Background - card1673-16"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "skyrim 11 11 11"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "gold arrow button"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "sith eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lucario cinderace chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Numemon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Painter demon chick"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "robot waving hologram"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "turtle skelly rider"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "033 deep teal lime extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "063 emerald violet dream extra holo moon"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Uzumaki Nine Tails - IMG_3531 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8418.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

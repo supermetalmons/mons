@@ -1,0 +1,62 @@
+{
+  "id": 2705,
+  "name": "Card #2705",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2705.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "yugi meme"
+    },
+    {
+      "trait_type": "left",
+      "value": "tombstone with arms"
+    },
+    {
+      "trait_type": "top right",
+      "value": "desktop icons"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hiei yu yu hakusho"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "drifella paint"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad 712"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "book"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Team Magma Schemer - 70/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibr6jhx62mp5lslsgwkyrjvtgqjkptnjw5c6za4vjz3elfs2i5lle/2705.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

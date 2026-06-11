@@ -1,0 +1,98 @@
+{
+  "id": 10090,
+  "name": "Card #10090",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10090.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Mother UFO Night Camp Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "onigiri plate"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "slots"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "crucidrifella statue"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white red - eye"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "097 deep teal lime extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - spiral"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "jynx_pokemon_art_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "krang"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "donkey kong sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Firesale demon reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper bag head figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "chibi superhero figure"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "jynx_pokemon_art_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10090.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

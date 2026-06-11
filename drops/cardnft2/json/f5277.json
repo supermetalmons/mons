@@ -1,0 +1,78 @@
+{
+  "id": 5277,
+  "name": "Card #5277",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5277.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "clay figures pulling rope"
+    },
+    {
+      "trait_type": "left",
+      "value": "embryo sex segregation diagram"
+    },
+    {
+      "trait_type": "top left",
+      "value": "minecraft streamer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic cobalt"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "evil empire banner"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kneeling NEO humanoid robot"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smash bros commercial _99"
+    },
+    {
+      "trait_type": "hero",
+      "value": "shadow lugia"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "grass engraving"
+    },
+    {
+      "trait_type": "center",
+      "value": "magic circle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ducklett 36/122"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiacvd5gagu2k54izq57p5bmhtaksfceiw7yb7256q7xvydxujhuoi/5277.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": 7843,
+  "name": "Card #7843",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7843.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pokemon Starter Collage Sparkle Background - card1673-27"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "chrollo silhouette"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Chrono Trigger helmet"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "lynch and laura"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "bloody pipe"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "minecraft mushroom painting"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pink toy car"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "green burst "
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "EXVeemon plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise-1 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones emo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu - card2035 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7843.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

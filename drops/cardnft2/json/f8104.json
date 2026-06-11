@@ -1,0 +1,94 @@
+{
+  "id": 8104,
+  "name": "Card #8104",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8104.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Ink Wash Panda Bamboo Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "minecraft mushroom painting"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "cave logo"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "blonde knight armor"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "aavegotchi  land"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "commander Rasso"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Yellow dragon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "defusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel fire"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wisp psychic"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "054 deep teal lime extra holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "023 emerald violet dream extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "_contact_sheet_preview_3"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Reshiram Black and White - IMG_3427 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8104.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

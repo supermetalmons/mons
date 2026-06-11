@@ -1,0 +1,62 @@
+{
+  "id": 2588,
+  "name": "Card #2588",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2588.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "red robot head"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue kimono dragon design"
+    },
+    {
+      "trait_type": "hero",
+      "value": "creepshow scroll guy"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "hiei kurama silhouette"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "angelic layer"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "shark costume person"
+    },
+    {
+      "trait_type": "center",
+      "value": "rainbow pixel line sketch"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Passimian - 088/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2588.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

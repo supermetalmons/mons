@@ -1,0 +1,130 @@
+{
+  "id": 10370,
+  "name": "Card #10370",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10370.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "cotton_candy_vapor_gradient"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "hawlucha sprite"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dark abstract sculpture"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rainbow holographic dragon"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "drifella with yoshis"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mushroom block ui"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "petra adrenochrome meme"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "blue face mask scene"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "32 baroque gold clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "57 fire ice split holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "063 emerald violet dream extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "026 red prism ember extra holo moon"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - orange fire - eye"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "suigetsu hozuki - card4774 white mask inverted transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "blood moprh sprites"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "suigetsu hozuki - card4774 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "robot skeleton warrior"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pog face"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blk poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "99 heart"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10370.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

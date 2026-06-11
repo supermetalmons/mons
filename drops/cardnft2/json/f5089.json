@@ -1,0 +1,78 @@
+{
+  "id": 5089,
+  "name": "Card #5089",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5089.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "power gradation"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "sasuke drifella black"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "border",
+      "value": "titans gradient"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Mossy spike ball"
+    },
+    {
+      "trait_type": "hero",
+      "value": "pyramid head silhouette"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Kumamon"
+    },
+    {
+      "trait_type": "right",
+      "value": "neversoft logo"
+    },
+    {
+      "trait_type": "top right",
+      "value": "red gemstone corner"
+    },
+    {
+      "trait_type": "top left",
+      "value": "clay feet"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gible - 94/113"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5089.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

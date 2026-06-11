@@ -1,0 +1,102 @@
+{
+  "id": 4800,
+  "name": "Card #4800",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4800.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "morchel"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "48 psychic pink blue clean wisp heart"
+    },
+    {
+      "trait_type": "top right",
+      "value": "purple crystal"
+    },
+    {
+      "trait_type": "top left",
+      "value": "plush fish skeleton"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pokerus"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "the numbers mason text"
+    },
+    {
+      "trait_type": "hero",
+      "value": "umbreon glow"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "messy paint smear"
+    },
+    {
+      "trait_type": "left",
+      "value": "gon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "blue purple gradient rectangle"
+    },
+    {
+      "trait_type": "center",
+      "value": "swirls"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Trust the hood blink"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "aavegotchi portal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small pixel potion"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Konohamaru - 1579"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih3tu5424bpicnfy7s4jtptnrywpdmovdsgewvhjtrddxszvadvai/4800.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

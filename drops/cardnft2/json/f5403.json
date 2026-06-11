@@ -1,0 +1,74 @@
+{
+  "id": 5403,
+  "name": "Card #5403",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5403.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "orange question mark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple red daggers"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "owls on pine branch"
+    },
+    {
+      "trait_type": "right",
+      "value": "Dende"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gradient arch"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "left",
+      "value": "green gundam mech chibi"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 5"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "blue japanese text box"
+    },
+    {
+      "trait_type": "top right",
+      "value": "help text"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Vulpix - 68/95"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5403.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

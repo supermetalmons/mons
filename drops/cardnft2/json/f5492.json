@@ -1,0 +1,82 @@
+{
+  "id": 5492,
+  "name": "Card #5492",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5492.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue penguin face"
+    },
+    {
+      "trait_type": "hero",
+      "value": "angry manga man"
+    },
+    {
+      "trait_type": "top left",
+      "value": "sussy baka graffiti"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "crt tv cart"
+    },
+    {
+      "trait_type": "left",
+      "value": "valve baby"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "cathedral ruins"
+    },
+    {
+      "trait_type": "right",
+      "value": "godzilla pixel art"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "yugi mutou dark yugi"
+    },
+    {
+      "trait_type": "center",
+      "value": "mew art card"
+    },
+    {
+      "trait_type": "top center",
+      "value": "hockey mask"
+    },
+    {
+      "trait_type": "top right",
+      "value": "chinese banknote corner"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alien creature crouching"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Aipom - Majestic Dawn 50/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaf5uq5hcirny63wmf4qwk5tb5cg5lw3n3jtnhfzk2tmwkdc4nd6i/5492.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

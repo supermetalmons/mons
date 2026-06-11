@@ -1,0 +1,62 @@
+{
+  "id": 6985,
+  "name": "Card #6985",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6985.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "spiral scratches"
+    },
+    {
+      "trait_type": "right",
+      "value": "gray stone sculpture fragment"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "diamond plate texture"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella in electric chair"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Blokhead"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Blood Hat"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "base card",
+      "value": "BeelStarmon - ST14-09"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6985.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

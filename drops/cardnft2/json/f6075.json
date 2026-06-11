@@ -1,0 +1,70 @@
+{
+  "id": 6075,
+  "name": "Card #6075",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6075.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "krillin falling"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Commandramon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shadow wizar"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "spiderman wizard costume"
+    },
+    {
+      "trait_type": "left",
+      "value": "emmaciated angel"
+    },
+    {
+      "trait_type": "top left",
+      "value": "green brown pixel texture"
+    },
+    {
+      "trait_type": "top right",
+      "value": "hanging bed crimes of the future"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "silver eevee"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Rashness - 336"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiek3jlgnfhxx4zxzye7zswej4pvoef5jzpx4nptdah6umjcdiqssy/6075.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

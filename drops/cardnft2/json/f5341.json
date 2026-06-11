@@ -1,0 +1,82 @@
+{
+  "id": 5341,
+  "name": "Card #5341",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5341.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "metalmorph"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "spilled flower pot"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dragon vortex watercolor"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lucario drawing"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bobble drif"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "magic key"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "d-terminal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Mid Drif Zombie Goblin"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "center",
+      "value": "frankenstein"
+    },
+    {
+      "trait_type": "left",
+      "value": "rayquaza orange smoke"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Giovanni’s Meowth - 43/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5341.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

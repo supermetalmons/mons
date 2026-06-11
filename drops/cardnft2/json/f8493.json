@@ -1,0 +1,74 @@
+{
+  "id": 8493,
+  "name": "Card #8493",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8493.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "green_pixel_camo_totem"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "biscuit engraving"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "dice three dots"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ornate gems"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gray diamond gradient"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gyaru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "runescape orc"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "spiky headphones devilish"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Shroud of Turin Unique Magic Artifact - IMG_3221 inverted white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeierisp4u6g72ailsoi7oxhbhb4ozetsmutlmwjpffsbm5qjea32dm/8493.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

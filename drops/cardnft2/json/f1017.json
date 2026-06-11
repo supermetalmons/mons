@@ -1,0 +1,70 @@
+{
+  "id": 1017,
+  "name": "Card #1017",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1017.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ageha - 011"
+    },
+    {
+      "trait_type": "center",
+      "value": "chalk sketch figures"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Dark Strike Fighter"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "sasuke black white"
+    },
+    {
+      "trait_type": "top right",
+      "value": "old atlantis cultic activities"
+    },
+    {
+      "trait_type": "top left",
+      "value": "david screaming"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small blue star icon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mugenatonman"
+    },
+    {
+      "trait_type": "top center",
+      "value": "orange panel texture"
+    },
+    {
+      "trait_type": "center",
+      "value": "orange pink abstract sketch"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicm5qpir3byulfvqcvqbjbzxf2p4ywgpbsjjrbjjwthvfzyxudrdm/1017.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

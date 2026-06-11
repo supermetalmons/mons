@@ -1,0 +1,54 @@
+{
+  "id": 6734,
+  "name": "Card #6734",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6734.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Tapirmon - Bo-36"
+    },
+    {
+      "trait_type": "center",
+      "value": "Coat of Arms with a Skull engraving"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "baron munchausen"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "paid rent for gallery"
+    },
+    {
+      "trait_type": "top right",
+      "value": "snorunt comparison collage"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifq7golvxs7rlmsarcicf7ckqff4r4ouddp5fcd6s7ieci2kf4tkm/6734.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

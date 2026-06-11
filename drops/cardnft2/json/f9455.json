@@ -1,0 +1,110 @@
+{
+  "id": 9455,
+  "name": "Card #9455",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9455.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Red Flower Garden Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "red potion bottle"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi white wizard bakura"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Booster Rauschenberg 1967 "
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "shinigami"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "venom tongue out"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "baby digimons"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "medieval figures and symbols"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "red pink abstract sketch"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "cartoon uzi"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rose shadow - labyrinth"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "28 baroque gold clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "41 psychic pink blue clean wisp rounded rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood red black - drop"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Lightning Energy Expedition - IMG_3419 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester boxer baby drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicggkx3wp6lbmpkyb5352uszd45dfyo2tvfmi75jw4ypoi34oyepu/9455.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

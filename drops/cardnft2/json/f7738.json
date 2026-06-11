@@ -1,0 +1,94 @@
+{
+  "id": 7738,
+  "name": "Card #7738",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7738.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "dark_rainbow_light_streaks"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "army men 2 gbc flowers"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "blessing curse drif party"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gold floral border"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pixelated heart"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "sh2 silhouette"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "Chiaotzu"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "Setzer Gabbiani"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "doom demon"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "icedancer drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue vase"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bird skull dq"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Giovanni Nidoran Male - IMG_3251 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7738.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

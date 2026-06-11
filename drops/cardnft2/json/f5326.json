@@ -1,0 +1,62 @@
+{
+  "id": 5326,
+  "name": "Card #5326",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5326.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "shinji bacon"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "robot ashley wood"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "giger machinations"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wiz kid"
+    },
+    {
+      "trait_type": "right",
+      "value": "jonny comic panel"
+    },
+    {
+      "trait_type": "top left",
+      "value": "soul diagram"
+    },
+    {
+      "trait_type": "center",
+      "value": "black silhouette landscape"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Pineco - 63/90"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibwrbd6cfv6er64w3ul5ecb5gx56hxmowtr6ettbug2iomckgchce/5326.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": 4194,
+  "name": "Card #4194",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4194.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top left",
+      "value": "nude frazetta horse girl"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "Nao Tsukiji"
+    },
+    {
+      "trait_type": "top right",
+      "value": "bandai logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "alien sketch"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "57 fire ice split holo moon"
+    },
+    {
+      "trait_type": "left",
+      "value": "masonic halloween lantern panel"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "parker paint splatter wall"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragon clown warrior boy character design"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "Caveman Cutout"
+    },
+    {
+      "trait_type": "top center",
+      "value": "toshinden"
+    },
+    {
+      "trait_type": "hero",
+      "value": "crucidrifella digimon illustration"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "videodrome gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "night in woods cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mid Drif Crimson Teal"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "money emoji cleric drif"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lycanroc - 76/131"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeici7qtpcvoudxn4fkjezphkqvjskionyczibn6tplbe4tg7xwqzvu/4194.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

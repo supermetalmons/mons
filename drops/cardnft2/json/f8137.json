@@ -1,0 +1,78 @@
+{
+  "id": 8137,
+  "name": "Card #8137",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8137.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pastel Abstract Canvas Texture Background - card1673-36"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gotenks majin buu battle"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "eye portrait brooch"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "purple blue goblins"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "arceus circle pattern sunset"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract brush strokes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink dratini outline"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "vorse_raider_yugioh_st_05_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8137.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

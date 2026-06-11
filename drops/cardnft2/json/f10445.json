@@ -1,0 +1,138 @@
+{
+  "id": 10445,
+  "name": "Card #10445",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10445.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko gradient void gold rose blocks"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "computer druid"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "black stars"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "grim reaper scythe"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bunny girl"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "wolf samurai sketch"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "my meme editor app wont let me export"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "hint shop sign"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "howls moving castle sketch"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "nerves ink"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "syd ghost"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "barbarian watercolor head"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rainbow diamond jester pattern variation 17"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "048 fire ice split extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 42"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - white light - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__mithril armor jester diamond"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "eevee altered - card6620 white mask"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "eevee altered - card6620 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - hero",
+      "value": "L and ryuk"
+    },
+    {
+      "trait_type": "top rare addon - bottom left",
+      "value": "budokai trunks future"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy-7 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg dither dark"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Vortex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby orange cream drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Phantomon"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10445.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

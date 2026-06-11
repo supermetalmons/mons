@@ -1,0 +1,74 @@
+{
+  "id": 5001,
+  "name": "Card #5001",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5001.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lsw frog"
+    },
+    {
+      "trait_type": "top right",
+      "value": "rainbow wheel"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga lust"
+    },
+    {
+      "trait_type": "right",
+      "value": "togetic at bat"
+    },
+    {
+      "trait_type": "top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "center",
+      "value": "watercolor cart scene"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "hamster and pointing finger"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "egyptian meme comic"
+    },
+    {
+      "trait_type": "hero",
+      "value": "charizard sketch flames"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Carvanha - Delta Species 61/110"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5001.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": 8182,
+  "name": "Card #8182",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8182.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Blue Pink Impressionist Flower Field Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "car front black and white"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "All Might weakened"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "dark paint smears canvas"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "tree dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bakugan"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pokemon booster pack"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp iphone zombi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple red daggers"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "monster_reborn_yugioh_83764718_card black halftone transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicng6dk4sm4ohkqygq7nwgm7j7b3nkkh5wr2c5rybqblxjdzer2wq/8182.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

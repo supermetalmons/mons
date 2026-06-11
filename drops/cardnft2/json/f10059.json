@@ -1,0 +1,94 @@
+{
+  "id": 10059,
+  "name": "Card #10059",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10059.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "crowley thoth tarot the fool"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "penguin with blue crown"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "freaky nikki"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "anpanman cartoon character"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 red soft holo holo star"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - rainbow gradient 02 - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "japanese_gengar_custom_card black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dragonite holding plush"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bulbasaur costume"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "arrow"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "solosis"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Mewtwo mask"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "drifella 1 figure"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "japanese_gengar_custom_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihisvwwcwcpz6qu7pfbepva63myqv53xgpemrsanjnqdylxge5koq/10059.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

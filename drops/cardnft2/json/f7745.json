@@ -1,0 +1,106 @@
+{
+  "id": 7745,
+  "name": "Card #7745",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7745.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pastel swag boy"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "Sasuke Itachi Uchiha black mask"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mewtwo pokemon stats"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "cyan blue drif ak"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "asian man gif"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gon"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red paint drips"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "red rectangle black background"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dialga hooh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "reimu"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "raiden lightning sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Monster enrg jest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "baby drifella corner"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink drif body"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "professor x"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Violet Moth"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon French Dark Haunter Spectrum obscur Team Rocket - card3080 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifhz3gfhwq7b3aslghzmiy5hrrbwqz3gfkxar6btew5vrxl2e2ipu/7745.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

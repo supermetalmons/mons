@@ -1,0 +1,130 @@
+{
+  "id": 10387,
+  "name": "Card #10387",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10387.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink bacon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "seedot"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "psyduck conspiracy files"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "chibi green hair knife"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "batman dark street scene"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "white spray 2"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "blue tree border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "usagi"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "neopets forum"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "poncho drifella logo"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "paint smears canvas"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "072 purple peach glow extra holo triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "jester_diamond__rune armor jester diamond"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "018 cyan magenta gold extra holo rectangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - blood on obsidian - triskelion"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "unown t - card1128 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "unown t - card1128 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ma2ad 712"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toon blue eyes"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bigfoot"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "FBI"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "marill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini dead"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10387.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": 3048,
+  "name": "Card #3048",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3048.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "left",
+      "value": "bald man holding star"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "celebi sprite"
+    },
+    {
+      "trait_type": "top left",
+      "value": "rubber hose cartoon"
+    },
+    {
+      "trait_type": "top center",
+      "value": "bat sketch dark"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Shock Troops Advance under Gas"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "drifella teen shattered glass"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Gastly - 65/105"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3048.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

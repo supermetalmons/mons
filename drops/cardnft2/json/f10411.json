@@ -1,0 +1,138 @@
+{
+  "id": 10411,
+  "name": "Card #10411",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10411.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Jesus Icon Portrait Background"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "staircase with vines"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "morpho"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "shinji bacon"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "abstract brush strokes"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "flying dratini woodblock over blood fire pit"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "super drifella world"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "wood floor"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "explosion tower"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "terriermon digimon card"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - neon rainbow - crucifix cross"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "053 red prism ember extra holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - antique gold - cuneiform tablet"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "091 deep teal lime extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "gaara and shukaku - card4790 black halftone transparent"
+    },
+    {
+      "trait_type": "blood energy sprite overlay",
+      "value": "corrupted warp Clown crucidrifella new"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "gaara and shukaku - card4790 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "nude vampirella"
+    },
+    {
+      "trait_type": "top rare addon - center",
+      "value": "abstract muscular figure circles"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strong cat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "swag caps"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yugis grandpa ghost figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zelda pot"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifygvwipivm43tycfkq2sfwrkmgaweoypkg2vvgalxn5p4lvymsoa/10411.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

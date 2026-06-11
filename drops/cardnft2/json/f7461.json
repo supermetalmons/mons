@@ -1,0 +1,106 @@
+{
+  "id": 7461,
+  "name": "Card #7461",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7461.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Crucidrifella with bloody Margielas - card1673-14"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "baby pointing up"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "anatomical illustration of a neck"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "purple pink abstract smoke"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "david lynch explains"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "Injection Fairy Lily"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "silver biomechanical frame"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "baseball player statue"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "purple werewolf sprite sheet"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Surprise Help - card3639 halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shinx kissy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "anime eye"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cross taygeta"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "white dratini 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "castlevania or double dragon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark void"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7461.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

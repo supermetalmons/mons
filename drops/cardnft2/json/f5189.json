@@ -1,0 +1,74 @@
+{
+  "id": 5189,
+  "name": "Card #5189",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5189.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "blonde warrior mask"
+    },
+    {
+      "trait_type": "center",
+      "value": "bloody angel"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bacon girl drif iii sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dore angel engraving"
+    },
+    {
+      "trait_type": "top center",
+      "value": "buddhist hell scene painting"
+    },
+    {
+      "trait_type": "top right",
+      "value": "baby angel oil"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "penguin octopus"
+    },
+    {
+      "trait_type": "border",
+      "value": "trash can normals border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Erika's Gloom - 46/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5189.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": 1520,
+  "name": "Card #1520",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1520.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Teddiursa - 65/75"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "gon manga collage"
+    },
+    {
+      "trait_type": "hero",
+      "value": "cowboy brawl painting"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "nen hexagon hxh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mechanical heart"
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "pokemon sushi art"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiclmefv3lxnzboxl4i6y2he6ndktvgu73gtfdar4obmirkwxjyaru/1520.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

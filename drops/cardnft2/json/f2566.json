@@ -1,0 +1,62 @@
+{
+  "id": 2566,
+  "name": "Card #2566",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2566.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "center",
+      "value": "They Spruce Themselves Up"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "arcane magic"
+    },
+    {
+      "trait_type": "top right",
+      "value": "smash bros commercial _99"
+    },
+    {
+      "trait_type": "hero",
+      "value": "deadpool sword gun"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "vengeful scythe"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "joker card small"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Blaine's Charmander - 60/132"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyfj2h4z4squwycc3x2msbwrqfanp2ye7t3btpjtuq6cm5xyb5my/2566.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

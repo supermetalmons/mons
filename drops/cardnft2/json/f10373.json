@@ -1,0 +1,110 @@
+{
+  "id": 10373,
+  "name": "Card #10373",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10373.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "black winged armored sd card"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "half-life"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "solid snake illustration"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pixelated building and fence"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "stars"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "neversoft logo"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "dr doom"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "misa"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "red dragon cloud border"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "doris yellow graffiti"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gengar lick"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "paint and stars"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "zetsu - card4762 white mask inverted transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "zetsu - card4762 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "biscuit tollo colored pencil mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark red daggers"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "rainbow dratini outline 2"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10373.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

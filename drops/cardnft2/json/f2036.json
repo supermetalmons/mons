@@ -1,0 +1,94 @@
+{
+  "id": 2036,
+  "name": "Card #2036",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2036.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "hero",
+      "value": "Morrigan Aensland"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "bladerunner 2049 woman"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "kurabbu grooming proof"
+    },
+    {
+      "trait_type": "center",
+      "value": "bloody cheetah cub"
+    },
+    {
+      "trait_type": "left",
+      "value": "black boots"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "lv cherry pattern"
+    },
+    {
+      "trait_type": "top left",
+      "value": "moth sketch"
+    },
+    {
+      "trait_type": "border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "right",
+      "value": "crying anime girl"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "chaos magic circle altar"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gold precious moments pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "top right",
+      "value": "stadium cloud label"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bronzong - 102/163"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeian7gokms5otvdghnnkhol75laxras7ya2la2lnl7dclavav66jbe/2036.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

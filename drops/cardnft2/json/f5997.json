@@ -1,0 +1,58 @@
+{
+  "id": 5997,
+  "name": "Card #5997",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5997.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "chrollo in white"
+    },
+    {
+      "trait_type": "pixel mosaic",
+      "value": "106-1774408769-185"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "mars watercolor preliminary"
+    },
+    {
+      "trait_type": "left",
+      "value": "can i get a copy of Black Ops 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "black dratini outline 3"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "2 emojis"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Single Strike Scroll of Piercing - 154/198"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibdh5rsaiduwjrftbisgbxzslesng7rlqx2nbv7eef34vcstf3tty/5997.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

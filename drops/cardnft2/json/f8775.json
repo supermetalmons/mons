@@ -1,0 +1,46 @@
+{
+  "id": 8775,
+  "name": "Card #8775",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8775.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "watermelon_candy_gradient"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "ultraman border"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Skorupi - card5415 white mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibpskolnfr3ecbrivn5t4yj7rltjt6hn3cjelbxkjmynsumfgfa5m/8775.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

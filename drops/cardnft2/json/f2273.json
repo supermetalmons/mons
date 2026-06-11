@@ -1,0 +1,78 @@
+{
+  "id": 2273,
+  "name": "Card #2273",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2273.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "border",
+      "value": "sunset gradient"
+    },
+    {
+      "trait_type": "center",
+      "value": "pikachu magic card"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "dark giger abstract texture 2"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "flying pikachu"
+    },
+    {
+      "trait_type": "top center",
+      "value": "library found footage"
+    },
+    {
+      "trait_type": "left",
+      "value": "nidoking"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "pleidian billy meier girl"
+    },
+    {
+      "trait_type": "hero",
+      "value": "spiked collar beast"
+    },
+    {
+      "trait_type": "top left",
+      "value": "wizards of the coast logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fallout ghoul dialogue"
+    },
+    {
+      "trait_type": "top right",
+      "value": "twin peaks giant"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Lopunny - 63/147"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeieptgn4wwcc4wj4mtwmkb6o3i466ef5fyelzwuu7wqf7itnzvvu6u/2273.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

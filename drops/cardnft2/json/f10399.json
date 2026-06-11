@@ -1,0 +1,126 @@
+{
+  "id": 10399,
+  "name": "Card #10399",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10399.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "demon bat and archangel"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "Launch black ops"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "egyptian cat"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "green oval blur"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "shredder tv screen"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "dragon quest purple villain costume"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "dice logo"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "kimmimaro"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "murakami spray"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "03 psychic pink blue clean wisp triangle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "05 vespertine purple peach clean wisp capsule"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "blood energy orb - lapis gold - ankh"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "altaria_sv37_sv94_card black halftone transparent"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "altaria_sv37_sv94_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "top rare addon - top right",
+      "value": "goku watching"
+    },
+    {
+      "trait_type": "top rare addon - bottom center",
+      "value": "alien giger figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "altaria"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nightmare sprite sheet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "brg cap"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue harpy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jester drif sprite"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibg4gs3hm6syjhjjskmdzsqnomwybg6mjaskyg72tgouhexfsks44/10399.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

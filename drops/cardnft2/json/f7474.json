@@ -1,0 +1,106 @@
+{
+  "id": 7474,
+  "name": "Card #7474",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7474.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "blue_black_electric_zigzag"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "hamster and pointing finger"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "fight"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "abstract paint strokes"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "morpho"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "exodia and god cards"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "battle stance"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "bubbles border"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "splatterhouse mask monster"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Pikachu - card2035 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp woo bloo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wise grandpa"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Wimpod"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "knight fella"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "red dratini gummy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "my first baby drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiaa6jz2b5vxzjkihf6zeo4fokn4xja3sqhsggqm5asibcbdts65vm/7474.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

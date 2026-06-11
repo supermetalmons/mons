@@ -1,0 +1,50 @@
+{
+  "id": 434,
+  "name": "Card #434",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0434.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Konohamaru - 1/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "dark hallway flashlight"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus aura sprite"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "wcw faceoff collage"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "stone warrior statues"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibyvazmohb57zwhy2gebyf33r6avwwwffoaiun2iurxsj6zyx3pti/0434.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

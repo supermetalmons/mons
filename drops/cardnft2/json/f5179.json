@@ -1,0 +1,66 @@
+{
+  "id": 5179,
+  "name": "Card #5179",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5179.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "Withered Bonnie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue robot with red shoes"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "woman engraving"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "brain powerd"
+    },
+    {
+      "trait_type": "left",
+      "value": "noob tube"
+    },
+    {
+      "trait_type": "top left",
+      "value": "white cartoon plush"
+    },
+    {
+      "trait_type": "center",
+      "value": "elite conspiracy"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "mewtwo secret super battle"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Quick Ball - 86/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5179.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

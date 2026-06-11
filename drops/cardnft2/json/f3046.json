@@ -1,0 +1,50 @@
+{
+  "id": 3046,
+  "name": "Card #3046",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3046.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top right",
+      "value": "zubat dead"
+    },
+    {
+      "trait_type": "center",
+      "value": "babbitt chromo lens engraving"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "pokemon calendar sketch"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "arcane magic"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Ursaring - Team Plasma 76/101"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3046.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

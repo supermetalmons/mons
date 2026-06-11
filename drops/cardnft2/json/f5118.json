@@ -1,0 +1,82 @@
+{
+  "id": 5118,
+  "name": "Card #5118",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5118.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "hero",
+      "value": "robot skeleton warrior"
+    },
+    {
+      "trait_type": "top left",
+      "value": "manga lust"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "right",
+      "value": "peach dress"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "black spray 6"
+    },
+    {
+      "trait_type": "top center",
+      "value": "red ellipse"
+    },
+    {
+      "trait_type": "center",
+      "value": "blue landscape sketch"
+    },
+    {
+      "trait_type": "left",
+      "value": "team rocket frozen"
+    },
+    {
+      "trait_type": "top right",
+      "value": "ancient mew shoes"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "clay figures tea party"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "bear silhouette comparison"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Wingull - 81/99"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeih4sksazasq2ad4umw2uqynu5zx5peax4jju5lccdp4t4nbkguqsa/5118.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

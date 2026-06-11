@@ -1,0 +1,118 @@
+{
+  "id": 9944,
+  "name": "Card #9944",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9944.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif maga"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "orange spiral"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "rpg battle menu"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "muscular person in school uniform"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "hisoka card anime"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "croconaw"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "chibi cell and hercule"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "bomb icons"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "death note notebook"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "034 holo chrome pastel extra holo heart"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "13 blood orange magenta holo circle"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "bottom_center_star__bottom center rainbow star variation 41"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "alakazam_base_set_1_102_card black halftone transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "pink pantheress"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "8888"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Drool harlequin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small plant dragon quest"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "FBI"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "alakazam_base_set_1_102_card pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigjz52572pxc7lvx6m4ygqvnnhb7nijgyn2barngwp4bkasgogl5i/9944.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

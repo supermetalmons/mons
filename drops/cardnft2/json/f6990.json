@@ -1,0 +1,58 @@
+{
+  "id": 6990,
+  "name": "Card #6990",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6990.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghost octo drif"
+    },
+    {
+      "trait_type": "top center",
+      "value": "burai"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "kiss xray"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "blue rectangle black"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "energy symbols dark"
+    },
+    {
+      "trait_type": "top left",
+      "value": "chibi clay character jump"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Morphomon - BT6-047"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicadrsl7ghmkwtxhaw2ukleoiu3curtia7cbcdyekwqrij34wrx3y/6990.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

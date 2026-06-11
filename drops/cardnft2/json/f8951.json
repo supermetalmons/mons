@@ -1,0 +1,102 @@
+{
+  "id": 8951,
+  "name": "Card #8951",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8951.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Pink White Drip Texture Background - card1673-42"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "minecraft pixelated landscape"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "neon sketch figures"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "mario paint logo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "orthodox cats"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "curves"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "cathedral ruins"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "spider tattoo eight"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "blue star light trails"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Gengar Topps - IMG_3480 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chaos ak"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mother creep sprite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sad astroboy"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Pale emoji demon bat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "purple hooded figure"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "terminator"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8951.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

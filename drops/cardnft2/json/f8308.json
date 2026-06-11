@@ -1,0 +1,94 @@
+{
+  "id": 8308,
+  "name": "Card #8308",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8308.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Kaleidoscope Rust Pattern Background - card1673-48"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "bomberman"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "nude vampirella"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "old man roshi"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "drifella evolution line"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "kero anime drawer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mudkip"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Cyan mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gizmo"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Bloody hat jump"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "justin bieber"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "metal bug"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "095 dark blood orange extra holo ellipse"
+    },
+    {
+      "trait_type": "gradient shapes",
+      "value": "049 holo chrome pastel extra holo rounded rectangle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "hidan_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifw34vttin375k7vjn5jx6gtgw5hs5mnabt6nln52xhv5alrg3iam/8308.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

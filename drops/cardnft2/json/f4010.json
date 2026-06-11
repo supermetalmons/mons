@@ -1,0 +1,98 @@
+{
+  "id": 4010,
+  "name": "Card #4010",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4010.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "right",
+      "value": "bullet hair"
+    },
+    {
+      "trait_type": "top right",
+      "value": "free play text"
+    },
+    {
+      "trait_type": "top left",
+      "value": "patapon marching chant"
+    },
+    {
+      "trait_type": "color shapes",
+      "value": "059 fire ice split extra holo triangle"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "fractal universe comparison"
+    },
+    {
+      "trait_type": "hero",
+      "value": "lycanroc anime face"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "scattered balls"
+    },
+    {
+      "trait_type": "center",
+      "value": "fantasy battle scene"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blood splatter"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "gem beetle poncho drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "syaoran sword"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mimic"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Black yarn mid drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "toy phone"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "mega dragonite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "shy guy sprites"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Riolu - 6/61"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeid2t7l42pngygtv4fl3eahtnyjv74jhyu352gt4orcgjntjilyswu/4010.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

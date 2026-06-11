@@ -1,0 +1,50 @@
+{
+  "id": 6161,
+  "name": "Card #6161",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6161.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Choji Akimichi 3/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "gold floral pattern 2"
+    },
+    {
+      "trait_type": "hero",
+      "value": "they should let me color frank millers batman"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Pixel Drif Crimson Bow"
+    },
+    {
+      "trait_type": "top right",
+      "value": "Patamon eating an apple"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeiftscuas7ulj5q4xjsjrz6abgoyj7fud5ygc7thnu6fyptrtasxwq/6161.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

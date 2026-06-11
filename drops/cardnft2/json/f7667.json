@@ -1,0 +1,90 @@
+{
+  "id": 7667,
+  "name": "Card #7667",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7667.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rothko_dark_blue_red_blocks"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "gengar snorlax dream"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "techno 3 metal pattern"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "solrock lunatone pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "orange purple wave lines"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "small computer icon"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "retarded drifella digimon champion"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "colored scribble"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Raid of Akatsuki - card3550 white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Wet wolf w rabbit"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "winged kuriboh"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "venom demon drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "333 mini"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigswnwreuoxpvv5vln2d4ekdfvu72yc6pnb5splfc5royvvxqbmmi/7667.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

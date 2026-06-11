@@ -1,0 +1,82 @@
+{
+  "id": 7941,
+  "name": "Card #7941",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7941.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "rainbow_diamond_pattern_alt"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "grim reaper scythe"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "red sketch figure"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "rainbow wave pattern"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "ammo counter hud"
+    },
+    {
+      "trait_type": "rare addon - overlay paint engraving",
+      "value": "spike tcg"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cuphead character small"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dratini water reflection"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Bald head"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted warp Jester lilac complex"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "boo"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Magic Eldritch Evolution - IMG_3488 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7941.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

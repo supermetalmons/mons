@@ -1,0 +1,62 @@
+{
+  "id": 3358,
+  "name": "Card #3358",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3358.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "top left",
+      "value": "bubble mew"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "neon sketch figures"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "Sam Eric, Pennsylvania (1978) Hiroshi Sugimoto"
+    },
+    {
+      "trait_type": "right",
+      "value": "no piplups sign"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "lets rock"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Bulbasaur - 44/102"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3stuovnnpalxe6iq7pvyb5xb6rmcrsolg444563zxhppbnu4ghi/3358.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

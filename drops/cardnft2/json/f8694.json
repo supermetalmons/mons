@@ -1,0 +1,70 @@
+{
+  "id": 8694,
+  "name": "Card #8694",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8694.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dutch Flower Still Life Dark Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "mifella mcdonalds meme"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "nidoking"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "ball engraving"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "alien triptych drif iii"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Light blue bomb check"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "exploded walkie talkie"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "strawb girl warrior bat drif"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Japanese Pikachu in Umbreon Poncho - IMG_3264 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeidiy62oge7xblkcv72eki7xim7aegdofcj3mvcx3vqkbdq2pc5a7a/8694.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

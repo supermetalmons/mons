@@ -1,0 +1,74 @@
+{
+  "id": 7927,
+  "name": "Card #7927",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7927.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "pink_blue_soft_gradient"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "pink oval gradient"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "wojak girls esoteric meme"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "naruto chakra xray duo"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "red nidoqueen trainer"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gray rock"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "paper craft kirby"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "poliwhirl"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "hydreigon sprite"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Pokemon Crobat - card4131 halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif4q2nbe4gx3rmosa4bqxcosvhnwv6f3lmdzmqmkgnxxlf4ipn3em/7927.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

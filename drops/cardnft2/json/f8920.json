@@ -1,0 +1,114 @@
+{
+  "id": 8920,
+  "name": "Card #8920",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8920.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Monet Pink Blue Garden Path Background"
+    },
+    {
+      "trait_type": "rare addon - border",
+      "value": "green brick border"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "play as the joker promo"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "pluto puppies sketches"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "tornado on road"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "sun face samurai"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "poke holo manga cover"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "drifella general with toast"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "house party nearby im bringing weird guys"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "deidara_water_style_custom_card white mask inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "yokai reaper"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Occultist wiz"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "sickly hand"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ghostly whisp"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue horned sofubi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "egg young thug"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "jesus piece"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fire cloud fishing"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "ditto cake pop"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue eyes zooka drif"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeicdae4lypnnkpzlvypbza5myhorhp2rjkwxirbe3f7dmcvpjnqjki/8920.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

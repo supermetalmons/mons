@@ -1,0 +1,102 @@
+{
+  "id": 9018,
+  "name": "Card #9018",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9018.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Soft Blue Green Landscape Painting Background"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "empty room corner"
+    },
+    {
+      "trait_type": "rare addon - top right",
+      "value": "yellow robot toy"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "chibi characters captured"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "rpg cookies"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "bacon face scribble"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "messy paint smear"
+    },
+    {
+      "trait_type": "rare addon - bottom left",
+      "value": "A Dead Trench Sentry"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto Pain Deva Path and Konan - IMG_3246 inverted white mask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nidoking "
+    },
+    {
+      "trait_type": "sprite",
+      "value": "lowbie drif"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Boy adventurer"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "homunculus in flask"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Demon bite"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "wailord"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "smooth pixel fella"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeibh4n4r36vfmfgryptoaf6vtuagd3f2nb74vlaambauh2brxbjkvm/9018.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": 6215,
+  "name": "Card #6215",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6215.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "base card",
+      "value": "Naruto Uzumaki 3/0"
+    },
+    {
+      "trait_type": "center",
+      "value": "chart golf"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "no war"
+    },
+    {
+      "trait_type": "hero",
+      "value": "L cross roses anime"
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "cezanne fruit bowl corner"
+    },
+    {
+      "trait_type": "top left",
+      "value": "acetoning espeon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeifbprieqyql72vqdaextuwnalbdctxvuitkntztyq5u7tbba45j3i/6215.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

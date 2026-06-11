@@ -1,0 +1,58 @@
+{
+  "id": 2614,
+  "name": "Card #2614",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2614.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "top center",
+      "value": "red black ornate border"
+    },
+    {
+      "trait_type": "top left",
+      "value": "mamano hunter youko"
+    },
+    {
+      "trait_type": "border",
+      "value": "colorful diamond border"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "buizel"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "ghent altarpiece"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "╨╜╨╡╤ä╨╛╤Ç, ╨╜╤Å╤ê╨║╨░, ╨░╨╗╤é╤â╤ê╨║╨░"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Jumpluff - 004/203"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeigdadtnipceyx43hllkobnxrhuuzw47a4bz4zgwedclctaeebmgli/2614.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

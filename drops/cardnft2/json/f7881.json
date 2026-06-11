@@ -1,0 +1,78 @@
+{
+  "id": 7881,
+  "name": "Card #7881",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7881.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Drif iii alien triptych middle - card1673-40"
+    },
+    {
+      "trait_type": "rare addon - hero",
+      "value": "abstract humanoid silent hill sketch"
+    },
+    {
+      "trait_type": "rare addon - center",
+      "value": "Mangekyo Sharingan"
+    },
+    {
+      "trait_type": "rare addon - right",
+      "value": "lego drif"
+    },
+    {
+      "trait_type": "rare addon - left",
+      "value": "gambling in the garden"
+    },
+    {
+      "trait_type": "rare addon - top left",
+      "value": "gastly"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Fantastic Planet"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "cloud ghosts digimon sprites"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "goxfold"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "Naruto CCG Kakashi Hatake - card0232 inverted halftone screenprint mask"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihkns5l3ianwsf3h4vsejavtwqkazf2z5veke6qg2ac3cszdy2y4q/7881.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

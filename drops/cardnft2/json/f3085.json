@@ -1,0 +1,62 @@
+{
+  "id": 3085,
+  "name": "Card #3085",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3085.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "sprite",
+      "value": "nurse chibi"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "9 tails"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "fbi pink drif"
+    },
+    {
+      "trait_type": "top center",
+      "value": "dragon ball logo"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "toon world monsters"
+    },
+    {
+      "trait_type": "center",
+      "value": "dragonite holo screentone"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "deoxys pokeball basketball player"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Clefable - 17/64"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif6zlxygsn56tztej3axlxofrxljfqozuwj5ftebre6twql3i2cvm/3085.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

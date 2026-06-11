@@ -1,0 +1,106 @@
+{
+  "id": 5068,
+  "name": "Card #5068",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5068.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "bottom left",
+      "value": "pixel characters and machine"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "jesus cross charcoal"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "greek vase warriors"
+    },
+    {
+      "trait_type": "right",
+      "value": "veiled"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "never forgetti drawing"
+    },
+    {
+      "trait_type": "top right",
+      "value": "radish sitting"
+    },
+    {
+      "trait_type": "center",
+      "value": "storm"
+    },
+    {
+      "trait_type": "top center",
+      "value": "gummies"
+    },
+    {
+      "trait_type": "hero",
+      "value": "demogorgon creature"
+    },
+    {
+      "trait_type": "top left",
+      "value": "flyff online"
+    },
+    {
+      "trait_type": "border",
+      "value": "gray black pixel border"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "dark magician girl pin"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "beldum"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "corrupted Garbage rainbow hat"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dragon arale"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "zombie dog dq"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "juggernaut"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "blue dratini gummy"
+    },
+    {
+      "trait_type": "base card",
+      "value": "Onix - EX Sandstorm 71/100"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeihhorf7achpzcmmlnd7zxlnjy3ujni5ysgopmfrz6a3ep2gwwe5hu/5068.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

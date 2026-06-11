@@ -1,0 +1,62 @@
+{
+  "id": 2878,
+  "name": "Card #2878",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2878.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "left",
+      "value": "shop entrance pixel art"
+    },
+    {
+      "trait_type": "top left",
+      "value": "unown"
+    },
+    {
+      "trait_type": "bottom right",
+      "value": "bomberman sprite sheet"
+    },
+    {
+      "trait_type": "overlay paint engraving",
+      "value": "Saint Christopher Facing Right engraving"
+    },
+    {
+      "trait_type": "bottom center",
+      "value": "stock market will collapse"
+    },
+    {
+      "trait_type": "center",
+      "value": "abstract pastel strokes"
+    },
+    {
+      "trait_type": "right",
+      "value": "kennedy collage fragment"
+    },
+    {
+      "trait_type": "base card",
+      "value": "N - 105/124"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif2ptphyh23segjtxwjugvgg526v5dsikh2cokrj6z4sgwobjluw4/2878.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

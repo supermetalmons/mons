@@ -1,0 +1,74 @@
+{
+  "id": 10163,
+  "name": "Card #10163",
+  "description": "card nft 2 cards · physical on mons dot shop",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10163.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    },
+    {
+      "trait_type": "background",
+      "value": "Dragon Painting Background"
+    },
+    {
+      "trait_type": "rare addon - bottom center",
+      "value": "circular chess board"
+    },
+    {
+      "trait_type": "rare addon - bottom right",
+      "value": "alien tamagatchi"
+    },
+    {
+      "trait_type": "rare addon - top center",
+      "value": "gotenks majin buu battle"
+    },
+    {
+      "trait_type": "bw mask",
+      "value": "pain akatsuki - card0597 black halftone inverted transparent"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "palkia scrafty fusion"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "small potted plant"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "Chibiru"
+    },
+    {
+      "trait_type": "sprite",
+      "value": "emo base"
+    },
+    {
+      "trait_type": "pixel line overlay",
+      "value": "pain akatsuki - card0597 pixel line saturated clipped transparent"
+    },
+    {
+      "trait_type": "Collection",
+      "value": "Super Rare Mask Holos"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "super rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeich74tloszkcfakhe5mjkfmh2k5li3ihewut74t3mnopvxxei3pl4/10163.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}
