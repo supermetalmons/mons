@@ -2,7 +2,7 @@
   "id": 168,
   "name": "Card #168 Receipt",
   "description": "redeemed on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/receipt_card_168.webp",
+  "image": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3ydbiydtyj6b3eonlzvmz3esojlfsvwcb3bynlwjg6vtbwvangq/0168.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -17,7 +17,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/receipt_card_168.webp",
+        "uri": "https://silver-real-rhinoceros-781.mypinata.cloud/ipfs/bafybeif3ydbiydtyj6b3eonlzvmz3esojlfsvwcb3bynlwjg6vtbwvangq/0168.webp",
         "type": "image/webp"
       }
     ],
