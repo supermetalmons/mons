@@ -1,0 +1,26 @@
+{
+  "id": 406,
+  "name": "Pack #406 Receipt",
+  "description": "redeemed on mons dot shop",
+  "image": "https://assets.mons.link/drops/cardnft2/img/receipt_pack_2.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "pack receipt"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/cardnft2/img/receipt_pack_2.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}
