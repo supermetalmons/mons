@@ -2,7 +2,7 @@ type ENSCache = {
   [address: string]: string | null;
 };
 
-export let ensCache: ENSCache = {};
+let ensCache: ENSCache = {};
 let cacheGeneration = 0;
 
 export async function resolveENS(address: string): Promise<string | null> {

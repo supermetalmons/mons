@@ -7,7 +7,7 @@ import {
   type BoardSquareTypeGrid,
 } from "../game/boardSquareTypes";
 
-export interface BoardPatternProps {
+interface BoardPatternProps {
   colorSet: ColorSet;
   size: number;
   cellSize: number;
@@ -91,10 +91,4 @@ export const generateBoardPattern = ({
   }
 
   return elements;
-};
-
-export const generateBoardPatternGroup = (
-  props: BoardPatternProps,
-): React.JSX.Element => {
-  return <g>{generateBoardPattern(props)}</g>;
 };

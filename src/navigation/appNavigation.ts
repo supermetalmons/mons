@@ -1,6 +1,6 @@
 import { RouteState, getCurrentRouteState } from "./routeState";
 
-export type RouteEventSource = "init" | "push" | "replace" | "popstate";
+type RouteEventSource = "init" | "push" | "replace" | "popstate";
 type RouteListener = (state: RouteState, source: RouteEventSource) => void;
 
 const listeners = new Set<RouteListener>();

@@ -1,6 +1,6 @@
 import { MATERIALS, MaterialName } from "./rocksMiningService";
 
-export type FrozenMaterials = Record<MaterialName, number>;
+type FrozenMaterials = Record<MaterialName, number>;
 
 type FrozenListener = (materials: FrozenMaterials) => void;
 

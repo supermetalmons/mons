@@ -511,7 +511,7 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
   }
 `;
 
-export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
+const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
   right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
@@ -533,7 +533,7 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   }
 `;
 
-export const ReactionButton = styled.button`
+const ReactionButton = styled.button`
   background: none;
   border: none;
   padding: 4px 8px;
@@ -695,22 +695,6 @@ export const StickerPill = styled(ReactionPill)`
     height: 24px;
     display: block;
   }
-`;
-
-export const StickerRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  width: 100%;
-  ${StickerPill} {
-    width: 100%;
-  }
-`;
-
-export const StickerRowLast = styled.div`
-  display: flex;
-  gap: 6px;
-  width: 100%;
 `;
 
 export const WagerBetButton = styled.button<{ $ready?: boolean }>`

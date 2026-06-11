@@ -49,7 +49,7 @@ export function getMonId(type: MonType, index: number): string {
   }
 }
 
-export function getDefaultMonId(type: MonType, profileId: string): number {
+function getDefaultMonId(type: MonType, profileId: string): number {
   switch (type) {
     case MonType.DEMON:
       return getStableRandomIdForProfileId(profileId, demonTypes.length);

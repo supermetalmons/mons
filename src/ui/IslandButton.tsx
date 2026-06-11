@@ -1074,10 +1074,7 @@ const getMaterialImageUrl = (name: MaterialName) => {
   return materialImagePromises.get(name)!;
 };
 
-export function IslandButton({
-  imageUrl = DEFAULT_URL,
-  dimmed = false,
-}: Props) {
+function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
   const [islandImgLoaded, setIslandImgLoaded] = useState(false);
   const [islandNatural, setIslandNatural] = useState<{
     w: number;

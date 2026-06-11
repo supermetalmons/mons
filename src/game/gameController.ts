@@ -113,7 +113,6 @@ import {
   getDisplayedBoardSquareType,
 } from "./boardSquareTypes";
 
-export let initialFen = "";
 export let isWatchOnly = false;
 export let isOnlineGame = false;
 export let isGameWithBot = false;
@@ -374,7 +373,6 @@ const inferStoredGameVariantFromFen = (fen: string): StoredGameVariant => {
 
 const applyGameSeedToCurrentGame = (seed: GameSeed): MonsWeb.MonsGameModel => {
   setCurrentVariant(seed.gameVariant);
-  initialFen = seed.fen;
   game = createGameModelForStoredVariant(seed.gameVariant);
   return game;
 };
@@ -695,10 +693,6 @@ const syncInviteBotIntoLocalGameButton = () => {
   Board.setInviteBotButtonVisible(shouldShowInviteBotIntoLocalGameButton());
   syncBotStrengthControlButton();
 };
-
-export function getCurrentGameFen(): string {
-  return game.fen();
-}
 
 export const isMatchOver = () => {
   return isGameOver;
@@ -3436,7 +3430,7 @@ export function sendPlayerEmojiUpdate(newId: number, aura?: string) {
   connection.updateEmoji(newId, false, auraToSend);
 }
 
-export function isPlayerSideTurn(): boolean {
+function isPlayerSideTurn(): boolean {
   return game.active_color() === playerSideColor;
 }
 
@@ -4222,7 +4216,7 @@ export function playSameCompletedPuzzleAgain() {
   }
 }
 
-export function resetToTheStartOfThePuzzle() {
+function resetToTheStartOfThePuzzle() {
   if (!loadCurrentGameFromFen(selectedProblem!.fen)) {
     return;
   }
@@ -5287,7 +5281,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
 
-export function showPuzzleInstructions() {
+function showPuzzleInstructions() {
   const text = selectedProblem!.description;
   Board.showInstructionsText(text);
 }
@@ -5296,7 +5290,7 @@ export function cleanupCurrentInputs() {
   currentInputs = [];
 }
 
-export function resumeTutorialFromBanner() {
+function resumeTutorialFromBanner() {
   didSelectPuzzle(getInitialProblem());
 }
 
@@ -5346,7 +5340,7 @@ export function didSelectPuzzle(
   triggerMoveHistoryPopupReload();
 }
 
-export function showNextProblem(problem: Problem) {
+function showNextProblem(problem: Problem) {
   didSelectPuzzle(problem);
 }
 

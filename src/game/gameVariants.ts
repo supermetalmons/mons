@@ -9,7 +9,7 @@ export type GameSeed = {
 
 export const legacyDefaultGameVariant: StoredGameVariant = "Classic";
 
-export function getAllGameVariantNames(): StoredGameVariant[] {
+function getAllGameVariantNames(): StoredGameVariant[] {
   const variants = Object.keys(MonsWeb.GameVariant).filter((key) => {
     if (/^\d+$/.test(key)) {
       return false;
@@ -56,7 +56,7 @@ const createSeededRandom = (seedValue: string): (() => number) => {
   };
 };
 
-export function runtimeGameVariantFromStoredValue(
+function runtimeGameVariantFromStoredValue(
   value: unknown,
 ): MonsWeb.GameVariant {
   return MonsWeb.GameVariant[normalizeStoredGameVariant(value)];

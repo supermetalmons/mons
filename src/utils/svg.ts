@@ -16,18 +16,6 @@ export function setFrame(
   );
 }
 
-export function setX(element: SVGElement, x: number): void {
-  element.setAttribute("x", (x * 100).toString());
-}
-
-export function offsetX(element: SVGElement | undefined, delta: number): void {
-  if (!element) return;
-  element.setAttribute(
-    "x",
-    (parseFloat(element.getAttribute("x") || "0") + delta * 100).toString(),
-  );
-}
-
 export function setOrigin(element: SVGElement, x: number, y: number): void {
   setOriginStr(element, (x * 100).toString(), (y * 100).toString());
 }
@@ -60,7 +48,7 @@ export function setSizeStr(
   element.setAttribute("height", height);
 }
 
-export function setOriginStr(element: SVGElement, x: string, y: string): void {
+function setOriginStr(element: SVGElement, x: string, y: string): void {
   element.setAttribute("x", x);
   element.setAttribute("y", y);
 }

@@ -220,14 +220,14 @@ export type EventCreateDateTimePayload = {
   localTimezoneIana?: string;
 };
 
-export type EventCreateOptions = {
+type EventCreateOptions = {
   announceOnTelegram?: boolean;
 };
 
 export type NavigationGamesPageCursor =
   QueryDocumentSnapshot<DocumentData> | null;
 
-export interface NavigationGamesPageResult {
+interface NavigationGamesPageResult {
   items: NavigationItem[];
   nextCursor: NavigationGamesPageCursor;
   hasMore: boolean;
@@ -296,10 +296,6 @@ const summarizeWagerState = (state: MatchWagerState | null) => {
     resolved,
   };
 };
-
-export function getSnapshotIdAndClearPathIfNeeded(): string | null {
-  return getRouteStateSnapshot().snapshotId;
-}
 
 class Connection {
   private app: FirebaseApp;

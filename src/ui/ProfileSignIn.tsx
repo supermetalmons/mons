@@ -4,11 +4,7 @@ import { flushSync } from "react-dom";
 import styled, { css } from "styled-components";
 import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
-import {
-  ModalOverlay,
-  ModalPopup,
-  ModalTitle,
-} from "./SharedModalComponents";
+import { ModalOverlay, ModalPopup, ModalTitle } from "./SharedModalComponents";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import {
   closeMenuAndInfoIfAllowedForEvent,
@@ -251,7 +247,9 @@ let showNotificationBannerImpl: (
 ) => void = () => {};
 let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
 type ProfileSignInPopupMode = "inline" | "event";
-let openProfileSignInPopupImpl: (mode?: ProfileSignInPopupMode) => void = () => {};
+let openProfileSignInPopupImpl: (
+  mode?: ProfileSignInPopupMode,
+) => void = () => {};
 let pendingSignInInlineAuthError: string | null | undefined = undefined;
 
 export const closeProfilePopupIfAny = () => {
@@ -514,12 +512,9 @@ const getXButtonLabel = (state: XButtonUiState): string => {
   return "X";
 };
 
-export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
-  authStatus,
-}) => {
+const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [popupMode, setPopupMode] =
-    useState<ProfileSignInPopupMode>("inline");
+  const [popupMode, setPopupMode] = useState<ProfileSignInPopupMode>("inline");
   const [isEventModalVisible, setIsEventModalVisible] = useState(() => {
     const eventModalState = getEventModalState();
     return eventModalState.isOpen && !!eventModalState.eventId;
@@ -1605,9 +1600,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
         !isEventSignInPopup &&
         !isPendingXSignInRedirectBlockingUi && (
           <ConnectButtonPopover>
-            <ConnectButtonWrapper>
-              {signInOptions}
-            </ConnectButtonWrapper>
+            <ConnectButtonWrapper>{signInOptions}</ConnectButtonWrapper>
           </ConnectButtonPopover>
         )}
       {isOpen &&

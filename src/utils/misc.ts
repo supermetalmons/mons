@@ -1,5 +1,3 @@
-import { storage } from "../utils/storage";
-
 export const isDesktopSafari = (() => {
   const userAgent = window.navigator.userAgent;
   const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
@@ -14,7 +12,6 @@ export const isMobile =
   /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(
     userAgent,
   );
-export const isMobileOrVision = isMobile || /visionOS/i.test(userAgent);
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 export const defaultEarlyInputEventName = isMobile ? "touchstart" : "mousedown";
 
@@ -26,11 +23,6 @@ export function generateNewInviteId(): string {
     id += letters.charAt(Math.floor(Math.random() * letters.length));
   }
   return id;
-}
-
-export function getStableRandomIdForOwnProfile(totalIdsCount: number): number {
-  const profileId = storage.getProfileId("");
-  return getStableRandomIdForProfileId(profileId, totalIdsCount);
 }
 
 export function getStableRandomIdForProfileId(

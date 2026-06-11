@@ -23,13 +23,12 @@ interface PersistedTopGamesPayload {
   topGames: NavigationItem[];
 }
 
-export interface NavigationGamesCacheSnapshot {
+interface NavigationGamesCacheSnapshot {
   topGames: NavigationItem[];
   pagedGames: NavigationItem[];
 }
 
-export const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS =
-  365 * 24 * 60 * 60 * 1000;
+const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_VERSION = 3;
 const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_KEY_PREFIX =
   "navigationGamesTopCache:v3:";

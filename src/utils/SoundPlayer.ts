@@ -3,7 +3,7 @@ import { isMobile } from "./misc";
 import { Sound } from "../utils/gameModels";
 import { playSounds } from "../content/sounds";
 
-export class SoundPlayer {
+class SoundPlayer {
   private audioContext!: AudioContext;
   private audioBufferCache = new Map<string, AudioBuffer>();
   private arrayBufferCache = new Map<string, ArrayBuffer>();

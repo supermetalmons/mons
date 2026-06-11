@@ -17,9 +17,7 @@ import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { setBoardStyleSet, setItemsStyleSet } from "../game/board";
 
-const PICTURE_BOARD_STYLE_SETS = [
-  BoardStyleSet.Pangchiu,
-] as const;
+const PICTURE_BOARD_STYLE_SETS = [BoardStyleSet.Pangchiu] as const;
 type PictureBoardStyleSet = (typeof PICTURE_BOARD_STYLE_SETS)[number];
 
 const BOARD_PREVIEW_URLS: Record<PictureBoardStyleSet, string> = {
@@ -152,7 +150,7 @@ export const preloadPangchiuBoardPreview = () => {
   PICTURE_BOARD_STYLE_SETS.forEach(preloadBoardPreview);
 };
 
-export const BoardStylePicker = styled.div`
+const BoardStylePicker = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   left: 8px;
@@ -259,7 +257,7 @@ const OptionButton = styled.button<{ isSelected?: boolean }>`
   }
 `;
 
-export const ColorSquare = styled(OptionButton)`
+const ColorSquare = styled(OptionButton)`
   svg {
     position: absolute;
     top: 0;
@@ -333,7 +331,7 @@ const ItemStylePreview = styled.div<{
   `}
 `;
 
-export const PlaceholderImage = styled.img`
+const PlaceholderImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -346,7 +344,7 @@ export const PlaceholderImage = styled.img`
   pointer-events: none;
 `;
 
-export const ImagePlaceholderBg = styled.div`
+const ImagePlaceholderBg = styled.div`
   position: absolute;
   top: 0;
   left: 0;

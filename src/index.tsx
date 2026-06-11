@@ -62,12 +62,6 @@ export const getIsMuted = (): boolean => globalIsMuted;
 
 const queryClient = new QueryClient();
 
-let getIsFullScreenAlertOpen: () => boolean = () => false;
-
-export function hasFullScreenAlertVisible(): boolean {
-  return getIsFullScreenAlertOpen();
-}
-
 export let enterProfileEditingMode: (enter: boolean) => void = () => {};
 export let setIslandButtonDimmed: (dimmed: boolean) => void = () => {};
 

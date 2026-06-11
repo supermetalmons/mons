@@ -57,20 +57,11 @@ export type NavigationItemStatus =
   | "ended"
   | "dismissed";
 export type NavigationGameStatus = "pending" | "waiting" | "active" | "ended";
-export type NavigationEventStatus =
-  | "waiting"
-  | "active"
-  | "ended"
-  | "dismissed";
-export type EventStatus = "scheduled" | "active" | "ended" | "dismissed";
-export type EventParticipantState = "active" | "eliminated" | "winner";
-export type EventMatchStatus =
-  | "upcoming"
-  | "pending"
-  | "host"
-  | "guest"
-  | "bye";
-export type EventRoundStatus = "upcoming" | "active" | "completed";
+type NavigationEventStatus = "waiting" | "active" | "ended" | "dismissed";
+type EventStatus = "scheduled" | "active" | "ended" | "dismissed";
+type EventParticipantState = "active" | "eliminated" | "winner";
+type EventMatchStatus = "upcoming" | "pending" | "host" | "guest" | "bye";
+type EventRoundStatus = "upcoming" | "active" | "completed";
 
 export interface NavigationGameItem {
   id: string;
@@ -224,7 +215,7 @@ export type WagerAgreement = {
   acceptedAt?: number;
 };
 
-export type WagerResolution = {
+type WagerResolution = {
   winnerId: string;
   loserId: string;
   material: MiningMaterialName;

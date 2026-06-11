@@ -28,14 +28,6 @@ const loadEmojis = async (): Promise<any> => {
   return loadingPromise;
 };
 
-export const getEmojis = async (): Promise<any> => {
-  return loadEmojis();
-};
-
-export const getCachedEmojis = (): any => {
-  return emojisCache;
-};
-
 export const useEmojis = () => {
   const [emojis, setEmojis] = useState<any>(emojisCache);
   const [isLoading, setIsLoading] = useState(!emojisCache);

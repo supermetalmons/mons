@@ -74,7 +74,7 @@ const ErrorMessage = styled.div`
   }
 `;
 
-export interface NameEditModalProps {
+interface NameEditModalProps {
   initialName: string;
   onSave: (name: string) => void;
   onCancel: () => void;
@@ -212,5 +212,3 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({
     </NameEditOverlay>
   );
 };
-
-export default NameEditModal;

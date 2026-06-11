@@ -9,7 +9,7 @@ import { storage } from "../utils/storage";
 
 const ROCK_VARIANT_COUNT = 27;
 
-export const DROP_TESTING_MODE = false;
+const DROP_TESTING_MODE = false;
 
 const getActiveProfileId = (): string => {
   return storage.getProfileId("");
@@ -44,15 +44,13 @@ const createSeededRandom = (
 
 type MiningListener = (snapshot: PlayerMiningData) => void;
 
-export type DidBreakRockResult = {
+type DidBreakRockResult = {
   drops: MiningMaterialName[];
   delta: PlayerMiningMaterials;
   date: string;
 };
 
 export type MaterialName = MiningMaterialName;
-export type MiningMaterials = PlayerMiningMaterials;
-export type MiningSnapshot = PlayerMiningData;
 
 export const MATERIALS = MINING_MATERIAL_NAMES;
 
@@ -226,7 +224,7 @@ const createTestingDrops = (): {
   return createDropsFromRandom(Math.random);
 };
 
-export type MiningSubscription = () => void;
+type MiningSubscription = () => void;
 
 export const rocksMiningService = {
   MATERIALS,

@@ -41,18 +41,6 @@ export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   profile: null,
 });
 
-export function openSolAddress(address: string) {
-  const explorerBaseUrl = "https://explorer.solana.com/address/";
-  const explorerUrl = explorerBaseUrl + address;
-  window.open(explorerUrl, "_blank", "noopener,noreferrer");
-}
-
-export function openEthAddress(address: string) {
-  const etherscanBaseUrl = "https://etherscan.io/address/";
-  const etherscanUrl = etherscanBaseUrl + address;
-  window.open(etherscanUrl, "_blank", "noopener,noreferrer");
-}
-
 export function recalculateRatingsLocallyForUids(
   victoryUid: string,
   defeatUid: string,

@@ -1063,7 +1063,7 @@ function showHiddenWaitingStickers() {
   });
 }
 
-export function didUpdateSticker(
+function didUpdateSticker(
   stickerType: string,
   nextSticker: string | undefined,
 ) {

@@ -18,7 +18,7 @@ import {
 } from "../navigation/routeState";
 import { INVALID_SNAPSHOT_ROUTE_ERROR } from "./sessionErrors";
 
-export type AppSessionTarget = RouteState;
+type AppSessionTarget = RouteState;
 type TransitionOptions = {
   replace?: boolean;
   skipNavigation?: boolean;
@@ -306,18 +306,6 @@ export const isTransitionInProgress = (): boolean => {
 
 export const getCurrentTarget = (): RouteState => {
   return currentTarget;
-};
-
-export const getCurrentSessionId = () => {
-  return getMatchSessionId();
-};
-
-export const adoptTargetWithoutTransition = (
-  target: RouteState,
-  replace = false,
-) => {
-  currentTarget = target;
-  applyPathForTarget(target, replace);
 };
 
 export const initializeAppSessionManager = () => {

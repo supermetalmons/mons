@@ -122,7 +122,7 @@ const CircularButton = styled.button`
 
 const listeners: Array<() => void> = [];
 
-export const subscribeToBoardStyleChanges = (listener: () => void) => {
+const subscribeToBoardStyleChanges = (listener: () => void) => {
   listeners.push(listener);
   return () => {
     const index = listeners.indexOf(listener);
@@ -136,7 +136,7 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export type BoardEndOfGameMarker = "none" | "victory" | "resign";
+type BoardEndOfGameMarker = "none" | "victory" | "resign";
 export type BoardTimerColor = "green" | "orange" | "red";
 type BotStrengthControlMode = "fast" | "normal" | "pro";
 
@@ -240,7 +240,6 @@ let updateWagerPlayerUidsImpl: (
   playerUid: string,
   opponentUid: string,
 ) => void = () => {};
-let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
 type BotStrengthControlOverlayState = {
   visible: boolean;
   mode: BotStrengthControlMode;
@@ -292,10 +291,6 @@ export const updateWagerPlayerUids = (
   opponentUid: string,
 ) => {
   updateWagerPlayerUidsImpl(playerUid, opponentUid);
-};
-
-export const clearBoardTransientUi = (fadeOutVideos?: boolean) => {
-  clearBoardTransientUiImpl(fadeOutVideos);
 };
 
 export const setBoardPlayerInfoOverlayState = (
@@ -368,8 +363,8 @@ const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
 const WAGER_STACK_NAME_GAP_MULTIPLIER = 0.13;
 const WAGER_STACK_REACTION_GAP_MULTIPLIER = 0.08;
 const NAME_REACTION_GAP_MULTIPLIER = 0.0777;
-const WAGER_STACK_WIDTH_MULTIPLIER = 0.88;
-const WAGER_STACK_HEIGHT_MULTIPLIER = 0.92;
+const WAGER_STACK_WIDTH_MULTIPLIER = 1.08;
+const WAGER_STACK_HEIGHT_MULTIPLIER = 0.94;
 
 const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
 const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 1.4s ease-in-out infinite`;
@@ -898,14 +893,7 @@ const BoardPlayerInfoText: React.FC<BoardPlayerInfoTextProps> = ({
       );
       onBaselineChange?.();
     }
-  }, [
-    children,
-    fontSizePx,
-    fontStyle,
-    fontWeight,
-    onBaselineChange,
-    visible,
-  ]);
+  }, [children, fontSizePx, fontStyle, fontWeight, onBaselineChange, visible]);
 
   return (
     <span
@@ -1033,7 +1021,9 @@ const getWagerStackRectForName = (
     slotLayout.nameX +
     nameMeasurement.width +
     WAGER_STACK_NAME_GAP_MULTIPLIER * multiplicator;
-  const y = slotLayout.nameY - h * 0.68;
+  // Stacks build upward from the rect bottom; anchor mostly above the name so
+  // the lowest chip rests near the name baseline like a chip on a table.
+  const y = slotLayout.nameY - h * 0.86;
   return clampBoardRect(x, y, w, h);
 };
 
@@ -1073,8 +1063,7 @@ const playerInfoSlotHasNameReaction = (slot: BoardPlayerInfoSlotState) =>
 
 const getWagerSideForBoardRect = (
   rect: Pick<WagerPileRect, "y">,
-): WagerPileSide =>
-  rect.y < BOARD_MID_Y_UNITS ? "opponent" : "player";
+): WagerPileSide => (rect.y < BOARD_MID_Y_UNITS ? "opponent" : "player");
 
 const getWagerPileVisualSlot = (pile: WagerPileRenderState): WagerPileSide => {
   if (pile.side === "player" || pile.side === "opponent") {
@@ -1097,8 +1086,19 @@ const addWagerStackRightEdgeForPile = (
 const wagerStackRightEdgesEqual = (
   a: WagerStackRightEdges,
   b: WagerStackRightEdges,
-) =>
-  a.player === b.player && a.opponent === b.opponent;
+) => a.player === b.player && a.opponent === b.opponent;
+
+const getWagerIconPaintDepth = (
+  frame: { y: number },
+  rect: Pick<WagerPileRect, "y" | "h">,
+) => {
+  if (rect.h <= 0) {
+    return 0;
+  }
+  const normalizedTop = (frame.y - rect.y) / rect.h;
+  const clampedTop = Math.max(0, Math.min(1, normalizedTop));
+  return Math.round((1 - clampedTop) * 1000);
+};
 
 const getInviteBotButtonLayout = (
   scoreX: number,
@@ -2212,7 +2212,6 @@ const BoardComponent: React.FC = () => {
       showRaibowAuraImpl = () => {};
       updateAuraForAvatarElementImpl = () => {};
       updateWagerPlayerUidsImpl = () => {};
-      clearBoardTransientUiImpl = () => {};
       setBoardPlayerInfoOverlayStateImpl = () => {};
       applyInviteBotButtonLayout(null);
     };
@@ -2260,8 +2259,6 @@ const BoardComponent: React.FC = () => {
       playerVideoVisible,
     ],
   );
-
-  clearBoardTransientUiImpl = clearBoardTransientUiHandler;
 
   useEffect(() => {
     return registerBoardTransientUiHandler(clearBoardTransientUiHandler);
@@ -2717,6 +2714,7 @@ const BoardComponent: React.FC = () => {
           icon.style.top = `${topPct}%`;
           icon.style.width = `${sizePctW}%`;
           icon.style.height = `${sizePctH}%`;
+          icon.style.zIndex = String(getWagerIconPaintDepth(frame, rect));
         }
 
         if (shouldAnimate && newIconsStartIndex < visibleCount) {
@@ -2840,6 +2838,7 @@ const BoardComponent: React.FC = () => {
           icon.style.top = `${topPct}%`;
           icon.style.width = `${sizePctW}%`;
           icon.style.height = `${sizePctH}%`;
+          icon.style.zIndex = String(getWagerIconPaintDepth(frame, rect));
         }
 
         disappearingAnimationStartedRef.current[side] = true;
@@ -3071,13 +3070,11 @@ const BoardComponent: React.FC = () => {
     : isWhiteBoardStyle
       ? whiteBoardTransform
       : standardBoardTransform;
-  const pictureBoardBackgroundUrl =
-    isWhiteBoardStyle
-      ? WHITE_BOARD_BACKGROUND_URL
-      : PANGCHIU_BOARD_BACKGROUND_URL;
-  const isPictureBoardImageLoaded = !!loadedPictureBoardUrls[
-    pictureBoardBackgroundUrl
-  ];
+  const pictureBoardBackgroundUrl = isWhiteBoardStyle
+    ? WHITE_BOARD_BACKGROUND_URL
+    : PANGCHIU_BOARD_BACKGROUND_URL;
+  const isPictureBoardImageLoaded =
+    !!loadedPictureBoardUrls[pictureBoardBackgroundUrl];
   const boardClassName = `board-svg ${
     isPangchiuBoardLayout ? "grid-hidden" : "grid-visible"
   }`;
@@ -3528,8 +3525,8 @@ const BoardComponent: React.FC = () => {
                 isPictureBoardImageLoaded
                   ? "transparent"
                   : prefersDarkMode
-                  ? "var(--color-gray-23)"
-                  : "var(--boardBackgroundLight)"
+                    ? "var(--color-gray-23)"
+                    : "var(--boardBackgroundLight)"
               }
             />
             {shouldIncludePictureBoardImage && (
@@ -3556,27 +3553,15 @@ const BoardComponent: React.FC = () => {
             )}
           </g>
         )}
-        <g
-          id="monsboard"
-          transform={activeBoardTransform}
-        ></g>
-        <g
-          id="highlightsLayer"
-          transform={activeBoardTransform}
-        ></g>
-        <g
-          id="itemsLayer"
-          transform={activeBoardTransform}
-        ></g>
+        <g id="monsboard" transform={activeBoardTransform}></g>
+        <g id="highlightsLayer" transform={activeBoardTransform}></g>
+        <g id="itemsLayer" transform={activeBoardTransform}></g>
         <g id="playerInfoLayer">
           {renderPlayerInfoSlotIcon(playerInfoLayout.opponent)}
           {renderPlayerInfoSlotIcon(playerInfoLayout.player)}
         </g>
         <g id="controlsLayer"></g>
-        <g
-          id="effectsLayer"
-          transform={activeBoardTransform}
-        ></g>
+        <g id="effectsLayer" transform={activeBoardTransform}></g>
         {botStrengthControlOverlay.visible &&
           botStrengthControlOverlay.size > 0 && (
             <g

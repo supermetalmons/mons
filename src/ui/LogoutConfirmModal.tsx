@@ -19,7 +19,7 @@ const LogoutTitle = styled(ModalTitle)`
   text-align: left;
 `;
 
-export interface LogoutConfirmModalProps {
+interface LogoutConfirmModalProps {
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -63,5 +63,3 @@ export const LogoutConfirmModal: React.FC<LogoutConfirmModalProps> = ({
     </ModalOverlay>
   );
 };
-
-export default LogoutConfirmModal;

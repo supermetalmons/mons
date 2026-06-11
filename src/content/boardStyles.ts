@@ -66,7 +66,7 @@ const resolveInitialBoardStyleSet = (): BoardStyleSet => {
     : BoardStyleSet.Grid;
 };
 
-export let currentBoardStyleSet: BoardStyleSet = resolveInitialBoardStyleSet();
+let currentBoardStyleSet: BoardStyleSet = resolveInitialBoardStyleSet();
 if (!isBoardStyleSet(storedBoardStyleSet)) {
   storage.setBoardStyleSet(currentBoardStyleSet);
 }
@@ -274,12 +274,6 @@ export const setBoardColorSet = (colorSetKey: ColorSetKey) => {
     ...colorSetPreferencesByMode,
     [currentColorMode]: colorSetKey,
   };
-  storage.setBoardColorSetsByTheme(colorSetPreferencesByMode);
-  applyColorMode(currentColorMode);
-};
-
-export const resetBoardColorSetPreferences = () => {
-  colorSetPreferencesByMode = { ...DEFAULT_COLOR_SET_PREFERENCES_BY_MODE };
   storage.setBoardColorSetsByTheme(colorSetPreferencesByMode);
   applyColorMode(currentColorMode);
 };

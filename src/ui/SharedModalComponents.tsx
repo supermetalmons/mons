@@ -49,7 +49,7 @@ export const ButtonsContainer = styled.div`
   margin-top: 4px;
 `;
 
-export const Button = styled.button`
+const Button = styled.button`
   padding: 10px 16px;
   border: none;
   border-radius: 20px;
@@ -176,19 +176,5 @@ export const DangerButton = styled(Button)<{ disabled?: boolean }>`
           ? "var(--color-gray-55)"
           : "var(--dangerButtonBackgroundActiveDark)"};
     }
-  }
-`;
-
-export const Subtitle = styled.p`
-  margin: 0 0 24px 0;
-  color: var(--color-gray-69);
-  font-size: 0.95rem;
-  line-height: 1.4;
-  cursor: default;
-  font-style: italic;
-  opacity: 0.8;
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--secondaryTextColorDark);
   }
 `;

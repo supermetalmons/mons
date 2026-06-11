@@ -1,5 +1,5 @@
-export type XAuthUiFeedbackTarget = "signin" | "settings";
-export type XAuthUiFeedbackKind = "error" | "success";
+type XAuthUiFeedbackTarget = "signin" | "settings";
+type XAuthUiFeedbackKind = "error" | "success";
 
 export type XAuthUiFeedback = {
   target: XAuthUiFeedbackTarget;

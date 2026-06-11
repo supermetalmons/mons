@@ -33,7 +33,7 @@ export function subscribeMoveHistoryPopupReload(listener: () => void) {
 export function triggerMoveHistoryPopupSelectionReset() {
   moveHistorySelectionResetListeners.forEach((listener) => listener());
 }
-export function subscribeMoveHistoryPopupSelectionReset(listener: () => void) {
+function subscribeMoveHistoryPopupSelectionReset(listener: () => void) {
   moveHistorySelectionResetListeners.add(listener);
   return () => {
     moveHistorySelectionResetListeners.delete(listener);

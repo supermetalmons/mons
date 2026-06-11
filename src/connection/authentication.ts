@@ -26,7 +26,7 @@ import {
   flushPendingOwnProfileMiningState,
   syncOwnProfileMiningState,
 } from "../services/ownProfileMiningHydration";
-export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
+type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
 const ETH_INTENT_STORAGE_KEY = "ethIntentByNonceV1";

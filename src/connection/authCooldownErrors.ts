@@ -1,10 +1,8 @@
-export type AuthMethodKey = "eth" | "sol" | "apple" | "x";
-export type AuthCooldownReason =
-  | "method-reuse-cooldown"
-  | "profile-method-cooldown";
-export type AuthCooldownScope = "method" | "profile-method";
+type AuthMethodKey = "eth" | "sol" | "apple" | "x";
+type AuthCooldownReason = "method-reuse-cooldown" | "profile-method-cooldown";
+type AuthCooldownScope = "method" | "profile-method";
 
-export interface AuthCooldownErrorDetails {
+interface AuthCooldownErrorDetails {
   reason: AuthCooldownReason;
   scope: AuthCooldownScope;
   method: AuthMethodKey | null;
@@ -147,7 +145,7 @@ const formatRetryAt = (retryAtMs: number | null): string | null => {
   });
 };
 
-export const parseAuthCooldownError = (
+const parseAuthCooldownError = (
   error: unknown,
 ): AuthCooldownErrorDetails | null => {
   if (!isRecord(error)) {

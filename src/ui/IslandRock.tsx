@@ -88,7 +88,7 @@ type CrashParticleElement = SVGGElement & { __meta: CrashParticleMeta };
 
 const CRASH_COLOR_PALETTE = ["#FFF59D", "#FFE082", "#FFD54F"];
 
-export const IslandRock = forwardRef<IslandRockHandle, Props>(
+const IslandRock = forwardRef<IslandRockHandle, Props>(
   function IslandRock(
     {
       className,

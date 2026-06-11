@@ -134,25 +134,6 @@ export function setAnimatedMonsEnabled(
   refreshBoardAfterStyleChange(true);
 }
 
-export function toggleExperimentalMode(
-  defaultMode: boolean,
-  animated: boolean,
-  pangchiu: boolean,
-  doNotStore: boolean,
-) {
-  if (defaultMode) {
-    setAnimatedMonsEnabled(false, doNotStore);
-    return;
-  }
-  if (animated) {
-    setAnimatedMonsEnabled(true, doNotStore);
-    return;
-  }
-  if (pangchiu) {
-    setItemsStyleSet(AssetsSet.Pangchiu, doNotStore);
-  }
-}
-
 export let playerSideMetadata = newEmptyPlayerMetadata();
 export let opponentSideMetadata = newEmptyPlayerMetadata();
 
@@ -303,8 +284,12 @@ const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
 export const WAGER_WIN_PILE_SCALE = 1.3333;
-const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
+const WAGER_ICON_SIZE_MULTIPLIER = 0.56;
 const WAGER_ICON_PADDING_FRAC = 0.15;
+const WAGER_STACK_BOTTOM_V = 0.86;
+const WAGER_STACK_TOP_V = 0.14;
+const WAGER_STACK_MAX_STEP_V = 0.16;
+const WAGER_STACK_U_JITTER = 0.008;
 const WAGER_WIN_ANIM_DURATION_MS = 800;
 
 const applyInviteBotButtonColors = (
@@ -364,7 +349,7 @@ type PlayerMetadataDisplaySnapshot = {
   displayName: string | undefined;
 };
 type WagerSlotLayoutMap = Partial<Record<WagerPileSide, WagerSlotLayout>>;
-export type WagerPileAnimation = "none" | "appear" | "disappear";
+type WagerPileAnimation = "none" | "appear" | "disappear";
 export type WagerPileRenderState = {
   side: WagerPileSide | "winner";
   rect: WagerPileRect;
@@ -1781,7 +1766,7 @@ export function setBotStrengthControlVisible(visible: boolean) {
   emitBoardPlayerInfoOverlayState();
 }
 
-export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
+function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
   const runToken = ++monsBoardDisplayAnimationRunToken;
   if (!monsBoardDisplayAnimationLifecycleTracked) {
@@ -2773,7 +2758,7 @@ export function showItemSelection(): void {
   setTopBoardOverlayVisible(true, overlay, false);
 }
 
-export function addElementToItemsLayer(element: SVGElement, depth: number) {
+function addElementToItemsLayer(element: SVGElement, depth: number) {
   if (!itemsLayer) return;
 
   if (isPangchiuBoard()) {
@@ -3024,37 +3009,84 @@ function generateWagerPositions(
   count: number,
 ): Array<{ u: number; v: number }> {
   if (count <= 0) return [];
-  const columns = getWagerStackColumnCount(count);
-  const rows = Math.max(1, Math.ceil(count / columns));
-  const positions: Array<{ u: number; v: number }> = [];
+  const stackCount = getWagerStackColumnCount(count);
+  const stackHeights = computeWagerStackHeights(count, stackCount);
+  const tallestStack = Math.max(1, ...stackHeights);
+  const stackUs = computeWagerStackCenterUs(stackCount);
+  const availableV = WAGER_STACK_BOTTOM_V - WAGER_STACK_TOP_V;
+  const stepV =
+    tallestStack > 1
+      ? Math.min(WAGER_STACK_MAX_STEP_V, availableV / (tallestStack - 1))
+      : 0;
   const clampStackCoord = (value: number) =>
-    Math.max(0.14, Math.min(0.86, value));
-  for (let index = 0; index < count; index += 1) {
-    const row = Math.floor(index / columns);
-    const col = index % columns;
-    const itemsInRow = Math.min(columns, count - row * columns);
-    const rowOffset = (columns - itemsInRow) / 2;
-    const rowZigzagOffset = row % 2 === 0 ? -1 : 1;
-    const baseU = columns === 1 ? 0.5 : (col + rowOffset + 0.5) / columns;
-    const u =
-      columns === 1
-        ? baseU + rowZigzagOffset * 0.025
-        : baseU + rowZigzagOffset * 0.015;
-    const centeredColumn = col - (itemsInRow - 1) / 2;
-    const v = 1 - (row + 0.58) / rows + centeredColumn * 0.035;
-    positions.push({ u: clampStackCoord(u), v: clampStackCoord(v) });
+    Math.max(WAGER_STACK_TOP_V, Math.min(WAGER_STACK_BOTTOM_V, value));
+  const positions: Array<{ u: number; v: number }> = [];
+  for (let s = 0; s < stackCount; s += 1) {
+    const baseU = stackUs[s];
+    const height = stackHeights[s];
+    for (let i = 0; i < height; i += 1) {
+      // Rendering depends on array order: bottom chip first so chips above it
+      // overlap correctly to look like a chip stack viewed from the side.
+      const jitter = (i % 2 === 0 ? -1 : 1) * WAGER_STACK_U_JITTER;
+      positions.push({
+        u: clampStackCoord(baseU + jitter),
+        v: clampStackCoord(WAGER_STACK_BOTTOM_V - i * stepV),
+      });
+    }
   }
   return positions;
 }
 
+function computeWagerStackHeights(count: number, stackCount: number): number[] {
+  const safeStacks = Math.max(1, stackCount);
+  const base = Math.floor(count / safeStacks);
+  const extra = count % safeStacks;
+  const heights: number[] = [];
+  // Distribute extra chips to the inner columns first so the silhouette peaks
+  // toward the center like a casino chip pile with taller stacks in front.
+  for (let s = 0; s < safeStacks; s += 1) {
+    heights.push(base);
+  }
+  const order = getWagerStackTallOrder(safeStacks);
+  for (let i = 0; i < extra; i += 1) {
+    heights[order[i]] += 1;
+  }
+  return heights;
+}
+
+function getWagerStackTallOrder(stackCount: number): number[] {
+  if (stackCount <= 1) return [0];
+  if (stackCount === 2) return [0, 1];
+  if (stackCount === 3) return [1, 0, 2];
+  if (stackCount === 4) return [1, 2, 0, 3];
+  const indices: number[] = [];
+  for (let i = 0; i < stackCount; i += 1) indices.push(i);
+  return indices;
+}
+
+function computeWagerStackCenterUs(stackCount: number): number[] {
+  if (stackCount <= 1) return [0.5];
+  if (stackCount === 2) return [0.27, 0.73];
+  if (stackCount === 3) return [0.16, 0.5, 0.84];
+  if (stackCount === 4) return [0.12, 0.38, 0.62, 0.88];
+  const us: number[] = [];
+  for (let s = 0; s < stackCount; s += 1) {
+    us.push((s + 0.5) / stackCount);
+  }
+  return us;
+}
+
 function getWagerStackColumnCount(count: number): number {
-  if (count <= 4) {
+  if (count <= 3) {
     return 1;
   }
   if (count <= 8) {
     return 2;
   }
-  return 3;
+  if (count <= 18) {
+    return 3;
+  }
+  return 4;
 }
 
 function syncWagerPileIcons(
@@ -3733,29 +3765,6 @@ const updateLayout = () => {
   emitBoardPlayerInfoOverlayState();
 };
 
-export function showDebugWagerPiles(
-  material: MaterialName,
-  count: number,
-  materialUrl?: string | null,
-) {
-  cancelWagerWinAnimation();
-  winnerPileActive = false;
-  const playerPile = ensureWagerPile(false);
-  const opponentPile = ensureWagerPile(true);
-  if (!playerPile || !opponentPile) {
-    return;
-  }
-  if (winnerWagerPile) {
-    winnerWagerPile.count = 0;
-    winnerWagerPile.actualCount = 0;
-    winnerWagerPile.frames = [];
-    winnerWagerPile.rect = null;
-  }
-  syncWagerPileIcons(playerPile, material, count, materialUrl);
-  syncWagerPileIcons(opponentPile, material, count, materialUrl);
-  updateWagerLayout();
-}
-
 function resetWagerPile(pile: WagerPile | null) {
   if (!pile) {
     return;
@@ -3770,7 +3779,7 @@ function resetWagerPile(pile: WagerPile | null) {
   pile.iconSize = 0;
 }
 
-export function resetWagerAnimationState() {
+function resetWagerAnimationState() {
   wagerAnimationsReady = false;
   previousPlayerPileVisible = false;
   previousOpponentPileVisible = false;

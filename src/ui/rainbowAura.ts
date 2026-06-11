@@ -14,10 +14,6 @@ export function getRainbowAuraGradient(): string {
 
 export const RAINBOW_MASK_CSS_BASE = `-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-position:50% 50%;mask-position:50% 50%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;`;
 
-export function buildRainbowMaskImageCss(url: string): string {
-  return `-webkit-mask-image:url(${url});mask-image:url(${url});`;
-}
-
 function ensureRainbowAuraStylesInjected(): void {
   const id = "mons-rainbow-aura-styles";
   if (document.getElementById(id)) return;
@@ -27,7 +23,7 @@ function ensureRainbowAuraStylesInjected(): void {
   document.head.appendChild(style);
 }
 
-export function createRainbowAuraElements(): {
+function createRainbowAuraElements(): {
   background: HTMLDivElement;
   inner: HTMLDivElement;
 } {

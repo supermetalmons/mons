@@ -1,4 +1,4 @@
-export type LifecycleCounterName =
+type LifecycleCounterName =
   | "connectionObservers"
   | "connectionAuthSubscribers"
   | "boardDomListeners"
@@ -39,19 +39,6 @@ export const decrementLifecycleCounter = (
       value: counters[counter],
     });
   }
-};
-
-export const setLifecycleCounter = (
-  counter: LifecycleCounterName,
-  value: number,
-) => {
-  counters[counter] = value;
-};
-
-export const resetLifecycleCounters = () => {
-  (Object.keys(counters) as LifecycleCounterName[]).forEach((counter) => {
-    counters[counter] = 0;
-  });
 };
 
 export const getLifecycleCounters = (): LifecycleCounters => {

@@ -36,7 +36,7 @@ let audioElement: HTMLAudioElement | null = null;
 let currentTrack = "";
 let mediaMetadata: MediaMetadata | null = null;
 
-export function showMonsAlbumArtwork(title: string) {
+function showMonsAlbumArtwork(title: string) {
   if (!mediaMetadata) {
     mediaMetadata = new MediaMetadata({
       artist: "mons.link",

@@ -65,10 +65,7 @@ function generateStubResponse() {
   return { ok: true, specials, swagpack_avatars, swagpack_reactions };
 }
 
-export async function fetchNftsByAddresses(
-  sol: string,
-  eth: string,
-): Promise<any> {
+async function fetchNftsByAddresses(sol: string, eth: string): Promise<any> {
   if (USE_STUB_RESPONSE) {
     return generateStubResponse();
   }

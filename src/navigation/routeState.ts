@@ -1,4 +1,4 @@
-export type RouteMode = "home" | "invite" | "snapshot" | "watch" | "event";
+type RouteMode = "home" | "invite" | "snapshot" | "watch" | "event";
 
 export type RouteState = {
   mode: RouteMode;
@@ -25,7 +25,7 @@ const decodeSnapshotId = (snapshotPath: string): string | null => {
   }
 };
 
-export const parseRouteState = (pathname: string): RouteState => {
+const parseRouteState = (pathname: string): RouteState => {
   const path = normalizePath(pathname);
   if (path === "") {
     return {

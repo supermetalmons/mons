@@ -335,7 +335,7 @@ interface SwagAvatarItem {
   count: number;
 }
 
-export interface InventoryModalProps {
+interface InventoryModalProps {
   onCancel: () => void;
 }
 
@@ -506,5 +506,3 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     </InventoryOverlay>
   );
 };
-
-export default InventoryModal;

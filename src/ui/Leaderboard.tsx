@@ -23,7 +23,7 @@ export const LEADERBOARD_TYPE_ICON_URLS = {
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 
-export const LeaderboardContainer = styled.div<{ show: boolean }>`
+const LeaderboardContainer = styled.div<{ show: boolean }>`
   position: relative;
   opacity: 1;
   height: calc(

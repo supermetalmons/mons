@@ -353,7 +353,7 @@ const subscribeSettingsAppleFlowProgress = (
   };
 };
 
-export interface SettingsModalProps {
+interface SettingsModalProps {
   onClose: () => void;
   xInlineMessage?: { id: number; message: string } | null;
 }
@@ -1075,5 +1075,3 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     </ModalOverlay>
   );
 };
-
-export default SettingsModal;

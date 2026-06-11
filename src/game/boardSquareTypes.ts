@@ -30,13 +30,6 @@ const LEGACY_BOARD_SQUARE_TYPES: Record<string, BoardSquareType> = {
   "7-6": "manaBase",
 };
 
-export const createBoardSquareTypeGrid = (
-  fill: BoardSquareType = "regular",
-): BoardSquareTypeGrid =>
-  Array.from({ length: BOARD_GRID_SIZE }, () =>
-    Array.from({ length: BOARD_GRID_SIZE }, () => fill),
-  );
-
 export const createLegacyBoardSquareTypeGrid = (): BoardSquareTypeGrid =>
   Array.from({ length: BOARD_GRID_SIZE }, (_, row) =>
     Array.from({ length: BOARD_GRID_SIZE }, (_, col) =>

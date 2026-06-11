@@ -26,7 +26,7 @@ export type MoveHistoryEntry = {
 
 export type MoveHistorySegmentRole = "arrow" | "destination" | "normal";
 
-export function arrowForEvent(e: MonsWeb.EventModel): {
+function arrowForEvent(e: MonsWeb.EventModel): {
   arrow: string;
   isRight: boolean;
 } {

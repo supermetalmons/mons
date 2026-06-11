@@ -1,4 +1,4 @@
-export interface Sticker {
+interface Sticker {
   name: string;
   x: number;
   y: number;
@@ -133,14 +133,3 @@ export const STICKER_ADD_PROMPTS_FRAMES: Record<
   "mini-logo": { x: 0.41, y: 0.63, w: 0.07 },
   "type-logo": { x: 0.535, y: 0.645, w: 0.07 },
 };
-
-export function getRandomStickers(): string {
-  const selectedStickers: Record<string, string> = {};
-
-  for (const [path, options] of Object.entries(STICKER_PATHS)) {
-    const randomSticker = options[Math.floor(Math.random() * options.length)];
-    selectedStickers[path] = randomSticker.name;
-  }
-
-  return JSON.stringify(selectedStickers);
-}
