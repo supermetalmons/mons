@@ -16,8 +16,8 @@ import { getStashedPlayerProfile } from "../utils/playerMetadata";
 export type LeaderboardType = "rating" | "mp" | MiningMaterialName | "total";
 
 export const LEADERBOARD_TYPE_ICON_URLS = {
-  rating: "https://assets.mons.link/icons/elo_2.webp",
-  mp: "https://assets.mons.link/emojipack/1271.webp",
+  rating: "https://cdn.lil.org/mons/icons/elo_2.webp",
+  mp: "https://cdn.lil.org/mons/emojipack/thumbs/1271.webp",
 } as const;
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
