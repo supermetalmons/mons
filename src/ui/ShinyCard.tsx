@@ -7,7 +7,6 @@ import {
 } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
-import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import {
@@ -115,7 +114,6 @@ const cardStyles = `
   [data-shiny-card="true"]{ right:7px !important; }
 }`;
 
-const SHINY_CARD_CAPTURE_SCALE = 4;
 const SHINY_CARD_Z_INDEX = 100200;
 const INVENTORY_ONLY_BG_ID = 100;
 const INVENTORY_ONLY_STICKER_TYPE = "big-mon-top-right";
@@ -175,71 +173,10 @@ const getUndoUpdateSource = (contentType: string, oldId: any): UpdateSource => {
   }
 };
 
-const getShinyCardDownloadFileName = (displayName: string) => {
-  const trimmed = displayName.trim();
-  const safeName = trimmed.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9-_]/g, "");
-  const baseName = safeName.length > 0 ? safeName : "id-card";
-  return `${baseName}.png`;
-};
-
-let shinyCardCaptureLoader: Promise<any> | null = null;
-
-const loadShinyCardCapture = () => {
-  if (shinyCardCaptureLoader) {
-    return shinyCardCaptureLoader;
-  }
-  shinyCardCaptureLoader = new Promise((resolve) => {
-    const existing = (window as any).monsShinyCardCapture;
-    if (existing) {
-      resolve(existing);
-      return;
-    }
-    const script = document.createElement("script");
-    script.type = "module";
-    script.async = true;
-    script.src = "/dev/shinyCardCapture.js";
-    script.onload = () => resolve((window as any).monsShinyCardCapture ?? null);
-    script.onerror = () => resolve(null);
-    document.head.appendChild(script);
-  });
-  return shinyCardCaptureLoader;
-};
-
-const cancelShinyCardDownload = () => {
-  if (!isLocalHost()) {
-    return;
-  }
-  void loadShinyCardCapture().then((capture) =>
-    capture?.cancelShinyCardDownload?.(),
-  );
-};
-
-const scheduleShinyCardDownload = (
-  card: HTMLElement,
-  displayName: string,
-  readyPromise?: Promise<void>,
-): Promise<void> => {
-  if (!isLocalHost()) {
-    return Promise.resolve();
-  }
-  return loadShinyCardCapture().then((capture) => {
-    if (!capture?.scheduleShinyCardDownload) {
-      return;
-    }
-    return capture.scheduleShinyCardDownload({
-      card,
-      fileName: getShinyCardDownloadFileName(displayName),
-      readyPromise,
-      scale: SHINY_CARD_CAPTURE_SCALE,
-    });
-  });
-};
-
 export const showShinyCard = async (
   profile: PlayerProfile | null,
   displayName: string,
   isOtherPlayer: boolean,
-  shouldDownload = false,
 ): Promise<void> => {
   const alreadyShowsSameOtherPlayerProfile =
     isOtherPlayer &&
@@ -261,7 +198,6 @@ export const showShinyCard = async (
         profile,
         displayName,
         isOtherPlayer,
-        shouldDownload,
       );
     } else {
       hideShinyCard();
@@ -1027,7 +963,7 @@ export const showShinyCard = async (
   });
 
   observer.observe(document.body, { childList: true });
-  const monsReady = showMons(
+  void showMons(
     cardContentsLayer,
     handlePointerLeave,
     isOtherPlayer,
@@ -1042,9 +978,6 @@ export const showShinyCard = async (
     : storage.getCardStickers("");
   displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
-  if (shouldDownload) {
-    return scheduleShinyCardDownload(card, displayName, monsReady);
-  }
 };
 
 export const updateShinyCardDisplayName = (displayName: string) => {
@@ -1601,7 +1534,6 @@ const createOverlayStickersImage = (
 export const hideShinyCard = () => {
   showsShinyCardSomewhere = false;
   displayedOtherPlayerProfile = null;
-  cancelShinyCardDownload();
 
   if (editingPanel && editingPanel.parentNode) {
     editingPanel.parentNode.removeChild(editingPanel);
@@ -1922,10 +1854,9 @@ function updateExistingCardForAnotherProfile(
   profile: PlayerProfile | null,
   displayName: string,
   isOtherPlayer: boolean,
-  shouldDownload: boolean,
 ): Promise<void> {
   hideShinyCard();
-  return showShinyCard(profile, displayName, isOtherPlayer, shouldDownload);
+  return showShinyCard(profile, displayName, isOtherPlayer);
 }
 
 async function updateUndoButton() {

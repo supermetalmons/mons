@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
@@ -9,7 +9,6 @@ import {
   MINING_MATERIAL_NAMES,
 } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
-import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
@@ -20,7 +19,6 @@ export const LEADERBOARD_TYPE_ICON_URLS = {
   mp: "https://cdn.lil.org/mons/emojipack/thumbs/1271.webp",
 } as const;
 
-const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 
 const LeaderboardContainer = styled.div<{ show: boolean }>`
@@ -530,50 +528,6 @@ const getLeaderboardDisplayName = (row: LeaderboardEntry): string => {
   return "";
 };
 
-const useAutoDownloadLeaderboardCards = ({
-  show,
-  data,
-}: {
-  show: boolean;
-  data: LeaderboardEntry[] | null;
-}) => {
-  const autoDownloadRunRef = useRef(0);
-  const autoDownloadHasRunRef = useRef(false);
-
-  useEffect(() => {
-    if (!show) {
-      autoDownloadRunRef.current += 1;
-      autoDownloadHasRunRef.current = false;
-      return;
-    }
-    if (
-      !isLocalHost() ||
-      !RENDER_AND_DOWNLOAD_ALL_ID_CARDS ||
-      !data ||
-      data.length === 0 ||
-      autoDownloadHasRunRef.current
-    ) {
-      return;
-    }
-    autoDownloadHasRunRef.current = true;
-    const runId = ++autoDownloadRunRef.current;
-    const run = async () => {
-      for (const row of data) {
-        if (autoDownloadRunRef.current !== runId) {
-          return;
-        }
-        await showShinyCard(
-          row.profile,
-          getLeaderboardDisplayName(row),
-          true,
-          true,
-        );
-      }
-    };
-    void run();
-  }, [show, data]);
-};
-
 const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
   dust: 0,
   slime: 0,
@@ -865,8 +819,6 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
       currentFetchRef.current += 1;
     };
   }, [show, leaderboardType, getCurrentPlayerEntry]);
-
-  useAutoDownloadLeaderboardCards({ show, data });
 
   const handleRowClick = (row: LeaderboardEntry) => {
     showShinyCard(row.profile, getLeaderboardDisplayName(row), true);
