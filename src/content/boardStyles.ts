@@ -10,7 +10,6 @@ export enum AssetsSet {
 export enum BoardStyleSet {
   Grid = "Grid",
   Pangchiu = "Pangchiu",
-  White = "White",
 }
 
 const isAssetsSet = (value: unknown): value is AssetsSet => {

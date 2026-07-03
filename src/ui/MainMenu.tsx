@@ -17,7 +17,7 @@ import {
   LeaderboardType,
   LEADERBOARD_TYPE_ICON_URLS,
 } from "./Leaderboard";
-import { setAnimatedMonsEnabled, setBoardStyleSet } from "../game/board";
+import { setAnimatedMonsEnabled } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import {
   FaTelegramPlane,
@@ -40,11 +40,6 @@ import {
 } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
-import {
-  BoardStyleSet,
-  getCurrentBoardStyleSet,
-  subscribeToBoardStyleSetChanges,
-} from "../content/boardStyles";
 import type {
   EventCreateDateTimePayload,
   EventScheduleTimezone,
@@ -866,9 +861,6 @@ const MainMenu: React.FC = () => {
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(
     storage.getIsExperimentingWithSprites(false),
   );
-  const [isClothBoardEnabled, setIsClothBoardEnabled] = useState<boolean>(
-    () => getCurrentBoardStyleSet() === BoardStyleSet.White,
-  );
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(
     () => {
       const stored = storage.getLeaderboardType("rating");
@@ -926,15 +918,6 @@ const MainMenu: React.FC = () => {
     });
     return () => {
       mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    const unsubscribeBoardStyleSet = subscribeToBoardStyleSetChanges(() => {
-      setIsClothBoardEnabled(getCurrentBoardStyleSet() === BoardStyleSet.White);
-    });
-    return () => {
-      unsubscribeBoardStyleSet();
     };
   }, []);
 
@@ -1080,13 +1063,6 @@ const MainMenu: React.FC = () => {
     setAreAnimatedMonsEnabled,
     (checked) => {
       setAnimatedMonsEnabled(checked, false);
-    },
-  );
-
-  const handleClothBoardToggle = handleBooleanToggle(
-    setIsClothBoardEnabled,
-    (checked) => {
-      setBoardStyleSet(checked ? BoardStyleSet.White : BoardStyleSet.Grid);
     },
   );
 
@@ -1633,14 +1609,6 @@ const MainMenu: React.FC = () => {
                         onChange={handleAnimatedMonsToggle}
                       />
                       animated mons
-                    </ToggleRow>
-                    <ToggleRow>
-                      <input
-                        type="checkbox"
-                        checked={isClothBoardEnabled}
-                        onChange={handleClothBoardToggle}
-                      />
-                      white board
                     </ToggleRow>
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>

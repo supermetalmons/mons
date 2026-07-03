@@ -17,11 +17,9 @@ import {
 } from "../game/gameController";
 import type { BoardSquareTypeGrid } from "../game/boardSquareTypes";
 import {
-  BoardStyleSet,
   ColorSet,
   colors,
   getCurrentColorSet,
-  getCurrentBoardStyleSet,
   isCustomPictureBoardEnabled,
   isPangchiuBoard,
   subscribeToBoardColorSetChanges,
@@ -66,8 +64,6 @@ import { registerBoardTransientUiHandler } from "./uiSession";
 
 const PANGCHIU_BOARD_BACKGROUND_URL =
   "https://assets.mons.link/board/bg/Pangchiu.jpg";
-const WHITE_BOARD_BACKGROUND_URL =
-  "https://assets.mons.link/board/bg/white.webp";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -1526,9 +1522,6 @@ const BoardComponent: React.FC = () => {
   const [prefersDarkMode, setPrefersDarkMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
-  const [currentBoardStyleSet, setCurrentBoardStyleSet] = useState(
-    getCurrentBoardStyleSet(),
-  );
   const [isGridVisible, setIsGridVisible] = useState(
     !isCustomPictureBoardEnabled(),
   );
@@ -1961,7 +1954,6 @@ const BoardComponent: React.FC = () => {
   useEffect(() => {
     const updateColorSetAndGrid = () => {
       setCurrentColorSet(getCurrentColorSet());
-      setCurrentBoardStyleSet(getCurrentBoardStyleSet());
       const newIsGridVisible = !isCustomPictureBoardEnabled();
       setIsGridVisible(newIsGridVisible);
       setIsPangchiuBoardLayout(isPangchiuBoard());
@@ -3059,20 +3051,10 @@ const BoardComponent: React.FC = () => {
 
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
-  const isWhiteBoardStyle = currentBoardStyleSet === BoardStyleSet.White;
-  const whiteBoardInset = 55.5;
-  const whiteBoardScale = (1100 - whiteBoardInset * 2) / 1100;
-  const whiteBoardTransform = `translate(${whiteBoardInset}, ${
-    100 + whiteBoardInset
-  }) scale(${whiteBoardScale})`;
   const activeBoardTransform = isPangchiuBoardLayout
     ? pangchiuBoardTransform
-    : isWhiteBoardStyle
-      ? whiteBoardTransform
-      : standardBoardTransform;
-  const pictureBoardBackgroundUrl = isWhiteBoardStyle
-    ? WHITE_BOARD_BACKGROUND_URL
-    : PANGCHIU_BOARD_BACKGROUND_URL;
+    : standardBoardTransform;
+  const pictureBoardBackgroundUrl = PANGCHIU_BOARD_BACKGROUND_URL;
   const isPictureBoardImageLoaded =
     !!loadedPictureBoardUrls[pictureBoardBackgroundUrl];
   const boardClassName = `board-svg ${
@@ -3517,10 +3499,10 @@ const BoardComponent: React.FC = () => {
         ) : (
           <g id="boardBackgroundLayer">
             <rect
-              x={isWhiteBoardStyle ? "0" : "1"}
-              y={isWhiteBoardStyle ? "100" : "101"}
-              height={isWhiteBoardStyle ? "1100" : "1161"}
-              width={isWhiteBoardStyle ? "1100" : "1098"}
+              x="1"
+              y="101"
+              height="1161"
+              width="1098"
               fill={
                 isPictureBoardImageLoaded
                   ? "transparent"
@@ -3535,7 +3517,6 @@ const BoardComponent: React.FC = () => {
                 x="0"
                 y="100"
                 width="1100"
-                height={isWhiteBoardStyle ? "1100" : undefined}
                 onLoad={() => {
                   setLoadedPictureBoardUrls((prevUrls) =>
                     prevUrls[pictureBoardBackgroundUrl]
