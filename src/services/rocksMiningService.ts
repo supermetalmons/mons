@@ -332,7 +332,7 @@ function getRockImageUrl(dateOverride?: string): string {
   const seed = profileId ? `${profileId}:${today}` : today;
   const hash = computeHash32(seed);
   const index = (hash % ROCK_VARIANT_COUNT) + 1;
-  return `https://assets.mons.link/rocks/gan/${index}.webp`;
+  return `https://cdn.lil.org/mons/rocks/gan/${index}.webp`;
 }
 
 export function resetProfileMiningState() {

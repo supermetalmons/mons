@@ -50,7 +50,7 @@ import {
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_MON_TYPE_SELECTOR = false;
-const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
+const STARS_URL = "https://cdn.lil.org/mons/rocks/underground/stars.webp";
 const TOUCH_EDGE_DEADZONE_PX = 5;
 const ROCK_LAYER_Z_INDEX = 500;
 const THEORETICAL_ROCK_SQUARE = { cx: 0.5018, cy: 0.1773, side: 0.142 };
@@ -1014,7 +1014,7 @@ type Props = {
   dimmed?: boolean;
 };
 
-const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
+const DEFAULT_URL = "https://cdn.lil.org/mons/rocks/island.webp";
 
 const MINING_FRAME_MS = 175;
 const WALKING_FRAME_MS = 120;
@@ -1041,7 +1041,7 @@ type MaterialPullRect = {
   width: number;
   height: number;
 };
-const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MATERIAL_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 let persistentMonPosRef: { x: number; y: number } | null = null;
 
 const materialImagePromises: Map<

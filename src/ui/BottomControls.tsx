@@ -269,7 +269,7 @@ const FIXED_STICKER_IDS: number[] = [
   900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374,
   900347, 900382, 900429, 900225, 900999,
 ];
-const MATERIAL_IMAGE_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MATERIAL_IMAGE_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 const STICKER_IMAGE_BASE_URL = "https://cdn.lil.org/mons/emojipack/swagpack/64";
 const NAVIGATION_GAMES_PAGE_SIZE = 80;
 const NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE = 50;

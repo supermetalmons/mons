@@ -58,7 +58,7 @@ const LEADERBOARD_TYPES: LeaderboardType[] = [
   "total",
   "mp",
 ];
-const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MATERIAL_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
 const MONS_LINK_ADMINS = new Set([
   "ivan",

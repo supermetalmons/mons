@@ -279,7 +279,7 @@ let bomb: SVGElement;
 let supermana: SVGElement;
 let supermanaSimple: SVGElement;
 
-const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MATERIAL_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
