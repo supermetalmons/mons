@@ -22,7 +22,7 @@ type PictureBoardStyleSet = (typeof PICTURE_BOARD_STYLE_SETS)[number];
 
 const BOARD_PREVIEW_URLS: Record<PictureBoardStyleSet, string> = {
   [BoardStyleSet.Pangchiu]:
-    "https://assets.mons.link/board/bg/thumb/Pangchiu.jpg",
+    "https://cdn.lil.org/mons/boards/backgrounds/thumbs/pangchiu.jpg",
 };
 
 type BoardPreviewCache = {

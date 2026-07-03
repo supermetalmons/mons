@@ -63,7 +63,7 @@ import {
 import { registerBoardTransientUiHandler } from "./uiSession";
 
 const PANGCHIU_BOARD_BACKGROUND_URL =
-  "https://assets.mons.link/board/bg/Pangchiu.jpg";
+  "https://cdn.lil.org/mons/boards/backgrounds/pangchiu.jpg";
 
 const CircularButton = styled.button`
   width: 50%;
