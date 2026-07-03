@@ -17,7 +17,7 @@ export function directlyPlaySoundNamed(
 }
 
 function playSound(path: string, volumeMultiplier: number = 1) {
-  soundPlayer.playSound("https://assets.mons.link/" + path, volumeMultiplier);
+  soundPlayer.playSound("https://cdn.lil.org/mons/" + path, volumeMultiplier);
 }
 
 type ResolvedSound = {
