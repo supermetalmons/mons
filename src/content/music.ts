@@ -3,31 +3,31 @@ import { setIsMusicPlayingGlobal } from "../ui/MainMenu";
 const tracks = [
   "arploop",
   "band",
-  "bell-dance",
-  "bell-glide",
+  "bell_dance",
+  "bell_glide",
   "bounce",
-  "bubble-jam",
+  "bubble_jam",
   "buzz",
   "change",
-  "chimes-photography_going-home",
-  "clock-tower",
-  "cloud-propeller-2",
-  "cloud-propeller",
+  "chimes_photography_going_home",
+  "clock_tower",
+  "cloud_propeller_2",
+  "cloud_propeller",
   "crumbs",
   "driver",
   "drreams",
   "ewejam",
   "gilded",
   "gustofwind",
-  "honkshoooo-memememeee-zzzZZZ",
-  "jelly-jam",
-  "mana-pool",
+  "honkshoooo_memememeee_zzzzzz",
+  "jelly_jam",
+  "mana_pool",
   "melodine",
   "object",
   "organwhawha",
   "ping",
   "runner",
-  "spirit-track",
+  "spirit_track",
   "super",
   "whale2",
 ];
@@ -113,5 +113,5 @@ function getRandomTrackUrl(): string {
   const randomIndex = Math.floor(Math.random() * tracks.length);
   const randomTrack = tracks[randomIndex];
   currentTrack = randomTrack;
-  return `https://assets.mons.link/music/${randomTrack}.aac`;
+  return `https://cdn.lil.org/mons/music/original/${randomTrack}.aac`;
 }
