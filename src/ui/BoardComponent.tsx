@@ -3850,11 +3850,11 @@ const BoardComponent: React.FC = () => {
                 }}
               >
                 <source
-                  src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`}
+                  src={`https://cdn.lil.org/mons/emojipack/swagpack/video/${opponentVideoId}.mov`}
                   type='video/quicktime; codecs="hvc1"'
                 />
                 <source
-                  src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`}
+                  src={`https://cdn.lil.org/mons/emojipack/swagpack/video/${opponentVideoId}.webm`}
                   type="video/webm"
                 />
               </video>
@@ -3926,11 +3926,11 @@ const BoardComponent: React.FC = () => {
                 }}
               >
                 <source
-                  src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`}
+                  src={`https://cdn.lil.org/mons/emojipack/swagpack/video/${playerVideoId}.mov`}
                   type='video/quicktime; codecs="hvc1"'
                 />
                 <source
-                  src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`}
+                  src={`https://cdn.lil.org/mons/emojipack/swagpack/video/${playerVideoId}.webm`}
                   type="video/webm"
                 />
               </video>

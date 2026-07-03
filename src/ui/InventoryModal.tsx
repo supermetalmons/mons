@@ -477,7 +477,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                       }
                     >
                       <AvatarImage
-                        src={`https://assets.mons.link/swagpack/420/${item.id}.webp`}
+                        src={`https://cdn.lil.org/mons/emojipack/swagpack/420/${item.id}.webp`}
                         alt=""
                         rainbowAura={item.count >= 3}
                         loading="lazy"
