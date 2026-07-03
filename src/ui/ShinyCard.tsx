@@ -311,7 +311,7 @@ export const showShinyCard = async (
   img.style.pointerEvents = "none";
   img.draggable = false;
   const bgId = isOtherPlayer ? getBgIdForProfile(profile) : cardIndex;
-  img.src = `https://assets.mons.link/cards/bg/${bgId}.webp`;
+  img.src = `https://cdn.lil.org/mons/id_cards/backgrounds/${bgId}.webp`;
   img.style.visibility = "hidden";
   img.onerror = () => {
     img.style.visibility = "hidden";
@@ -1752,7 +1752,7 @@ async function updateContent(
       cardIndex = newId;
       connection.updateCardBackgroundId(newId);
       ownBgImg!.style.visibility = "hidden";
-      ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
+      ownBgImg!.src = `https://cdn.lil.org/mons/id_cards/backgrounds/${newCardName}`;
       break;
     case "subtitle":
       asciimojiIndex = newId;
