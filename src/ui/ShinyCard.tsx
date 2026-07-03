@@ -1003,7 +1003,7 @@ function didUpdateSticker(
   if (nextSticker) {
     const element = stickerElements[stickerType];
     if (element) {
-      const stickerUrl = `https://assets.mons.link/cards/stickers/${stickerType}/${nextSticker}.webp`;
+      const stickerUrl = `https://cdn.lil.org/mons/id_cards/stickers_overlays/${stickerType}/${nextSticker}.webp`;
       element.src = stickerUrl;
       const hitArea = stickerHitAreas[stickerType];
       if (hitArea) {
@@ -1503,7 +1503,7 @@ const createOverlayStickersImage = (
   type: string,
   name: string,
 ): HTMLImageElement => {
-  const url = `https://assets.mons.link/cards/stickers/${type}/${name}.webp`;
+  const url = `https://cdn.lil.org/mons/id_cards/stickers_overlays/${type}/${name}.webp`;
   const overlayImg = document.createElement("img");
   overlayImg.crossOrigin = "anonymous";
   overlayImg.style.width = "100%";
