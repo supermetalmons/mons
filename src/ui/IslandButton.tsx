@@ -4296,7 +4296,7 @@ function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
 
       teleportFXStart();
       if (source === "control") {
-        directlyPlaySoundNamed("emotePop4", 0.75);
+        directlyPlaySoundNamed("emote_pop4", 0.75);
       } else {
         directlyPlaySoundNamed("bewo", 0.075);
       }

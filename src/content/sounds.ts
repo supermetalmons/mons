@@ -11,7 +11,7 @@ export function directlyPlaySoundNamed(
     return;
   }
   soundPlayer.playSound(
-    "https://assets.mons.link/sounds/" + name + ".mp3",
+    "https://cdn.lil.org/mons/sounds/misc/" + name + ".mp3",
     volumeMultiplier,
   );
 }
@@ -37,37 +37,37 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "click";
       break;
     case Sound.DemonAbility:
-      name = "demonAbility";
+      name = "demon_ability";
       break;
     case Sound.ManaPickUp:
-      name = "manaPickUp";
+      name = "mana_pick_up";
       break;
     case Sound.Move:
       name = "move";
       break;
     case Sound.EndTurn:
-      name = "endTurn";
+      name = "end_turn";
       break;
     case Sound.MysticAbility:
-      name = "mysticAbility";
+      name = "mystic_ability";
       break;
     case Sound.PickupPotion:
-      name = "pickupPotion";
+      name = "pickup_potion";
       break;
     case Sound.PickupBomb:
-      name = "pickupBomb";
+      name = "pickup_bomb";
       break;
     case Sound.ChoosePickup:
-      name = "choosePickup";
+      name = "choose_pickup";
       break;
     case Sound.ScoreMana:
-      name = "scoreMana";
+      name = "score_mana";
       break;
     case Sound.ScoreSupermana:
-      name = "scoreSuperMana";
+      name = "score_super_mana";
       break;
     case Sound.SpiritAbility:
-      name = "spiritAbility";
+      name = "spirit_ability";
       break;
     case Sound.Victory:
       name = "victory";
@@ -76,31 +76,31 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "defeat";
       break;
     case Sound.DidConnect:
-      name = "didConnect";
+      name = "did_connect";
       break;
     case Sound.Undo:
       name = "undo";
       break;
     case Sound.EmoteSent:
-      name = "emotePop8";
+      name = "emote_pop8";
       break;
     case Sound.EmoteReceived:
-      name = "emotePop5";
+      name = "emote_pop5";
       break;
     case Sound.PickaxeHit:
-      name = "pickaxeHit";
+      name = "pickaxe_hit";
       volumeMultiplier = 0.65;
       break;
     case Sound.PickaxeMiss:
-      name = "pickaxeMiss";
+      name = "pickaxe_miss";
       volumeMultiplier = 0.65;
       break;
     case Sound.RockOpen:
-      name = "rockOpen";
+      name = "rock_open";
       volumeMultiplier = 1;
       break;
     case Sound.UsePotion:
-      name = "popSharp";
+      name = "pop_sharp";
       break;
     case Sound.ConfirmEarlyEndTurn:
       name = "thud";
@@ -110,15 +110,15 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       volumeMultiplier = 0.042;
       break;
     case Sound.IslandClose:
-      name = "door hit";
+      name = "door_hit";
       volumeMultiplier = 0.0069;
       break;
     case Sound.WalkToRock:
-      name = "wrong click_hit";
+      name = "wrong_click_hit";
       volumeMultiplier = 0.065;
       break;
     case Sound.CollectingMaterials:
-      name = "rocks/p3";
+      name = "collecting_materials";
       volumeMultiplier = 0.065;
       break;
     case Sound.Timer:
@@ -144,7 +144,7 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "sad";
       break;
     case Sound.DownChip:
-      name = "down chip";
+      name = "down_chip";
       break;
   }
 
@@ -220,7 +220,7 @@ export async function playSounds(sounds: Sound[]) {
   for (const sound of sounds) {
     const resolved = resolveSoundName(sound);
     if (!resolved) continue;
-    const path = `sounds/${resolved.name}.mp3`;
+    const path = `sounds/misc/${resolved.name}.mp3`;
     playSound(path, resolved.volumeMultiplier);
   }
 }
@@ -231,7 +231,7 @@ export async function preloadSounds(sounds: Sound[]) {
   for (const sound of sounds) {
     const resolved = resolveSoundName(sound);
     if (!resolved) continue;
-    const url = `https://assets.mons.link/sounds/${resolved.name}.mp3`;
+    const url = `https://cdn.lil.org/mons/sounds/misc/${resolved.name}.mp3`;
     if (seen.has(url)) continue;
     seen.add(url);
     uniqueUrls.push(url);
