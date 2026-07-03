@@ -455,7 +455,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                       onClick={() => setOwnershipVerifiedSpecialItem(item.id)}
                     >
                       <SpecialImage
-                        src={`https://assets.mons.link/drops/bd4/${item.id}.webp`}
+                        src={`https://cdn.lil.org/mons/id_cards/misc/bd4/${item.id}.webp`}
                         alt=""
                         loading="lazy"
                       />
