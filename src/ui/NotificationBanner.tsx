@@ -222,7 +222,7 @@ export const NotificationBannerComponent: React.FC<
       onClick={handleNotificationClick}
     >
       <NotificationImage
-        src={`https://assets.mons.link/emojipack_hq/${emojiId}.webp`}
+        src={`https://cdn.lil.org/mons/emojipack/regular/${emojiId}.webp`}
         alt=""
       />
       <NotificationContent>

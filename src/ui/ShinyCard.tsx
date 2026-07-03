@@ -385,7 +385,7 @@ export const showShinyCard = async (
   emojiImg.style.visibility = "hidden";
   emojiImg.style.zIndex = "2";
   emojiImg.draggable = false;
-  emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? getEmojiIdForProfile(profile) : storage.getPlayerEmojiId("1")}.webp`;
+  emojiImg.src = `https://cdn.lil.org/mons/emojipack/regular/${isOtherPlayer ? getEmojiIdForProfile(profile) : storage.getPlayerEmojiId("1")}.webp`;
   emojiImg.onerror = () => {
     emojiImg.style.visibility = "hidden";
     if (rainbowAuraBackground) hideRainbowAura(rainbowAuraBackground);
@@ -1727,12 +1727,12 @@ async function updateContent(
       storage.setPlayerEmojiAura(nextAura);
       didClickAndChangePlayerEmoji(nextEmojiId, nextSmallEmojiUrl, nextAura);
       if (ownEmojiImg) {
-        ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`;
+        ownEmojiImg.src = `https://cdn.lil.org/mons/emojipack/regular/${nextEmojiId}.webp`;
       }
       if (ownEmojiAuraInner) {
         setRainbowAuraMask(
           ownEmojiAuraInner,
-          `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`,
+          `https://cdn.lil.org/mons/emojipack/regular/${nextEmojiId}.webp`,
         );
       }
       if (ownEmojiAuraBackground) {

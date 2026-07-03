@@ -34,7 +34,7 @@ export const emojis = {
   },
 
   getEmojiUrl: function (id: string) {
-    return `https://assets.mons.link/emojipack/${id}.webp`;
+    return `https://cdn.lil.org/mons/emojipack/thumbs/${id}.webp`;
   },
 };
 
