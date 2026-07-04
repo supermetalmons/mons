@@ -1532,6 +1532,7 @@ const MainMenu: React.FC = () => {
                           <ExperimentalInput
                             type="number"
                             min="1"
+                            max="20160"
                             step="1"
                             value={eventStartsInMinutes}
                             onChange={(event) => {

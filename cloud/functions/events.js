@@ -19,7 +19,8 @@ const EVENT_MATCH_RESOLVE_CONCURRENCY = 4;
 const EVENT_SYNC_THROTTLE_WINDOW_MS = 500;
 const THIRD_PLACE_MATCH_KEY = "third_place";
 const MIN_STARTS_IN_MINUTES = 1;
-const MAX_STARTS_IN_MINUTES = 7 * 24 * 60;
+const MAX_STARTS_IN_DAYS = 14;
+const MAX_STARTS_IN_MINUTES = MAX_STARTS_IN_DAYS * 24 * 60;
 const MIN_START_AHEAD_MS = MIN_STARTS_IN_MINUTES * 60 * 1000;
 const MAX_START_AHEAD_MS = MAX_STARTS_IN_MINUTES * 60 * 1000;
 const SCHEDULED_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -338,7 +339,7 @@ const assertScheduledStartWindow = (startAtMs, nowMs) => {
   if (deltaMs > MAX_START_AHEAD_MS) {
     throw new HttpsError(
       "invalid-argument",
-      `Event must start within ${MAX_STARTS_IN_MINUTES} minutes from now.`,
+      `Event must start within ${MAX_STARTS_IN_DAYS} days from now.`,
     );
   }
 };
