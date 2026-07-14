@@ -766,6 +766,9 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
       );
       const isInsidePopover = popoverRef.current?.contains(target) || false;
       const isInsideShinyCard = shinyCardElement?.contains(target) || false;
+      const isPlayerCardTrigger =
+        target instanceof Element &&
+        target.closest("[data-player-card-trigger='true']") !== null;
 
       if (
         target instanceof Element &&
@@ -773,6 +776,12 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
           ".info-button, .sound-button, .music-button, tr, .shiny-card-done-button",
         )
       ) {
+        return;
+      }
+
+      if (isPlayerCardTrigger && showsShinyCardSomewhere) {
+        setIsOpen(false);
+        enterProfileEditingMode(false);
         return;
       }
 

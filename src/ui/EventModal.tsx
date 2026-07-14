@@ -14,10 +14,12 @@ import {
   EventParticipant,
   EventRecord,
   EventRound,
+  PlayerProfile,
 } from "../connection/connectionModels";
 import {
   closeEventModal,
   EVENT_MODAL_Z_INDEX,
+  type EventModalState,
   getEventModalState,
   subscribeToEventModalState,
 } from "./eventModalController";
@@ -80,9 +82,20 @@ const MONS_LINK_ADMINS = new Set([
   "trinket",
 ]);
 const EVENT_POSTPONE_OPTIONS_MINUTES = [5, 10, 15] as const;
+const PARTICIPANT_PROFILE_CACHE_TTL_MS = 30_000;
 
 type BracketCardInteraction = "none" | "game" | "participant";
 type WinnerPodiumPlace = 1 | 2 | 3;
+type ParticipantLookupGroup = {
+  profileId: string;
+  loginUid: string;
+  modalState: EventModalState;
+  displayName: string;
+};
+type ParticipantProfileCacheEntry = {
+  profile: PlayerProfile;
+  cachedAtMs: number;
+};
 
 const getWinnerPodiumBarHeight = (place: WinnerPodiumPlace): number => {
   if (place === 1) {
@@ -1181,21 +1194,19 @@ const buildParticipantFromMatchSide = (
     const participant = participantsById[sideProfileId];
     if (participant) {
       const participantLoginUid = participant.loginUid?.trim() ?? "";
-      if (participantLoginUid) {
-        return participant;
-      }
       const sideLoginUid = sideData.loginUid?.trim() ?? "";
-      if (sideLoginUid) {
+      if (!participantLoginUid && sideLoginUid) {
         return {
           ...participant,
           loginUid: sideLoginUid,
         };
       }
+      return participant;
     }
   }
 
   const loginUid = sideData.loginUid?.trim() ?? "";
-  if (!loginUid) {
+  if (!sideProfileId && !loginUid) {
     return null;
   }
 
@@ -1206,7 +1217,7 @@ const buildParticipantFromMatchSide = (
       : 0;
 
   return {
-    profileId: sideProfileId || loginUid,
+    profileId: sideProfileId,
     loginUid,
     username: displayName,
     displayName,
@@ -2131,6 +2142,15 @@ const getParticipantDisplayName = (participant: EventParticipant): string => {
   return "anon";
 };
 
+const getParticipantProfileCacheKey = (
+  participant: EventParticipant,
+): string => {
+  if (participant.profileId) {
+    return `profile:${participant.profileId}`;
+  }
+  return participant.loginUid ? `login:${participant.loginUid}` : "";
+};
+
 type WinnerPodiumEntry = {
   place: WinnerPodiumPlace;
   participant: EventParticipant;
@@ -2757,8 +2777,13 @@ const EventModal: React.FC = () => {
     null,
   );
   const [pendingJoinRequestedAtMs, setPendingJoinRequestedAtMs] = useState(0);
-  const openingParticipantIdRef = useRef<string | null>(null);
-  const participantLookupSessionRef = useRef(0);
+  const activeParticipantLookupRef = useRef<ParticipantLookupGroup | null>(
+    null,
+  );
+  const participantProfileCacheRef = useRef<
+    Map<string, ParticipantProfileCacheEntry>
+  >(new Map());
+  const participantLookupModalStateRef = useRef(modalState);
   const ignoreNextBackdropClickRef = useRef(false);
   const ignoreBackdropMouseDownUntilMsRef = useRef(0);
   const pendingBackdropTouchDismissTouchIdRef = useRef<number | null>(null);
@@ -2774,6 +2799,10 @@ const EventModal: React.FC = () => {
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   const participantsCloudRef = useRef<HTMLDivElement | null>(null);
   const displayedEventRecord = devStubRecord ?? eventRecord;
+  const invalidateParticipantLookups = useCallback(() => {
+    activeParticipantLookupRef.current = null;
+    participantProfileCacheRef.current.clear();
+  }, []);
   const measureBracketInsets = useCallback(() => {
     const nextTop = Math.round(
       topBarRef.current?.getBoundingClientRect().height ?? 0,
@@ -2802,15 +2831,19 @@ const EventModal: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    return subscribeToEventModalState((nextState) => {
+    const unsubscribe = subscribeToEventModalState((nextState) => {
+      // State identity also distinguishes a close/reopen of the same event.
+      if (participantLookupModalStateRef.current !== nextState) {
+        participantLookupModalStateRef.current = nextState;
+        invalidateParticipantLookups();
+      }
       setModalState(nextState);
     });
-  }, []);
-
-  useEffect(() => {
-    participantLookupSessionRef.current += 1;
-    openingParticipantIdRef.current = null;
-  }, [modalState.eventId, modalState.isOpen]);
+    return () => {
+      unsubscribe();
+      invalidateParticipantLookups();
+    };
+  }, [invalidateParticipantLookups]);
 
   useEffect(() => {
     if (eventAutoRecoveryTimeoutRef.current !== null) {
@@ -2847,7 +2880,6 @@ const EventModal: React.FC = () => {
       setIsRemovingParticipant(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
-      openingParticipantIdRef.current = null;
       ignoreNextBackdropClickRef.current = false;
       ignoreBackdropMouseDownUntilMsRef.current = 0;
       pendingBackdropTouchDismissTouchIdRef.current = null;
@@ -3698,12 +3730,36 @@ const EventModal: React.FC = () => {
       if (cachedProfile && cachedProfile.id === participant.profileId) {
         return cachedProfile;
       }
-      if (!participant.loginUid) {
-        return null;
+      const profileCacheKey = getParticipantProfileCacheKey(participant);
+      const eventCachedProfile = profileCacheKey
+        ? participantProfileCacheRef.current.get(profileCacheKey)
+        : undefined;
+      if (
+        eventCachedProfile &&
+        Date.now() - eventCachedProfile.cachedAtMs <=
+          PARTICIPANT_PROFILE_CACHE_TTL_MS
+      ) {
+        return eventCachedProfile.profile;
       }
-      const exactProfile = await connection.getProfileByLoginId(
-        participant.loginUid,
-      );
+      if (profileCacheKey) {
+        participantProfileCacheRef.current.delete(profileCacheKey);
+      }
+      let profileById: PlayerProfile | null = null;
+      if (participant.profileId) {
+        try {
+          profileById = await connection.getProfileById(participant.profileId);
+        } catch (error) {
+          if (!participant.loginUid) {
+            throw error;
+          }
+        }
+      }
+      if (profileById) {
+        return profileById;
+      }
+      const exactProfile = participant.loginUid
+        ? await connection.getProfileByLoginId(participant.loginUid)
+        : null;
       return exactProfile ?? null;
     },
     [],
@@ -3711,39 +3767,65 @@ const EventModal: React.FC = () => {
 
   const handleParticipantClick = useCallback(
     async (participant: EventParticipant) => {
+      const lookupModalState = getEventModalState();
+      const isCurrentModalRender = lookupModalState === modalState;
       const participantKey = participant.profileId || participant.loginUid;
-      if (!participantKey || openingParticipantIdRef.current) {
+      if (
+        !participantKey ||
+        !isCurrentModalRender ||
+        !lookupModalState.isOpen ||
+        !lookupModalState.eventId
+      ) {
         return;
       }
-      const lookupSession = participantLookupSessionRef.current;
-      openingParticipantIdRef.current = participantKey;
+      const displayName = getParticipantDisplayName(participant);
+      const profileCacheKey = getParticipantProfileCacheKey(participant);
+      // Same-player clicks are independent attempts; the first valid result wins.
+      let lookupGroup = activeParticipantLookupRef.current;
+      if (
+        !lookupGroup ||
+        lookupGroup.profileId !== participant.profileId ||
+        lookupGroup.loginUid !== participant.loginUid ||
+        lookupGroup.modalState !== lookupModalState
+      ) {
+        lookupGroup = {
+          profileId: participant.profileId,
+          loginUid: participant.loginUid,
+          modalState: lookupModalState,
+          displayName,
+        };
+        activeParticipantLookupRef.current = lookupGroup;
+      } else {
+        lookupGroup.displayName = displayName;
+      }
       try {
         const profile = await resolveParticipantProfile(participant);
-        if (participantLookupSessionRef.current !== lookupSession) {
+        if (
+          !profile ||
+          activeParticipantLookupRef.current !== lookupGroup ||
+          getEventModalState() !== lookupGroup.modalState
+        ) {
           return;
         }
-        if (!profile) {
-          return;
-        }
-        await showShinyCard(
+        const profileCacheEntry = {
           profile,
-          getParticipantDisplayName(participant),
-          true,
+          cachedAtMs: Date.now(),
+        };
+        participantProfileCacheRef.current.set(
+          profileCacheKey,
+          profileCacheEntry,
         );
-      } catch {
-        if (participantLookupSessionRef.current !== lookupSession) {
-          return;
+        if (profile.id) {
+          participantProfileCacheRef.current.set(
+            `profile:${profile.id}`,
+            profileCacheEntry,
+          );
         }
-      } finally {
-        if (participantLookupSessionRef.current !== lookupSession) {
-          return;
-        }
-        if (openingParticipantIdRef.current === participantKey) {
-          openingParticipantIdRef.current = null;
-        }
-      }
+        activeParticipantLookupRef.current = null;
+        await showShinyCard(profile, lookupGroup.displayName, true);
+      } catch {}
     },
-    [resolveParticipantProfile],
+    [modalState, resolveParticipantProfile],
   );
 
   const handleBracketMatchAction = useCallback(
@@ -4143,6 +4225,7 @@ const EventModal: React.FC = () => {
                       key={participantKey}
                       type="button"
                       $place={entry.place}
+                      data-player-card-trigger="true"
                       onClick={() =>
                         void handleParticipantClick(entry.participant)
                       }
@@ -4190,6 +4273,9 @@ const EventModal: React.FC = () => {
                   $h={mp.height}
                   $interaction={interaction}
                   disabled={action.kind === "none"}
+                  data-player-card-trigger={
+                    action.kind === "participant" ? "true" : undefined
+                  }
                   onClick={() => handleBracketMatchAction(action)}
                 >
                   {displayedSides.map((side) => {
@@ -4242,6 +4328,9 @@ const EventModal: React.FC = () => {
                     $h={thirdPlaceLayout.height}
                     $interaction={interaction}
                     disabled={action.kind === "none"}
+                    data-player-card-trigger={
+                      action.kind === "participant" ? "true" : undefined
+                    }
                     onClick={() => handleBracketMatchAction(action)}
                   >
                     {displayedSides.map((side) => {
@@ -4341,6 +4430,9 @@ const EventModal: React.FC = () => {
                       type="button"
                       $interaction={interaction}
                       disabled={action.kind === "none"}
+                      data-player-card-trigger={
+                        action.kind === "participant" ? "true" : undefined
+                      }
                       onClick={() => handleBracketMatchAction(action)}
                     >
                       {displayedSides.map((side) => {
@@ -4385,6 +4477,7 @@ const EventModal: React.FC = () => {
               <ParticipantPill
                 key={participant.profileId}
                 type="button"
+                data-player-card-trigger="true"
                 onClick={() => void handleParticipantClick(participant)}
               >
                 <EventAvatar

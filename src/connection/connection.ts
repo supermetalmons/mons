@@ -24,6 +24,7 @@ import {
   query,
   where,
   limit,
+  getDoc,
   getDocs,
   orderBy,
   updateDoc,
@@ -1209,32 +1210,45 @@ class Connection {
     );
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      const doc = querySnapshot.docs[0];
-      const data = doc.data();
-      const mining = normalizeMiningData(data.mining);
-      return {
-        id: doc.id,
-        username: data.username || null,
-        eth: data.eth || null,
-        sol: data.sol || null,
-        rating: data.rating || 1500,
-        nonce: data.nonce === undefined ? -1 : data.nonce,
-        totalManaPoints: data.totalManaPoints ?? 0,
-        win: data.win ?? true,
-        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
-        aura: data.custom?.aura,
-        cardBackgroundId: data.custom?.cardBackgroundId,
-        cardSubtitleId: data.custom?.cardSubtitleId,
-        profileCounter: data.custom?.profileCounter,
-        profileMons: data.custom?.profileMons,
-        cardStickers: data.custom?.cardStickers,
-        feb2026UniqueOpponentsCount: data.feb2026UniqueOpponentsCount ?? 0,
-        completedProblemIds: data.custom?.completedProblems,
-        isTutorialCompleted: data.custom?.tutorialCompleted,
-        mining,
-      };
+      return this.docToProfile(querySnapshot.docs[0], true);
     }
     throw new Error("Profile not found");
+  }
+
+  public async getProfileById(
+    profileId: string,
+  ): Promise<PlayerProfile | null> {
+    const normalizedProfileId = profileId.trim();
+    if (!normalizedProfileId) {
+      return null;
+    }
+    await this.ensureAuthenticated();
+    const visitedProfileIds = new Set<string>();
+    let currentProfileId = normalizedProfileId;
+    const maxMergeRedirectHops = 4;
+
+    for (let hop = 0; hop <= maxMergeRedirectHops; hop += 1) {
+      if (visitedProfileIds.has(currentProfileId)) {
+        return null;
+      }
+      visitedProfileIds.add(currentProfileId);
+      const profileSnapshot = await getDoc(
+        doc(this.firestore, "users", currentProfileId),
+      );
+      if (!profileSnapshot.exists()) {
+        return null;
+      }
+      const data = profileSnapshot.data();
+      const mergedIntoProfileId =
+        typeof data.mergedIntoProfileId === "string"
+          ? data.mergedIntoProfileId.trim()
+          : "";
+      if (!mergedIntoProfileId) {
+        return this.docToProfile(profileSnapshot, true);
+      }
+      currentProfileId = mergedIntoProfileId;
+    }
+    return null;
   }
 
   private materialLeaderboardCache: Map<MiningMaterialName, PlayerProfile[]> =
@@ -1242,7 +1256,7 @@ class Connection {
   private materialLeaderboardCacheTime: number = 0;
   private static LEADERBOARD_CACHE_TTL = 60000;
 
-  private docToProfile(doc: any): PlayerProfile {
+  private docToProfile(doc: any, includeTutorialState = false): PlayerProfile {
     const data = doc.data();
     const mining = normalizeMiningData(data.mining);
     return {
@@ -1262,8 +1276,12 @@ class Connection {
       profileMons: data.custom?.profileMons,
       cardStickers: data.custom?.cardStickers,
       feb2026UniqueOpponentsCount: data.feb2026UniqueOpponentsCount ?? 0,
-      completedProblemIds: undefined,
-      isTutorialCompleted: undefined,
+      completedProblemIds: includeTutorialState
+        ? data.custom?.completedProblems
+        : undefined,
+      isTutorialCompleted: includeTutorialState
+        ? data.custom?.tutorialCompleted
+        : undefined,
       mining,
     };
   }
