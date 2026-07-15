@@ -981,7 +981,7 @@ export const showShinyCard = async (
 };
 
 export const updateShinyCardDisplayName = (displayName: string) => {
-  if (!showsShinyCardSomewhere) {
+  if (!showsShinyCardSomewhere || displayedOtherPlayerProfile) {
     return;
   }
 
