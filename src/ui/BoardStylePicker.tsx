@@ -167,6 +167,7 @@ const BoardStylePicker = styled.div`
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   overflow: hidden;
+  z-index: 7;
 
   @media screen and (max-height: 453px) {
     bottom: max(44px, calc(env(safe-area-inset-bottom) + 38px));

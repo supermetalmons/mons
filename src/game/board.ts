@@ -212,6 +212,7 @@ let highlightsLayer: HTMLElement | null;
 let itemsLayer: HTMLElement | null;
 export let effectsLayer: HTMLElement | null;
 let controlsLayer: HTMLElement | null;
+let avatarLayer: HTMLElement | null;
 let boardBackgroundLayer: HTMLElement | null;
 
 const items: { [key: string]: SVGElement } = {};
@@ -1269,6 +1270,7 @@ function initializeBoardElements() {
   itemsLayer = document.getElementById("itemsLayer");
   effectsLayer = document.getElementById("effectsLayer");
   controlsLayer = document.getElementById("controlsLayer");
+  avatarLayer = document.getElementById("avatarLayer");
   boardBackgroundLayer = document.getElementById("boardBackgroundLayer");
 }
 
@@ -3995,8 +3997,8 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       doNotShowAvatarPlaceholderAgain(isOpponent);
     };
     avatar.style.pointerEvents = "auto";
-    controlsLayer?.append(placeholder);
-    controlsLayer?.append(avatar);
+    const targetLayer = avatarLayer ?? controlsLayer;
+    targetLayer?.append(placeholder, avatar);
     if (isOpponent) {
       opponentAvatar = avatar;
       opponentAvatarPlaceholder = placeholder;
@@ -4244,6 +4246,9 @@ export function disposeBoardRuntime() {
   if (controlsLayer) {
     controlsLayer.innerHTML = "";
   }
+  if (avatarLayer) {
+    avatarLayer.innerHTML = "";
+  }
   if (effectsLayer) {
     effectsLayer.innerHTML = "";
   }
@@ -4283,6 +4288,7 @@ export function disposeBoardRuntime() {
   playerEndOfGameMarker = "none";
   emitBoardPlayerInfoOverlayState();
   controlsLayer = null;
+  avatarLayer = null;
   itemsLayer = null;
   effectsLayer = null;
   highlightsLayer = null;

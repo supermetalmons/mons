@@ -3542,6 +3542,50 @@ const BoardComponent: React.FC = () => {
           {renderPlayerInfoSlotIcon(playerInfoLayout.player)}
         </g>
         <g id="controlsLayer"></g>
+      </svg>
+
+      {boardViewportRect && (
+        <div
+          style={{
+            position: "fixed",
+            left: `${boardViewportRect.left}px`,
+            top: `${boardViewportRect.top}px`,
+            width: `${boardViewportRect.width}px`,
+            height: `${boardViewportRect.height}px`,
+            pointerEvents: "none",
+            overflow: "visible",
+          }}
+        >
+          {renderPlayerInfoSlotText(
+            "opponent",
+            playerInfoOverlayState.opponent,
+            playerInfoLayout.opponent,
+            boardViewportRect,
+          )}
+          {renderPlayerInfoSlotText(
+            "player",
+            playerInfoOverlayState.player,
+            playerInfoLayout.player,
+            boardViewportRect,
+          )}
+        </div>
+      )}
+
+      {/*
+        Board foreground order: avatars above player text, then effects and
+        interactive board controls. Later app UI still paints above this SVG.
+      */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className={boardClassName}
+        viewBox={`0 0 ${BOARD_VIEWBOX_WIDTH} ${BOARD_VIEWBOX_HEIGHT}`}
+        shapeRendering="crispEdges"
+        overflow="visible"
+        style={{
+          pointerEvents: "none",
+        }}
+      >
+        <g id="avatarLayer"></g>
         <g id="effectsLayer" transform={activeBoardTransform}></g>
         {botStrengthControlOverlay.visible &&
           botStrengthControlOverlay.size > 0 && (
@@ -3620,28 +3664,6 @@ const BoardComponent: React.FC = () => {
               zIndex: 0,
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                pointerEvents: "none",
-                overflow: "visible",
-                zIndex: 1,
-              }}
-            >
-              {renderPlayerInfoSlotText(
-                "opponent",
-                playerInfoOverlayState.opponent,
-                playerInfoLayout.opponent,
-                boardViewportRect,
-              )}
-              {renderPlayerInfoSlotText(
-                "player",
-                playerInfoOverlayState.player,
-                playerInfoLayout.player,
-                boardViewportRect,
-              )}
-            </div>
             {wagerPanelLayout && (
               <div
                 data-wager-panel="true"
