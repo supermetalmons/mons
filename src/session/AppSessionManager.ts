@@ -218,7 +218,7 @@ const runTransition = async (
   incrementSessionEpoch();
   try {
     const lifecycleManager = await import("../lifecycle/lifecycleManager");
-    lifecycleManager.teardownMatchScope();
+    lifecycleManager.teardownMatchScope(target);
     if (options?.resetProfileScope) {
       lifecycleManager.teardownProfileScope();
     }

@@ -12,6 +12,8 @@ import {
   showItemsAfterChangingAssetsStyle,
   cleanupCurrentInputs,
   didClickInviteBotIntoLocalGameButton,
+  restoreBoardVariantAfterWaitingAnimation,
+  showNextWaitingAnimationBoardVariant,
 } from "./gameController";
 import {
   Highlight,
@@ -1872,10 +1874,18 @@ function runMonsBoardAsDisplayWaitingHeartsAnimation() {
 
   let frameIndex = 0;
   let isWhite = true;
+  let hasShownFirstCycleCenter = false;
 
   function animate() {
     if (runToken !== monsBoardDisplayAnimationRunToken) {
       return;
+    }
+    if (frameIndex === 1) {
+      if (hasShownFirstCycleCenter) {
+        showNextWaitingAnimationBoardVariant();
+      } else {
+        hasShownFirstCycleCenter = true;
+      }
     }
     cleanAllPixels();
     for (const [x, y] of frames[frameIndex]) {
@@ -1927,10 +1937,18 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
 
   let radius = 0;
   const maxRadius = 5;
+  let hasShownFirstCycleCenter = false;
 
   function animate() {
     if (runToken !== monsBoardDisplayAnimationRunToken) {
       return;
+    }
+    if (radius === 0.5) {
+      if (hasShownFirstCycleCenter) {
+        showNextWaitingAnimationBoardVariant();
+      } else {
+        hasShownFirstCycleCenter = true;
+      }
     }
     cleanAllPixels();
     drawCircle(radius);
@@ -1979,6 +1997,7 @@ export function stopMonsBoardAsDisplayAnimations() {
       monsBoardDisplayAnimationLifecycleTracked = false;
     }
     cleanAllPixels();
+    restoreBoardVariantAfterWaitingAnimation();
   }
 }
 

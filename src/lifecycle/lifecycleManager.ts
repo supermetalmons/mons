@@ -11,6 +11,7 @@ import { resetPlayerMetadataCaches } from "../utils/playerMetadata";
 import { resetEnsCache } from "../utils/ensResolver";
 import { resetLeaderboardCache } from "../ui/Leaderboard";
 import { getLifecycleCounters } from "./lifecycleDiagnostics";
+import type { RouteState } from "../navigation/routeState";
 
 const reportMatchScopeCounterDrift = () => {
   if (process.env.NODE_ENV === "production") {
@@ -32,9 +33,9 @@ const reportMatchScopeCounterDrift = () => {
   }
 };
 
-export const teardownMatchScope = () => {
+export const teardownMatchScope = (nextRouteState?: RouteState) => {
   closeTransientUi();
-  disposeGameSession();
+  disposeGameSession(nextRouteState);
   disposeBoardRuntime();
   connection.beginMatchSessionTeardown();
   connection.detachFromMatchSession();

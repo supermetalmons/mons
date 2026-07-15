@@ -100,6 +100,7 @@ import {
   buildRandomGameSeed,
   createGameModelForStoredVariant,
   GameSeed,
+  getAllGameVariantNames,
   legacyDefaultGameVariant,
   normalizeStoredGameVariant,
   StoredGameVariant,
@@ -138,6 +139,10 @@ const displayedBoardSquareTypeListeners = new Set<
   (squareTypes: BoardSquareTypeGrid | null) => void
 >();
 let displayedBoardSquareTypes: BoardSquareTypeGrid | null = null;
+const waitingAnimationBoardSquareTypes = new Map<
+  StoredGameVariant,
+  BoardSquareTypeGrid
+>();
 let activeRouteState: RouteState = getCurrentRouteState();
 const isCreateInviteRoute = () =>
   activeRouteState.mode === "home" || activeRouteState.mode === "event";
@@ -238,14 +243,17 @@ const buildBoardSquareTypeGrid = (
   for (let row = 0; row < BOARD_GRID_SIZE; row += 1) {
     const squareTypeRow: BoardSquareType[] = [];
     for (let col = 0; col < BOARD_GRID_SIZE; col += 1) {
-      squareTypeRow.push(
-        getDisplayedBoardSquareType(
-          normalizeBoardSquareType(
-            gameModel.square(new MonsWeb.Location(row, col)),
+      const square = gameModel.square(new MonsWeb.Location(row, col));
+      try {
+        squareTypeRow.push(
+          getDisplayedBoardSquareType(
+            normalizeBoardSquareType(square),
+            shouldHighlightManaBases,
           ),
-          shouldHighlightManaBases,
-        ),
-      );
+        );
+      } finally {
+        square.free();
+      }
     }
     squareTypes.push(squareTypeRow);
   }
@@ -290,6 +298,68 @@ const refreshDisplayedBoardSquareTypes = (
     getDisplayedBoardVariant(inFlashbackMode),
   );
 };
+
+const getWaitingAnimationBoardSquareTypes = (
+  gameVariant: StoredGameVariant,
+): BoardSquareTypeGrid => {
+  const cachedSquareTypes = waitingAnimationBoardSquareTypes.get(gameVariant);
+  if (cachedSquareTypes) {
+    return cachedSquareTypes;
+  }
+
+  const gameModel = createGameModelForStoredVariant(gameVariant);
+  try {
+    const squareTypes = buildBoardSquareTypeGrid(gameModel, gameVariant);
+    waitingAnimationBoardSquareTypes.set(gameVariant, squareTypes);
+    return squareTypes;
+  } finally {
+    gameModel.free();
+  }
+};
+
+const getManaBaseLayoutKey = (
+  squareTypes: BoardSquareTypeGrid | null,
+): string | null => {
+  if (!squareTypes) {
+    return null;
+  }
+  const locations: string[] = [];
+  squareTypes.forEach((row, rowIndex) => {
+    row.forEach((squareType, colIndex) => {
+      if (squareType === "manaBase") {
+        locations.push(`${rowIndex}:${colIndex}`);
+      }
+    });
+  });
+  return locations.length > 0 ? locations.join(",") : null;
+};
+
+export function showNextWaitingAnimationBoardVariant() {
+  const currentLayout = getManaBaseLayoutKey(displayedBoardSquareTypes);
+  const variantsToTry = [...getAllGameVariantNames()];
+  while (variantsToTry.length > 0) {
+    const variantIndex = Math.floor(Math.random() * variantsToTry.length);
+    const [gameVariant] = variantsToTry.splice(variantIndex, 1);
+    if (!gameVariant) {
+      continue;
+    }
+    const squareTypes = getWaitingAnimationBoardSquareTypes(gameVariant);
+    const candidateLayout = getManaBaseLayoutKey(squareTypes);
+    if (!candidateLayout || candidateLayout === currentLayout) {
+      continue;
+    }
+    setDisplayedBoardSquareTypes(squareTypes);
+    return;
+  }
+
+  if (!currentLayout) {
+    setDisplayedBoardSquareTypes(createLegacyBoardSquareTypeGrid());
+  }
+}
+
+export function restoreBoardVariantAfterWaitingAnimation() {
+  refreshDisplayedBoardSquareTypes();
+}
 
 export const getCurrentDisplayedBoardSquareTypes = () =>
   displayedBoardSquareTypes;
@@ -2299,11 +2369,17 @@ export async function go(routeStateOverride?: RouteState) {
       }
     });
   }
-  connection.setupConnection(false, routeState);
   Board.setupBoard();
   Board.setPreserveDisplayAnimation(false);
   Board.setBotStrengthControlMode(botAutomoveMode);
   Board.setBotStrengthControlVisible(false);
+
+  await initMonsWeb();
+
+  playerSideColor = MonsWeb.Color.White;
+  const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
+  applyGameSeedToCurrentGame(initialRouteGameSeed);
+  connection.setupConnection(false, routeState);
 
   if (isAutomatchTransition) {
     isOnlineGame = true;
@@ -2315,12 +2391,6 @@ export async function go(routeStateOverride?: RouteState) {
     setAutomatchWaitingState(true);
     Board.runMonsBoardAsDisplayWaitingAnimation();
   }
-
-  await initMonsWeb();
-
-  playerSideColor = MonsWeb.Color.White;
-  const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
-  applyGameSeedToCurrentGame(initialRouteGameSeed);
 
   if (isBotsRoute()) {
     game.locations_with_content().forEach((loc) => {
@@ -2387,6 +2457,8 @@ export async function go(routeStateOverride?: RouteState) {
       isWaitingForInviteToGetAccepted = true;
       setAutomatchWaitingState(true);
       Board.runMonsBoardAsDisplayWaitingAnimation();
+    } else if (!Board.hasMonsBoardDisplayAnimationRunning()) {
+      updateDisplayedBoardSquareTypes(game);
     }
   }
 
@@ -2410,8 +2482,19 @@ export async function go(routeStateOverride?: RouteState) {
   syncInviteBotIntoLocalGameButton();
 }
 
-export function disposeGameSession() {
+export function disposeGameSession(nextRouteState?: RouteState) {
   const preserveAutomatchUi = pendingAutomatchTransition;
+  const wasWaitingAnimationRunning =
+    Board.hasMonsBoardDisplayAnimationRunning();
+  const preserveManualInviteAnimation =
+    wasWaitingAnimationRunning &&
+    isCreateInviteRoute() &&
+    nextRouteState?.mode === "invite" &&
+    !nextRouteState.autojoin &&
+    !!nextRouteState.inviteId &&
+    connection.hasPendingInviteCreationFor(nextRouteState.inviteId);
+  const preserveWaitingAnimation =
+    preserveAutomatchUi || preserveManualInviteAnimation;
   clearAllManagedGameTimeouts();
   resetBotScoreReactionState();
   isGameWithBot = false;
@@ -2466,8 +2549,6 @@ export function disposeGameSession() {
   lastBotMoveTimestamp = 0;
   processedVoiceReactions.clear();
   currentInputs = [];
-  currentGameVariant = legacyDefaultGameVariant;
-  updateDisplayedBoardSquareTypes(null);
   resetTimerStateForMatch(null);
   setCurrentWagerMatch(null);
   connection.setWagerViewMatchId(null);
@@ -2497,8 +2578,14 @@ export function disposeGameSession() {
   setEndMatchConfirmed(false);
   showWaitingStateText("");
   showPrimaryAction(PrimaryActionType.None);
-  Board.setPreserveDisplayAnimation(preserveAutomatchUi);
+  Board.setPreserveDisplayAnimation(preserveWaitingAnimation);
   Board.stopMonsBoardAsDisplayAnimations();
+  currentGameVariant = legacyDefaultGameVariant;
+  if (!preserveWaitingAnimation) {
+    setDisplayedBoardSquareTypes(
+      wasWaitingAnimationRunning ? createLegacyBoardSquareTypeGrid() : null,
+    );
+  }
   Board.hideTimerCountdownDigits();
   Board.hideAllMoveStatuses();
   Board.setInviteBotButtonVisible(false);
@@ -5279,6 +5366,11 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   Board.hideAllMoveStatuses();
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
+}
+
+export function didFailToLoadPendingInvite() {
+  isWaitingForInviteToGetAccepted = false;
+  Board.stopMonsBoardAsDisplayAnimations();
 }
 
 function showPuzzleInstructions() {

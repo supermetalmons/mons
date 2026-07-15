@@ -47,6 +47,7 @@ import {
   didJustCreateRematchProposalSuccessfully,
   failedToCreateRematchProposal,
   didUpdateRematchSeriesMetadata,
+  didFailToLoadPendingInvite,
 } from "../game/gameController";
 import {
   getPlayersEmojiId,
@@ -996,6 +997,10 @@ class Connection {
     promise: Promise<boolean>,
   ): void {
     this.pendingInviteCreation = { inviteId, promise };
+  }
+
+  public hasPendingInviteCreationFor(inviteId: string): boolean {
+    return this.pendingInviteCreation?.inviteId === inviteId;
   }
 
   private async waitForPendingInviteCreation(
@@ -5555,7 +5560,7 @@ class Connection {
       return null;
     }
     let inviteData: Invite | null = initialSnapshot.val();
-    if (inviteData) {
+    if (inviteData && !this.hasPendingInviteCreationFor(inviteId)) {
       return inviteData;
     }
     const didWaitForPendingInvite = await this.waitForPendingInviteCreation(
@@ -5567,6 +5572,9 @@ class Connection {
       !this.isConnectAttemptActive(connectAttemptId, epoch)
     ) {
       return null;
+    }
+    if (inviteData) {
+      return inviteData;
     }
     const refreshedSnapshot = await get(inviteRef);
     if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
@@ -5673,6 +5681,8 @@ class Connection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
+    const isPendingLocalInviteCreation =
+      this.pendingInviteCreation?.inviteId === inviteId;
     const cachedInvite =
       this.inviteId === inviteId && this.latestInvite
         ? { ...this.latestInvite }
@@ -5699,6 +5709,9 @@ class Connection {
         }
         if (!inviteData) {
           console.log("No invite data found");
+          if (isPendingLocalInviteCreation) {
+            didFailToLoadPendingInvite();
+          }
           return;
         }
 
@@ -5895,6 +5908,9 @@ class Connection {
       .catch((error) => {
         if (!isConnectActive()) {
           return;
+        }
+        if (isPendingLocalInviteCreation) {
+          didFailToLoadPendingInvite();
         }
         console.error("Failed to retrieve invite data:", error);
       });

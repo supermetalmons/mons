@@ -9,7 +9,7 @@ export type GameSeed = {
 
 export const legacyDefaultGameVariant: StoredGameVariant = "Classic";
 
-function getAllGameVariantNames(): StoredGameVariant[] {
+export function getAllGameVariantNames(): StoredGameVariant[] {
   const variants = Object.keys(MonsWeb.GameVariant).filter((key) => {
     if (/^\d+$/.test(key)) {
       return false;
