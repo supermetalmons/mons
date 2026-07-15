@@ -2,6 +2,7 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import {
   getRainbowAuraGradient,
+  getRainbowAuraMaskUrl,
   RAINBOW_AURA_SCALE,
   RAINBOW_AURA_OFFSET_PERCENT,
   RAINBOW_AURA_BLUR_PX,
@@ -37,8 +38,8 @@ const RainbowInner = styled.div<{ src: string }>`
   position: absolute;
   inset: 0;
   ${RAINBOW_MASK_CSS_BASE}
-  -webkit-mask-image: url(${({ src }) => src});
-  mask-image: url(${({ src }) => src});
+  -webkit-mask-image: url(${({ src }) => getRainbowAuraMaskUrl(src)});
+  mask-image: url(${({ src }) => getRainbowAuraMaskUrl(src)});
 `;
 
 const RainbowRotatorWrap = styled.div`

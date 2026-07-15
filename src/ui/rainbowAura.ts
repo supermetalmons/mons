@@ -6,6 +6,7 @@ export const RAINBOW_AURA_BLUR_PX = 2;
 export const RAINBOW_AURA_OPACITY = 0.99;
 export const RAINBOW_AURA_ROTATION_S = 12;
 export const RAINBOW_AURA_ROTATOR_SIZE_PERCENT = 240;
+const RAINBOW_AURA_MASK_CACHE_VARIANT = "mons-aura-mask=v1";
 
 export function getRainbowAuraGradient(): string {
   const r: Record<string, string> = colors.rainbow as any;
@@ -13,6 +14,18 @@ export function getRainbowAuraGradient(): string {
 }
 
 export const RAINBOW_MASK_CSS_BASE = `-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-position:50% 50%;mask-position:50% 50%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;`;
+
+export function getRainbowAuraMaskUrl(src: string): string {
+  if (!src || /^(?:blob|data):/i.test(src)) return src;
+
+  // WebKit can reuse a no-CORS <img> cache entry for the CORS-enabled mask
+  // request. Keep mask resources on their own versioned cache key.
+  const hashIndex = src.indexOf("#");
+  const url = hashIndex === -1 ? src : src.slice(0, hashIndex);
+  const hash = hashIndex === -1 ? "" : src.slice(hashIndex);
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}${RAINBOW_AURA_MASK_CACHE_VARIANT}${hash}`;
+}
 
 function ensureRainbowAuraStylesInjected(): void {
   const id = "mons-rainbow-aura-styles";
@@ -57,8 +70,9 @@ export function attachRainbowAura(container: HTMLElement): {
 }
 
 export function setRainbowAuraMask(inner: HTMLElement, src: string): void {
-  inner.style.setProperty("-webkit-mask-image", `url(${src})`);
-  inner.style.setProperty("mask-image", `url(${src})`);
+  const maskUrl = getRainbowAuraMaskUrl(src);
+  inner.style.setProperty("-webkit-mask-image", `url(${maskUrl})`);
+  inner.style.setProperty("mask-image", `url(${maskUrl})`);
 }
 
 export function showRainbowAura(background: HTMLElement): void {
