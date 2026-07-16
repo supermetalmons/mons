@@ -1423,14 +1423,6 @@ const onProfileDeleted = onDocumentDeleted(
 );
 
 module.exports = {
-  SORT_BUCKETS,
-  PROFILE_LINK_CATCHUP_MAX_INVITES,
-  PROFILE_LINK_CATCHUP_CONCURRENCY,
-  PROFILE_LINK_CATCHUP_TIMEOUT_MS,
-  resolveInviteIdFromMatchId,
-  resolveProfileIdForLogin,
-  recomputeInviteProjection,
-  syncAutomatchInviteMarkerFromQueue,
   onInviteCreated,
   onInviteGuestIdChanged,
   onInviteHostRematchesChanged,

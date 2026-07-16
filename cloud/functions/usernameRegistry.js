@@ -493,12 +493,7 @@ const clearUsernameForProfile = async ({ profileId }) => {
 };
 
 module.exports = {
-  AUTO_NAME_MAX_ATTEMPTS,
-  buildUsernameLookupKey,
-  isAlphanumericUsername,
   isReservedExplicitUsername,
-  buildRandomAutoUsername,
-  claimUsernameForProfile,
   assignRandomUsernameIfNeededForWalletlessProfile,
   setExplicitUsernameForProfile,
   clearUsernameForProfile,

@@ -4058,7 +4058,7 @@ function applyOutput(
             break;
           case MonsWeb.EventModelKind.UsePotion:
             if (from && !flashbackMode) {
-              Board.indicatePotionUsage(from, !isPlayerSideTurn());
+              Board.indicatePotionUsage(from);
             }
             break;
           case MonsWeb.EventModelKind.PickupPotion:

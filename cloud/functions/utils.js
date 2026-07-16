@@ -77,7 +77,7 @@ function sendTelegramMessage(
       let data = null;
       try {
         data = await res.json();
-      } catch (_) {}
+      } catch {}
       console.log("tg:send:response", {
         status,
         ok: data && data.ok,
@@ -248,7 +248,7 @@ async function replaceAutomatchBotMessageText(
       let data = null;
       try {
         data = await res.json();
-      } catch (_) {}
+      } catch {}
       console.log("auto:edit:response", {
         inviteId,
         status: res.status,
@@ -286,7 +286,6 @@ async function replaceAutomatchBotMessageText(
     });
     return false;
   }
-  return false;
 }
 
 async function replaceAutomatchBotMessageByDeletingOriginal(
@@ -327,7 +326,7 @@ async function replaceAutomatchBotMessageByDeletingOriginal(
           let data = null;
           try {
             data = await res.json();
-          } catch (_) {}
+          } catch {}
           console.log("auto:replaceDelete:response", {
             inviteId,
             status: res.status,
@@ -534,34 +533,6 @@ async function getProfileByLoginId(uid) {
     emoji: "",
     aura: "",
   };
-}
-
-async function updateUserRatingNonceAndManaPoints(
-  profileId,
-  newRating,
-  newNonce,
-  isWin,
-  newManaPoints,
-) {
-  try {
-    const firestore = admin.firestore();
-    const userRef = firestore.collection("users").doc(profileId);
-    await userRef.update({
-      rating: newRating,
-      nonce: newNonce,
-      win: isWin,
-      totalManaPoints: newManaPoints,
-    });
-    return true;
-  } catch (error) {
-    console.error("Error updating user rating and nonce:", error);
-    return false;
-  }
-}
-
-async function getPlayerEthAddress(uid) {
-  const profile = await getProfileByLoginId(uid);
-  return profile.eth;
 }
 
 const customTelegramEmojis = {
@@ -1191,15 +1162,12 @@ const customTelegramEmojis = {
 
 module.exports = {
   batchReadWithRetry,
-  getPlayerEthAddress,
   getProfileByLoginId,
-  updateUserRatingNonceAndManaPoints,
   sendBotMessage,
   getDisplayNameFromAddress,
   sendAutomatchBotMessage,
   getTelegramEmojiTag,
   appendAutomatchBotMessageText,
-  replaceAutomatchBotMessageText,
   replaceAutomatchBotMessageByDeletingOriginal,
   markCanceledAutomatchBotMessage,
   customTelegramEmojis,

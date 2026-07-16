@@ -1686,8 +1686,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
               methodIndexRefs.map((indexRef) => transaction.get(indexRef)),
             )
           : [];
-      methodIndexEntries.forEach((entry, entryIndex) => {
-        const indexSnapshot = methodIndexSnapshots[entryIndex];
+      methodIndexSnapshots.forEach((indexSnapshot) => {
         if (indexSnapshot && indexSnapshot.exists) {
           const indexData = indexSnapshot.data() || {};
           const indexedProfileId = toCleanString(indexData.profileId);
@@ -2337,7 +2336,6 @@ const linkVerifiedMethod = async ({
   }
 
   try {
-    const firestore = admin.firestore();
     let currentProfile = await readProfileByLoginUid(uid);
     const methodLookupValue =
       toCleanString(methodValueLookupRaw) || methodValueRaw;
@@ -2949,12 +2947,9 @@ module.exports = {
   normalizeMethodValue,
   linkVerifiedMethod,
   peekAuthOpReplay,
-  buildProfileResponse,
-  linkedMethodsFromProfileData,
   unlinkMethodForUid,
   getLinkedMethodsForUid,
   syncProfileClaimForUid,
   verifyAppleIdToken,
   validateSiweDomainAndUri,
-  ensureProfileClaimAndRtdb,
 };

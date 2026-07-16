@@ -16,6 +16,7 @@ import {
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { setBoardStyleSet, setItemsStyleSet } from "../game/board";
+import { loadGameAssets } from "../assets/gameAssetsLoader";
 
 const PICTURE_BOARD_STYLE_SETS = [BoardStyleSet.Pangchiu] as const;
 type PictureBoardStyleSet = (typeof PICTURE_BOARD_STYLE_SETS)[number];
@@ -75,7 +76,7 @@ const getItemStylePreviewUrl = async (
   assetsSet: AssetsSet,
 ): Promise<string | null> => {
   try {
-    const module = await import(`../assets/gameAssets${assetsSet}`);
+    const module = await loadGameAssets(assetsSet);
     return `url(data:image/webp;base64,${module.gameAssets.supermana})`;
   } catch {
     return null;

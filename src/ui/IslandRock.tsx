@@ -306,7 +306,7 @@ const IslandRock = forwardRef<IslandRockHandle, Props>(
           g.setAttribute("data-a", angle.toString());
           return { el: g };
         },
-        (g, t, i) => {
+        (g, t) => {
           const ease = Math.pow(t, 0.33);
           const angle = parseFloat(g.getAttribute("data-a") || "0");
           const unit = unitRef.current;

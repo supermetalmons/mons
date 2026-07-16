@@ -78,6 +78,7 @@ import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
+import { loadGameAssets } from "../assets/gameAssetsLoader";
 import { launchConfetti, stopConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
@@ -925,7 +926,7 @@ async function initializeAssets(
   onStart: boolean,
   isProfileMonsChange: boolean,
 ) {
-  assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
+  assets = (await loadGameAssets(currentAssetsSet)).gameAssets;
 
   if (isExperimentingWithSprites) {
     const monsSprites = await import(`../assets/monsSprites`);
@@ -1002,7 +1003,7 @@ async function initializeAssets(
     Object.values(AssetsSet)
       .filter((set) => set !== currentAssetsSet)
       .forEach((set) => {
-        import(`../assets/gameAssets${set}`).catch(() => {});
+        loadGameAssets(set).catch(() => {});
       });
     if (!isExperimentingWithSprites) {
       import(`../assets/monsSprites`).catch(() => {});
@@ -1204,7 +1205,7 @@ function startAnimation(
       let lastUpdateTime = Date.now();
       (image as any).__isAnimating = true;
 
-      function animate(_timestamp: number) {
+      function animate() {
         if (!(image as any).__isAnimating || !image.isConnected) {
           return;
         }
@@ -2868,18 +2869,13 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
       const isBlackDrainer = item.mon?.color === MonsWeb.Color.Black;
       const isSupermana = item.mana?.kind === MonsWeb.ManaKind.Supermana;
       if (isSupermana) {
-        placeMonWithSupermana(
-          isBlackDrainer ? drainerB : drainer,
-          location,
-          isBlackDrainer ? ItemKind.DrainerBlack : ItemKind.Drainer,
-        );
+        placeMonWithSupermana(isBlackDrainer ? drainerB : drainer, location);
       } else {
         const isBlackMana = item.mana?.color === MonsWeb.Color.Black;
         placeMonWithMana(
           isBlackDrainer ? drainerB : drainer,
           isBlackMana ? manaB : mana,
           location,
-          isBlackDrainer ? ItemKind.DrainerBlack : ItemKind.Drainer,
         );
       }
       break;
@@ -2887,39 +2883,22 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
       const isBlackWithConsumable = item.mon?.color === MonsWeb.Color.Black;
       switch (item.mon?.kind) {
         case MonsWeb.MonKind.Demon:
-          placeMonWithBomb(
-            isBlackWithConsumable ? demonB : demon,
-            location,
-            isBlackWithConsumable ? ItemKind.DemonBlack : ItemKind.Demon,
-          );
+          placeMonWithBomb(isBlackWithConsumable ? demonB : demon, location);
           break;
         case MonsWeb.MonKind.Drainer:
           placeMonWithBomb(
             isBlackWithConsumable ? drainerB : drainer,
             location,
-            isBlackWithConsumable ? ItemKind.DrainerBlack : ItemKind.Drainer,
           );
           break;
         case MonsWeb.MonKind.Angel:
-          placeMonWithBomb(
-            isBlackWithConsumable ? angelB : angel,
-            location,
-            isBlackWithConsumable ? ItemKind.AngelBlack : ItemKind.Angel,
-          );
+          placeMonWithBomb(isBlackWithConsumable ? angelB : angel, location);
           break;
         case MonsWeb.MonKind.Spirit:
-          placeMonWithBomb(
-            isBlackWithConsumable ? spiritB : spirit,
-            location,
-            isBlackWithConsumable ? ItemKind.SpiritBlack : ItemKind.Spirit,
-          );
+          placeMonWithBomb(isBlackWithConsumable ? spiritB : spirit, location);
           break;
         case MonsWeb.MonKind.Mystic:
-          placeMonWithBomb(
-            isBlackWithConsumable ? mysticB : mystic,
-            location,
-            isBlackWithConsumable ? ItemKind.MysticBlack : ItemKind.Mystic,
-          );
+          placeMonWithBomb(isBlackWithConsumable ? mysticB : mystic, location);
           break;
       }
       break;
@@ -4461,11 +4440,7 @@ export function hasBasePlaceholder(location: Location): boolean {
   return basesPlaceholders.hasOwnProperty(key);
 }
 
-function placeMonWithBomb(
-  item: SVGElement,
-  location: Location,
-  baseItemKind: ItemKind,
-) {
+function placeMonWithBomb(item: SVGElement, location: Location) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
   SVG.setOrigin(img, location.j, location.i);
@@ -4482,11 +4457,7 @@ function placeMonWithBomb(
   startAnimation(img);
 }
 
-function placeMonWithSupermana(
-  item: SVGElement,
-  location: Location,
-  baseItemKind: ItemKind,
-) {
+function placeMonWithSupermana(item: SVGElement, location: Location) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
   SVG.setOrigin(img, location.j, location.i);
@@ -4515,7 +4486,6 @@ function placeMonWithMana(
   item: SVGElement,
   mana: SVGElement,
   location: Location,
-  baseItemKind: ItemKind,
 ) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
@@ -5455,7 +5425,7 @@ export async function indicateElectricHit(at: Location) {
   effects.indicateElectricHit(at);
 }
 
-export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
+export async function indicatePotionUsage(at: Location) {
   const effects = await ensureParticleEffectsLoaded();
   const potionTimeout = window.setTimeout(() => {
     boardTimeoutIds.delete(potionTimeout);

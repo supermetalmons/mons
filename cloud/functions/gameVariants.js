@@ -22,14 +22,6 @@ function normalizeStoredGameVariant(value) {
     : LEGACY_DEFAULT_GAME_VARIANT;
 }
 
-function getStoredGameVariantForPersistence(value) {
-  if (typeof value !== "string") {
-    return LEGACY_DEFAULT_GAME_VARIANT;
-  }
-  const normalized = value.trim();
-  return normalized !== "" ? normalized : LEGACY_DEFAULT_GAME_VARIANT;
-}
-
 function buildGameSeedForStoredVariant(value) {
   const gameVariant = normalizeStoredGameVariant(value);
   const game = mons.MonsGameModel.new(mons.GameVariant[gameVariant]);
@@ -49,10 +41,6 @@ function buildRandomGameSeed(random = Math.random) {
 }
 
 module.exports = {
-  LEGACY_DEFAULT_GAME_VARIANT,
-  getAllGameVariantNames,
-  getStoredGameVariantForPersistence,
-  normalizeStoredGameVariant,
   buildGameSeedForStoredVariant,
   buildRandomGameSeed,
 };

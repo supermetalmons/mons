@@ -100,7 +100,7 @@ const buildXRedirectCallbackUriFromHttpRequest = (request) => {
   return `${origin}${X_REDIRECT_CALLBACK_PATH}`;
 };
 
-const getAllowedReturnOrigins = (rawRequest) => {
+const getAllowedReturnOrigins = () => {
   const envConfigured = toCleanString(process.env.X_REDIRECT_ALLOWED_ORIGINS);
   const configuredOrigins = envConfigured
     ? envConfigured
@@ -116,8 +116,8 @@ const getAllowedReturnOrigins = (rawRequest) => {
   return allowed;
 };
 
-const resolveSafeReturnUrl = ({ rawReturnUrl, rawRequest }) => {
-  const allowedOrigins = getAllowedReturnOrigins(rawRequest);
+const resolveSafeReturnUrl = ({ rawReturnUrl }) => {
+  const allowedOrigins = getAllowedReturnOrigins();
   const fallbackOrigin = Array.from(allowedOrigins)[0] || "https://mons.link";
   const fallbackUrl = `${fallbackOrigin}/`;
   const candidate = toCleanString(rawReturnUrl);
@@ -200,8 +200,6 @@ const buildReturnUrlWithXRedirectStatus = ({
 module.exports = {
   X_REDIRECT_FLOW_COLLECTION,
   X_REDIRECT_FLOW_TTL_MS,
-  X_REDIRECT_RESULT_PARAMS,
-  X_OAUTH_SCOPES,
   toCleanString,
   normalizeConsentSource,
   createXRedirectFlowId,

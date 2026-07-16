@@ -6,10 +6,10 @@
     "node": "20"
   },
   "dependencies": {
-    "firebase-admin": "^14.1.0"
+    "firebase-admin": "^13.10.0"
   },
   "scripts": {
-    "start": "node listEthAddresses.js",
+    "start": "node listAddresses.js",
     "shooting:alert": "node shootingStarAlert.js"
   }
 }

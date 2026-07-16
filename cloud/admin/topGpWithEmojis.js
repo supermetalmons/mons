@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 const fs = require("fs");
 const path = require("path");
-const admin = require("firebase-admin");
-const { initAdmin } = require("./_admin");
+const { admin, initAdmin, cleanupAdmin } = require("./_admin");
 const {
   getDisplayNameFromAddress,
   sendBotMessage,
@@ -59,10 +58,8 @@ async function logTopGpWithEmojis(limit = 15) {
       console.log(output);
       await sendBotMessage(output, false, true);
       return;
-    } catch (e) {
-      try {
-        await admin.app().delete();
-      } catch {}
+    } finally {
+      await cleanupAdmin();
     }
   }
   throw new Error(

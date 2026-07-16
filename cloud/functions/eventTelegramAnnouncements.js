@@ -560,7 +560,7 @@ const telegramRequest = async (method, body) => {
     let data = null;
     try {
       data = await response.json();
-    } catch (_) {}
+    } catch {}
     if (response.ok && data && data.ok === true) {
       return {
         ok: true,

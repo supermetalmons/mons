@@ -1,40 +1,38 @@
-# mons-cloud-functions
+# mons cloud operations
+
+Run all commands from the repository root.
+
+## Setup
 
 `npm install -g firebase-tools`
 
-`firebase deploy --only functions`
+## Live Firebase operations
 
-`cd functions && npm run deploy:safe`
+These commands deploy functions or export live authentication data.
 
-`firebase deploy --only functions:verifyEthAddress`
+`firebase deploy --config cloud/firebase.json --project mons-link --only functions`
 
-`cd functions && npm run deploy:safe -- --batch-size 5`
+`npm --prefix cloud/functions run deploy:safe -- --project mons-link`
 
-`firebase auth:export users.json --format=json`
+`firebase deploy --config cloud/firebase.json --project mons-link --only functions:verifyEthAddress`
 
-## admin scripts
+`npm --prefix cloud/functions run deploy:safe -- --project mons-link --batch-size 5`
+
+`AUTH_EXPORT_PATH="$(mktemp)" && firebase auth:export "$AUTH_EXPORT_PATH" --config cloud/firebase.json --project mons-link --format=json && echo "Exported to $AUTH_EXPORT_PATH"`
+
+## Admin address listing
+
+Authenticate with Application Default Credentials before running the address commands:
 
 `gcloud auth application-default login`
 
-`node listAddresses.js`
+`npm --prefix cloud/admin start`
 
-`node listAddresses.js --project mons-link --out-eth /tmp/eth_addresses.txt --out-sol /tmp/sol_addresses.txt`
+`npm --prefix cloud/admin start -- --project mons-link --out-eth /tmp/eth_addresses.txt --out-sol /tmp/sol_addresses.txt`
 
-`node preflightAuthAudit.js --project mons-link --out /tmp/auth_preflight_report.json`
+## Auth rollout configuration
 
-`node backfillAuthMethodIndex.js --project mons-link --dry-run`
-
-`node backfillUsernameIndexCaseInsensitive.js --project mons-link --dry-run`
-
-`node backfillUsernameIndexCaseInsensitive.js --project mons-link --write`
-
-`node scrubGoogleAuthData.js --project mons-link --out /tmp/google_auth_scrub_report.json`
-
-`node scrubGoogleAuthData.js --project mons-link --write --force`
-
-`cd /Users/ivan/Developer/mons/link/cloud && firebase functions:delete beginGoogleRedirectAuth completeGoogleRedirectAuth googleAuthRedirectCallback verifyGoogleToken --project mons-link --region us-central1 --force && firebase deploy --only functions --project mons-link`
-
-## auth rollout flags
+These are configuration values, not standalone shell commands.
 
 `AUTH_DISABLE_APPLE_VERIFY=true`
 
@@ -43,11 +41,3 @@
 `AUTH_DISABLE_UNLINK=true`
 
 `AUTH_DISABLE_MERGE=true`
-
-Detailed rollout sequence and checks: `../docs/auth-rollout.md`
-
-X provider setup and deploy checklist: `../docs/x-auth-deploy.md`
-
-Username migration note: run `backfillUsernameIndexCaseInsensitive.js --write` to backfill `usernameIndex` + `users.usernameLookupKey`, then confirm `strictUniquenessReady: true` before relying on strict case-insensitive username uniqueness.
-
-Cloud Monitoring reliability alerts setup: `../docs/cloud-monitoring-alerts.md`

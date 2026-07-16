@@ -180,7 +180,7 @@ export function indicateElectricHit(at: Location) {
         const crackling = Math.sin(t * 25) * 0.05 * (1 - t);
         return outward + crackling;
       },
-      createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      createParticle: (centerX, centerY, _size, angle, defs, i, now) => {
         const rotatePoint = (
           px: number,
           py: number,
@@ -379,7 +379,7 @@ export function indicateElectricHit(at: Location) {
 
         return {
           main: container,
-          update: (x, y, currentSize, opacity, t) => {
+          update: (x, y, _currentSize, opacity, t) => {
             const crackle =
               1 +
               Math.sin(t * crackleFrequency + flickerOffset) *
@@ -426,7 +426,7 @@ export function showPurpleBubbles(at: Location) {
       sizeGrowthThreshold: 0.2,
       sizeGrowthMultiplier: 5,
       extraOpacityBoost: 1.1,
-      createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      createParticle: (centerX, centerY, size, _angle, defs, i, now) => {
         const bubbleStops = [
           { offset: "0%", color: "#FFF0FA", opacity: "1.0" },
           { offset: "30%", color: "#F7B6E6", opacity: "0.98" },
@@ -494,7 +494,7 @@ export function showPurpleBubbles(at: Location) {
         return {
           main: particle,
           extra: glare,
-          update: (x, y, currentSize, opacity, t) => {
+          update: (x, y, currentSize, opacity) => {
             particle.setAttribute("cx", (x * 100).toString());
             particle.setAttribute("cy", (y * 100).toString());
             particle.setAttribute("r", ((currentSize / 2) * 100).toString());
@@ -672,7 +672,7 @@ export function indicateFlameGround(at: Location) {
         const wiggle = Math.sin(t * 8) * 0.1 * (1 - t);
         return outward + wiggle;
       },
-      createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      createParticle: (centerX, centerY, size, _angle, defs, i, now) => {
         const flameColors = [
           "#FF4500",
           "#FF6347",
@@ -823,7 +823,7 @@ export function indicateSpiritAction(at: Location) {
         const swirl = Math.sin(t * 6) * 0.08 * (1 - t);
         return outward + swirl;
       },
-      createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      createParticle: (centerX, centerY, size, _angle, defs, i, now) => {
         const transformPoint = (
           px: number,
           py: number,
@@ -1068,7 +1068,7 @@ export function indicateSpiritAction(at: Location) {
 
         return {
           main: cloud,
-          update: (x, y, currentSize, opacity, t) => {
+          update: (x, y, _currentSize, opacity, t) => {
             const { rotation, scale } = computeEffects(t);
             setTransform(x, y, rotation, scale);
             cloud.style.opacity = (opacity * scale).toString();

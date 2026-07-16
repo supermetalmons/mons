@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const fs = require("fs");
-const admin = require("firebase-admin");
-const { initAdmin } = require("./_admin");
+const { admin, initAdmin, cleanupAdmin } = require("./_admin");
 
 async function listUniqueAddresses({ outEth, outSol }) {
   const initialized = initAdmin();
@@ -53,10 +52,8 @@ async function listUniqueAddresses({ outEth, outSol }) {
         console.log(solList.join("\n"));
       }
       return;
-    } catch (e) {
-      try {
-        await admin.app().delete();
-      } catch {}
+    } finally {
+      await cleanupAdmin();
     }
   }
   throw new Error(

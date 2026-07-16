@@ -1,11 +1,22 @@
 const fs = require("fs");
+const { createRequire } = require("module");
 const path = require("path");
-let admin;
+
+const requireFromFunctions = createRequire(
+  path.resolve(__dirname, "../functions/package.json"),
+);
+let hasFunctionsAdmin = false;
 try {
-  admin = require("../functions/node_modules/firebase-admin");
-} catch {
-  admin = require("firebase-admin");
+  requireFromFunctions.resolve("firebase-admin");
+  hasFunctionsAdmin = true;
+} catch (error) {
+  if (!error || error.code !== "MODULE_NOT_FOUND") {
+    throw error;
+  }
 }
+const admin = hasFunctionsAdmin
+  ? requireFromFunctions("firebase-admin")
+  : require("firebase-admin");
 
 function getProjectIdFromArgsEnvOrRc() {
   const args = process.argv.slice(2);
@@ -49,4 +60,12 @@ function initAdmin() {
   return false;
 }
 
-module.exports = { initAdmin, admin };
+async function cleanupAdmin() {
+  const defaultApp = admin.apps.find((app) => app.name === "[DEFAULT]");
+  if (!defaultApp) return;
+  try {
+    await defaultApp.delete();
+  } catch {}
+}
+
+module.exports = { initAdmin, cleanupAdmin, admin };

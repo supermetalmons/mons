@@ -113,8 +113,5 @@ module.exports = {
   sumMaterials,
   normalizeMiningSnapshot,
   formatMiningDate,
-  isFirstMiningEvent,
-  createFirstRockDrops,
-  createDeterministicDrops,
   createDropsForMiningEvent,
 };

@@ -41,11 +41,9 @@ exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
     throw new HttpsError("invalid-argument", "intentId is required.");
   }
 
-  const rawRequest = request.rawRequest || null;
   const consentSource = normalizeConsentSource(requestData.consentSource);
   const returnUrl = resolveSafeReturnUrl({
     rawReturnUrl: requestData.returnUrl,
-    rawRequest,
   });
   const callbackUri = buildXRedirectCallbackUriFromCallable(request);
   const clientId = getXOauthClientId();

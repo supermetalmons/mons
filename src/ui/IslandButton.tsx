@@ -3027,11 +3027,7 @@ function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
   }, [clearAnonSignInDrop]);
 
   const handleIslandOpen = useCallback(
-    (
-      event:
-        | React.MouseEvent<HTMLButtonElement>
-        | React.TouchEvent<HTMLButtonElement>,
-    ) => {
+    function handleIslandOpen() {
       if (overlayPhaseRef.current !== "idle") {
         return;
       }
@@ -5032,17 +5028,12 @@ function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
   ]);
 
   const handleMaterialItemTap = useCallback(
-    (name: MaterialName, _url: string | null) =>
-      (
-        event:
-          | React.MouseEvent<HTMLDivElement>
-          | React.TouchEvent<HTMLDivElement>,
-      ) => {
-        if (!islandOverlayVisible || islandClosing || islandOpening) {
-          return;
-        }
-        activateMaterial(name);
-      },
+    (name: MaterialName) => () => {
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
+        return;
+      }
+      activateMaterial(name);
+    },
     [activateMaterial, islandClosing, islandOpening, islandOverlayVisible],
   );
 
@@ -5884,14 +5875,10 @@ function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
                         }}
                         key={name}
                         onMouseDown={
-                          !isMobile
-                            ? handleMaterialItemTap(name, materialUrls[name])
-                            : undefined
+                          !isMobile ? handleMaterialItemTap(name) : undefined
                         }
                         onTouchStart={
-                          isMobile
-                            ? handleMaterialItemTap(name, materialUrls[name])
-                            : undefined
+                          isMobile ? handleMaterialItemTap(name) : undefined
                         }
                       >
                         {materialUrls[name] && (

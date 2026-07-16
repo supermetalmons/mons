@@ -127,14 +127,6 @@ const reserveAcceptedMaterials = async (
   return { acceptedCount, appliedDelta };
 };
 
-const readFrozenMaterials = async (uid) => {
-  const snap = await admin
-    .database()
-    .ref(`players/${uid}/mining/frozen`)
-    .once("value");
-  return normalizeMaterials(snap.val());
-};
-
 const readUserMiningMaterials = async (profileId) => {
   const doc = await admin.firestore().collection("users").doc(profileId).get();
   if (!doc.exists) {
@@ -258,14 +250,11 @@ const removeWagerProposalWithRetry = async (
 module.exports = {
   isMaterialName,
   normalizeCount,
-  computeAvailableCount,
   applyMaterialDeltas,
-  applyMaterialDeltasWithCap,
   updateFrozenMaterials,
   updateFrozenMaterialsWithCap,
   reserveFrozenMaterials,
   reserveAcceptedMaterials,
-  readFrozenMaterials,
   readUserMiningMaterials,
   updateUserMiningMaterials,
   resolveWagerParticipants,

@@ -2387,11 +2387,7 @@ const BottomControls: React.FC = () => {
     setIsReactionPickerVisible((prev) => !prev);
   };
 
-  const toggleMoveHistoryPopup = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
+  const toggleMoveHistoryPopup = () => {
     if (!isMoveHistoryPopupVisible) {
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
@@ -2455,11 +2451,7 @@ const BottomControls: React.FC = () => {
     [],
   );
 
-  const handleBrushClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
+  const handleBrushClick = () => {
     if (!isBoardStylePickerVisible) {
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
@@ -2499,11 +2491,7 @@ const BottomControls: React.FC = () => {
     didClickHomeButton();
   };
 
-  const handleAutomoveClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
+  const handleAutomoveClick = () => {
     if (!isAutomoveButtonEnabled) return;
     setAutomoveActionEnabled(false);
     didClickAutomoveButton();
@@ -2829,11 +2817,7 @@ const BottomControls: React.FC = () => {
     }
   };
 
-  const handleNavigationButtonClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
+  const handleNavigationButtonClick = () => {
     if (!isNavigationPopupVisible) {
       closeMenuAndInfoIfAny();
       hydrateNavigationGamesFromCache();

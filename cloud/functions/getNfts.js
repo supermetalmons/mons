@@ -78,7 +78,7 @@ exports.getNfts = onCall(async (request) => {
             if (!Number.isFinite(idNum)) continue;
             if (!idCounts.has(idNum)) idCounts.set(idNum, 0);
             idCounts.set(idNum, idCounts.get(idNum) + 1);
-          } catch (_) {}
+          } catch {}
         }
         fetched += items.length;
         if (!items.length || fetched >= total || items.length < limit) break;
