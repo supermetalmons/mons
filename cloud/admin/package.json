@@ -6,7 +6,7 @@
     "node": "20"
   },
   "dependencies": {
-    "firebase-admin": "^14.1.0"
+    "firebase-admin": "^14.2.0"
   },
   "scripts": {
     "start": "node listAddresses.js",
