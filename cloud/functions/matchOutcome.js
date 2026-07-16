@@ -2,7 +2,7 @@ let monsPromise = null;
 
 const loadMons = async () => {
   if (!monsPromise) {
-    monsPromise = import("mons-rust");
+    monsPromise = import("mons-rules");
   }
   return monsPromise;
 };

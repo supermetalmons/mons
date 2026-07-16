@@ -78,7 +78,7 @@ exports.startMatchTimer = onCall(async (request) => {
   const color = matchData.color;
   const opponentColor = opponentMatchData.color;
 
-  const mons = await import("mons-rust");
+  const mons = await import("mons-rules");
 
   let game = mons.MonsGameModel.from_fen(matchData.fen);
   if (!game.is_later_than(opponentMatchData.fen)) {
@@ -187,7 +187,7 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
   const color = matchData.color;
   const opponentColor = opponentMatchData.color;
 
-  const mons = await import("mons-rust");
+  const mons = await import("mons-rules");
 
   let game = mons.MonsGameModel.from_fen(matchData.fen);
   if (!game.is_later_than(opponentMatchData.fen)) {

@@ -1,4 +1,4 @@
-const mons = require("mons-rust");
+const mons = require("mons-rules");
 
 const LEGACY_DEFAULT_GAME_VARIANT = "Classic";
 

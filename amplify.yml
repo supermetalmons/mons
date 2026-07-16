@@ -3,6 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
+        - nvm use 24
         - npm install --legacy-peer-deps
         - "export REACT_APP_BUILD_DATETIME=$(date '+%s')"
         - "echo Build datetime: $REACT_APP_BUILD_DATETIME"

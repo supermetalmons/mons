@@ -1,6 +1,6 @@
-import * as MonsWeb from "mons-web";
+import * as MonsRules from "mons-rules";
 
-export type StoredGameVariant = keyof typeof MonsWeb.GameVariant;
+export type StoredGameVariant = keyof typeof MonsRules.GameVariant;
 
 export type GameSeed = {
   gameVariant: StoredGameVariant;
@@ -10,11 +10,11 @@ export type GameSeed = {
 export const legacyDefaultGameVariant: StoredGameVariant = "Classic";
 
 export function getAllGameVariantNames(): StoredGameVariant[] {
-  const variants = Object.keys(MonsWeb.GameVariant).filter((key) => {
+  const variants = Object.keys(MonsRules.GameVariant).filter((key) => {
     if (/^\d+$/.test(key)) {
       return false;
     }
-    return typeof MonsWeb.GameVariant[key as StoredGameVariant] === "number";
+    return typeof MonsRules.GameVariant[key as StoredGameVariant] === "number";
   }) as StoredGameVariant[];
   return variants.length > 0 ? variants : [legacyDefaultGameVariant];
 }
@@ -58,14 +58,14 @@ const createSeededRandom = (seedValue: string): (() => number) => {
 
 function runtimeGameVariantFromStoredValue(
   value: unknown,
-): MonsWeb.GameVariant {
-  return MonsWeb.GameVariant[normalizeStoredGameVariant(value)];
+): MonsRules.GameVariant {
+  return MonsRules.GameVariant[normalizeStoredGameVariant(value)];
 }
 
 export function createGameModelForStoredVariant(
   value: unknown,
-): MonsWeb.MonsGameModel {
-  return MonsWeb.MonsGameModel.new(runtimeGameVariantFromStoredValue(value));
+): MonsRules.MonsGameModel {
+  return MonsRules.MonsGameModel.new(runtimeGameVariantFromStoredValue(value));
 }
 
 export function buildGameSeedForStoredVariant(value: unknown): GameSeed {

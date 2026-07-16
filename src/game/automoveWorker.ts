@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import * as MonsWeb from "mons-web";
+import * as MonsRules from "mons-rules";
 import type {
   WorkerAutomoveRequest,
   WorkerAutomoveResponse,
@@ -13,15 +13,15 @@ const resolveWorkerAutomove = async (
   fen: string,
   preference: WorkerAutomoveRequest["preference"],
 ): Promise<WorkerAutomoveResult> => {
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(fen);
+  const gameFromFen = MonsRules.MonsGameModel.from_fen(fen);
   if (!gameFromFen) {
     throw new Error("failed to deserialize automove fen in worker");
   }
 
-  let output: MonsWeb.OutputModel | null = null;
+  let output: MonsRules.OutputModel | null = null;
   try {
-    output = gameFromFen.smartAutomove(preference) as MonsWeb.OutputModel;
-    if (output.kind === MonsWeb.OutputModelKind.Events) {
+    output = gameFromFen.smartAutomove(preference) as MonsRules.OutputModel;
+    if (output.kind === MonsRules.OutputModelKind.Events) {
       return {
         kind: "events",
         inputFen: output.input_fen(),

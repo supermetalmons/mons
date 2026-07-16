@@ -1,4 +1,4 @@
-import * as MonsWeb from "mons-web";
+import * as MonsRules from "mons-rules";
 import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
 import type { WorkerAutomoveResult } from "./automoveWorkerProtocol";
 import * as Board from "./board";
@@ -167,7 +167,7 @@ let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(
 );
 const offMainThreadAutomoveRetryDelayMs = 15_000;
 let offMainThreadAutomoveDisabledUntilMs = 0;
-const automoveInFlightGames = new WeakSet<MonsWeb.MonsGameModel>();
+const automoveInFlightGames = new WeakSet<MonsRules.MonsGameModel>();
 
 const automoveAlreadyInProgressErrorMessage =
   "smart automove already in progress";
@@ -210,27 +210,27 @@ const boardSquareTypeGridsEqual = (
 };
 
 const normalizeBoardSquareType = (
-  square: MonsWeb.SquareModel,
+  square: MonsRules.SquareModel,
 ): BoardSquareType => {
   switch (square.kind) {
-    case MonsWeb.SquareModelKind.ManaBase:
+    case MonsRules.SquareModelKind.ManaBase:
       return "manaBase";
-    case MonsWeb.SquareModelKind.SupermanaBase:
+    case MonsRules.SquareModelKind.SupermanaBase:
       return "supermanaBase";
-    case MonsWeb.SquareModelKind.ManaPool:
+    case MonsRules.SquareModelKind.ManaPool:
       return "manaPool";
-    case MonsWeb.SquareModelKind.ConsumableBase:
+    case MonsRules.SquareModelKind.ConsumableBase:
       return "consumableBase";
-    case MonsWeb.SquareModelKind.MonBase:
+    case MonsRules.SquareModelKind.MonBase:
       return "monBase";
-    case MonsWeb.SquareModelKind.Regular:
+    case MonsRules.SquareModelKind.Regular:
     default:
       return "regular";
   }
 };
 
 const buildBoardSquareTypeGrid = (
-  gameModel: MonsWeb.MonsGameModel,
+  gameModel: MonsRules.MonsGameModel,
   gameVariant: unknown = currentGameVariant,
 ): BoardSquareTypeGrid => {
   if (shouldKeepOriginalBoardTileColoring) {
@@ -243,7 +243,7 @@ const buildBoardSquareTypeGrid = (
   for (let row = 0; row < BOARD_GRID_SIZE; row += 1) {
     const squareTypeRow: BoardSquareType[] = [];
     for (let col = 0; col < BOARD_GRID_SIZE; col += 1) {
-      const square = gameModel.square(new MonsWeb.Location(row, col));
+      const square = gameModel.square(new MonsRules.Location(row, col));
       try {
         squareTypeRow.push(
           getDisplayedBoardSquareType(
@@ -282,7 +282,7 @@ const setDisplayedBoardSquareTypes = (
 };
 
 const updateDisplayedBoardSquareTypes = (
-  gameModel: MonsWeb.MonsGameModel | null | undefined,
+  gameModel: MonsRules.MonsGameModel | null | undefined,
   gameVariant: unknown = getDisplayedBoardVariant(),
 ) => {
   setDisplayedBoardSquareTypes(
@@ -393,13 +393,13 @@ let blackFlatMovesString: string | null = null;
 
 let wagerMatchId: string | null = null;
 
-let game: MonsWeb.MonsGameModel;
+let game: MonsRules.MonsGameModel;
 let flashbackMode = false;
-let flashbackStateGame: MonsWeb.MonsGameModel;
-let botPlayerColor: MonsWeb.Color;
-let playerSideColor: MonsWeb.Color;
-let resignedColor: MonsWeb.Color | undefined;
-let winnerByTimerColor: MonsWeb.Color | undefined;
+let flashbackStateGame: MonsRules.MonsGameModel;
+let botPlayerColor: MonsRules.Color;
+let playerSideColor: MonsRules.Color;
+let resignedColor: MonsRules.Color | undefined;
+let winnerByTimerColor: MonsRules.Color | undefined;
 
 let lastReactionTime = 0;
 const botReactionVariationsWhenPlayerScores = [17, 20, 374, 429, 465, 900999];
@@ -435,20 +435,22 @@ const inferStoredGameVariantFromFen = (fen: string): StoredGameVariant => {
     return legacyDefaultGameVariant;
   }
   const variantIndex = Number(variantToken);
-  const runtimeVariant = MonsWeb.GameVariant[variantIndex];
+  const runtimeVariant = MonsRules.GameVariant[variantIndex];
   return typeof runtimeVariant === "string"
     ? normalizeStoredGameVariant(runtimeVariant)
     : legacyDefaultGameVariant;
 };
 
-const applyGameSeedToCurrentGame = (seed: GameSeed): MonsWeb.MonsGameModel => {
+const applyGameSeedToCurrentGame = (
+  seed: GameSeed,
+): MonsRules.MonsGameModel => {
   setCurrentVariant(seed.gameVariant);
   game = createGameModelForStoredVariant(seed.gameVariant);
   return game;
 };
 
 const loadCurrentGameFromFen = (fen: string): boolean => {
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(fen);
+  const gameFromFen = MonsRules.MonsGameModel.from_fen(fen);
   if (!gameFromFen) {
     return false;
   }
@@ -472,7 +474,7 @@ const activeGameTimeoutIds = new Set<number>();
 let isInviteBotIntoLocalGameUnavailable = false;
 let didMakeFirstLocalPlayerMoveOnLocalBoard = false;
 let viewedRematchMatchId: string | null = null;
-let viewedRematchGame: MonsWeb.MonsGameModel | null = null;
+let viewedRematchGame: MonsRules.MonsGameModel | null = null;
 let viewedRematchPair: HistoricalMatchPair | null = null;
 let viewedRematchRequestToken = 0;
 let currentGameVariant: StoredGameVariant = legacyDefaultGameVariant;
@@ -561,7 +563,7 @@ type LocalRematchSnapshot = {
   matchId: string;
   index: number;
   gameVariant: StoredGameVariant;
-  gameModel: MonsWeb.MonsGameModel;
+  gameModel: MonsRules.MonsGameModel;
   fen: string;
   whiteScore: number;
   blackScore: number;
@@ -1012,7 +1014,7 @@ function prepareForNewLocalLiveMatch() {
 function enterHistoricalView(
   matchId: string,
   pair: HistoricalMatchPair,
-  historicalGame: MonsWeb.MonsGameModel,
+  historicalGame: MonsRules.MonsGameModel,
   sessionId: number,
 ): boolean {
   if (!isBoardRenderSessionActive(sessionId)) {
@@ -1149,12 +1151,12 @@ function getActiveRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
 }
 
 function localColorFromMonsColor(
-  color: MonsWeb.Color | undefined,
+  color: MonsRules.Color | undefined,
 ): "white" | "black" | null {
-  if (color === MonsWeb.Color.White) {
+  if (color === MonsRules.Color.White) {
     return "white";
   }
-  if (color === MonsWeb.Color.Black) {
+  if (color === MonsRules.Color.Black) {
     return "black";
   }
   return null;
@@ -1233,7 +1235,7 @@ function advanceLocalRematchSeriesToNextMatch() {
 }
 
 function baseBoardShouldBeFlipped(): boolean {
-  return playerSideColor === MonsWeb.Color.Black;
+  return playerSideColor === MonsRules.Color.Black;
 }
 
 function activeBoardShouldBeFlipped(): boolean {
@@ -1268,7 +1270,7 @@ function requestOnlineReconnect(inviteId: string, autojoin: boolean): void {
   connection.signInIfNeededAndConnectToGame(inviteId, autojoin);
 }
 
-function getMoveHistorySourceGame(): MonsWeb.MonsGameModel {
+function getMoveHistorySourceGame(): MonsRules.MonsGameModel {
   return viewedRematchGame ?? game;
 }
 
@@ -1376,8 +1378,8 @@ function getPreferredMatchFromHistoricalPair(
   if (!hostMatch || !guestMatch) {
     return null;
   }
-  const hostGame = MonsWeb.MonsGameModel.from_fen(hostMatch.fen);
-  const guestGame = MonsWeb.MonsGameModel.from_fen(guestMatch.fen);
+  const hostGame = MonsRules.MonsGameModel.from_fen(hostMatch.fen);
+  const guestGame = MonsRules.MonsGameModel.from_fen(guestMatch.fen);
   if (hostGame && !guestGame) {
     return hostMatch;
   }
@@ -1421,7 +1423,7 @@ function buildGameFromMoveStreams(
   gameVariant: unknown,
   whiteMovesString: string,
   blackMovesString: string,
-): MonsWeb.MonsGameModel | null {
+): MonsRules.MonsGameModel | null {
   const gameFromMoves = createGameModelForStoredVariant(gameVariant);
   const whiteMoves = movesArrayFromFlatString(whiteMovesString);
   const blackMoves = movesArrayFromFlatString(blackMovesString);
@@ -1429,21 +1431,21 @@ function buildGameFromMoveStreams(
   let blackIndex = 0;
   while (whiteIndex < whiteMoves.length || blackIndex < blackMoves.length) {
     const activeColor = gameFromMoves.active_color();
-    if (activeColor === MonsWeb.Color.White) {
+    if (activeColor === MonsRules.Color.White) {
       if (whiteIndex >= whiteMoves.length) {
         return null;
       }
       const output = gameFromMoves.process_input_fen(whiteMoves[whiteIndex]);
-      if (output.kind === MonsWeb.OutputModelKind.InvalidInput) {
+      if (output.kind === MonsRules.OutputModelKind.InvalidInput) {
         return null;
       }
       whiteIndex += 1;
-    } else if (activeColor === MonsWeb.Color.Black) {
+    } else if (activeColor === MonsRules.Color.Black) {
       if (blackIndex >= blackMoves.length) {
         return null;
       }
       const output = gameFromMoves.process_input_fen(blackMoves[blackIndex]);
-      if (output.kind === MonsWeb.OutputModelKind.InvalidInput) {
+      if (output.kind === MonsRules.OutputModelKind.InvalidInput) {
         return null;
       }
       blackIndex += 1;
@@ -1465,7 +1467,7 @@ function getHistoricalPairGameVariant(
 function getReconstructedGameFromPair(
   matchId: string,
   pair: HistoricalMatchPair,
-): MonsWeb.MonsGameModel | null {
+): MonsRules.MonsGameModel | null {
   const { whiteMoves, blackMoves } = getMatchMovesByColor(matchId, pair);
   if (whiteMoves === null || blackMoves === null) {
     return null;
@@ -1477,7 +1479,7 @@ function getReconstructedGameFromPair(
   );
 }
 
-function moveHistoryEntitiesCount(gameModel: MonsWeb.MonsGameModel): number {
+function moveHistoryEntitiesCount(gameModel: MonsRules.MonsGameModel): number {
   try {
     return gameModel.verbose_tracking_entities().length;
   } catch {
@@ -1488,13 +1490,13 @@ function moveHistoryEntitiesCount(gameModel: MonsWeb.MonsGameModel): number {
 function getBestHistoricalGameModel(
   matchId: string,
   pair: HistoricalMatchPair,
-): MonsWeb.MonsGameModel | null {
+): MonsRules.MonsGameModel | null {
   const preferredMatch = getPreferredMatchFromHistoricalPair(pair);
   if (preferredMatch) {
-    const baseGame = MonsWeb.MonsGameModel.from_fen(preferredMatch.fen);
+    const baseGame = MonsRules.MonsGameModel.from_fen(preferredMatch.fen);
     const { whiteMoves, blackMoves } = getMatchMovesByColor(matchId, pair);
     if (whiteMoves !== null && blackMoves !== null) {
-      const verifiedGame = MonsWeb.MonsGameModel.from_fen(preferredMatch.fen);
+      const verifiedGame = MonsRules.MonsGameModel.from_fen(preferredMatch.fen);
       if (verifiedGame && verifiedGame.verify_moves(whiteMoves, blackMoves)) {
         return verifiedGame;
       }
@@ -1643,7 +1645,7 @@ function countRecordedMovesInHistoricalPair(
 function hasSuspiciouslyShortHistoricalMoveHistory(
   matchId: string,
   pair: HistoricalMatchPair,
-  historicalGame: MonsWeb.MonsGameModel,
+  historicalGame: MonsRules.MonsGameModel,
 ): boolean {
   const historyEntitiesCount = moveHistoryEntitiesCount(historicalGame);
   if (historyEntitiesCount > 1) {
@@ -1656,9 +1658,9 @@ function hasSuspiciouslyShortHistoricalMoveHistory(
 function shouldPreferRefreshedHistoricalData(
   matchId: string,
   currentPair: HistoricalMatchPair,
-  currentHistoricalGame: MonsWeb.MonsGameModel,
+  currentHistoricalGame: MonsRules.MonsGameModel,
   refreshedPair: HistoricalMatchPair,
-  refreshedHistoricalGame: MonsWeb.MonsGameModel,
+  refreshedHistoricalGame: MonsRules.MonsGameModel,
 ): boolean {
   const currentHistoryEntitiesCount = moveHistoryEntitiesCount(
     currentHistoricalGame,
@@ -1683,30 +1685,30 @@ function shouldPreferRefreshedHistoricalData(
 function buildHistoricalGameModel(
   matchId: string,
   pair: HistoricalMatchPair,
-): MonsWeb.MonsGameModel | null {
+): MonsRules.MonsGameModel | null {
   return getBestHistoricalGameModel(matchId, pair);
 }
 
 function toMonsColor(
   color: string | null | undefined,
-): MonsWeb.Color | undefined {
+): MonsRules.Color | undefined {
   if (color === "white") {
-    return MonsWeb.Color.White;
+    return MonsRules.Color.White;
   }
   if (color === "black") {
-    return MonsWeb.Color.Black;
+    return MonsRules.Color.Black;
   }
   return undefined;
 }
 
 function oppositeMonsColor(
-  color: MonsWeb.Color | undefined,
-): MonsWeb.Color | undefined {
-  if (color === MonsWeb.Color.White) {
-    return MonsWeb.Color.Black;
+  color: MonsRules.Color | undefined,
+): MonsRules.Color | undefined {
+  if (color === MonsRules.Color.White) {
+    return MonsRules.Color.Black;
   }
-  if (color === MonsWeb.Color.Black) {
-    return MonsWeb.Color.White;
+  if (color === MonsRules.Color.Black) {
+    return MonsRules.Color.White;
   }
   return undefined;
 }
@@ -1714,7 +1716,7 @@ function oppositeMonsColor(
 function getHistoricalResignedColor(
   matchId: string,
   pair: HistoricalMatchPair,
-): MonsWeb.Color | undefined {
+): MonsRules.Color | undefined {
   const hostMatchResigned = pair.hostMatch?.status === "surrendered";
   const guestMatchResigned = pair.guestMatch?.status === "surrendered";
   if (!hostMatchResigned && !guestMatchResigned) {
@@ -1752,7 +1754,7 @@ function getHistoricalResignedColor(
 function getHistoricalWinnerByTimerColor(
   matchId: string,
   pair: HistoricalMatchPair,
-): MonsWeb.Color | undefined {
+): MonsRules.Color | undefined {
   const hostMatchWonByTimer = pair.hostMatch?.timer === "gg";
   const guestMatchWonByTimer = pair.guestMatch?.timer === "gg";
   if (!hostMatchWonByTimer && !guestMatchWonByTimer) {
@@ -1789,7 +1791,7 @@ function getHistoricalWinnerByTimerColor(
 
 function getDisplayResignedColor(
   inFlashbackMode: boolean,
-): MonsWeb.Color | undefined {
+): MonsRules.Color | undefined {
   if (
     boardViewMode === "historicalView" &&
     inFlashbackMode &&
@@ -1797,10 +1799,10 @@ function getDisplayResignedColor(
   ) {
     const localSnapshot = getLocalRematchSnapshot(viewedRematchMatchId);
     if (localSnapshot?.resignedColor === "white") {
-      return MonsWeb.Color.White;
+      return MonsRules.Color.White;
     }
     if (localSnapshot?.resignedColor === "black") {
-      return MonsWeb.Color.Black;
+      return MonsRules.Color.Black;
     }
     if (viewedRematchPair) {
       return getHistoricalResignedColor(
@@ -1814,7 +1816,7 @@ function getDisplayResignedColor(
 
 function getDisplayWinnerByTimerColor(
   inFlashbackMode: boolean,
-): MonsWeb.Color | undefined {
+): MonsRules.Color | undefined {
   if (boardViewMode === "historicalView" && inFlashbackMode) {
     if (viewedRematchMatchId && viewedRematchPair) {
       return getHistoricalWinnerByTimerColor(
@@ -1829,7 +1831,7 @@ function getDisplayWinnerByTimerColor(
 
 function shouldShowTerminalIndicators(
   inFlashbackMode: boolean,
-  displayGame: MonsWeb.MonsGameModel,
+  displayGame: MonsRules.MonsGameModel,
 ): boolean {
   if (!flashbackMode || !inFlashbackMode) {
     return true;
@@ -1838,7 +1840,7 @@ function shouldShowTerminalIndicators(
 }
 
 function hasTerminalResultForDisplayedGame(
-  displayGame: MonsWeb.MonsGameModel,
+  displayGame: MonsRules.MonsGameModel,
   inFlashbackMode: boolean,
 ): boolean {
   if (!shouldShowTerminalIndicators(inFlashbackMode, displayGame)) {
@@ -1855,7 +1857,7 @@ function hasTerminalResultForDisplayedGame(
 }
 
 function shouldHideBoardMoveStatuses(
-  displayGame: MonsWeb.MonsGameModel,
+  displayGame: MonsRules.MonsGameModel,
   inFlashbackMode: boolean,
 ): boolean {
   if (boardViewMode === "waitingLive") {
@@ -1883,7 +1885,7 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
   const activeMatchIndex = activeMatchDescriptor
     ? activeMatchDescriptor.index
     : 0;
-  const activePlayerIsWhite = playerSideColor !== MonsWeb.Color.Black;
+  const activePlayerIsWhite = playerSideColor !== MonsRules.Color.Black;
   return descriptor.matches.map(
     (descriptorItem: RematchSeriesMatchDescriptor) => {
       let whiteScore: number | null = null;
@@ -2196,7 +2198,7 @@ export function didSelectVerboseTrackingEntity(index: number) {
 
   flashbackMode = true;
   const gameFen = entity.fen();
-  flashbackStateGame = MonsWeb.MonsGameModel.from_fen(gameFen)!;
+  flashbackStateGame = MonsRules.MonsGameModel.from_fen(gameFen)!;
   currentInputs = [];
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
@@ -2374,7 +2376,7 @@ export async function go(routeStateOverride?: RouteState) {
   Board.setBotStrengthControlMode(botAutomoveMode);
   Board.setBotStrengthControlVisible(false);
 
-  playerSideColor = MonsWeb.Color.White;
+  playerSideColor = MonsRules.Color.White;
   const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
   applyGameSeedToCurrentGame(initialRouteGameSeed);
   connection.setupConnection(false, routeState);
@@ -2610,9 +2612,9 @@ function rematchInLoopMode() {
   applyGameSeedToCurrentGame(buildRandomGameSeed());
   Board.toggleBoardFlipped();
   playerSideColor =
-    playerSideColor === MonsWeb.Color.White
-      ? MonsWeb.Color.Black
-      : MonsWeb.Color.White;
+    playerSideColor === MonsRules.Color.White
+      ? MonsRules.Color.Black
+      : MonsRules.Color.White;
   Board.resetForNewGame();
   Board.didToggleItemsStyleSet(false);
   Board.showRandomEmojisForLoopMode();
@@ -2629,8 +2631,8 @@ function startFreshLocalMatch() {
   const playerStartsAsBlackInThisMatch =
     activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
   playerSideColor = playerStartsAsBlackInThisMatch
-    ? MonsWeb.Color.Black
-    : MonsWeb.Color.White;
+    ? MonsRules.Color.Black
+    : MonsRules.Color.White;
   prepareForNewLocalLiveMatch();
   resetBotScoreReactionState();
   isGameOver = false;
@@ -2681,7 +2683,7 @@ function startFreshLocalMatch() {
   triggerMoveHistoryPopupReload();
 }
 
-function startBotMatch(botColor: MonsWeb.Color) {
+function startBotMatch(botColor: MonsRules.Color) {
   const nextSeed = buildRandomGameSeed();
   ensureLocalRematchSeriesInitialized();
   prepareForNewLocalLiveMatch();
@@ -2719,16 +2721,16 @@ function startBotMatch(botColor: MonsWeb.Color) {
   setAutomoveActionEnabled(true);
   showMoveHistoryButton(true);
   showResignButton();
-  Board.setBoardFlipped(botColor === MonsWeb.Color.White);
+  Board.setBoardFlipped(botColor === MonsRules.Color.White);
   Board.showOpponentAsBotPlayer();
   Board.resetForNewGame();
   applyGameSeedToCurrentGame(nextSeed);
   setNewBoard(false);
   botPlayerColor = botColor;
   playerSideColor =
-    botColor === MonsWeb.Color.White
-      ? MonsWeb.Color.Black
-      : MonsWeb.Color.White;
+    botColor === MonsRules.Color.White
+      ? MonsRules.Color.Black
+      : MonsRules.Color.White;
   showVoiceReactionButton(true);
   lastBotMoveTimestamp = 0;
   updateUndoButtonBasedOnGameState();
@@ -2777,7 +2779,7 @@ export function didJustCreateRematchProposalSuccessfully(
   whiteFlatMovesString = null;
   blackFlatMovesString = null;
   playerSideColor =
-    nextMatch.color === "black" ? MonsWeb.Color.Black : MonsWeb.Color.White;
+    nextMatch.color === "black" ? MonsRules.Color.Black : MonsRules.Color.White;
   if (!loadCurrentGameFromFen(nextMatch.fen)) {
     applyGameSeedToCurrentGame(
       buildGameSeedForStoredVariant(nextMatch.gameVariant),
@@ -2820,7 +2822,7 @@ export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
 
 export function didClickStartBotGameButton() {
   dismissBadgeAndNotificationBannerIfNeeded();
-  startBotMatch(MonsWeb.Color.White);
+  startBotMatch(MonsRules.Color.White);
 }
 
 export function didClickInviteBotIntoLocalGameButton() {
@@ -2840,12 +2842,12 @@ export function didClickInviteBotIntoLocalGameButton() {
     return;
   }
   const shouldSendInviteYoReaction =
-    game.active_color() === MonsWeb.Color.White && game.turn_number() === 1;
+    game.active_color() === MonsRules.Color.White && game.turn_number() === 1;
   resetBotScoreReactionState();
   isInviteBotIntoLocalGameUnavailable = true;
   isGameWithBot = true;
-  botPlayerColor = MonsWeb.Color.Black;
-  playerSideColor = MonsWeb.Color.White;
+  botPlayerColor = MonsRules.Color.Black;
+  playerSideColor = MonsRules.Color.White;
   const boardWasFlippedBeforeTransition = Board.isFlipped;
   const didClearMoveHistoryFlipOverride =
     clearMoveHistoryFlipOverrideForCurrentSession();
@@ -3102,12 +3104,12 @@ export function didUpdateRematchSeriesMetadata() {
 type ResolvedAutomoveOutput = WorkerAutomoveResult;
 
 const resolveAutomoveFromMainThread = async (
-  gameModel: MonsWeb.MonsGameModel,
+  gameModel: MonsRules.MonsGameModel,
   preference: AutomovePreference,
 ): Promise<ResolvedAutomoveOutput> => {
-  const output = gameModel.smartAutomove(preference) as MonsWeb.OutputModel;
+  const output = gameModel.smartAutomove(preference) as MonsRules.OutputModel;
   try {
-    if (output.kind === MonsWeb.OutputModelKind.Events) {
+    if (output.kind === MonsRules.OutputModelKind.Events) {
       return {
         kind: "events",
         inputFen: output.input_fen(),
@@ -3120,7 +3122,7 @@ const resolveAutomoveFromMainThread = async (
 };
 
 const resolveAutomoveOutput = async (
-  gameModel: MonsWeb.MonsGameModel,
+  gameModel: MonsRules.MonsGameModel,
   fen: string,
   preference: AutomovePreference,
 ): Promise<ResolvedAutomoveOutput> => {
@@ -3306,9 +3308,9 @@ function didConfirmRematchProposal() {
   if (isGameWithBot) {
     advanceLocalRematchSeriesToNextMatch();
     const nextBotColor =
-      botPlayerColor === MonsWeb.Color.White
-        ? MonsWeb.Color.Black
-        : MonsWeb.Color.White;
+      botPlayerColor === MonsRules.Color.White
+        ? MonsRules.Color.Black
+        : MonsRules.Color.White;
     startBotMatch(nextBotColor);
     return;
   }
@@ -3378,7 +3380,7 @@ export function didClickClaimVictoryByTimerButton() {
         if (res.ok) {
           handleVictoryByTimer(
             false,
-            playerSideColor === MonsWeb.Color.White ? "white" : "black",
+            playerSideColor === MonsRules.Color.White ? "white" : "black",
             true,
           );
         }
@@ -3428,7 +3430,7 @@ export function didClickStartTimerButton() {
             return;
           }
           const timerColor =
-            playerSideColor === MonsWeb.Color.White ? "white" : "black";
+            playerSideColor === MonsRules.Color.White ? "white" : "black";
           setTimerStashForColor(requestedMatchId, timerColor, res.timer);
           if (boardViewMode === "activeLive") {
             showTimerCountdown(false, res.timer, timerColor, res.duration);
@@ -3450,9 +3452,9 @@ export function didClickConfirmResignButton() {
     }
     const activeColor = game.active_color();
     let activeColorString = "";
-    if (activeColor === MonsWeb.Color.White) {
+    if (activeColor === MonsRules.Color.White) {
       activeColorString = "white";
-    } else if (activeColor === MonsWeb.Color.Black) {
+    } else if (activeColor === MonsRules.Color.Black) {
       activeColorString = "black";
     }
     handleResignStatus(false, activeColorString);
@@ -3552,25 +3554,25 @@ export function didClickSquare(location: Location) {
 }
 
 function turnShouldBeConfirmedForOutputEvents(
-  events: MonsWeb.EventModel[],
+  events: MonsRules.EventModel[],
   fenBeforeMove: string,
 ): boolean {
   const wasFirstTurn = game.turn_number() === 2;
   const hasNextTurn = events.some(
-    (e) => e.kind === MonsWeb.EventModelKind.NextTurn,
+    (e) => e.kind === MonsRules.EventModelKind.NextTurn,
   );
   const hasGameOver = events.some(
-    (e) => e.kind === MonsWeb.EventModelKind.GameOver,
+    (e) => e.kind === MonsRules.EventModelKind.GameOver,
   );
   const hasManaMove = events.some(
-    (e) => e.kind === MonsWeb.EventModelKind.ManaMove,
+    (e) => e.kind === MonsRules.EventModelKind.ManaMove,
   );
 
   if (wasFirstTurn || hasGameOver || !hasNextTurn || !hasManaMove) {
     return false;
   }
 
-  const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove);
+  const gameBeforeMove = MonsRules.MonsGameModel.from_fen(fenBeforeMove);
   if (!gameBeforeMove) {
     return false;
   }
@@ -3584,21 +3586,22 @@ function turnShouldBeConfirmedForOutputEvents(
     if (!hasMoves && actionsCount > 0) {
       const output = gameBeforeMove.process_input([]);
       try {
-        if (output.kind === MonsWeb.OutputModelKind.LocationsToStartFrom) {
+        if (output.kind === MonsRules.OutputModelKind.LocationsToStartFrom) {
           const startLocations = output.locations();
           for (const loc of startLocations) {
             const nextOutput = gameBeforeMove.process_input([loc]);
             try {
               if (
-                nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions
+                nextOutput.kind === MonsRules.OutputModelKind.NextInputOptions
               ) {
                 const nextInputs = nextOutput.next_inputs();
                 if (
                   nextInputs.some(
                     (input) =>
-                      input.kind === MonsWeb.NextInputKind.MysticAction ||
-                      input.kind === MonsWeb.NextInputKind.DemonAction ||
-                      input.kind === MonsWeb.NextInputKind.SpiritTargetCapture,
+                      input.kind === MonsRules.NextInputKind.MysticAction ||
+                      input.kind === MonsRules.NextInputKind.DemonAction ||
+                      input.kind ===
+                        MonsRules.NextInputKind.SpiritTargetCapture,
                   )
                 ) {
                   actuallyHasPossibleAction = true;
@@ -3622,11 +3625,11 @@ function turnShouldBeConfirmedForOutputEvents(
 }
 
 function getTurnConfirmationFinishLocation(
-  events: MonsWeb.EventModel[],
+  events: MonsRules.EventModel[],
 ): Location | undefined {
   for (let index = events.length - 1; index >= 0; index -= 1) {
     const event = events[index];
-    if (event.kind === MonsWeb.EventModelKind.ManaMove && event.loc2) {
+    if (event.kind === MonsRules.EventModelKind.ManaMove && event.loc2) {
       return location(event.loc2);
     }
   }
@@ -3634,10 +3637,10 @@ function getTurnConfirmationFinishLocation(
 }
 
 function getTurnConfirmationStartLocation(
-  events: MonsWeb.EventModel[],
+  events: MonsRules.EventModel[],
 ): Location | undefined {
   for (const event of events) {
-    if (event.kind === MonsWeb.EventModelKind.ManaMove && event.loc1) {
+    if (event.kind === MonsRules.EventModelKind.ManaMove && event.loc1) {
       return location(event.loc1);
     }
   }
@@ -3646,9 +3649,9 @@ function getTurnConfirmationStartLocation(
 
 function applyTurnConfirmationSourceHighlight(
   fenBeforeMove: string,
-  events: MonsWeb.EventModel[],
+  events: MonsRules.EventModel[],
   isBotInput: boolean,
-  inputColorBeforeMove?: MonsWeb.Color,
+  inputColorBeforeMove?: MonsRules.Color,
   expectedMatchId: string | null = null,
 ): void {
   const startLocation = getTurnConfirmationStartLocation(events);
@@ -3656,18 +3659,18 @@ function applyTurnConfirmationSourceHighlight(
     return;
   }
 
-  const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove);
+  const gameBeforeMove = MonsRules.MonsGameModel.from_fen(fenBeforeMove);
   if (!gameBeforeMove) {
     return;
   }
 
-  let previewOutput: MonsWeb.OutputModel | null = null;
+  let previewOutput: MonsRules.OutputModel | null = null;
   const previewBaseGame = game;
   try {
     previewOutput = gameBeforeMove.process_input([
-      new MonsWeb.Location(startLocation.i, startLocation.j),
+      new MonsRules.Location(startLocation.i, startLocation.j),
     ]);
-    if (previewOutput.kind !== MonsWeb.OutputModelKind.NextInputOptions) {
+    if (previewOutput.kind !== MonsRules.OutputModelKind.NextInputOptions) {
       return;
     }
 
@@ -3693,10 +3696,10 @@ function applyTurnConfirmationSourceHighlight(
 }
 
 function shouldConfirmAutomoveManaEndTurn(
-  events: MonsWeb.EventModel[],
+  events: MonsRules.EventModel[],
 ): boolean {
   const hasManaMove = events.some(
-    (event) => event.kind === MonsWeb.EventModelKind.ManaMove,
+    (event) => event.kind === MonsRules.EventModelKind.ManaMove,
   );
   if (!hasManaMove) {
     return false;
@@ -3704,25 +3707,25 @@ function shouldConfirmAutomoveManaEndTurn(
 
   return events.some(
     (event) =>
-      event.kind === MonsWeb.EventModelKind.NextTurn ||
-      event.kind === MonsWeb.EventModelKind.GameOver,
+      event.kind === MonsRules.EventModelKind.NextTurn ||
+      event.kind === MonsRules.EventModelKind.GameOver,
   );
 }
 
 function applyOutput(
   takebackFensBeforeMove: string[],
   fenBeforeMove: string,
-  output: MonsWeb.OutputModel,
+  output: MonsRules.OutputModel,
   isRemoteInput: boolean,
   isBotInput: boolean,
   assistedInputKind: AssistedInputKind,
   inputLocation?: Location,
-  inputColorBeforeMove?: MonsWeb.Color,
+  inputColorBeforeMove?: MonsRules.Color,
   expectedMatchId: string | null = null,
   forceTurnConfirmation: boolean = false,
 ): boolean {
   switch (output.kind) {
-    case MonsWeb.OutputModelKind.InvalidInput:
+    case MonsRules.OutputModelKind.InvalidInput:
       const shouldTryToReselect =
         assistedInputKind === AssistedInputKind.None &&
         currentInputs.length > 1 &&
@@ -3746,7 +3749,7 @@ function applyOutput(
         );
       }
       break;
-    case MonsWeb.OutputModelKind.LocationsToStartFrom:
+    case MonsRules.OutputModelKind.LocationsToStartFrom:
       const startFromHighlights: Highlight[] = output
         .locations()
         .map(
@@ -3760,10 +3763,10 @@ function applyOutput(
       Board.removeHighlights();
       Board.applyHighlights(startFromHighlights);
       break;
-    case MonsWeb.OutputModelKind.NextInputOptions:
+    case MonsRules.OutputModelKind.NextInputOptions:
       const nextInputs = output.next_inputs();
 
-      if (nextInputs[0].kind === MonsWeb.NextInputKind.SelectConsumable) {
+      if (nextInputs[0].kind === MonsRules.NextInputKind.SelectConsumable) {
         Board.removeHighlights();
         playSounds([Sound.ChoosePickup]);
         Board.showItemSelection();
@@ -3776,49 +3779,49 @@ function applyOutput(
         let color: string;
         let highlightKind: HighlightKind;
         switch (input.kind) {
-          case MonsWeb.NextInputKind.MonMove:
+          case MonsRules.NextInputKind.MonMove:
             highlightKind =
               hasItemAt(location) || Board.hasBasePlaceholder(location)
                 ? HighlightKind.TargetSuggestion
                 : HighlightKind.EmptySquare;
             color = colors.destination;
             break;
-          case MonsWeb.NextInputKind.ManaMove:
+          case MonsRules.NextInputKind.ManaMove:
             highlightKind = hasItemAt(location)
               ? HighlightKind.TargetSuggestion
               : HighlightKind.EmptySquare;
             color = colors.destination;
             break;
-          case MonsWeb.NextInputKind.MysticAction:
+          case MonsRules.NextInputKind.MysticAction:
             highlightKind = HighlightKind.TargetSuggestion;
             color = colors.attackTarget;
             break;
-          case MonsWeb.NextInputKind.DemonAction:
+          case MonsRules.NextInputKind.DemonAction:
             highlightKind = HighlightKind.TargetSuggestion;
             color = colors.attackTarget;
             break;
-          case MonsWeb.NextInputKind.DemonAdditionalStep:
+          case MonsRules.NextInputKind.DemonAdditionalStep:
             highlightKind = Board.hasBasePlaceholder(location)
               ? HighlightKind.TargetSuggestion
               : HighlightKind.EmptySquare;
             color = colors.attackTarget;
             break;
-          case MonsWeb.NextInputKind.SpiritTargetCapture:
+          case MonsRules.NextInputKind.SpiritTargetCapture:
             highlightKind = HighlightKind.TargetSuggestion;
             color = colors.spiritTarget;
             break;
-          case MonsWeb.NextInputKind.SpiritTargetMove:
+          case MonsRules.NextInputKind.SpiritTargetMove:
             highlightKind =
               hasItemAt(location) || Board.hasBasePlaceholder(location)
                 ? HighlightKind.TargetSuggestion
                 : HighlightKind.EmptySquare;
             color = colors.spiritTarget;
             break;
-          case MonsWeb.NextInputKind.SelectConsumable:
+          case MonsRules.NextInputKind.SelectConsumable:
             highlightKind = HighlightKind.TargetSuggestion;
             color = colors.selectedItem;
             break;
-          case MonsWeb.NextInputKind.BombAttack:
+          case MonsRules.NextInputKind.BombAttack:
             highlightKind = HighlightKind.TargetSuggestion;
             color = colors.attackTarget;
             break;
@@ -3830,10 +3833,10 @@ function applyOutput(
         let color: string;
         if (index > 0) {
           switch (nextInputs[nextInputs.length - 1].kind) {
-            case MonsWeb.NextInputKind.DemonAdditionalStep:
+            case MonsRules.NextInputKind.DemonAdditionalStep:
               color = colors.attackTarget;
               break;
-            case MonsWeb.NextInputKind.SpiritTargetMove:
+            case MonsRules.NextInputKind.SpiritTargetMove:
               color = colors.spiritTarget;
               break;
             default:
@@ -3852,7 +3855,7 @@ function applyOutput(
         ...nextInputHighlights,
       ]);
       break;
-    case MonsWeb.OutputModelKind.Events:
+    case MonsRules.OutputModelKind.Events:
       if (!isRemoteInput && handleStaleOnlineLocalOutput(expectedMatchId)) {
         return false;
       }
@@ -3886,7 +3889,7 @@ function applyOutput(
           playSounds([Sound.ConfirmEarlyEndTurn]);
 
           Board.showEndTurnConfirmationOverlay(
-            game.active_color() === MonsWeb.Color.Black,
+            game.active_color() === MonsRules.Color.Black,
             finishLocation,
             () => {
               if (handleStaleOnlineLocalOutput(expectedMatchId)) {
@@ -3961,7 +3964,7 @@ function applyOutput(
         const from = event.loc1 ? location(event.loc1) : undefined;
         const to = event.loc2 ? location(event.loc2) : undefined;
         switch (event.kind) {
-          case MonsWeb.EventModelKind.MonMove:
+          case MonsRules.EventModelKind.MonMove:
             if (!from || !to) break;
             sounds.push(Sound.Move);
             locationsToUpdate.push(from);
@@ -3969,15 +3972,15 @@ function applyOutput(
             mightKeepHighlightOnLocation = to;
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.ManaMove:
+          case MonsRules.EventModelKind.ManaMove:
             if (!from || !to) break;
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.ManaScored:
+          case MonsRules.EventModelKind.ManaScored:
             if (!from || !event.mana) break;
-            if (event.mana.kind === MonsWeb.ManaKind.Supermana) {
+            if (event.mana.kind === MonsRules.ManaKind.Supermana) {
               sounds.push(Sound.ScoreSupermana);
             } else {
               sounds.push(Sound.ScoreMana);
@@ -4012,7 +4015,7 @@ function applyOutput(
             }
             mustReleaseHighlight = true;
             break;
-          case MonsWeb.EventModelKind.MysticAction:
+          case MonsRules.EventModelKind.MysticAction:
             if (!from || !to) break;
             sounds.push(Sound.MysticAbility);
             locationsToUpdate.push(from);
@@ -4022,7 +4025,7 @@ function applyOutput(
             }
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.DemonAction:
+          case MonsRules.EventModelKind.DemonAction:
             if (!from || !to) break;
             sounds.push(Sound.DemonAbility);
             locationsToUpdate.push(from);
@@ -4032,13 +4035,13 @@ function applyOutput(
             }
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.DemonAdditionalStep:
+          case MonsRules.EventModelKind.DemonAdditionalStep:
             if (!from || !to) break;
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.SpiritTargetMove:
+          case MonsRules.EventModelKind.SpiritTargetMove:
             if (!from || !to) break;
             sounds.push(Sound.SpiritAbility);
             locationsToUpdate.push(from);
@@ -4048,43 +4051,43 @@ function applyOutput(
             }
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.PickupBomb:
+          case MonsRules.EventModelKind.PickupBomb:
             if (!from) break;
             sounds.push(Sound.PickupBomb);
             locationsToUpdate.push(from);
             mustReleaseHighlight = true;
             break;
-          case MonsWeb.EventModelKind.UsePotion:
+          case MonsRules.EventModelKind.UsePotion:
             if (from && !flashbackMode) {
               Board.indicatePotionUsage(from);
             }
             break;
-          case MonsWeb.EventModelKind.PickupPotion:
+          case MonsRules.EventModelKind.PickupPotion:
             if (!from) break;
             sounds.push(Sound.PickupPotion);
             locationsToUpdate.push(from);
             mustReleaseHighlight = true;
             break;
-          case MonsWeb.EventModelKind.PickupMana:
+          case MonsRules.EventModelKind.PickupMana:
             if (!from) break;
             sounds.push(Sound.ManaPickUp);
             locationsToUpdate.push(from);
             break;
-          case MonsWeb.EventModelKind.MonFainted:
+          case MonsRules.EventModelKind.MonFainted:
             if (!from || !to) break;
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
             break;
-          case MonsWeb.EventModelKind.ManaDropped:
+          case MonsRules.EventModelKind.ManaDropped:
             if (!from) break;
             locationsToUpdate.push(from);
             break;
-          case MonsWeb.EventModelKind.SupermanaBackToBase:
+          case MonsRules.EventModelKind.SupermanaBackToBase:
             if (!from || !to) break;
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
             break;
-          case MonsWeb.EventModelKind.BombAttack:
+          case MonsRules.EventModelKind.BombAttack:
             if (!from || !to) break;
             sounds.push(Sound.Bomb);
             locationsToUpdate.push(from);
@@ -4094,19 +4097,19 @@ function applyOutput(
             }
             traces.push(new Trace(from, to));
             break;
-          case MonsWeb.EventModelKind.MonAwake:
+          case MonsRules.EventModelKind.MonAwake:
             if (from) {
               locationsToUpdate.push(from);
             }
             break;
-          case MonsWeb.EventModelKind.BombExplosion:
+          case MonsRules.EventModelKind.BombExplosion:
             sounds.push(Sound.Bomb);
             if (from && !flashbackMode) {
               Board.indicateBombExplosion(from);
               locationsToUpdate.push(from);
             }
             break;
-          case MonsWeb.EventModelKind.NextTurn:
+          case MonsRules.EventModelKind.NextTurn:
             if (puzzleMode && game.winner_color() === undefined) {
               resetToTheStartOfThePuzzle();
               Board.flashPuzzleFailure();
@@ -4145,7 +4148,7 @@ function applyOutput(
             }
             Board.hideTimerCountdownDigits();
             break;
-          case MonsWeb.EventModelKind.Takeback:
+          case MonsRules.EventModelKind.Takeback:
             setNewBoard(false);
             playSounds([Sound.Undo]);
             Board.removeHighlights();
@@ -4154,7 +4157,7 @@ function applyOutput(
             syncInviteBotIntoLocalGameButton();
             triggerMoveHistoryPopupReload();
             return false;
-          case MonsWeb.EventModelKind.GameOver:
+          case MonsRules.EventModelKind.GameOver:
             const isVictory = !isOnlineGame || event.color === playerSideColor;
 
             if (isVictory) {
@@ -4197,7 +4200,7 @@ function applyOutput(
         !isOnlineGame &&
         !isGameWithBot &&
         isCreateInviteRoute() &&
-        inputColorBeforeMove === MonsWeb.Color.White &&
+        inputColorBeforeMove === MonsRules.Color.White &&
         game.turn_number() <= 2
       ) {
         didMakeFirstLocalPlayerMoveOnLocalBoard = true;
@@ -4208,7 +4211,7 @@ function applyOutput(
         !isOnlineGame &&
         !isGameWithBot &&
         isCreateInviteRoute() &&
-        inputColorBeforeMove === MonsWeb.Color.Black &&
+        inputColorBeforeMove === MonsRules.Color.Black &&
         game.turn_number() > 2
       ) {
         isInviteBotIntoLocalGameUnavailable = true;
@@ -4683,20 +4686,20 @@ function processInput(
   }
 
   const gameInput = currentInputs.map(
-    (input) => new MonsWeb.Location(input.i, input.j),
+    (input) => new MonsRules.Location(input.i, input.j),
   );
   const inputColorBeforeMove = game.active_color();
   const fenBeforeMove = game.fen();
   const takebacksBeforeMove = game.takeback_fens();
-  let output: MonsWeb.OutputModel;
+  let output: MonsRules.OutputModel;
   if (inputModifier !== InputModifier.None) {
-    let modifier: MonsWeb.Modifier;
+    let modifier: MonsRules.Modifier;
     switch (inputModifier) {
       case InputModifier.Bomb:
-        modifier = MonsWeb.Modifier.SelectBomb;
+        modifier = MonsRules.Modifier.SelectBomb;
         break;
       case InputModifier.Potion:
-        modifier = MonsWeb.Modifier.SelectPotion;
+        modifier = MonsRules.Modifier.SelectPotion;
         break;
       case InputModifier.Cancel:
         currentInputs = [];
@@ -4738,12 +4741,12 @@ function updateLocation(location: Location, inFlashbackMode: boolean = false) {
   const displayGame = flashbackMode ? flashbackStateGame : game;
 
   Board.removeItem(location);
-  const item = displayGame.item(new MonsWeb.Location(location.i, location.j));
+  const item = displayGame.item(new MonsRules.Location(location.i, location.j));
   if (item !== undefined) {
     Board.putItem(item, location);
   } else {
     const square = displayGame.square(
-      new MonsWeb.Location(location.i, location.j),
+      new MonsRules.Location(location.i, location.j),
     );
     if (square !== undefined) {
       Board.setupSquare(square, location);
@@ -4751,7 +4754,7 @@ function updateLocation(location: Location, inFlashbackMode: boolean = false) {
   }
 }
 
-function location(locationModel: MonsWeb.Location): Location {
+function location(locationModel: MonsRules.Location): Location {
   return new Location(locationModel.i, locationModel.j);
 }
 
@@ -4826,7 +4829,7 @@ const isObservedMatchOpponentSide = (
 };
 
 function hasItemAt(location: Location): boolean {
-  const item = game.item(new MonsWeb.Location(location.i, location.j));
+  const item = game.item(new MonsRules.Location(location.i, location.j));
   if (item !== undefined) {
     return true;
   } else {
@@ -4867,18 +4870,18 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   }
 
   if (isWatchOnly) {
-    playerSideColor = MonsWeb.Color.White;
+    playerSideColor = MonsRules.Color.White;
     if (shouldRenderLiveBoard) {
       Board.setupPlayerId(matchPlayerUid, incomingIsOpponentSide);
     }
   } else {
     playerSideColor = incomingIsOpponentSide
       ? match.color === "white"
-        ? MonsWeb.Color.Black
-        : MonsWeb.Color.White
+        ? MonsRules.Color.Black
+        : MonsRules.Color.White
       : match.color === "white"
-        ? MonsWeb.Color.White
-        : MonsWeb.Color.Black;
+        ? MonsRules.Color.White
+        : MonsRules.Color.Black;
     if (shouldRenderLiveBoard) {
       Board.setupPlayerId(matchPlayerUid, incomingIsOpponentSide);
     }
@@ -4967,10 +4970,10 @@ function getTimerStateFromStashes(
   let timer: string | null = "";
   let timerColor = "";
   const activeColor = game.active_color();
-  if (activeColor === MonsWeb.Color.Black) {
+  if (activeColor === MonsRules.Color.Black) {
     timer = whiteTimerStash;
     timerColor = "white";
-  } else if (activeColor === MonsWeb.Color.White) {
+  } else if (activeColor === MonsRules.Color.White) {
     timer = blackTimerStash;
     timerColor = "black";
   } else {
@@ -5131,7 +5134,7 @@ function updateUndoButtonBasedOnGameState() {
 }
 
 function updateBoardMoveStatuses(
-  gameModel: MonsWeb.MonsGameModel = game,
+  gameModel: MonsRules.MonsGameModel = game,
   inFlashbackMode: boolean = flashbackMode,
 ) {
   if (shouldHideBoardMoveStatuses(gameModel, inFlashbackMode)) {
@@ -5234,7 +5237,7 @@ function handleVictoryByTimer(
   Board.hideItemSelectionOrConfirmationOverlay();
 
   winnerByTimerColor =
-    winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+    winnerColor === "white" ? MonsRules.Color.White : MonsRules.Color.Black;
   Board.updateScore(
     game.white_score(),
     game.black_score(),
@@ -5281,7 +5284,9 @@ function handleResignStatusWithoutRender(
     updateRatings(false);
   } else {
     resignedColor =
-      resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+      resignSenderColor === "white"
+        ? MonsRules.Color.White
+        : MonsRules.Color.Black;
   }
   if (!onConnect && !justConfirmedResignYourself) {
     playSounds([Sound.Victory]);
@@ -5314,7 +5319,9 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
     updateRatings(false);
   } else {
     resignedColor =
-      resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+      resignSenderColor === "white"
+        ? MonsRules.Color.White
+        : MonsRules.Color.Black;
   }
 
   if (!onConnect && !justConfirmedResignYourself) {
@@ -5626,7 +5633,7 @@ export function didReceiveMatchUpdate(
       for (let i = processedMovesCount; i < movesCount; i++) {
         const moveFen = movesFens[i];
         const output = game.process_input_fen(moveFen);
-        if (output.kind === MonsWeb.OutputModelKind.InvalidInput) {
+        if (output.kind === MonsRules.OutputModelKind.InvalidInput) {
           if (loadCurrentGameFromFen(match.fen)) {
             nextProcessedMovesCount = movesCount;
           }
@@ -5690,7 +5697,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   resetBotScoreReactionState();
 
   playerSideColor =
-    match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+    match.color === "white" ? MonsRules.Color.White : MonsRules.Color.Black;
   if (!loadCurrentGameFromFen(match.fen)) return;
   if (shouldRenderLiveBoard) {
     Board.setBoardFlipped(activeBoardShouldBeFlipped());

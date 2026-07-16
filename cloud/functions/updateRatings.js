@@ -578,7 +578,7 @@ exports.updateRatings = onCall(async (request) => {
     const playerProfile = await getProfileByLoginId(playerId);
     const opponentProfile = await getProfileByLoginId(opponentId);
 
-    const mons = await import("mons-rust");
+    const mons = await import("mons-rules");
     let gameForScore = mons.MonsGameModel.from_fen(matchData.fen);
     if (!gameForScore.is_later_than(opponentMatchData.fen)) {
       gameForScore = mons.MonsGameModel.from_fen(opponentMatchData.fen);

@@ -1,4 +1,4 @@
-import * as MonsWeb from "mons-web";
+import * as MonsRules from "mons-rules";
 import * as SVG from "../utils/svg";
 import {
   isOnlineGame,
@@ -2437,13 +2437,13 @@ export function hideAllMoveStatuses() {
 }
 
 export function updateMoveStatuses(
-  color: MonsWeb.Color,
+  color: MonsRules.Color,
   moveKinds: Int32Array,
   otherPlayerStatuses: Int32Array,
 ) {
   const playerSideActive = isFlipped
-    ? color === MonsWeb.Color.White
-    : color === MonsWeb.Color.Black;
+    ? color === MonsRules.Color.White
+    : color === MonsRules.Color.Black;
   const otherItemsToSetup = playerSideActive
     ? playerMoveStatusItems
     : opponentMoveStatusItems;
@@ -2556,27 +2556,27 @@ export function hideTimerCountdownDigits() {
 export function updateScore(
   white: number,
   black: number,
-  winnerColor?: MonsWeb.Color,
-  resignedColor?: MonsWeb.Color,
-  winByTimerColor?: MonsWeb.Color,
+  winnerColor?: MonsRules.Color,
+  resignedColor?: MonsRules.Color,
+  winByTimerColor?: MonsRules.Color,
 ) {
   let whiteMarker: EndOfGameMarker = "none";
   let blackMarker: EndOfGameMarker = "none";
 
   if (winnerColor !== null && winnerColor !== undefined) {
-    if (winnerColor === MonsWeb.Color.Black) {
+    if (winnerColor === MonsRules.Color.Black) {
       blackMarker = "victory";
     } else {
       whiteMarker = "victory";
     }
   } else if (winByTimerColor !== null && winByTimerColor !== undefined) {
-    if (winByTimerColor === MonsWeb.Color.Black) {
+    if (winByTimerColor === MonsRules.Color.Black) {
       blackMarker = "victory";
     } else {
       whiteMarker = "victory";
     }
   } else if (resignedColor !== null && resignedColor !== undefined) {
-    if (resignedColor === MonsWeb.Color.Black) {
+    if (resignedColor === MonsRules.Color.Black) {
       blackMarker = "resign";
     } else {
       whiteMarker = "resign";
@@ -2802,13 +2802,13 @@ function addElementToItemsLayer(element: SVGElement, depth: number) {
   }
 }
 
-export function putItem(item: MonsWeb.ItemModel, location: Location) {
+export function putItem(item: MonsRules.ItemModel, location: Location) {
   switch (item.kind) {
-    case MonsWeb.ItemModelKind.Mon:
-      const isBlack = item.mon?.color === MonsWeb.Color.Black;
+    case MonsRules.ItemModelKind.Mon:
+      const isBlack = item.mon?.color === MonsRules.Color.Black;
       const isFainted = item.mon?.is_fainted();
       switch (item.mon?.kind) {
-        case MonsWeb.MonKind.Demon:
+        case MonsRules.MonKind.Demon:
           placeItem(
             isBlack ? demonB : demon,
             location,
@@ -2816,7 +2816,7 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
             isFainted,
           );
           break;
-        case MonsWeb.MonKind.Drainer:
+        case MonsRules.MonKind.Drainer:
           placeItem(
             isBlack ? drainerB : drainer,
             location,
@@ -2824,7 +2824,7 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
             isFainted,
           );
           break;
-        case MonsWeb.MonKind.Angel:
+        case MonsRules.MonKind.Angel:
           placeItem(
             isBlack ? angelB : angel,
             location,
@@ -2832,7 +2832,7 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
             isFainted,
           );
           break;
-        case MonsWeb.MonKind.Spirit:
+        case MonsRules.MonKind.Spirit:
           placeItem(
             isBlack ? spiritB : spirit,
             location,
@@ -2840,7 +2840,7 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
             isFainted,
           );
           break;
-        case MonsWeb.MonKind.Mystic:
+        case MonsRules.MonKind.Mystic:
           placeItem(
             isBlack ? mysticB : mystic,
             location,
@@ -2850,28 +2850,28 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
           break;
       }
       break;
-    case MonsWeb.ItemModelKind.Mana:
+    case MonsRules.ItemModelKind.Mana:
       switch (item.mana?.kind) {
-        case MonsWeb.ManaKind.Regular:
-          const isBlack = item.mana.color === MonsWeb.Color.Black;
+        case MonsRules.ManaKind.Regular:
+          const isBlack = item.mana.color === MonsRules.Color.Black;
           placeItem(
             isBlack ? manaB : mana,
             location,
             isBlack ? ItemKind.ManaBlack : ItemKind.Mana,
           );
           break;
-        case MonsWeb.ManaKind.Supermana:
+        case MonsRules.ManaKind.Supermana:
           placeItem(supermana, location, ItemKind.Supermana);
           break;
       }
       break;
-    case MonsWeb.ItemModelKind.MonWithMana:
-      const isBlackDrainer = item.mon?.color === MonsWeb.Color.Black;
-      const isSupermana = item.mana?.kind === MonsWeb.ManaKind.Supermana;
+    case MonsRules.ItemModelKind.MonWithMana:
+      const isBlackDrainer = item.mon?.color === MonsRules.Color.Black;
+      const isSupermana = item.mana?.kind === MonsRules.ManaKind.Supermana;
       if (isSupermana) {
         placeMonWithSupermana(isBlackDrainer ? drainerB : drainer, location);
       } else {
-        const isBlackMana = item.mana?.color === MonsWeb.Color.Black;
+        const isBlackMana = item.mana?.color === MonsRules.Color.Black;
         placeMonWithMana(
           isBlackDrainer ? drainerB : drainer,
           isBlackMana ? manaB : mana,
@@ -2879,52 +2879,52 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
         );
       }
       break;
-    case MonsWeb.ItemModelKind.MonWithConsumable:
-      const isBlackWithConsumable = item.mon?.color === MonsWeb.Color.Black;
+    case MonsRules.ItemModelKind.MonWithConsumable:
+      const isBlackWithConsumable = item.mon?.color === MonsRules.Color.Black;
       switch (item.mon?.kind) {
-        case MonsWeb.MonKind.Demon:
+        case MonsRules.MonKind.Demon:
           placeMonWithBomb(isBlackWithConsumable ? demonB : demon, location);
           break;
-        case MonsWeb.MonKind.Drainer:
+        case MonsRules.MonKind.Drainer:
           placeMonWithBomb(
             isBlackWithConsumable ? drainerB : drainer,
             location,
           );
           break;
-        case MonsWeb.MonKind.Angel:
+        case MonsRules.MonKind.Angel:
           placeMonWithBomb(isBlackWithConsumable ? angelB : angel, location);
           break;
-        case MonsWeb.MonKind.Spirit:
+        case MonsRules.MonKind.Spirit:
           placeMonWithBomb(isBlackWithConsumable ? spiritB : spirit, location);
           break;
-        case MonsWeb.MonKind.Mystic:
+        case MonsRules.MonKind.Mystic:
           placeMonWithBomb(isBlackWithConsumable ? mysticB : mystic, location);
           break;
       }
       break;
-    case MonsWeb.ItemModelKind.Consumable:
+    case MonsRules.ItemModelKind.Consumable:
       placeItem(bombOrPotion, location, ItemKind.Consumable, false, true);
       break;
   }
 }
 
-export function setupSquare(square: MonsWeb.SquareModel, location: Location) {
-  if (square.kind === MonsWeb.SquareModelKind.MonBase) {
-    const isBlack = square.color === MonsWeb.Color.Black;
+export function setupSquare(square: MonsRules.SquareModel, location: Location) {
+  if (square.kind === MonsRules.SquareModelKind.MonBase) {
+    const isBlack = square.color === MonsRules.Color.Black;
     switch (square.mon_kind) {
-      case MonsWeb.MonKind.Demon:
+      case MonsRules.MonKind.Demon:
         setBase(isBlack ? demonB : demon, location);
         break;
-      case MonsWeb.MonKind.Drainer:
+      case MonsRules.MonKind.Drainer:
         setBase(isBlack ? drainerB : drainer, location);
         break;
-      case MonsWeb.MonKind.Angel:
+      case MonsRules.MonKind.Angel:
         setBase(isBlack ? angelB : angel, location);
         break;
-      case MonsWeb.MonKind.Spirit:
+      case MonsRules.MonKind.Spirit:
         setBase(isBlack ? spiritB : spirit, location);
         break;
-      case MonsWeb.MonKind.Mystic:
+      case MonsRules.MonKind.Mystic:
         setBase(isBlack ? mysticB : mystic, location);
         break;
     }

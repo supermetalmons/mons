@@ -2,6 +2,9 @@
   "name": "mons-dot-link",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@solana/wallet-adapter-base": "^0.9.27",
@@ -12,7 +15,7 @@
     "ethers": "^6.17.0",
     "firebase": "^12.16.0",
     "glicko2": "^1.2.1",
-    "mons-web": "0.2.0",
+    "mons-rules": "0.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.7.0",
@@ -32,7 +35,7 @@
     "format:check": "prettier --check . --ignore-unknown",
     "deploy:firebase": "npm --prefix cloud/functions install && cd cloud && firebase deploy --only functions,firestore:rules,firestore:indexes,database",
     "deploy:allFunctionsBatched": "npm --prefix cloud/functions install && npm --prefix cloud/functions run deploy:safe --",
-    "deploy:monsRustFunctions": "npm --prefix cloud/functions install && npm --prefix cloud/functions run deploy:safe -- automatch updateRatings startMatchTimer claimMatchVictoryByTimer resolveWagerOutcome createEvent joinEvent postponeEventStart removeEventParticipant disqualifyEventMatchWinners syncEventState processEventProgress processEventProgressFallback",
+    "deploy:monsRulesFunctions": "npm --prefix cloud/functions install && npm --prefix cloud/functions run deploy:safe -- automatch updateRatings startMatchTimer claimMatchVictoryByTimer resolveWagerOutcome createEvent joinEvent postponeEventStart removeEventParticipant disqualifyEventMatchWinners syncEventState processEventProgress processEventProgressFallback",
     "deploy": "node --experimental-strip-types scripts/deploy-amplify.ts",
     "latest:root": "npx --yes npm-check-updates@latest -u --peer --reject wagmi,@rainbow-me/rainbowkit && npm install --legacy-peer-deps",
     "latest:functions": "npx --yes npm-check-updates@latest -u --peer --packageFile cloud/functions/package.json && npm install --prefix cloud/functions",

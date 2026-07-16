@@ -11,7 +11,7 @@ const resolveMatchResult = async (matchData, opponentMatchData) => {
   } else {
     const color = matchData.color;
     const opponentColor = opponentMatchData.color;
-    mons = await import("mons-rust");
+    mons = await import("mons-rules");
     let winnerColorFen = "";
     if (color === "white") {
       winnerColorFen = mons.winner(

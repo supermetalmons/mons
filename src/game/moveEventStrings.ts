@@ -1,4 +1,4 @@
-import * as MonsWeb from "mons-web";
+import * as MonsRules from "mons-rules";
 import * as Board from "./board";
 import { colors } from "../content/boardStyles";
 
@@ -26,7 +26,7 @@ export type MoveHistoryEntry = {
 
 export type MoveHistorySegmentRole = "arrow" | "destination" | "normal";
 
-function arrowForEvent(e: MonsWeb.EventModel): {
+function arrowForEvent(e: MonsRules.EventModel): {
   arrow: string;
   isRight: boolean;
 } {
@@ -50,7 +50,7 @@ function arrowForEvent(e: MonsWeb.EventModel): {
   return { arrow: "→", isRight: true };
 }
 
-function addArrowToken(tokens: MoveHistoryToken[], ev: MonsWeb.EventModel) {
+function addArrowToken(tokens: MoveHistoryToken[], ev: MonsRules.EventModel) {
   const { arrow, isRight } = arrowForEvent(ev);
   const arrowToken: MoveHistoryToken = { type: "text", text: arrow };
   if (isRight) {
@@ -62,7 +62,7 @@ function addArrowToken(tokens: MoveHistoryToken[], ev: MonsWeb.EventModel) {
 
 function addActionArrowTokens(
   tokens: MoveHistoryToken[],
-  ev: MonsWeb.EventModel,
+  ev: MonsRules.EventModel,
 ): boolean {
   const { arrow, isRight } = arrowForEvent(ev);
   const actionToken: MoveHistoryToken = {
@@ -96,11 +96,11 @@ function compositeToken(
   };
 }
 
-function tokensForItem(item?: MonsWeb.ItemModel): MoveHistoryToken[] {
+function tokensForItem(item?: MonsRules.ItemModel): MoveHistoryToken[] {
   if (!item) return [];
   const tokens: MoveHistoryToken[] = [];
   switch (item.kind) {
-    case MonsWeb.ItemModelKind.MonWithMana: {
+    case MonsRules.ItemModelKind.MonWithMana: {
       const monToken = item.mon
         ? monIconForKind(item.mon.kind, item.mon.color)
         : null;
@@ -118,7 +118,7 @@ function tokensForItem(item?: MonsWeb.ItemModel): MoveHistoryToken[] {
       }
       break;
     }
-    case MonsWeb.ItemModelKind.MonWithConsumable: {
+    case MonsRules.ItemModelKind.MonWithConsumable: {
       const monToken = item.mon
         ? monIconForKind(item.mon.kind, item.mon.color)
         : null;
@@ -130,18 +130,18 @@ function tokensForItem(item?: MonsWeb.ItemModel): MoveHistoryToken[] {
       }
       break;
     }
-    case MonsWeb.ItemModelKind.Mon: {
+    case MonsRules.ItemModelKind.Mon: {
       if (item.mon) {
         const monToken = monIconForKind(item.mon.kind, item.mon.color);
         if (monToken) tokens.push({ type: "icon", ...monToken });
       }
       break;
     }
-    case MonsWeb.ItemModelKind.Mana: {
+    case MonsRules.ItemModelKind.Mana: {
       tokens.push({ type: "icon", ...manaIconFor(item.mana) });
       break;
     }
-    case MonsWeb.ItemModelKind.Consumable: {
+    case MonsRules.ItemModelKind.Consumable: {
       tokens.push({ type: "icon", ...consumableIconFor(item.consumable) });
       break;
     }
@@ -151,18 +151,21 @@ function tokensForItem(item?: MonsWeb.ItemModel): MoveHistoryToken[] {
   return tokens;
 }
 
-function locationsEqual(a?: MonsWeb.Location, b?: MonsWeb.Location): boolean {
+function locationsEqual(
+  a?: MonsRules.Location,
+  b?: MonsRules.Location,
+): boolean {
   if (!a || !b) return false;
   return a.i === b.i && a.j === b.j;
 }
 
 function targetTokensFromActionEvents(
-  events: MonsWeb.EventModel[],
+  events: MonsRules.EventModel[],
   startIndex: number,
-  targetLoc?: MonsWeb.Location,
+  targetLoc?: MonsRules.Location,
 ): MoveHistoryToken[] {
   if (!targetLoc) return [];
-  let targetMon: MonsWeb.Mon | null = null;
+  let targetMon: MonsRules.Mon | null = null;
   let sawBombExplosion = false;
   let manaOverlay: {
     icon: string;
@@ -175,7 +178,7 @@ function targetTokensFromActionEvents(
   for (let i = startIndex + 1; i < events.length; i++) {
     const next = events[i];
     switch (next.kind) {
-      case MonsWeb.EventModelKind.MonFainted:
+      case MonsRules.EventModelKind.MonFainted:
         if (
           locationsEqual(next.loc1, targetLoc) ||
           locationsEqual(next.loc2, targetLoc)
@@ -185,7 +188,7 @@ function targetTokensFromActionEvents(
           }
         }
         break;
-      case MonsWeb.EventModelKind.ManaDropped:
+      case MonsRules.EventModelKind.ManaDropped:
         if (locationsEqual(next.loc1, targetLoc) && next.mana) {
           manaTokens = [{ type: "icon", ...manaIconFor(next.mana) }];
           const overlay = manaOverlayIconFor(next.mana);
@@ -196,7 +199,7 @@ function targetTokensFromActionEvents(
           };
         }
         break;
-      case MonsWeb.EventModelKind.SupermanaBackToBase:
+      case MonsRules.EventModelKind.SupermanaBackToBase:
         if (locationsEqual(next.loc1, targetLoc)) {
           supermanaTokens = [
             { type: "icon", icon: "supermana", alt: "supermana" },
@@ -208,7 +211,7 @@ function targetTokensFromActionEvents(
           };
         }
         break;
-      case MonsWeb.EventModelKind.BombExplosion:
+      case MonsRules.EventModelKind.BombExplosion:
         if (locationsEqual(next.loc1, targetLoc)) {
           sawBombExplosion = true;
         }
@@ -232,7 +235,7 @@ function targetTokensFromActionEvents(
         ];
       }
       if (sawBombExplosion) {
-        const bombToken = consumableIconFor(MonsWeb.Consumable.Bomb);
+        const bombToken = consumableIconFor(MonsRules.Consumable.Bomb);
         return [compositeToken(monToken, bombToken, "bomb")];
       }
       return [{ type: "icon", ...monToken }];
@@ -243,33 +246,33 @@ function targetTokensFromActionEvents(
 }
 
 function monIconForKind(
-  kind: MonsWeb.MonKind | undefined,
-  color?: MonsWeb.Color,
+  kind: MonsRules.MonKind | undefined,
+  color?: MonsRules.Color,
 ): { icon: string; alt: string } | null {
   if (kind === undefined || kind === null) return null;
-  const isBlack = color === MonsWeb.Color.Black;
+  const isBlack = color === MonsRules.Color.Black;
   switch (kind) {
-    case MonsWeb.MonKind.Demon:
+    case MonsRules.MonKind.Demon:
       return {
         icon: isBlack ? "demonB" : "demon",
         alt: isBlack ? "black demon" : "demon",
       };
-    case MonsWeb.MonKind.Drainer:
+    case MonsRules.MonKind.Drainer:
       return {
         icon: isBlack ? "drainerB" : "drainer",
         alt: isBlack ? "black drainer" : "drainer",
       };
-    case MonsWeb.MonKind.Angel:
+    case MonsRules.MonKind.Angel:
       return {
         icon: isBlack ? "angelB" : "angel",
         alt: isBlack ? "black angel" : "angel",
       };
-    case MonsWeb.MonKind.Spirit:
+    case MonsRules.MonKind.Spirit:
       return {
         icon: isBlack ? "spiritB" : "spirit",
         alt: isBlack ? "black spirit" : "spirit",
       };
-    case MonsWeb.MonKind.Mystic:
+    case MonsRules.MonKind.Mystic:
       return {
         icon: isBlack ? "mysticB" : "mystic",
         alt: isBlack ? "black mystic" : "mystic",
@@ -280,8 +283,8 @@ function monIconForKind(
 }
 
 function monIconForEvent(
-  ev: MonsWeb.EventModel,
-  fallbackKind?: MonsWeb.MonKind,
+  ev: MonsRules.EventModel,
+  fallbackKind?: MonsRules.MonKind,
 ): { icon: string; alt: string } | null {
   const mon = ev.item?.mon ?? ev.mon;
   if (mon) {
@@ -293,24 +296,24 @@ function monIconForEvent(
   return null;
 }
 
-function manaIconFor(mana?: MonsWeb.ManaModel | null): {
+function manaIconFor(mana?: MonsRules.ManaModel | null): {
   icon: string;
   alt: string;
 } {
   if (!mana) {
     return { icon: "mana", alt: "mana" };
   }
-  if (mana.kind === MonsWeb.ManaKind.Supermana) {
+  if (mana.kind === MonsRules.ManaKind.Supermana) {
     return { icon: "supermana", alt: "supermana" };
   }
-  const isBlack = mana.color === MonsWeb.Color.Black;
+  const isBlack = mana.color === MonsRules.Color.Black;
   return {
     icon: isBlack ? "manaB" : "mana",
     alt: isBlack ? "black mana" : "mana",
   };
 }
 
-function manaOverlayIconFor(mana?: MonsWeb.ManaModel | null): {
+function manaOverlayIconFor(mana?: MonsRules.ManaModel | null): {
   icon: string;
   alt: string;
   variant: "mana" | "supermana";
@@ -318,10 +321,10 @@ function manaOverlayIconFor(mana?: MonsWeb.ManaModel | null): {
   if (!mana) {
     return { icon: "mana", alt: "mana", variant: "mana" };
   }
-  if (mana.kind === MonsWeb.ManaKind.Supermana) {
+  if (mana.kind === MonsRules.ManaKind.Supermana) {
     return { icon: "supermanaSimple", alt: "supermana", variant: "supermana" };
   }
-  const isBlack = mana.color === MonsWeb.Color.Black;
+  const isBlack = mana.color === MonsRules.Color.Black;
   return {
     icon: isBlack ? "manaB" : "mana",
     alt: isBlack ? "black mana" : "mana",
@@ -329,16 +332,16 @@ function manaOverlayIconFor(mana?: MonsWeb.ManaModel | null): {
   };
 }
 
-function consumableIconFor(consumable?: MonsWeb.Consumable | null): {
+function consumableIconFor(consumable?: MonsRules.Consumable | null): {
   icon: string;
   alt: string;
 } {
   switch (consumable) {
-    case MonsWeb.Consumable.Potion:
+    case MonsRules.Consumable.Potion:
       return { icon: "potion", alt: "potion" };
-    case MonsWeb.Consumable.Bomb:
+    case MonsRules.Consumable.Bomb:
       return { icon: "bomb", alt: "bomb" };
-    case MonsWeb.Consumable.BombOrPotion:
+    case MonsRules.Consumable.BombOrPotion:
       return { icon: "bombOrPotion", alt: "bomb or potion" };
     default:
       return { icon: "bombOrPotion", alt: "consumable" };
@@ -346,8 +349,8 @@ function consumableIconFor(consumable?: MonsWeb.Consumable | null): {
 }
 
 export function tokensForSingleMoveEvents(
-  events: MonsWeb.EventModel[],
-  activeColor?: MonsWeb.Color,
+  events: MonsRules.EventModel[],
+  activeColor?: MonsRules.Color,
 ): MoveHistoryEntry {
   const segments: MoveHistorySegment[] = [];
   const segmentRoles: MoveHistorySegmentRole[] = [];
@@ -410,9 +413,9 @@ export function tokensForSingleMoveEvents(
     let arrowIsRight = true;
     let extraDestinationTokens: MoveHistorySegment | null = null;
     switch (ev.kind) {
-      case MonsWeb.EventModelKind.MonMove: {
+      case MonsRules.EventModelKind.MonMove: {
         const monToken = monIconForEvent(ev);
-        if (ev.item?.kind === MonsWeb.ItemModelKind.MonWithMana) {
+        if (ev.item?.kind === MonsRules.ItemModelKind.MonWithMana) {
           const manaToken = manaOverlayIconFor(ev.item?.mana ?? ev.mana);
           if (monToken) {
             tokens.push(
@@ -429,7 +432,9 @@ export function tokensForSingleMoveEvents(
               alt: manaToken.alt,
             });
           }
-        } else if (ev.item?.kind === MonsWeb.ItemModelKind.MonWithConsumable) {
+        } else if (
+          ev.item?.kind === MonsRules.ItemModelKind.MonWithConsumable
+        ) {
           const consumableToken = consumableIconFor(ev.item?.consumable);
           if (monToken) {
             tokens.push(compositeToken(monToken, consumableToken, "bomb"));
@@ -445,7 +450,7 @@ export function tokensForSingleMoveEvents(
         segmentRole = "arrow";
         break;
       }
-      case MonsWeb.EventModelKind.ManaMove: {
+      case MonsRules.EventModelKind.ManaMove: {
         const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
         tokens.push({ type: "icon", ...manaToken });
         addArrowToken(tokens, ev);
@@ -453,8 +458,8 @@ export function tokensForSingleMoveEvents(
         segmentRole = "arrow";
         break;
       }
-      case MonsWeb.EventModelKind.MysticAction: {
-        const monToken = monIconForEvent(ev, MonsWeb.MonKind.Mystic);
+      case MonsRules.EventModelKind.MysticAction: {
+        const monToken = monIconForEvent(ev, MonsRules.MonKind.Mystic);
         let actorToken: MoveHistoryToken | null = null;
         if (monToken) {
           actorToken = { type: "icon", ...monToken };
@@ -470,8 +475,8 @@ export function tokensForSingleMoveEvents(
         if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
         break;
       }
-      case MonsWeb.EventModelKind.DemonAction: {
-        const monToken = monIconForEvent(ev, MonsWeb.MonKind.Demon);
+      case MonsRules.EventModelKind.DemonAction: {
+        const monToken = monIconForEvent(ev, MonsRules.MonKind.Demon);
         let actorToken: MoveHistoryToken | null = null;
         if (monToken) {
           actorToken = { type: "icon", ...monToken };
@@ -487,11 +492,11 @@ export function tokensForSingleMoveEvents(
         if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
         break;
       }
-      case MonsWeb.EventModelKind.SpiritTargetMove: {
+      case MonsRules.EventModelKind.SpiritTargetMove: {
         const targetTokens = tokensForItem(ev.item);
         const spiritToken = monIconForKind(
-          MonsWeb.MonKind.Spirit,
-          activeColor ?? MonsWeb.Color.White,
+          MonsRules.MonKind.Spirit,
+          activeColor ?? MonsRules.Color.White,
         );
         const actionToken: MoveHistoryToken = {
           type: "emoji",
@@ -519,10 +524,10 @@ export function tokensForSingleMoveEvents(
         segmentRole = "arrow";
         break;
       }
-      case MonsWeb.EventModelKind.BombAttack: {
+      case MonsRules.EventModelKind.BombAttack: {
         if (ev.mon) {
           const monToken = monIconForKind(ev.mon.kind, ev.mon.color);
-          const bombToken = consumableIconFor(MonsWeb.Consumable.Bomb);
+          const bombToken = consumableIconFor(MonsRules.Consumable.Bomb);
           if (monToken) {
             tokens.push(compositeToken(monToken, bombToken, "bomb"));
           } else {
@@ -531,7 +536,7 @@ export function tokensForSingleMoveEvents(
         } else {
           tokens.push({
             type: "icon",
-            ...consumableIconFor(MonsWeb.Consumable.Bomb),
+            ...consumableIconFor(MonsRules.Consumable.Bomb),
           });
         }
         addArrowToken(tokens, ev);
@@ -545,32 +550,32 @@ export function tokensForSingleMoveEvents(
         if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
         break;
       }
-      case MonsWeb.EventModelKind.ManaScored: {
+      case MonsRules.EventModelKind.ManaScored: {
         tokens.push({ type: "square", color: colors.manaPool, alt: "score" });
         segmentRole = "destination";
         break;
       }
-      case MonsWeb.EventModelKind.PickupBomb: {
+      case MonsRules.EventModelKind.PickupBomb: {
         tokens.push({
           type: "icon",
-          ...consumableIconFor(MonsWeb.Consumable.Bomb),
+          ...consumableIconFor(MonsRules.Consumable.Bomb),
         });
         segmentRole = "destination";
         break;
       }
-      case MonsWeb.EventModelKind.PickupPotion: {
+      case MonsRules.EventModelKind.PickupPotion: {
         tokens.push({
           type: "icon",
-          ...consumableIconFor(MonsWeb.Consumable.Potion),
+          ...consumableIconFor(MonsRules.Consumable.Potion),
         });
         segmentRole = "destination";
         break;
       }
-      case MonsWeb.EventModelKind.PickupMana: {
+      case MonsRules.EventModelKind.PickupMana: {
         const prevKind = index > 0 ? events[index - 1].kind : undefined;
         const cameFromManaMove =
-          prevKind === MonsWeb.EventModelKind.ManaMove ||
-          prevKind === MonsWeb.EventModelKind.SpiritTargetMove;
+          prevKind === MonsRules.EventModelKind.ManaMove ||
+          prevKind === MonsRules.EventModelKind.SpiritTargetMove;
         if (cameFromManaMove && ev.mon) {
           const monToken = monIconForKind(ev.mon.kind, ev.mon.color);
           if (monToken) {
@@ -583,13 +588,13 @@ export function tokensForSingleMoveEvents(
         segmentRole = "destination";
         break;
       }
-      case MonsWeb.EventModelKind.BombExplosion:
+      case MonsRules.EventModelKind.BombExplosion:
         // TODO: explosion indicator when there is a swagpacked one
         break;
-      case MonsWeb.EventModelKind.GameOver:
+      case MonsRules.EventModelKind.GameOver:
         // TODO: add game ended indicator depending on the reason game ended
         break;
-      case MonsWeb.EventModelKind.UsePotion:
+      case MonsRules.EventModelKind.UsePotion:
         if (lastActionSegment) {
           insertPotionIntoActionSegment(lastActionSegment);
           segmentRole = "skip";
@@ -601,16 +606,16 @@ export function tokensForSingleMoveEvents(
           });
         }
         break;
-      case MonsWeb.EventModelKind.NextTurn:
+      case MonsRules.EventModelKind.NextTurn:
         hasTurnSeparator = true;
         segmentRole = "skip";
         break;
-      case MonsWeb.EventModelKind.MonFainted:
-      case MonsWeb.EventModelKind.ManaDropped:
-      case MonsWeb.EventModelKind.MonAwake:
-      case MonsWeb.EventModelKind.Takeback:
-      case MonsWeb.EventModelKind.SupermanaBackToBase:
-      case MonsWeb.EventModelKind.DemonAdditionalStep:
+      case MonsRules.EventModelKind.MonFainted:
+      case MonsRules.EventModelKind.ManaDropped:
+      case MonsRules.EventModelKind.MonAwake:
+      case MonsRules.EventModelKind.Takeback:
+      case MonsRules.EventModelKind.SupermanaBackToBase:
+      case MonsRules.EventModelKind.DemonAdditionalStep:
         break;
       default:
         break;
@@ -627,9 +632,9 @@ export function tokensForSingleMoveEvents(
       lastArrowIsRight = arrowIsRight;
       rightInsertIndex = lastArrowIndex + 1;
       if (
-        ev.kind === MonsWeb.EventModelKind.MysticAction ||
-        ev.kind === MonsWeb.EventModelKind.DemonAction ||
-        ev.kind === MonsWeb.EventModelKind.SpiritTargetMove
+        ev.kind === MonsRules.EventModelKind.MysticAction ||
+        ev.kind === MonsRules.EventModelKind.DemonAction ||
+        ev.kind === MonsRules.EventModelKind.SpiritTargetMove
       ) {
         lastActionSegment = tokens;
       } else {
