@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import initMonsWeb, * as MonsWeb from "mons-web";
+import * as MonsWeb from "mons-web";
 import type {
   WorkerAutomoveRequest,
   WorkerAutomoveResponse,
@@ -8,20 +8,6 @@ import type {
 } from "./automoveWorkerProtocol";
 
 declare const self: DedicatedWorkerGlobalScope;
-
-let initPromise: Promise<void> | null = null;
-
-const ensureMonsWebInitialized = async (): Promise<void> => {
-  if (!initPromise) {
-    initPromise = initMonsWeb().then(() => undefined);
-  }
-  try {
-    await initPromise;
-  } catch (error) {
-    initPromise = null;
-    throw error;
-  }
-};
 
 const resolveWorkerAutomove = async (
   fen: string,
@@ -56,7 +42,6 @@ self.onmessage = (event: MessageEvent<WorkerAutomoveRequest>) => {
   const request = event.data;
   void (async () => {
     try {
-      await ensureMonsWebInitialized();
       const result = await resolveWorkerAutomove(
         request.fen,
         request.preference,

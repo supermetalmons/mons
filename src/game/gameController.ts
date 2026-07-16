@@ -1,4 +1,4 @@
-import initMonsWeb, * as MonsWeb from "mons-web";
+import * as MonsWeb from "mons-web";
 import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
 import type { WorkerAutomoveResult } from "./automoveWorkerProtocol";
 import * as Board from "./board";
@@ -2373,8 +2373,6 @@ export async function go(routeStateOverride?: RouteState) {
   Board.setPreserveDisplayAnimation(false);
   Board.setBotStrengthControlMode(botAutomoveMode);
   Board.setBotStrengthControlVisible(false);
-
-  await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
   const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
