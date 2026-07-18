@@ -4435,6 +4435,22 @@ function normalizeWagerStakeCount(
   return 0;
 }
 
+function isWagerOutcomeAnimationBlocking() {
+  if (!wagerOutcomeAnimating) {
+    return false;
+  }
+  // Preserve the existing 900 ms guard, then defer to the board's actual
+  // pending/running state if layout publication delayed the animation.
+  if (
+    wagerOutcomeAnimTimer !== null ||
+    Board.isWagerWinAnimationPendingOrActive()
+  ) {
+    return true;
+  }
+  wagerOutcomeAnimating = false;
+  return false;
+}
+
 function applyWagerState() {
   logWagerDebug("apply:start", {
     state: summarizeWagerState(currentWagerState),
@@ -4574,6 +4590,7 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
     wagerOutcomeAnimationAllowed &&
     !isWatchOnly &&
     !wagerOutcomeShown;
+  const outcomeAnimationBlocking = isWagerOutcomeAnimationBlocking();
   logWagerDebug("sync:computed", {
     material,
     stakeCount,
@@ -4583,11 +4600,11 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
     boardOpponentUid: Board.opponentSideMetadata.uid,
     boardPlayerUid: Board.playerSideMetadata.uid,
     wagerOutcomeShown,
-    wagerOutcomeAnimating,
+    wagerOutcomeAnimating: outcomeAnimationBlocking,
     wagerOutcomeAnimationAllowed,
   });
   if (shouldAnimate) {
-    if (wagerOutcomeAnimating) {
+    if (outcomeAnimationBlocking) {
       logWagerDebug("sync:deferred-animating");
       return "deferred";
     }
@@ -4600,8 +4617,10 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
     const wagerOutcomeGuard = getSessionGuard();
     wagerOutcomeAnimTimer = setManagedGameTimeout(
       () => {
-        wagerOutcomeAnimating = false;
         wagerOutcomeAnimTimer = null;
+        if (!Board.isWagerWinAnimationPendingOrActive()) {
+          wagerOutcomeAnimating = false;
+        }
       },
       900,
       wagerOutcomeGuard,
@@ -4609,7 +4628,7 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
     logWagerDebug("sync:shown-animated");
     return "shown";
   }
-  if (wagerOutcomeAnimating) {
+  if (outcomeAnimationBlocking) {
     logWagerDebug("sync:deferred-existing-animation");
     return "deferred";
   }

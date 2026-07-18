@@ -164,6 +164,7 @@ export type BoardPlayerInfoOverlayState = {
   topControlSlot: WagerPileSide;
   botStrengthControlVisible: boolean;
   botStrengthControlMode: BotStrengthControlMode;
+  wagerLayoutRevision: number;
 };
 
 const createEmptyPlayerInfoSlotState = (): BoardPlayerInfoSlotState => ({
@@ -185,6 +186,7 @@ const createEmptyPlayerInfoOverlayState = (): BoardPlayerInfoOverlayState => ({
   topControlSlot: "opponent",
   botStrengthControlVisible: false,
   botStrengthControlMode: "normal",
+  wagerLayoutRevision: 0,
 });
 
 const playerInfoSlotStatesEqual = (
@@ -210,8 +212,10 @@ const playerInfoOverlayStatesEqual = (
   playerInfoSlotStatesEqual(a.opponent, b.opponent) &&
   a.topControlSlot === b.topControlSlot &&
   a.botStrengthControlVisible === b.botStrengthControlVisible &&
-  a.botStrengthControlMode === b.botStrengthControlMode;
+  a.botStrengthControlMode === b.botStrengthControlMode &&
+  a.wagerLayoutRevision === b.wagerLayoutRevision;
 
+let latestBoardPlayerInfoOverlayState = createEmptyPlayerInfoOverlayState();
 let setTopBoardOverlayVisibleImpl: (
   blurry: boolean,
   svgElement: SVGElement | null,
@@ -292,6 +296,7 @@ export const updateWagerPlayerUids = (
 export const setBoardPlayerInfoOverlayState = (
   state: BoardPlayerInfoOverlayState,
 ) => {
+  latestBoardPlayerInfoOverlayState = state;
   setBoardPlayerInfoOverlayStateImpl(state);
 };
 
@@ -1516,7 +1521,9 @@ const BoardComponent: React.FC = () => {
   const [currentColorSet, setCurrentColorSet] =
     useState<ColorSet>(getCurrentColorSet());
   const [playerInfoOverlayState, setPlayerInfoOverlayState] =
-    useState<BoardPlayerInfoOverlayState>(createEmptyPlayerInfoOverlayState);
+    useState<BoardPlayerInfoOverlayState>(
+      () => latestBoardPlayerInfoOverlayState,
+    );
   const [endOfGameIconHrefs, setEndOfGameIconHrefs] =
     useState<EndOfGameIconHrefs>(getEndOfGameIconHrefs);
   const [prefersDarkMode, setPrefersDarkMode] = useState(
@@ -3027,8 +3034,11 @@ const BoardComponent: React.FC = () => {
   }, [applyWagerRenderState]);
 
   useLayoutEffect(() => {
-    setWagerSlotLayouts(computedWagerSlotLayouts);
-  }, [computedWagerSlotLayouts]);
+    setWagerSlotLayouts(
+      computedWagerSlotLayouts,
+      playerInfoOverlayState.wagerLayoutRevision,
+    );
+  }, [computedWagerSlotLayouts, playerInfoOverlayState.wagerLayoutRevision]);
 
   useLayoutEffect(() => {
     // setWagerRenderHandler emits immediately, so register after slot layouts

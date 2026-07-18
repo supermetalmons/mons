@@ -156,6 +156,21 @@ type EndOfGameMarker = "none" | "victory" | "resign";
 let playerEndOfGameMarker: EndOfGameMarker = "none";
 let opponentEndOfGameMarker: EndOfGameMarker = "none";
 
+function setEndOfGameMarkers(
+  playerMarker: EndOfGameMarker,
+  opponentMarker: EndOfGameMarker,
+) {
+  if (
+    playerEndOfGameMarker === playerMarker &&
+    opponentEndOfGameMarker === opponentMarker
+  ) {
+    return;
+  }
+  playerEndOfGameMarker = playerMarker;
+  opponentEndOfGameMarker = opponentMarker;
+  invalidateWagerSlotLayout();
+}
+
 const slotIsOpponentForMetadataSide = (metadataIsOpponent: boolean): boolean =>
   isMetadataDisplaySwapped ? !metadataIsOpponent : metadataIsOpponent;
 const metadataSideIsOpponentForSlot = (slotIsOpponent: boolean): boolean =>
@@ -374,13 +389,9 @@ export type WagerRenderState = {
   opponentDisappearing: WagerPileRenderState | null;
 };
 
-let playerWagerPile: WagerPile | null = null;
-let opponentWagerPile: WagerPile | null = null;
-let winnerWagerPile: WagerPile | null = null;
-let wagerWinAnimRaf: number | null = null;
-let wagerWinAnimActive = false;
-let winnerPileActive = false;
-let wagerWinAnimState: {
+type WagerWinAnimationStartSpace =
+  "winnerSource" | "winnerTarget" | "loserSource";
+type WagerWinAnimationState = {
   startTime: number;
   duration: number;
   iconSize: number;
@@ -388,7 +399,27 @@ let wagerWinAnimState: {
   targets: Array<{ x: number; y: number }>;
   drifts: Array<{ x: number; y: number }>;
   delays: number[];
-} | null = null;
+  startSpaces: WagerWinAnimationStartSpace[];
+  winnerIsOpponent: boolean;
+  winnerSourceRect: WagerPileRect;
+  loserSourceRect: WagerPileRect;
+  winnerRect: WagerPileRect;
+};
+type DeferredResolvedWager = {
+  winnerIsOpponent: boolean;
+  material: MaterialName;
+  countPerSide: number;
+  animate: boolean;
+  requiredLayoutRevision: number;
+};
+
+let playerWagerPile: WagerPile | null = null;
+let opponentWagerPile: WagerPile | null = null;
+let winnerWagerPile: WagerPile | null = null;
+let wagerWinAnimRaf: number | null = null;
+let wagerWinAnimActive = false;
+let winnerPileActive = false;
+let wagerWinAnimState: WagerWinAnimationState | null = null;
 let lastWagerWinnerIsOpponent = false;
 let handleWagerRenderState: ((state: WagerRenderState) => void) | null = null;
 let wagerAnimationsReady = false;
@@ -405,6 +436,9 @@ const WAGER_DISAPPEAR_ANIMATION_MS = 280;
 let playerPilePending = false;
 let opponentPilePending = false;
 let wagerSlotLayouts: WagerSlotLayoutMap | null = null;
+let wagerSlotLayoutRevision = 0;
+let committedWagerSlotLayoutRevision = -1;
+let deferredResolvedWager: DeferredResolvedWager | null = null;
 const boardWagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 let lastWagerEmitSignature = "";
 const logBoardWagerDebug = (
@@ -449,12 +483,49 @@ const wagerSlotLayoutsEqual = (
     wagerSlotLayoutEqual(a.player, b.player) &&
     wagerSlotLayoutEqual(a.opponent, b.opponent));
 
-export function setWagerSlotLayouts(layouts: WagerSlotLayoutMap | null) {
-  if (wagerSlotLayoutsEqual(wagerSlotLayouts, layouts)) {
+function invalidateWagerSlotLayout() {
+  // End markers move the name anchor. Resolution rendering must wait until
+  // BoardComponent publishes geometry calculated from the same revision.
+  wagerSlotLayoutRevision += 1;
+}
+
+export function setWagerSlotLayouts(
+  layouts: WagerSlotLayoutMap,
+  layoutRevision: number,
+): void;
+export function setWagerSlotLayouts(layouts: null): void;
+export function setWagerSlotLayouts(
+  layouts: WagerSlotLayoutMap | null,
+  layoutRevision?: number,
+) {
+  if (!layouts) {
+    committedWagerSlotLayoutRevision = -1;
+  }
+  if (
+    layouts &&
+    layoutRevision !== undefined &&
+    layoutRevision !== wagerSlotLayoutRevision
+  ) {
+    return;
+  }
+  const layoutChanged = !wagerSlotLayoutsEqual(wagerSlotLayouts, layouts);
+  if (layouts && layoutRevision !== undefined) {
+    committedWagerSlotLayoutRevision = layoutRevision;
+  }
+  if (!layoutChanged) {
+    if (layouts && layoutRevision !== undefined) {
+      showDeferredResolvedWagerIfReady();
+    }
     return;
   }
   wagerSlotLayouts = layouts;
+  if (wagerWinAnimActive && layouts) {
+    retargetActiveWagerWinAnimation();
+  }
   updateWagerLayout({ emitWithoutHandler: false });
+  if (layouts && layoutRevision !== undefined) {
+    showDeferredResolvedWagerIfReady();
+  }
 }
 
 const emojis = (await import("../content/emojis")).emojis;
@@ -1298,8 +1369,7 @@ export function hideBoardPlayersInfo() {
 
   playerScoreDisplayText = "";
   opponentScoreDisplayText = "";
-  playerEndOfGameMarker = "none";
-  opponentEndOfGameMarker = "none";
+  setEndOfGameMarkers("none", "none");
   playerInfoPlayerVisible = false;
   playerInfoOpponentVisible = false;
   emitBoardPlayerInfoOverlayState();
@@ -1497,8 +1567,7 @@ export function resetPlayersMetadataForSession() {
 }
 
 export function resetForNewGame() {
-  playerEndOfGameMarker = "none";
-  opponentEndOfGameMarker = "none";
+  setEndOfGameMarkers("none", "none");
   clearVoiceReactionState();
   if (isWatchOnly) {
     playerSideMetadata = newEmptyPlayerMetadata();
@@ -2205,6 +2274,7 @@ function emitBoardPlayerInfoOverlayState() {
     topControlSlot: isMetadataDisplaySwapped ? "player" : "opponent",
     botStrengthControlVisible,
     botStrengthControlMode,
+    wagerLayoutRevision: wagerSlotLayoutRevision,
   };
   setBoardPlayerInfoOverlayState(state);
 }
@@ -2592,8 +2662,7 @@ export function updateScore(
   playerScoreDisplayText = playerScore.toString();
   opponentScoreDisplayText = opponentScore.toString();
 
-  playerEndOfGameMarker = playerMarker;
-  opponentEndOfGameMarker = opponentMarker;
+  setEndOfGameMarkers(playerMarker, opponentMarker);
   renderPlayersNamesLabels();
 }
 
@@ -3442,6 +3511,142 @@ function buildWagerFrames(
   return frames;
 }
 
+const clampWagerUnit = (value: number) => Math.max(0, Math.min(1, value));
+
+function remapWagerFrame(
+  frame: { x: number; y: number },
+  previousRect: WagerPileRect,
+  nextRect: WagerPileRect,
+  previousIconSize: number,
+  nextIconSize: number,
+) {
+  const previousLayout = getWagerIconLayout(previousRect, previousIconSize);
+  const nextLayout = getWagerIconLayout(nextRect, nextIconSize);
+  const u =
+    previousLayout.maxX > 0
+      ? clampWagerUnit(
+          (frame.x - previousRect.x + previousLayout.padding) /
+            previousLayout.maxX,
+        )
+      : 0.5;
+  const v =
+    previousLayout.maxY > 0
+      ? clampWagerUnit(
+          (frame.y - previousRect.y + previousLayout.padding) /
+            previousLayout.maxY,
+        )
+      : 0.5;
+  return getWagerIconFrame(nextRect, nextLayout, { u, v });
+}
+
+function applyWagerWinAnimationFrame(time: number): number | null {
+  if (!wagerWinAnimState || !winnerWagerPile) {
+    return null;
+  }
+  const { startTime, duration, iconSize, starts, targets, drifts, delays } =
+    wagerWinAnimState;
+  const progress =
+    duration > 0 ? clampWagerUnit((time - startTime) / duration) : 1;
+  for (let i = 0; i < winnerWagerPile.count; i += 1) {
+    const delay = delays[i] || 0;
+    const denom = 1 - delay;
+    const local =
+      denom > 0 ? clampWagerUnit((progress - delay) / denom) : progress;
+    const eased = 1 - Math.pow(1 - local, 3);
+    const driftScale = Math.sin(local * Math.PI);
+    const start = starts[i] || targets[i];
+    const target = targets[i] || start;
+    if (!start || !target) {
+      continue;
+    }
+    const drift = drifts[i] || { x: 0, y: 0 };
+    const x = start.x + (target.x - start.x) * eased + drift.x * driftScale;
+    const y = start.y + (target.y - start.y) * eased + drift.y * driftScale;
+    if (!winnerWagerPile.frames[i]) {
+      winnerWagerPile.frames[i] = { x, y };
+    } else {
+      winnerWagerPile.frames[i].x = x;
+      winnerWagerPile.frames[i].y = y;
+    }
+  }
+  winnerWagerPile.iconSize = iconSize;
+  return progress;
+}
+
+function retargetActiveWagerWinAnimation() {
+  const state = wagerWinAnimState;
+  const winnerPile = winnerWagerPile;
+  if (!state || !winnerPile) {
+    cancelWagerWinAnimation();
+    return;
+  }
+
+  const nextWinnerSourceRect = getWagerPileRect(state.winnerIsOpponent);
+  const nextLoserSourceRect = getWagerPileRect(!state.winnerIsOpponent);
+  const nextWinnerRect = getWagerWinnerRect(state.winnerIsOpponent);
+  if (
+    !wagerRectIsVisible(nextWinnerSourceRect) ||
+    !wagerRectIsVisible(nextLoserSourceRect) ||
+    !wagerRectIsVisible(nextWinnerRect)
+  ) {
+    cancelWagerWinAnimation();
+    return;
+  }
+
+  const previousIconSize = state.iconSize;
+  const nextIconSize = getWagerIconLayout(nextWinnerSourceRect).iconSize;
+  // Preserve elapsed progress by remapping the original endpoints into the
+  // new source/target spaces instead of restarting or jumping the animation.
+  state.starts = state.starts.map((start, index) => {
+    const space = state.startSpaces[index];
+    if (space === "winnerSource") {
+      return remapWagerFrame(
+        start,
+        state.winnerSourceRect,
+        nextWinnerSourceRect,
+        previousIconSize,
+        nextIconSize,
+      );
+    }
+    if (space === "loserSource") {
+      return remapWagerFrame(
+        start,
+        state.loserSourceRect,
+        nextLoserSourceRect,
+        previousIconSize,
+        nextIconSize,
+      );
+    }
+    return remapWagerFrame(
+      start,
+      state.winnerRect,
+      nextWinnerRect,
+      previousIconSize,
+      nextIconSize,
+    );
+  });
+
+  const nextWinnerLayout = getWagerIconLayout(nextWinnerRect, nextIconSize);
+  state.targets = winnerPile.positions.map((position) =>
+    getWagerIconFrame(nextWinnerRect, nextWinnerLayout, position),
+  );
+  const driftScaleX =
+    state.winnerRect.w > 0 ? nextWinnerRect.w / state.winnerRect.w : 1;
+  const driftScaleY =
+    state.winnerRect.h > 0 ? nextWinnerRect.h / state.winnerRect.h : 1;
+  state.drifts = state.drifts.map((drift) => ({
+    x: drift.x * driftScaleX,
+    y: drift.y * driftScaleY,
+  }));
+  state.iconSize = nextIconSize;
+  state.winnerSourceRect = nextWinnerSourceRect;
+  state.loserSourceRect = nextLoserSourceRect;
+  state.winnerRect = nextWinnerRect;
+  winnerPile.rect = nextWinnerRect;
+  winnerPile.iconSize = nextIconSize;
+  applyWagerWinAnimationFrame(performance.now());
+}
+
 function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   if (!playerWagerPile || !opponentWagerPile) {
     return false;
@@ -3531,7 +3736,6 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     winnerVisible + loserVisible,
   );
 
-  const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
   const winnerAnchoredPositions = winnerAnchoredStarts.map((frame) => {
     const u =
       winnerLayout.maxX > 0
@@ -3541,7 +3745,7 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
       winnerLayout.maxY > 0
         ? (frame.y - winnerRect.y + winnerLayout.padding) / winnerLayout.maxY
         : 0.5;
-    return { u: clamp01(u), v: clamp01(v) };
+    return { u: clampWagerUnit(u), v: clampWagerUnit(v) };
   });
 
   const winnerPositions = winnerAnchoredPositions.concat(winnerExtraPositions);
@@ -3560,6 +3764,11 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     loserVisible,
   );
   const starts = winnerAnchoredStarts.concat(winnerExtraStarts, loserStarts);
+  const startSpaces: WagerWinAnimationStartSpace[] = [
+    ...winnerAnchoredStarts.map(() => "winnerSource" as const),
+    ...winnerExtraStarts.map(() => "winnerTarget" as const),
+    ...loserStarts.map(() => "loserSource" as const),
+  ];
 
   winnerPile.rect = winnerRect;
   winnerPile.iconSize = iconSize;
@@ -3586,11 +3795,8 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
 
   clearDisappearingPile("player");
   clearDisappearingPile("opponent");
-  wagerWinAnimActive = true;
-  lastWagerWinnerIsOpponent = winnerIsOpponent;
-  emitWagerRenderState();
   const startTime = performance.now();
-  wagerWinAnimState = {
+  const animationState: WagerWinAnimationState = {
     startTime,
     duration: WAGER_WIN_ANIM_DURATION_MS,
     iconSize,
@@ -3598,47 +3804,41 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     targets,
     drifts,
     delays,
+    startSpaces,
+    winnerIsOpponent,
+    winnerSourceRect,
+    loserSourceRect: loserRect,
+    winnerRect,
   };
+  wagerWinAnimState = animationState;
+  wagerWinAnimActive = true;
+  lastWagerWinnerIsOpponent = winnerIsOpponent;
+  emitWagerRenderState();
 
   const animate = (time: number) => {
-    if (!wagerWinAnimState || !winnerWagerPile) {
+    const activeState = wagerWinAnimState;
+    const progress = applyWagerWinAnimationFrame(time);
+    if (progress === null || !activeState || !winnerWagerPile) {
       wagerWinAnimActive = false;
+      wagerWinAnimState = null;
       wagerWinAnimRaf = null;
       return;
     }
-    const { startTime, duration, iconSize, starts, targets, drifts, delays } =
-      wagerWinAnimState;
-    const progress = Math.max(0, Math.min(1, (time - startTime) / duration));
-    for (let i = 0; i < winnerWagerPile.count; i += 1) {
-      const delay = delays[i] || 0;
-      const denom = 1 - delay;
-      const local =
-        denom > 0
-          ? Math.max(0, Math.min(1, (progress - delay) / denom))
-          : progress;
-      const eased = 1 - Math.pow(1 - local, 3);
-      const driftScale = Math.sin(local * Math.PI);
-      const start = starts[i] || targets[i];
-      const target = targets[i] || start;
-      if (!start || !target) continue;
-      const drift = drifts[i] || { x: 0, y: 0 };
-      const x = start.x + (target.x - start.x) * eased + drift.x * driftScale;
-      const y = start.y + (target.y - start.y) * eased + drift.y * driftScale;
-      if (!winnerWagerPile.frames[i]) {
-        winnerWagerPile.frames[i] = { x, y };
-      } else {
-        winnerWagerPile.frames[i].x = x;
-        winnerWagerPile.frames[i].y = y;
-      }
-    }
-    winnerWagerPile.iconSize = iconSize;
     emitWagerRenderState();
 
+    if (
+      !wagerWinAnimActive ||
+      wagerWinAnimState !== activeState ||
+      !winnerWagerPile
+    ) {
+      return;
+    }
     if (progress < 1) {
       wagerWinAnimRaf = setManagedBoardRaf(animate);
     } else {
+      const { targets: finalTargets } = activeState;
       for (let i = 0; i < winnerWagerPile.count; i += 1) {
-        const target = targets[i];
+        const target = finalTargets[i];
         if (!target) continue;
         if (!winnerWagerPile.frames[i]) {
           winnerWagerPile.frames[i] = { x: target.x, y: target.y };
@@ -3654,6 +3854,9 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     }
   };
 
+  if (!wagerWinAnimActive || wagerWinAnimState !== animationState) {
+    return true;
+  }
   wagerWinAnimRaf = setManagedBoardRaf(animate);
   return true;
 }
@@ -3797,7 +4000,12 @@ export function suppressWagerPileTransition() {
   suppressNextWagerPileTransition = true;
 }
 
+export function isWagerWinAnimationPendingOrActive() {
+  return wagerWinAnimActive || deferredResolvedWager?.animate === true;
+}
+
 export function clearWagerPiles() {
+  deferredResolvedWager = null;
   cancelWagerWinAnimation();
   winnerPileActive = false;
   playerPilePending = false;
@@ -3821,6 +4029,7 @@ export function setWagerPiles(state: {
     pending?: boolean;
   } | null;
 }) {
+  deferredResolvedWager = null;
   cancelWagerWinAnimation();
   winnerPileActive = false;
   if (state.player) {
@@ -3851,7 +4060,50 @@ export function setWagerPiles(state: {
   updateWagerLayout();
 }
 
+function showDeferredResolvedWagerIfReady() {
+  if (
+    !deferredResolvedWager ||
+    committedWagerSlotLayoutRevision <
+      deferredResolvedWager.requiredLayoutRevision ||
+    committedWagerSlotLayoutRevision < wagerSlotLayoutRevision
+  ) {
+    return;
+  }
+  const request = deferredResolvedWager;
+  deferredResolvedWager = null;
+  showResolvedWagerNow(
+    request.winnerIsOpponent,
+    request.material,
+    request.countPerSide,
+    request.animate,
+  );
+}
+
 export function showResolvedWager(
+  winnerIsOpponent: boolean,
+  material: MaterialName,
+  countPerSide: number,
+  animate: boolean,
+) {
+  if (committedWagerSlotLayoutRevision < wagerSlotLayoutRevision) {
+    deferredResolvedWager = {
+      winnerIsOpponent,
+      material,
+      countPerSide,
+      animate,
+      requiredLayoutRevision: wagerSlotLayoutRevision,
+    };
+    logBoardWagerDebug("show-resolved:deferred-for-layout", {
+      committedLayoutRevision: committedWagerSlotLayoutRevision,
+      requiredLayoutRevision: wagerSlotLayoutRevision,
+    });
+    return;
+  }
+  deferredResolvedWager = null;
+  showResolvedWagerNow(winnerIsOpponent, material, countPerSide, animate);
+}
+
+function showResolvedWagerNow(
   winnerIsOpponent: boolean,
   material: MaterialName,
   countPerSide: number,
@@ -4282,8 +4534,7 @@ export function disposeBoardRuntime() {
   playerInfoOpponentVisible = false;
   playerInfoPlayerNameVisible = false;
   playerInfoOpponentNameVisible = false;
-  opponentEndOfGameMarker = "none";
-  playerEndOfGameMarker = "none";
+  setEndOfGameMarkers("none", "none");
   emitBoardPlayerInfoOverlayState();
   controlsLayer = null;
   avatarLayer = null;
