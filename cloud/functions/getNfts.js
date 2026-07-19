@@ -1,5 +1,4 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const fetch = require("node-fetch");
 const { VALID_REACTION_IDS } = require("@mons/shared/nfts");
 
 exports.getNfts = onCall(async (request) => {

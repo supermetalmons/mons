@@ -3,7 +3,7 @@
   "private": true,
   "type": "commonjs",
   "engines": {
-    "node": "20"
+    "node": "^22.13.0 || >=24.0.0"
   },
   "dependencies": {
     "firebase-admin": "^14.2.0"

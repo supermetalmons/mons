@@ -1,5 +1,5 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const { batchReadWithRetry } = require("./utils");
 const { requestEventProgress } = require("./eventProgressTasks");
 const {

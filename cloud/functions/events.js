@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { onValueWritten } = require("firebase-functions/v2/database");
 const { onTaskDispatched } = require("firebase-functions/v2/tasks");
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const {
   getProfileByLoginId,
   getDisplayNameFromAddress,

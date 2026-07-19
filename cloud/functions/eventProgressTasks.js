@@ -1,6 +1,5 @@
 const crypto = require("crypto");
-const admin = require("firebase-admin");
-const { getFunctions } = require("firebase-admin/functions");
+const admin = require("./firebaseAdmin");
 
 const EVENT_PROGRESS_TASK_QUEUE = "processEventProgress";
 const EVENT_PROGRESS_FALLBACK_ROOT = "eventProgressFallback";
@@ -51,10 +50,15 @@ const normalizeErrorCode = (error) => {
   return "";
 };
 
+const stripFunctionsErrorCodePrefix = (code) =>
+  code.startsWith("functions/") ? code.slice("functions/".length) : code;
+
 const isTaskAlreadyExistsError = (error) => {
-  const normalizedCode = normalizeErrorCode(error);
+  const normalizedCode = stripFunctionsErrorCodePrefix(
+    normalizeErrorCode(error),
+  );
   if (
-    normalizedCode === "functions/task-already-exists" ||
+    normalizedCode === "task-already-exists" ||
     normalizedCode === "already_exists" ||
     normalizedCode === "already-exists" ||
     normalizedCode === "6"
@@ -67,7 +71,9 @@ const isTaskAlreadyExistsError = (error) => {
 };
 
 const isTransientEnqueueError = (error) => {
-  const normalizedCode = normalizeErrorCode(error);
+  const normalizedCode = stripFunctionsErrorCodePrefix(
+    normalizeErrorCode(error),
+  );
   if (
     normalizedCode === "unavailable" ||
     normalizedCode === "deadline-exceeded" ||
@@ -75,8 +81,10 @@ const isTransientEnqueueError = (error) => {
     normalizedCode === "resource-exhausted" ||
     normalizedCode === "resource_exhausted" ||
     normalizedCode === "internal" ||
+    normalizedCode === "internal-error" ||
     normalizedCode === "aborted" ||
     normalizedCode === "unknown" ||
+    normalizedCode === "unknown-error" ||
     normalizedCode === "14" ||
     normalizedCode === "13" ||
     normalizedCode === "10" ||
@@ -96,7 +104,7 @@ const isTransientEnqueueError = (error) => {
 };
 
 const enqueueWithRetry = async (payload, options) => {
-  const queue = getFunctions().taskQueue(EVENT_PROGRESS_TASK_QUEUE);
+  const queue = admin.functions().taskQueue(EVENT_PROGRESS_TASK_QUEUE);
   for (let attempt = 0; ; attempt += 1) {
     try {
       await queue.enqueue(payload, options);

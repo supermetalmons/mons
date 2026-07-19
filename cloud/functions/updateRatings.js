@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const { createRatingUpdater } = require("@mons/shared/ratings");
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const { isAutoInviteId } = require("@mons/shared/ids");
 const { MATCH_TIMER_TERMINAL } = require("@mons/shared/timers");
 const {

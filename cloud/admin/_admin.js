@@ -7,16 +7,33 @@ const requireFromFunctions = createRequire(
 );
 let hasFunctionsAdmin = false;
 try {
-  requireFromFunctions.resolve("firebase-admin");
+  requireFromFunctions.resolve("firebase-admin/app");
   hasFunctionsAdmin = true;
 } catch (error) {
   if (!error || error.code !== "MODULE_NOT_FOUND") {
     throw error;
   }
 }
-const admin = hasFunctionsAdmin
-  ? requireFromFunctions("firebase-admin")
-  : require("firebase-admin");
+const adminApp = hasFunctionsAdmin
+  ? requireFromFunctions("firebase-admin/app")
+  : require("firebase-admin/app");
+const adminFirestore = hasFunctionsAdmin
+  ? requireFromFunctions("firebase-admin/firestore")
+  : require("firebase-admin/firestore");
+const {
+  applicationDefault,
+  deleteApp,
+  getApps,
+  initializeApp,
+} = adminApp;
+const { FieldPath, getFirestore } = adminFirestore;
+
+const firestore = () => getFirestore();
+firestore.FieldPath = FieldPath;
+
+const admin = {
+  firestore,
+};
 
 function getProjectIdFromArgsEnvOrRc() {
   const args = process.argv.slice(2);
@@ -46,12 +63,12 @@ function getDatabaseUrlFromArgsEnvOrProject(projectId) {
 }
 
 function initAdmin() {
-  if (admin.apps.length > 0) return true;
+  if (getApps().some((app) => app.name === "[DEFAULT]")) return true;
   const projectId = getProjectIdFromArgsEnvOrRc();
   const databaseURL = getDatabaseUrlFromArgsEnvOrProject(projectId);
   try {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
+    initializeApp({
+      credential: applicationDefault(),
       projectId,
       databaseURL,
     });
@@ -61,10 +78,10 @@ function initAdmin() {
 }
 
 async function cleanupAdmin() {
-  const defaultApp = admin.apps.find((app) => app.name === "[DEFAULT]");
+  const defaultApp = getApps().find((app) => app.name === "[DEFAULT]");
   if (!defaultApp) return;
   try {
-    await defaultApp.delete();
+    await deleteApp(defaultApp);
   } catch {}
 }
 

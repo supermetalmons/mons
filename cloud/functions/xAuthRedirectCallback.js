@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const { onRequest } = require("firebase-functions/v2/https");
 const { normalizeMethodValue } = require("./authIdentity");
 const {

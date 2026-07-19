@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const { HttpsError } = require("firebase-functions/v2/https");
 const {
   applyMaterialDeltas,

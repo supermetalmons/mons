@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const { HttpsError } = require("firebase-functions/v2/https");
 const {
   USERNAME_LOOKUP_KEY_FIELD,

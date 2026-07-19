@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const { onValueWritten } = require("firebase-functions/v2/database");
 const {
   NAVIGATION_SORT_BUCKETS: SORT_BUCKETS,
