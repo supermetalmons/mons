@@ -4,6 +4,7 @@ const {
   onValueUpdated,
 } = require("firebase-functions/v2/database");
 const { customTelegramEmojis, getTelegramEmojiTag } = require("./utils");
+const { THIRD_PLACE_MATCH_KEY } = require("@mons/shared/events");
 
 const EVENT_TELEGRAM_STATE_ROOT = "eventTelegramMessages";
 const EVENT_TELEGRAM_LOCK_ROOT = "eventTelegramLocks";
@@ -253,7 +254,7 @@ const collectActiveMatchEntries = (eventData) => {
       : null;
   if (thirdPlaceMatch && normalizeString(thirdPlaceMatch.inviteId)) {
     entries.push({
-      key: "third_place",
+      key: THIRD_PLACE_MATCH_KEY,
       match: thirdPlaceMatch,
       sortRank: Number.MAX_SAFE_INTEGER - 1,
       sortIndex: 0,
@@ -451,7 +452,8 @@ const acquireEventAnnouncementLock = async (eventId) => {
     .database()
     .ref(`${EVENT_TELEGRAM_LOCK_ROOT}/${normalizedEventId}`);
   const result = await lockRef.transaction((current) => {
-    const currentValue = current && typeof current === "object" ? current : null;
+    const currentValue =
+      current && typeof current === "object" ? current : null;
     const leaseExpiresAtMs =
       currentValue && typeof currentValue.leaseExpiresAtMs === "number"
         ? currentValue.leaseExpiresAtMs
@@ -511,7 +513,8 @@ const releaseEventAnnouncementLock = async (lockHandle) => {
   }
   try {
     await lockHandle.ref.transaction((current) => {
-      const currentValue = current && typeof current === "object" ? current : null;
+      const currentValue =
+        current && typeof current === "object" ? current : null;
       if (
         !currentValue ||
         normalizeString(currentValue.ownerToken) !== lockHandle.ownerToken
@@ -697,7 +700,10 @@ const applyEventAnnouncement = async ({
     const stateSnapshot = await stateRef.once("value");
     const state = parseState(stateSnapshot.val());
 
-    if (state.lastAppliedSignature && state.lastAppliedSignature === signature) {
+    if (
+      state.lastAppliedSignature &&
+      state.lastAppliedSignature === signature
+    ) {
       return;
     }
 

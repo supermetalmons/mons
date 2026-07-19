@@ -1,5 +1,7 @@
 import { connection } from "../connection/connection";
 import { storage } from "../utils/storage";
+import { VALID_REACTION_IDS } from "@mons/shared/nfts";
+import { shuffle } from "@mons/shared/ids";
 
 const USE_STUB_RESPONSE = false;
 
@@ -14,32 +16,12 @@ function buildKey(sol: string, eth: string): string {
 }
 
 function generateStubResponse() {
-  const validReactionIds = [
-    9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163,
-    168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246,
-    250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325,
-    328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430,
-    444, 465, 466,
-  ];
+  const validReactionIds = Array.from(VALID_REACTION_IDS);
   const validAvatarIds = Array.from({ length: 467 }, (_, i) => i);
   const randomInt = (min: number, max: number) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
-  const shuffled = (arr: number[]) => {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const t = a[i];
-      a[i] = a[j];
-      a[j] = t;
-    }
-    return a;
-  };
-
   const reactionCount = randomInt(1, Math.min(50, validReactionIds.length));
-  const selectedReactionIds = shuffled(validReactionIds).slice(
-    0,
-    reactionCount,
-  );
+  const selectedReactionIds = shuffle(validReactionIds).slice(0, reactionCount);
   const swagpack_reactions = selectedReactionIds.map((id) => ({
     id,
     count: randomInt(1, 10),
@@ -49,7 +31,7 @@ function generateStubResponse() {
   const maxExtraAvatars = 50 - swagpack_reactions.length;
   const extraAvatarCount =
     maxExtraAvatars > 0 ? randomInt(0, maxExtraAvatars) : 0;
-  const availableAvatarOnlyIds = shuffled(
+  const availableAvatarOnlyIds = shuffle(
     validAvatarIds.filter((id) => !usedIds.has(id)),
   ).slice(0, extraAvatarCount);
   const swagpack_avatars = [

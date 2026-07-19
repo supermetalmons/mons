@@ -1,6 +1,9 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
+const { createRatingUpdater } = require("@mons/shared/ratings");
 const admin = require("firebase-admin");
+const { isAutoInviteId } = require("@mons/shared/ids");
+const { MATCH_TIMER_TERMINAL } = require("@mons/shared/timers");
 const {
   batchReadWithRetry,
   getProfileByLoginId,
@@ -10,6 +13,8 @@ const {
 } = require("./utils");
 const { resolveMatchWinner } = require("./matchOutcome");
 const { requestEventProgress } = require("./eventProgressTasks");
+
+const updateRating = createRatingUpdater(glicko2.Glicko2);
 
 const materialTelegramEmojiIds = {
   dust: "5235835141238063097",
@@ -473,7 +478,7 @@ exports.updateRatings = onCall(async (request) => {
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
 
-  if (!inviteId.startsWith("auto_")) {
+  if (!isAutoInviteId(inviteId)) {
     return { ok: false };
   }
 
@@ -493,12 +498,10 @@ exports.updateRatings = onCall(async (request) => {
   const opponentMatchData = opponentMatchSnapshot.val();
   const authPlayerProfile = await getProfileByLoginId(playerId);
 
-  if (
-    !(
-      (inviteData.hostId === playerId && inviteData.guestId === opponentId) ||
-      (inviteData.hostId === opponentId && inviteData.guestId === playerId)
-    )
-  ) {
+  if (!(
+    (inviteData.hostId === playerId && inviteData.guestId === opponentId) ||
+    (inviteData.hostId === opponentId && inviteData.guestId === playerId)
+  )) {
     throw new HttpsError(
       "permission-denied",
       "Players don't match invite data",
@@ -737,7 +740,10 @@ exports.updateRatings = onCall(async (request) => {
     ) {
       const icon = getTelegramEmojiTag(matchStatusTelegramEmojiIds.whiteFlag);
       if (icon) suffix += ` ${icon}`;
-    } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
+    } else if (
+      matchData.timer === MATCH_TIMER_TERMINAL ||
+      opponentMatchData.timer === MATCH_TIMER_TERMINAL
+    ) {
       const icon = getTelegramEmojiTag(matchStatusTelegramEmojiIds.timer);
       if (icon) suffix += ` ${icon}`;
     }
@@ -818,37 +824,3 @@ exports.updateRatings = onCall(async (request) => {
     ok: true,
   };
 });
-
-const updateRating = (
-  winRating,
-  winPlayerGamesCount,
-  lossRating,
-  lossPlayerGamesCount,
-) => {
-  const settings = {
-    tau: 0.75,
-    rating: 1500,
-    rd: 100,
-    vol: 0.06,
-  };
-
-  const ranking = new glicko2.Glicko2(settings);
-  const adjustRd = (gamesCount) => Math.max(60, 350 - gamesCount);
-  const winner = ranking.makePlayer(
-    winRating,
-    adjustRd(winPlayerGamesCount),
-    0.06,
-  );
-  const loser = ranking.makePlayer(
-    lossRating,
-    adjustRd(lossPlayerGamesCount),
-    0.06,
-  );
-  const matches = [[winner, loser, 1]];
-  ranking.updateRatings(matches);
-
-  const newWinRating = Math.round(winner.getRating());
-  const newLossRating = Math.round(loser.getRating());
-
-  return [newWinRating, newLossRating];
-};

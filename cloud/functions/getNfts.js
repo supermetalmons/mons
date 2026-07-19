@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const fetch = require("node-fetch");
+const { VALID_REACTION_IDS } = require("@mons/shared/nfts");
 
 exports.getNfts = onCall(async (request) => {
   if (!request.auth) {
@@ -17,13 +18,6 @@ exports.getNfts = onCall(async (request) => {
   }
 
   try {
-    const validReactionIds = [
-      9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148,
-      163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245,
-      246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318,
-      325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429,
-      430, 444, 465, 466,
-    ];
     async function fetchCollectionIdCounts(ownerAddress, collectionId) {
       const idCounts = new Map();
       if (!ownerAddress) return [];
@@ -110,7 +104,7 @@ exports.getNfts = onCall(async (request) => {
         specialsPromise,
       ]);
       swagpack_avatars = avatars;
-      const reactionSet = new Set(validReactionIds);
+      const reactionSet = new Set(VALID_REACTION_IDS);
       swagpack_reactions = avatars.filter((x) => reactionSet.has(x.id));
       specials = specialIds;
     }

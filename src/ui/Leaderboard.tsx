@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { cropAddress } from "@mons/shared/profiles";
+import { createEmptyMaterials } from "@mons/shared/mining";
 import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
@@ -523,18 +525,10 @@ interface LeaderboardEntry {
 const getLeaderboardDisplayName = (row: LeaderboardEntry): string => {
   if (row.username) return row.username;
   if (row.ensName) return row.ensName;
-  if (row.eth) return row.eth.slice(0, 4) + "..." + row.eth.slice(-4);
-  if (row.sol) return row.sol.slice(0, 4) + "..." + row.sol.slice(-4);
+  if (row.eth) return cropAddress(row.eth);
+  if (row.sol) return cropAddress(row.sol);
   return "";
 };
-
-const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
-  dust: 0,
-  slime: 0,
-  gum: 0,
-  metal: 0,
-  ice: 0,
-});
 
 const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
   username: entry.username,

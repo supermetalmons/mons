@@ -1,25 +1,21 @@
 import { connection } from "./connection";
+import {
+  X_REDIRECT_CALLBACK_PARAM_KEYS,
+  X_REDIRECT_RESULT_PARAMS,
+  X_REDIRECT_STARTED_ERROR_CODE,
+  normalizeClientXConsentSource,
+  type XConsentSource,
+} from "@mons/shared/x-redirect";
 
 type XRedirectStatus = "ready" | "failed";
-type XRedirectErrorCode = "x-sign-in-redirect-started";
+type XRedirectErrorCode = typeof X_REDIRECT_STARTED_ERROR_CODE;
 
 type XRedirectResult = {
   flowId: string;
   status: XRedirectStatus;
   errorCode: string;
-  consentSource: "signin" | "settings";
+  consentSource: XConsentSource;
 };
-
-const X_REDIRECT_PARAM_FLOW = "x_auth_flow";
-const X_REDIRECT_PARAM_STATUS = "x_auth_status";
-const X_REDIRECT_PARAM_ERROR = "x_auth_error";
-const X_REDIRECT_PARAM_CONSENT_SOURCE = "x_auth_consent";
-const X_REDIRECT_CALLBACK_PARAM_KEYS = [
-  X_REDIRECT_PARAM_FLOW,
-  X_REDIRECT_PARAM_STATUS,
-  X_REDIRECT_PARAM_ERROR,
-  X_REDIRECT_PARAM_CONSENT_SOURCE,
-] as const;
 
 let pendingXRedirectResult: XRedirectResult | null = null;
 let didConsumeInitialXRedirectSnapshot = false;
@@ -39,17 +35,13 @@ const initialXRedirectSnapshot =
           : window.location.search,
       };
 
-const normalizeConsentSource = (value: unknown): "signin" | "settings" => {
-  return value === "settings" ? "settings" : "signin";
-};
-
 const parseXRedirectParamsFromRaw = (raw: string): XRedirectResult | null => {
   if (!raw) {
     return null;
   }
   const params = new URLSearchParams(raw);
-  const flowId = (params.get(X_REDIRECT_PARAM_FLOW) || "").trim();
-  const statusRaw = (params.get(X_REDIRECT_PARAM_STATUS) || "")
+  const flowId = (params.get(X_REDIRECT_RESULT_PARAMS.flowId) || "").trim();
+  const statusRaw = (params.get(X_REDIRECT_RESULT_PARAMS.status) || "")
     .trim()
     .toLowerCase();
   if (!flowId || (statusRaw !== "ready" && statusRaw !== "failed")) {
@@ -58,9 +50,9 @@ const parseXRedirectParamsFromRaw = (raw: string): XRedirectResult | null => {
   return {
     flowId,
     status: statusRaw as XRedirectStatus,
-    errorCode: (params.get(X_REDIRECT_PARAM_ERROR) || "").trim(),
-    consentSource: normalizeConsentSource(
-      params.get(X_REDIRECT_PARAM_CONSENT_SOURCE),
+    errorCode: (params.get(X_REDIRECT_RESULT_PARAMS.error) || "").trim(),
+    consentSource: normalizeClientXConsentSource(
+      params.get(X_REDIRECT_RESULT_PARAMS.consentSource),
     ),
   };
 };
@@ -216,12 +208,12 @@ export const isXRedirectStartedError = (value: unknown): boolean => {
     return false;
   }
   const code = (value as { code?: unknown }).code;
-  return code === "x-sign-in-redirect-started";
+  return code === X_REDIRECT_STARTED_ERROR_CODE;
 };
 
 export async function startXRedirectAuth(params: {
   intentId: string;
-  consentSource?: "signin" | "settings";
+  consentSource?: XConsentSource;
   returnUrl?: string;
 }): Promise<never> {
   if (typeof window === "undefined") {
@@ -240,6 +232,6 @@ export async function startXRedirectAuth(params: {
   window.location.assign(authUrl);
   const redirectError = new Error("X redirect sign in started.");
   (redirectError as Error & { code?: XRedirectErrorCode }).code =
-    "x-sign-in-redirect-started";
+    X_REDIRECT_STARTED_ERROR_CODE;
   throw redirectError;
 }

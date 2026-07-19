@@ -1,47 +1,15 @@
 const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v2/https");
-const { MATERIAL_KEYS, normalizeMaterials } = require("./miningHelpers");
+const {
+  applyMaterialDeltas,
+  applyMaterialDeltasWithCap,
+  computeAcceptedReservation,
+  computeAvailableCount,
+  isMaterialName,
+  normalizeCount,
+  normalizeMaterials,
+} = require("@mons/shared/mining");
 const { getProfileByLoginId } = require("./utils");
-
-const isMaterialName = (value) => MATERIAL_KEYS.includes(value);
-
-const normalizeCount = (value) => {
-  const numeric = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(numeric) ? Math.max(0, Math.round(numeric)) : 0;
-};
-
-const computeAvailableCount = (total, frozen, material) => {
-  return Math.max(
-    0,
-    (total && total[material] ? total[material] : 0) -
-      (frozen && frozen[material] ? frozen[material] : 0),
-  );
-};
-
-const applyMaterialDeltas = (source, deltas) => {
-  const result = normalizeMaterials(source);
-  MATERIAL_KEYS.forEach((key) => {
-    const delta = deltas && deltas[key] ? Number(deltas[key]) : 0;
-    const next = (result[key] ?? 0) + (Number.isFinite(delta) ? delta : 0);
-    result[key] = Math.max(0, Math.round(next));
-  });
-  return result;
-};
-
-const applyMaterialDeltasWithCap = (source, deltas, totalMaterials) => {
-  const result = normalizeMaterials(source);
-  const caps = totalMaterials ? normalizeMaterials(totalMaterials) : null;
-  MATERIAL_KEYS.forEach((key) => {
-    const delta = deltas && deltas[key] ? Number(deltas[key]) : 0;
-    let next = (result[key] ?? 0) + (Number.isFinite(delta) ? delta : 0);
-    next = Math.max(0, Math.round(next));
-    if (caps) {
-      next = Math.min(next, caps[key] ?? 0);
-    }
-    result[key] = next;
-  });
-  return result;
-};
 
 const updateFrozenMaterials = async (uid, deltas) => {
   const frozenRef = admin.database().ref(`players/${uid}/mining/frozen`);
@@ -92,33 +60,20 @@ const reserveAcceptedMaterials = async (
   let acceptedCount = 0;
   let appliedDelta = null;
   const frozenRef = admin.database().ref(`players/${uid}/mining/frozen`);
-  const caps = normalizeMaterials(totalMaterials);
-  const ownMaterial =
-    ownProposal && ownProposal.material ? ownProposal.material : null;
-  const ownCount = ownProposal ? normalizeCount(ownProposal.count) : 0;
   const result = await frozenRef.transaction((current) => {
-    const normalized = normalizeMaterials(current);
-    const next = { ...normalized };
-    if (ownMaterial) {
-      next[ownMaterial] = Math.max(0, (next[ownMaterial] ?? 0) - ownCount);
-    }
-    const baseFrozen = next[material] ?? 0;
-    const available = Math.max(0, (caps[material] ?? 0) - baseFrozen);
-    const nextAccepted = Math.min(proposedCount, available);
-    if (nextAccepted <= 0) {
-      acceptedCount = 0;
+    const reservation = computeAcceptedReservation(
+      current,
+      material,
+      proposedCount,
+      ownProposal,
+      totalMaterials,
+    );
+    acceptedCount = reservation.acceptedCount;
+    appliedDelta = reservation.appliedDelta;
+    if (!reservation.materials) {
       return;
     }
-    acceptedCount = nextAccepted;
-    next[material] = Math.min(caps[material] ?? 0, baseFrozen + nextAccepted);
-    appliedDelta = MATERIAL_KEYS.reduce((acc, key) => {
-      const diff = (next[key] ?? 0) - (normalized[key] ?? 0);
-      if (diff !== 0) {
-        acc[key] = diff;
-      }
-      return acc;
-    }, {});
-    return next;
+    return reservation.materials;
   });
   if (!result.committed) {
     acceptedCount = 0;

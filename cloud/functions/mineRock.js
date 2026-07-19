@@ -6,8 +6,8 @@ const {
   normalizeMaterials,
   sumMaterials,
   createDropsForMiningEvent,
-  formatMiningDate,
-} = require("./miningHelpers");
+  formatMiningDateUtc,
+} = require("@mons/shared/mining");
 
 exports.mineRock = onCall(async (request) => {
   if (!request.auth) {
@@ -29,7 +29,7 @@ exports.mineRock = onCall(async (request) => {
   }
 
   const miningDate = new Date(`${date}T00:00:00.000Z`);
-  const serverDateString = formatMiningDate(new Date());
+  const serverDateString = formatMiningDateUtc(new Date());
   const serverDate = new Date(`${serverDateString}T00:00:00.000Z`);
   const dayDiff = Math.abs(
     (miningDate.getTime() - serverDate.getTime()) / 86400000,

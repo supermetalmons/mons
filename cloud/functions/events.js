@@ -10,22 +10,42 @@ const {
 const { resolveMatchWinner } = require("./matchOutcome");
 const { enqueueEventProgressTask } = require("./eventProgressTasks");
 const { buildRandomGameSeed } = require("./gameVariants");
+const {
+  buildAutoInviteId,
+  INVITE_ID_RANDOM_LENGTH,
+  pickHostColor,
+  randomAlphanumeric,
+  shuffle,
+} = require("@mons/shared/ids");
+const {
+  CONTROLLER_VERSION,
+  buildFreshMatchRecord,
+} = require("@mons/shared/match-protocol");
+const {
+  EVENT_POSTPONE_OPTIONS_MINUTES,
+  EVENT_SCHEMA_VERSION,
+  MAX_EVENT_PARTICIPANTS,
+  MAX_STARTS_IN_DAYS,
+  MAX_STARTS_IN_MINUTES,
+  MIN_STARTS_IN_MINUTES,
+  SCHEDULED_TIMEZONE_LOCAL,
+  THIRD_PLACE_MATCH_KEY,
+  buildEventMatchKey: getMatchKey,
+  buildEventSeedOrder: buildSeedOrder,
+  getEventBracketSize: getBracketSize,
+  getFirstRoundByeSeeds,
+  isMonsLinkAdmin,
+  parseEventMatchKey: parseMatchKey,
+} = require("@mons/shared/events");
 
-const CONTROLLER_VERSION = 2;
-const EVENT_SCHEMA_VERSION = 2;
 const EVENT_LOCK_TTL_MS = 30 * 1000;
 const EVENT_LOCK_REFRESH_INTERVAL_MS = 10 * 1000;
 const EVENT_MATCH_RESOLVE_CONCURRENCY = 4;
 const EVENT_SYNC_THROTTLE_WINDOW_MS = 500;
-const THIRD_PLACE_MATCH_KEY = "third_place";
-const MIN_STARTS_IN_MINUTES = 1;
-const MAX_STARTS_IN_DAYS = 14;
-const MAX_STARTS_IN_MINUTES = MAX_STARTS_IN_DAYS * 24 * 60;
 const MIN_START_AHEAD_MS = MIN_STARTS_IN_MINUTES * 60 * 1000;
 const MAX_START_AHEAD_MS = MAX_STARTS_IN_MINUTES * 60 * 1000;
 const SCHEDULED_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const SCHEDULED_TIME_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
-const SCHEDULED_TIMEZONE_LOCAL = "local";
 const PRESET_EVENT_TIMEZONE_BY_KEY = {
   ET: "America/New_York",
   PT: "America/Los_Angeles",
@@ -33,17 +53,7 @@ const PRESET_EVENT_TIMEZONE_BY_KEY = {
 };
 const ZONED_WALL_TIME_SEARCH_WINDOW_MS = 18 * 60 * 60 * 1000;
 const ZONED_WALL_TIME_SEARCH_STEP_MS = 60 * 1000;
-const MAX_EVENT_PARTICIPANTS = 32;
 const EVENT_PROGRESS_WORKER_UID = "event-progress-worker";
-const MONS_LINK_ADMINS = new Set([
-  "ivan",
-  "meinong",
-  "obi",
-  "bosch",
-  "monsol",
-  "bosch2",
-  "trinket",
-]);
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
@@ -357,28 +367,8 @@ const buildEventDisplayName = (profile) => {
   );
 };
 
-const randomString = (length) => {
-  const letters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  for (let i = 0; i < length; i += 1) {
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-  return result;
-};
-
-const generateEventId = () => randomString(11);
-const generateEventInviteId = () => `auto_${randomString(11)}`;
-const pickHostColor = () => (Math.random() < 0.5 ? "white" : "black");
-
-const shuffle = (items) => {
-  const next = items.slice();
-  for (let i = next.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [next[i], next[j]] = [next[j], next[i]];
-  }
-  return next;
-};
+const generateEventId = () => randomAlphanumeric(INVITE_ID_RANDOM_LENGTH);
+const generateEventInviteId = () => buildAutoInviteId();
 
 const getParticipantIds = (event) => {
   const participants =
@@ -472,7 +462,7 @@ const ensurePilotEventCreator = async (uid) => {
       "Event creation requires a signed-in profile.",
     );
   }
-  if (!MONS_LINK_ADMINS.has(username)) {
+  if (!isMonsLinkAdmin(username)) {
     throw new HttpsError(
       "permission-denied",
       "Only approved pilot users can create pilot events.",
@@ -493,42 +483,14 @@ const ensureNonAnonProfile = async (uid) => {
   return profile;
 };
 
-const createMatchRecord = (color, emojiId, aura, gameSeed) => ({
-  version: CONTROLLER_VERSION,
-  color,
-  emojiId: typeof emojiId === "number" ? Math.floor(emojiId) : 0,
-  aura: normalizeString(aura) || null,
-  gameVariant: gameSeed.gameVariant,
-  fen: gameSeed.fen,
-  status: "",
-  flatMovesString: "",
-  timer: "",
-});
+const createMatchRecord = (color, emojiId, aura, gameSeed) =>
+  buildFreshMatchRecord({
+    color,
+    emojiId: typeof emojiId === "number" ? Math.floor(emojiId) : 0,
+    aura: normalizeString(aura) || null,
+    seed: gameSeed,
+  });
 
-const getMatchKey = (roundIndex, matchIndex) => `${roundIndex}_${matchIndex}`;
-const parseMatchKey = (matchKey) => {
-  const parts = normalizeString(matchKey).split("_");
-  if (parts.length !== 2) {
-    return null;
-  }
-  if (!/^\d+$/.test(parts[0]) || !/^\d+$/.test(parts[1])) {
-    return null;
-  }
-  const roundIndex = toFiniteInteger(parts[0], NaN);
-  const matchIndex = toFiniteInteger(parts[1], NaN);
-  if (
-    !Number.isFinite(roundIndex) ||
-    roundIndex < 0 ||
-    !Number.isFinite(matchIndex) ||
-    matchIndex < 0
-  ) {
-    return null;
-  }
-  return {
-    roundIndex,
-    matchIndex,
-  };
-};
 const getMatchIndexFromKey = (matchKey) =>
   parseMatchKey(matchKey)?.matchIndex ?? 0;
 const getSortedMatchKeys = (matchesByKey) =>
@@ -574,50 +536,6 @@ const isMatchSlotBlocked = (match, slot) => {
     : match.hostSlotBlocked === true;
 };
 
-const getBracketSize = (participantCount) => {
-  let bracketSize = 2;
-  while (
-    bracketSize < participantCount &&
-    bracketSize < MAX_EVENT_PARTICIPANTS
-  ) {
-    bracketSize *= 2;
-  }
-  return bracketSize;
-};
-
-const buildSeedOrder = (bracketSize) => {
-  if (bracketSize <= 1) {
-    return [1];
-  }
-  const previous = buildSeedOrder(bracketSize / 2);
-  const next = [];
-  for (const seed of previous) {
-    next.push(seed);
-    next.push(bracketSize + 1 - seed);
-  }
-  return next;
-};
-
-const getFirstRoundByeSeeds = (participantCount, bracketSize, seedOrder) => {
-  if (participantCount <= 0 || participantCount >= bracketSize) {
-    return [];
-  }
-
-  const byeSeeds = [];
-  const firstRoundMatchCount = bracketSize / 2;
-  for (let matchIndex = 0; matchIndex < firstRoundMatchCount; matchIndex += 1) {
-    const hostSeed = seedOrder[matchIndex * 2];
-    const guestSeed = seedOrder[matchIndex * 2 + 1];
-    const hostHasParticipant = hostSeed <= participantCount;
-    const guestHasParticipant = guestSeed <= participantCount;
-    if (hostHasParticipant === guestHasParticipant) {
-      continue;
-    }
-    byeSeeds.push(hostHasParticipant ? hostSeed : guestSeed);
-  }
-  return byeSeeds;
-};
-
 const buildSeedToProfileId = ({
   participantIds,
   participantsById,
@@ -631,7 +549,7 @@ const buildSeedToProfileId = ({
   for (const profileId of participantIds) {
     const participant = participantsById[profileId];
     const username = normalizeUsername(participant && participant.username);
-    if (MONS_LINK_ADMINS.has(username)) {
+    if (isMonsLinkAdmin(username)) {
       adminParticipantIds.push(profileId);
     } else {
       nonAdminParticipantIds.push(profileId);
@@ -2198,11 +2116,7 @@ exports.postponeEventStart = onCall(async (request) => {
     request.data && request.data.postponeByMinutes,
     0,
   );
-  if (
-    postponeByMinutes !== 5 &&
-    postponeByMinutes !== 10 &&
-    postponeByMinutes !== 15
-  ) {
+  if (!EVENT_POSTPONE_OPTIONS_MINUTES.includes(postponeByMinutes)) {
     throw new HttpsError(
       "invalid-argument",
       "postponeByMinutes must be one of: 5, 10, 15.",
@@ -2662,9 +2576,11 @@ exports.disqualifyEventMatchWinners = onCall(async (request) => {
         enforceThrottle: false,
         syncLog,
       });
-      if (
-        !(syncResult && syncResult.skipped && syncResult.reason === "locked")
-      ) {
+      if (!(
+        syncResult &&
+        syncResult.skipped &&
+        syncResult.reason === "locked"
+      )) {
         break;
       }
       await sleep(80);

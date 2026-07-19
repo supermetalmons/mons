@@ -1,3 +1,5 @@
+const { MATCH_TIMER_TERMINAL } = require("@mons/shared/timers");
+
 let monsPromise = null;
 
 const loadMons = async () => {
@@ -16,11 +18,17 @@ async function resolveMatchWinner(matchData, opponentMatchData) {
     return { winner: null, reason: "missing-match" };
   }
 
-  if (matchData.status === "surrendered" || opponentMatchData.timer === "gg") {
+  if (
+    matchData.status === "surrendered" ||
+    opponentMatchData.timer === MATCH_TIMER_TERMINAL
+  ) {
     return { winner: "opponent", reason: "surrender-or-timer" };
   }
 
-  if (opponentMatchData.status === "surrendered" || matchData.timer === "gg") {
+  if (
+    opponentMatchData.status === "surrendered" ||
+    matchData.timer === MATCH_TIMER_TERMINAL
+  ) {
     return { winner: "player", reason: "surrender-or-timer" };
   }
 

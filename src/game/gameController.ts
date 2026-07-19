@@ -1,4 +1,9 @@
 import * as MonsRules from "mons-rules";
+import {
+  MATCH_TIMER_DURATION_SECONDS,
+  MATCH_TIMER_TERMINAL,
+  parseMatchTimer,
+} from "@mons/shared/timers";
 import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
 import type { WorkerAutomoveResult } from "./automoveWorkerProtocol";
 import * as Board from "./board";
@@ -465,7 +470,7 @@ let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
 let timerStashMatchId: string | null = null;
 let pendingTimerResolutionOnRestore: boolean | null = null;
-const timerActivationCooldownSeconds = 90;
+const timerActivationCooldownSeconds = MATCH_TIMER_DURATION_SECONDS;
 let timerActivationCooldownMatchId: string | null = null;
 let timerActivationCooldownTurnNumber: number | null = null;
 let timerActivationCooldownStartedAtMs: number | null = null;
@@ -1755,8 +1760,8 @@ function getHistoricalWinnerByTimerColor(
   matchId: string,
   pair: HistoricalMatchPair,
 ): MonsRules.Color | undefined {
-  const hostMatchWonByTimer = pair.hostMatch?.timer === "gg";
-  const guestMatchWonByTimer = pair.guestMatch?.timer === "gg";
+  const hostMatchWonByTimer = pair.hostMatch?.timer === MATCH_TIMER_TERMINAL;
+  const guestMatchWonByTimer = pair.guestMatch?.timer === MATCH_TIMER_TERMINAL;
   if (!hostMatchWonByTimer && !guestMatchWonByTimer) {
     return undefined;
   }
@@ -5063,7 +5068,7 @@ function updateDisplayedTimerIfNeeded(
     return;
   }
   if (boardViewMode !== "activeLive") {
-    if (timerState.timer === "gg") {
+    if (timerState.timer === MATCH_TIMER_TERMINAL) {
       pendingTimerResolutionOnRestore = onConnect;
     }
     return;
@@ -5078,7 +5083,7 @@ function updateDisplayedTimerIfNeeded(
     const hasExplicitTimerPayload =
       typeof timerState.timer === "string" &&
       timerState.timer !== "" &&
-      timerState.timer !== "gg";
+      timerState.timer !== MATCH_TIMER_TERMINAL;
     if (hasExplicitTimerPayload) {
       clearTimerActivationCooldownState();
       hideTimerButtons();
@@ -5095,13 +5100,14 @@ function showTimerCountdown(
   timerColor: string,
   duration?: number,
 ): boolean {
-  if (timer === "gg") {
+  if (timer === MATCH_TIMER_TERMINAL) {
     clearTimerActivationCooldownState();
     handleVictoryByTimer(onConnect, timerColor, false);
     return true;
   } else if (timer && typeof timer === "string" && !isGameOver) {
-    const [turnNumber, targetTimestamp] = timer.split(";").map(Number);
-    if (!isNaN(turnNumber) && !isNaN(targetTimestamp)) {
+    const parsedTimer = parseMatchTimer(timer);
+    if (parsedTimer) {
+      const { turnNumber, targetTimestamp } = parsedTimer;
       if (game.turn_number() === turnNumber) {
         clearTimerActivationCooldownState();
         let delta = Math.max(

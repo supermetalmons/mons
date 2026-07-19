@@ -1,34 +1,41 @@
 const crypto = require("crypto");
 const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v2/https");
-const { normalizeMiningSnapshot } = require("./miningHelpers");
+const {
+  normalizeMiningSnapshot,
+  sumMaterials,
+} = require("@mons/shared/mining");
+const {
+  AUTH_COOLDOWN_REASONS,
+  AUTH_METHOD_FIELD_BY_TYPE,
+  AUTH_METHOD_REUSE_COOLDOWN_MS,
+  getAuthCooldownScope,
+  normalizeAuthMethod,
+} = require("@mons/shared/auth");
+const {
+  USERNAME_LOOKUP_KEY_FIELD,
+  buildUsernameLookupKey: toUsernameLookupKey,
+  getUsernameIndexDocIds,
+  isSafeFirestoreDocIdSegment,
+} = require("@mons/shared/usernames");
 const {
   assignRandomUsernameIfNeededForWalletlessProfile,
 } = require("./usernameRegistry");
-
-const METHOD_FIELD_BY_TYPE = {
-  eth: "eth",
-  sol: "sol",
-  apple: "appleSub",
-  x: "xUserId",
-};
 
 const INTENT_TTL_MS = 5 * 60 * 1000;
 const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_COUNT = 20;
 const AUTH_OP_REPLAY_TTL_MS = 10 * 60 * 1000;
-const AUTH_METHOD_REUSE_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const LINK_METHOD_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS = 80;
 
 const toCleanString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
-const normalizeMethodName = (value) => toCleanString(value).toLowerCase();
 const assertSupportedMethod = (value) => {
-  const method = normalizeMethodName(value);
-  if (!METHOD_FIELD_BY_TYPE[method]) {
+  const method = normalizeAuthMethod(value);
+  if (!method) {
     throw new HttpsError("invalid-argument", "Unsupported auth method.");
   }
   return method;
@@ -56,31 +63,6 @@ const parseNumber = (value, fallback) => {
   return Number.isFinite(numeric) ? numeric : fallback;
 };
 const waitMs = (value) => new Promise((resolve) => setTimeout(resolve, value));
-const isSafeFirestoreDocIdSegment = (value) => {
-  const cleaned = toCleanString(value);
-  if (!cleaned || cleaned === "." || cleaned === "..") {
-    return false;
-  }
-  return !cleaned.includes("/");
-};
-const toUsernameLookupKey = (username) => toCleanString(username).toLowerCase();
-const getUsernameIndexDocIds = (username) => {
-  const cleaned = toCleanString(username);
-  if (!cleaned) {
-    return [];
-  }
-  const canonical = toUsernameLookupKey(cleaned);
-  if (!isSafeFirestoreDocIdSegment(canonical)) {
-    return [];
-  }
-  if (canonical === cleaned) {
-    return [canonical];
-  }
-  if (!isSafeFirestoreDocIdSegment(cleaned)) {
-    return [canonical];
-  }
-  return [canonical, cleaned];
-};
 
 const getProfileMethodCooldownDocId = (profileId, method) => {
   const normalizedProfileId = toCleanString(profileId);
@@ -121,9 +103,10 @@ const parseCooldownRetryAtMs = (
 
 const buildMethodReuseCooldownDetails = ({ method, retryAtMs }) => {
   const normalizedMethod = assertSupportedMethod(method);
+  const reason = AUTH_COOLDOWN_REASONS.method;
   return {
-    reason: "method-reuse-cooldown",
-    scope: "method",
+    reason,
+    scope: getAuthCooldownScope(reason),
     method: normalizedMethod,
     retryAtMs: Math.max(parseNumber(retryAtMs, 0), 0),
     cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
@@ -137,9 +120,10 @@ const buildProfileMethodCooldownDetails = ({
 }) => {
   const normalizedMethod = assertSupportedMethod(method);
   const normalizedProfileId = toCleanString(profileId);
+  const reason = AUTH_COOLDOWN_REASONS.profileMethod;
   return {
-    reason: "profile-method-cooldown",
-    scope: "profile-method",
+    reason,
+    scope: getAuthCooldownScope(reason),
     method: normalizedMethod,
     retryAtMs: Math.max(parseNumber(retryAtMs, 0), 0),
     cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
@@ -150,7 +134,7 @@ const buildProfileMethodCooldownDetails = ({
 const throwMethodReuseCooldownError = ({ method, retryAtMs }) => {
   throw new HttpsError(
     "failed-precondition",
-    "method-reuse-cooldown",
+    AUTH_COOLDOWN_REASONS.method,
     buildMethodReuseCooldownDetails({ method, retryAtMs }),
   );
 };
@@ -158,7 +142,7 @@ const throwMethodReuseCooldownError = ({ method, retryAtMs }) => {
 const throwProfileMethodCooldownError = ({ method, profileId, retryAtMs }) => {
   throw new HttpsError(
     "failed-precondition",
-    "profile-method-cooldown",
+    AUTH_COOLDOWN_REASONS.profileMethod,
     buildProfileMethodCooldownDetails({
       method,
       profileId,
@@ -327,7 +311,7 @@ const normalizeMethodValue = (method, value) => {
 };
 
 const getMethodField = (method) => {
-  const field = METHOD_FIELD_BY_TYPE[method];
+  const field = AUTH_METHOD_FIELD_BY_TYPE[method];
   if (!field) {
     throw new HttpsError("invalid-argument", "Unsupported auth method.");
   }
@@ -456,23 +440,7 @@ const mergeMining = (targetData, sourceData) => {
       .pop() || null;
   return {
     lastRockDate,
-    materials: {
-      dust:
-        parseNumber(targetMining.materials.dust, 0) +
-        parseNumber(sourceMining.materials.dust, 0),
-      slime:
-        parseNumber(targetMining.materials.slime, 0) +
-        parseNumber(sourceMining.materials.slime, 0),
-      gum:
-        parseNumber(targetMining.materials.gum, 0) +
-        parseNumber(sourceMining.materials.gum, 0),
-      metal:
-        parseNumber(targetMining.materials.metal, 0) +
-        parseNumber(sourceMining.materials.metal, 0),
-      ice:
-        parseNumber(targetMining.materials.ice, 0) +
-        parseNumber(sourceMining.materials.ice, 0),
-    },
+    materials: sumMaterials(targetMining.materials, sourceMining.materials),
   };
 };
 
@@ -1533,7 +1501,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     const mergedData = {
       logins: mergedLogins,
       username: mergedUsername,
-      usernameLookupKey:
+      [USERNAME_LOOKUP_KEY_FIELD]:
         mergedUsernameLookupKey || admin.firestore.FieldValue.delete(),
       rating: Math.min(
         parseNumber(targetData.rating, 1500),
@@ -1655,7 +1623,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       xConsentAt: admin.firestore.FieldValue.delete(),
       xConsentSource: admin.firestore.FieldValue.delete(),
       username: admin.firestore.FieldValue.delete(),
-      usernameLookupKey: admin.firestore.FieldValue.delete(),
+      [USERNAME_LOOKUP_KEY_FIELD]: admin.firestore.FieldValue.delete(),
       rating: admin.firestore.FieldValue.delete(),
       totalManaPoints: admin.firestore.FieldValue.delete(),
       nonce: admin.firestore.FieldValue.delete(),
@@ -1750,7 +1718,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
         const lookupKeyConflictSnapshot = await transaction.get(
           firestore
             .collection("users")
-            .where("usernameLookupKey", "==", mergedUsernameKey),
+            .where(USERNAME_LOOKUP_KEY_FIELD, "==", mergedUsernameKey),
         );
         lookupKeyConflictSnapshot.forEach((userSnapshot) => {
           const userId = toCleanString(userSnapshot.id);
@@ -2577,7 +2545,7 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
         {
           profileId,
           method: normalizedMethod,
-          scope: "profile-method",
+          scope: getAuthCooldownScope(AUTH_COOLDOWN_REASONS.profileMethod),
           unlinkedByUid: uid,
           cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
           startedAtMs: cooldownStartedAtMs,
@@ -2594,7 +2562,7 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
             method: normalizedMethod,
             normalizedValue,
             profileId,
-            scope: "method",
+            scope: getAuthCooldownScope(AUTH_COOLDOWN_REASONS.method),
             unlinkedByUid: uid,
             cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
             startedAtMs: cooldownStartedAtMs,

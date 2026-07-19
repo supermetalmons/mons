@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const { inferAutomatchStateHint } = require("@mons/shared/navigation");
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : null;
@@ -47,33 +48,6 @@ const resolveProfileIdForLogin = async (loginUid) => {
   }
 
   return null;
-};
-
-const getAutomatchStateHint = (inviteId, inviteData, automatchData) => {
-  if (!inviteId.startsWith("auto_")) {
-    return null;
-  }
-  if (automatchData) {
-    return "pending";
-  }
-  if (normalizeString(inviteData ? inviteData.guestId : null)) {
-    return "matched";
-  }
-  const marker = normalizeString(
-    inviteData ? inviteData.automatchStateHint : null,
-  );
-  if (marker === "pending" || marker === "matched" || marker === "canceled") {
-    return marker;
-  }
-  const canceledAt = inviteData ? inviteData.automatchCanceledAt : null;
-  if (
-    typeof canceledAt === "number" &&
-    Number.isFinite(canceledAt) &&
-    canceledAt > 0
-  ) {
-    return "canceled";
-  }
-  return "canceled";
 };
 
 exports.removeNavigationGame = onCall(async (request) => {
@@ -129,14 +103,12 @@ exports.removeNavigationGame = onCall(async (request) => {
     };
   }
 
-  const automatchData = automatchSnapshot.exists()
-    ? automatchSnapshot.val()
-    : null;
-  const automatchStateHint = getAutomatchStateHint(
+  const automatchStateHint = inferAutomatchStateHint({
     inviteId,
-    inviteData,
-    automatchData,
-  );
+    queueValue: automatchSnapshot.val(),
+    hasGuest: !!guestId,
+    storedStateHint: inviteData.automatchStateHint,
+  });
   if (automatchStateHint === "pending") {
     return {
       ok: true,

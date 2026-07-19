@@ -11,6 +11,15 @@ const {
   buildGameSeedForStoredVariant,
   buildRandomGameSeed,
 } = require("./gameVariants");
+const {
+  buildAutoInviteId,
+  pickHostColor,
+  randomAlphanumeric,
+} = require("@mons/shared/ids");
+const {
+  CONTROLLER_VERSION,
+  buildFreshMatchRecord,
+} = require("@mons/shared/match-protocol");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -121,19 +130,19 @@ async function attemptAutomatch(
       );
 
       const invite = {
-        version: controllerVersion,
+        version: CONTROLLER_VERSION,
         hostId: existingAutomatchData.uid,
         hostColor: existingAutomatchData.hostColor,
         guestId: uid,
         password: existingAutomatchData.password,
       };
 
-      const match = createMatchRecord(
-        existingAutomatchData.hostColor === "white" ? "black" : "white",
+      const match = buildFreshMatchRecord({
+        color: existingAutomatchData.hostColor === "white" ? "black" : "white",
         emojiId,
         aura,
-        matchSeed,
-      );
+        seed: matchSeed,
+      });
 
       try {
         const success = await acceptInvite(
@@ -186,13 +195,13 @@ async function attemptAutomatch(
     };
   } else {
     console.log("auto:attempt:createInvite");
-    const inviteId = generateInviteId();
-    const password = generateRandomString(15);
+    const inviteId = buildAutoInviteId();
+    const password = randomAlphanumeric(15);
     const hostColor = pickHostColor();
     const matchSeed = buildRandomGameSeed();
 
     const invite = {
-      version: controllerVersion,
+      version: CONTROLLER_VERSION,
       hostId: uid,
       hostColor,
       guestId: null,
@@ -201,7 +210,12 @@ async function attemptAutomatch(
       automatchCanceledAt: null,
     };
 
-    const match = createMatchRecord(hostColor, emojiId, aura, matchSeed);
+    const match = buildFreshMatchRecord({
+      color: hostColor,
+      emojiId,
+      aura,
+      seed: matchSeed,
+    });
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
@@ -243,20 +257,6 @@ async function attemptAutomatch(
   }
 }
 
-function createMatchRecord(color, emojiId, aura, gameSeed) {
-  return {
-    version: controllerVersion,
-    color,
-    emojiId,
-    aura,
-    gameVariant: gameSeed.gameVariant,
-    fen: gameSeed.fen,
-    status: "",
-    flatMovesString: "",
-    timer: "",
-  };
-}
-
 async function acceptInvite(firstAutomatchId, invite, match, uid) {
   const updates = {};
   updates[`automatch/${firstAutomatchId}`] = null;
@@ -274,23 +274,3 @@ async function acceptInvite(firstAutomatchId, invite, match, uid) {
   const finalGuestId = guestIdSnapshot.val();
   return finalGuestId === uid;
 }
-
-function generateRandomString(length) {
-  const letters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-  return result;
-}
-
-function generateInviteId() {
-  return "auto_" + generateRandomString(11);
-}
-
-function pickHostColor() {
-  return Math.random() < 0.5 ? "white" : "black";
-}
-
-const controllerVersion = 2;

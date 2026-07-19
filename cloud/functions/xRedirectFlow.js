@@ -1,15 +1,13 @@
 const crypto = require("crypto");
 const { HttpsError } = require("firebase-functions/v2/https");
+const {
+  X_REDIRECT_RESULT_PARAMS,
+  normalizeServerXConsentSource: normalizeConsentSource,
+} = require("@mons/shared/x-redirect");
 
 const X_REDIRECT_FLOW_COLLECTION = "xAuthRedirectFlows";
 const X_REDIRECT_FLOW_TTL_MS = 10 * 60 * 1000;
 const X_REDIRECT_CALLBACK_PATH = "/xAuthRedirectCallback";
-const X_REDIRECT_RESULT_PARAMS = {
-  flowId: "x_auth_flow",
-  status: "x_auth_status",
-  error: "x_auth_error",
-  consentSource: "x_auth_consent",
-};
 const X_OAUTH_SCOPES = "tweet.read users.read";
 
 const DEFAULT_ALLOWED_RETURN_ORIGINS = [
@@ -36,11 +34,6 @@ const parseOriginOrEmpty = (value) => {
   } catch {
     return "";
   }
-};
-
-const normalizeConsentSource = (value) => {
-  const normalized = toCleanString(value).toLowerCase();
-  return normalized === "settings" ? "settings" : "signin";
 };
 
 const createXRedirectFlowId = () =>

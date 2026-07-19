@@ -1,3 +1,5 @@
+import { isAutoInviteId } from "@mons/shared/ids";
+
 type RouteMode = "home" | "invite" | "snapshot" | "watch" | "event";
 
 export type RouteState = {
@@ -74,7 +76,7 @@ const parseRouteState = (pathname: string): RouteState => {
     inviteId: path,
     snapshotId: null,
     eventId: null,
-    autojoin: path.startsWith("auto_"),
+    autojoin: isAutoInviteId(path),
   };
 };
 

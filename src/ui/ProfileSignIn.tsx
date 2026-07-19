@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { cropAddress } from "@mons/shared/profiles";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { flushSync } from "react-dom";
 import styled, { css } from "styled-components";
@@ -419,9 +420,9 @@ const formatDisplayName = (
   if (username) {
     return username;
   } else if (ethAddress) {
-    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+    return cropAddress(ethAddress);
   } else if (solAddress) {
-    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+    return cropAddress(solAddress);
   }
   pendingUsername = null;
   pendingEthAddress = null;
@@ -482,11 +483,7 @@ const isAppleIntentUsable = (
 };
 
 type AppleButtonUiState =
-  | "idle"
-  | "preparing"
-  | "confirm"
-  | "connecting"
-  | "verifying";
+  "idle" | "preparing" | "confirm" | "connecting" | "verifying";
 type XButtonUiState = "idle" | "connecting";
 
 const getAppleButtonLabel = (state: AppleButtonUiState): string => {
@@ -1559,8 +1556,7 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const handleEventSignInBackdropPointerDown = useCallback(
     (
       event:
-        | React.MouseEvent<HTMLDivElement>
-        | React.TouchEvent<HTMLDivElement>,
+        React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     ) => {
       if (event.target !== event.currentTarget) {
         return;

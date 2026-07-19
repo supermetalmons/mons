@@ -1,6 +1,14 @@
-type AuthMethodKey = "eth" | "sol" | "apple" | "x";
-type AuthCooldownReason = "method-reuse-cooldown" | "profile-method-cooldown";
-type AuthCooldownScope = "method" | "profile-method";
+import {
+  AUTH_COOLDOWN_REASONS,
+  AUTH_METHOD_LABELS,
+  AUTH_METHOD_REUSE_COOLDOWN_MS,
+  getAuthCooldownScope,
+  normalizeAuthCooldownReason,
+  normalizeAuthMethod,
+  type AuthCooldownReason,
+  type AuthCooldownScope,
+  type AuthMethodKey,
+} from "@mons/shared/auth";
 
 interface AuthCooldownErrorDetails {
   reason: AuthCooldownReason;
@@ -10,8 +18,6 @@ interface AuthCooldownErrorDetails {
   cooldownMs: number | null;
   profileId: string | null;
 }
-
-const FALLBACK_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 const toCleanString = (value: unknown): string => {
   return typeof value === "string" && value.trim() !== "" ? value.trim() : "";
@@ -26,30 +32,6 @@ const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object" && value !== null;
 };
 
-const normalizeMethodKey = (value: unknown): AuthMethodKey | null => {
-  const method = toCleanString(value).toLowerCase();
-  if (
-    method === "eth" ||
-    method === "sol" ||
-    method === "apple" ||
-    method === "x"
-  ) {
-    return method;
-  }
-  return null;
-};
-
-const normalizeCooldownReason = (value: unknown): AuthCooldownReason | null => {
-  const reason = toCleanString(value);
-  if (
-    reason === "method-reuse-cooldown" ||
-    reason === "profile-method-cooldown"
-  ) {
-    return reason;
-  }
-  return null;
-};
-
 const normalizeCooldownScope = (
   value: unknown,
   reason: AuthCooldownReason,
@@ -58,7 +40,7 @@ const normalizeCooldownScope = (
   if (scope === "method" || scope === "profile-method") {
     return scope;
   }
-  return reason === "profile-method-cooldown" ? "profile-method" : "method";
+  return getAuthCooldownScope(reason);
 };
 
 const parseDetailsObject = (
@@ -67,7 +49,7 @@ const parseDetailsObject = (
   if (!isRecord(value)) {
     return null;
   }
-  const reason = normalizeCooldownReason(value.reason);
+  const reason = normalizeAuthCooldownReason(value.reason);
   if (!reason) {
     return null;
   }
@@ -77,7 +59,7 @@ const parseDetailsObject = (
   return {
     reason,
     scope: normalizeCooldownScope(value.scope, reason),
-    method: normalizeMethodKey(value.method),
+    method: normalizeAuthMethod(value.method),
     retryAtMs,
     cooldownMs,
     profileId,
@@ -88,10 +70,10 @@ const parseFallbackFromMessage = (
   message: string,
 ): AuthCooldownErrorDetails | null => {
   const lowerMessage = message.toLowerCase();
-  const reason = lowerMessage.includes("profile-method-cooldown")
-    ? "profile-method-cooldown"
-    : lowerMessage.includes("method-reuse-cooldown")
-      ? "method-reuse-cooldown"
+  const reason = lowerMessage.includes(AUTH_COOLDOWN_REASONS.profileMethod)
+    ? AUTH_COOLDOWN_REASONS.profileMethod
+    : lowerMessage.includes(AUTH_COOLDOWN_REASONS.method)
+      ? AUTH_COOLDOWN_REASONS.method
       : null;
   if (!reason) {
     return null;
@@ -107,28 +89,16 @@ const parseFallbackFromMessage = (
           : null;
   return {
     reason,
-    scope: reason === "profile-method-cooldown" ? "profile-method" : "method",
+    scope: getAuthCooldownScope(reason),
     method,
     retryAtMs: null,
-    cooldownMs: FALLBACK_COOLDOWN_MS,
+    cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
     profileId: null,
   };
 };
 
 const getMethodLabel = (method: AuthMethodKey | null): string => {
-  if (method === "eth") {
-    return "Ethereum";
-  }
-  if (method === "sol") {
-    return "Solana";
-  }
-  if (method === "apple") {
-    return "Apple";
-  }
-  if (method === "x") {
-    return "X";
-  }
-  return "this sign-in method";
+  return method ? AUTH_METHOD_LABELS[method] : "this sign-in method";
 };
 
 const formatRetryAt = (retryAtMs: number | null): string | null => {
@@ -180,7 +150,7 @@ export const formatAuthCooldownErrorMessage = (
   }
   const methodLabel = getMethodLabel(details.method);
   const retryAtText = formatRetryAt(details.retryAtMs);
-  if (details.reason === "method-reuse-cooldown") {
+  if (details.reason === AUTH_COOLDOWN_REASONS.method) {
     const methodSignInLabel = details.method
       ? `${methodLabel} sign-in`
       : "sign-in method";

@@ -5,6 +5,11 @@ const {
   setExplicitUsernameForProfile,
   clearUsernameForProfile,
 } = require("./usernameRegistry");
+const {
+  USERNAME_MAX_LENGTH,
+  USERNAME_VALIDATION_MESSAGES,
+  isAlphanumericUsername,
+} = require("@mons/shared/usernames");
 
 exports.editUsername = onCall(async (request) => {
   if (!request.auth) {
@@ -40,7 +45,7 @@ exports.editUsername = onCall(async (request) => {
   if (isReservedExplicitUsername(trimmedUsername)) {
     return {
       ok: false,
-      validationError: "This name is reserved.",
+      validationError: USERNAME_VALIDATION_MESSAGES.reserved,
     };
   }
 
@@ -67,17 +72,17 @@ exports.editUsername = onCall(async (request) => {
     return { ok: true };
   }
 
-  if (trimmedUsername.length > 14) {
+  if (trimmedUsername.length > USERNAME_MAX_LENGTH) {
     return {
       ok: false,
-      validationError: "Must be shorter than 15 characters.",
+      validationError: USERNAME_VALIDATION_MESSAGES.tooLong,
     };
   }
 
-  if (!/^[a-zA-Z0-9]+$/.test(trimmedUsername)) {
+  if (!isAlphanumericUsername(trimmedUsername)) {
     return {
       ok: false,
-      validationError: "Use only letters and numbers.",
+      validationError: USERNAME_VALIDATION_MESSAGES.alphanumeric,
     };
   }
 

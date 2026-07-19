@@ -10,6 +10,12 @@ import {
   SaveButton,
 } from "./SharedModalComponents";
 import { connection } from "../connection/connection";
+import {
+  USERNAME_MAX_LENGTH,
+  USERNAME_VALIDATION_MESSAGES,
+  isAlphanumericUsername,
+  isReservedExplicitUsername,
+} from "@mons/shared/usernames";
 
 const NameEditOverlay = styled(ModalOverlay)`
   align-items: ${isMobile ? "flex-start" : "center"};
@@ -103,20 +109,20 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({
     }
     const trimmedName = name.trim();
 
-    if (trimmedName.toLowerCase() === "anon") {
-      setErrorMessage("This name is reserved.");
+    if (isReservedExplicitUsername(trimmedName)) {
+      setErrorMessage(USERNAME_VALIDATION_MESSAGES.reserved);
       setIsValid(false);
       return;
     }
 
-    if (name.length > 14) {
-      setErrorMessage("Must be shorter than 15 characters.");
+    if (name.length > USERNAME_MAX_LENGTH) {
+      setErrorMessage(USERNAME_VALIDATION_MESSAGES.tooLong);
       setIsValid(false);
       return;
     }
 
-    if (!/^[a-zA-Z0-9]+$/.test(name)) {
-      setErrorMessage("Use only letters and numbers.");
+    if (!isAlphanumericUsername(name)) {
+      setErrorMessage(USERNAME_VALIDATION_MESSAGES.alphanumeric);
       setIsValid(false);
       return;
     }

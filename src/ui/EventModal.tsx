@@ -34,6 +34,16 @@ import {
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { BottomPillButton } from "./BottomControlsStyles";
+import {
+  EVENT_POSTPONE_OPTIONS_MINUTES,
+  MAX_EVENT_PARTICIPANTS,
+  buildEventMatchKey,
+  buildEventSeedOrder,
+  getEventBracketSize,
+  isMonsLinkAdmin,
+  parseEventMatchKey,
+} from "@mons/shared/events";
+import { shuffle } from "@mons/shared/ids";
 
 const BRACKET_MATCH_W = 72;
 const BRACKET_MATCH_H = 40;
@@ -72,16 +82,6 @@ const WINNER_PODIUM_HEIGHT =
 
 const FALLBACK_MATCH_H = 40;
 const FALLBACK_AVATAR_PX = 28;
-const MONS_LINK_ADMINS = new Set([
-  "ivan",
-  "meinong",
-  "obi",
-  "bosch",
-  "monsol",
-  "bosch2",
-  "trinket",
-]);
-const EVENT_POSTPONE_OPTIONS_MINUTES = [5, 10, 15] as const;
 const PARTICIPANT_PROFILE_CACHE_TTL_MS = 30_000;
 
 type BracketCardInteraction = "none" | "game" | "participant";
@@ -1037,24 +1037,8 @@ const isProfileParticipatingInMatch = (
   );
 };
 
-const parseBracketMatchKey = (
-  matchKey: string,
-): { roundIndex: number; matchIndex: number } | null => {
-  const trimmedMatchKey = matchKey.trim();
-  const parts = /^(\d+)_(\d+)$/.exec(trimmedMatchKey);
-  if (!parts) {
-    return null;
-  }
-  const roundIndex = Number(parts[1]);
-  const matchIndex = Number(parts[2]);
-  if (!Number.isFinite(roundIndex) || !Number.isFinite(matchIndex)) {
-    return null;
-  }
-  return { roundIndex, matchIndex };
-};
-
 const getMatchKeyIndex = (matchKey: string): number | null => {
-  return parseBracketMatchKey(matchKey)?.matchIndex ?? null;
+  return parseEventMatchKey(matchKey)?.matchIndex ?? null;
 };
 
 const getSortedMatches = (round: EventRound | null): EventMatch[] => {
@@ -1292,7 +1276,7 @@ const isActionablePendingInviteEventMatch = (match: EventMatch): boolean => {
 const getIndexedMatchesForRound = (round: EventRound): IndexedEventMatch[] => {
   return getSortedMatches(round).map((match, sortedIndex) => ({
     roundIndex: round.roundIndex,
-    matchIndex: parseBracketMatchKey(match.matchKey)?.matchIndex ?? sortedIndex,
+    matchIndex: parseEventMatchKey(match.matchKey)?.matchIndex ?? sortedIndex,
     match,
   }));
 };
@@ -1358,13 +1342,14 @@ const getRoundMatchByIndex = (
   round: EventRound,
   matchIndex: number,
 ): EventMatch | null => {
-  const directMatch = round.matches[`${round.roundIndex}_${matchIndex}`];
+  const directMatch =
+    round.matches[buildEventMatchKey(round.roundIndex, matchIndex)];
   if (directMatch) {
     return directMatch;
   }
   const fallbackMatch =
     getSortedMatches(round).find((candidate) => {
-      const parsed = parseBracketMatchKey(candidate.matchKey);
+      const parsed = parseEventMatchKey(candidate.matchKey);
       return parsed?.matchIndex === matchIndex;
     }) ?? null;
   return fallbackMatch;
@@ -1740,7 +1725,7 @@ const canRenderSymmetricalBracket = (rounds: EventRound[]): boolean => {
   const hasCanonicalMatchKeys = rounds.every((round) => {
     const matches = getSortedMatches(round);
     for (let i = 0; i < matches.length; i += 1) {
-      const parsed = parseBracketMatchKey(matches[i].matchKey);
+      const parsed = parseEventMatchKey(matches[i].matchKey);
       if (!parsed || parsed.roundIndex !== round.roundIndex) {
         return false;
       }
@@ -2464,7 +2449,7 @@ const getEndedEventWinnerPodiumEntries = (
 };
 
 const DEV_STUB_MIN_PLAYERS = 2;
-const DEV_STUB_MAX_PLAYERS = 32;
+const DEV_STUB_MAX_PLAYERS = MAX_EVENT_PARTICIPANTS;
 const DEV_STUB_DEFAULT_PLAYERS = 8;
 const DEV_STUB_NAME_LENGTH = 9;
 const DEV_STUB_NAME_ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -2477,38 +2462,6 @@ const clampDevStubPlayerCount = (value: number): number => {
     DEV_STUB_MAX_PLAYERS,
     Math.max(DEV_STUB_MIN_PLAYERS, Math.round(value)),
   );
-};
-
-const getStubBracketSize = (playerCount: number): number => {
-  let bracketSize = DEV_STUB_MIN_PLAYERS;
-  while (bracketSize < playerCount && bracketSize < DEV_STUB_MAX_PLAYERS) {
-    bracketSize *= 2;
-  }
-  return bracketSize;
-};
-
-const buildSeedOrder = (bracketSize: number): number[] => {
-  if (bracketSize <= 1) {
-    return [1];
-  }
-  const previous = buildSeedOrder(Math.floor(bracketSize / 2));
-  const next: number[] = [];
-  for (const seed of previous) {
-    next.push(seed);
-    next.push(bracketSize + 1 - seed);
-  }
-  return next;
-};
-
-const shuffleArray = <T,>(values: T[]): T[] => {
-  const next = [...values];
-  for (let i = next.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = next[i];
-    next[i] = next[j];
-    next[j] = temp;
-  }
-  return next;
 };
 
 const createRandomStubName = (): string => {
@@ -2531,7 +2484,7 @@ const createStubParticipants = (
     displayNames.add(createRandomStubName());
   }
 
-  return shuffleArray(
+  return shuffle(
     Array.from(displayNames, (displayName, index) => {
       const profileId = `dev_stub_profile_${index + 1}`;
       const [emojiIdString] = emojis.getRandomEmojiUrl(true);
@@ -2562,7 +2515,7 @@ const createStubEventRecord = ({
   fallbackEventId?: string | null;
 }): EventRecord => {
   const normalizedPlayerCount = clampDevStubPlayerCount(playerCount);
-  const bracketSize = getStubBracketSize(normalizedPlayerCount);
+  const bracketSize = getEventBracketSize(normalizedPlayerCount);
   const roundCount = Math.max(1, Math.round(Math.log2(bracketSize)));
   const nowMs = Date.now();
   const participants = createStubParticipants(normalizedPlayerCount, nowMs);
@@ -2603,7 +2556,7 @@ const createStubEventRecord = ({
     };
   }
 
-  const seedOrder = buildSeedOrder(bracketSize);
+  const seedOrder = buildEventSeedOrder(bracketSize);
   const seedToSlotIndex = new Map<number, number>();
   seedOrder.forEach((seed, slotIndex) => {
     seedToSlotIndex.set(seed, slotIndex);
@@ -2639,7 +2592,7 @@ const createStubEventRecord = ({
     for (let matchIndex = 0; matchIndex < matchCount; matchIndex += 1) {
       const host = roundEntrants[matchIndex * 2] ?? null;
       const guest = roundEntrants[matchIndex * 2 + 1] ?? null;
-      const matchKey = `${roundIndex}_${matchIndex}`;
+      const matchKey = buildEventMatchKey(roundIndex, matchIndex);
       let status: EventMatch["status"] = "upcoming";
       let winner: EventParticipant | null = null;
       let loser: EventParticipant | null = null;
@@ -3282,7 +3235,7 @@ const EventModal: React.FC = () => {
     [currentProfileId, displayedEventRecord, eventUiState],
   );
   const currentUsername = storage.getUsername("").trim().toLowerCase();
-  const canManageDisqualifications = MONS_LINK_ADMINS.has(currentUsername);
+  const canManageDisqualifications = isMonsLinkAdmin(currentUsername);
   const livePendingMatches = useMemo(
     () => getActivePendingMatches(eventRecord),
     [eventRecord],
@@ -3486,8 +3439,7 @@ const EventModal: React.FC = () => {
   const handleBackdropPointerDown = useCallback(
     (
       event:
-        | React.MouseEvent<HTMLDivElement>
-        | React.TouchEvent<HTMLDivElement>,
+        React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     ) => {
       if (event.target !== event.currentTarget) {
         return;

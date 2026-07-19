@@ -106,47 +106,39 @@ import {
   decrementLifecycleCounter,
   incrementLifecycleCounter,
 } from "../lifecycle/lifecycleDiagnostics";
+import { normalizeMiningSnapshot } from "@mons/shared/mining";
+import {
+  CONTROLLER_VERSION,
+  buildFreshMatchRecord,
+  type MatchSeedRecord,
+} from "@mons/shared/match-protocol";
+import {
+  createInviteCandidatesFromMatchId,
+  deriveLatestMatchId,
+  parseInviteMatchIndex,
+  parseRematchIndices,
+  rematchSeriesEnded,
+} from "@mons/shared/rematches";
+import {
+  getNavigationSortBucket,
+  normalizeStrictAutomatchStateHint,
+} from "@mons/shared/navigation";
+import { isAutoInviteId, pickHostColor } from "@mons/shared/ids";
+import {
+  THIRD_PLACE_MATCH_KEY,
+  type EventScheduleTimezone as SharedEventScheduleTimezone,
+} from "@mons/shared/events";
+import type { AuthMethodKey } from "@mons/shared/auth";
+import type { XConsentSource } from "@mons/shared/x-redirect";
 
-const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
-  dust: 0,
-  slime: 0,
-  gum: 0,
-  metal: 0,
-  ice: 0,
-});
-
-type MatchSeedRecord = {
-  gameVariant: string;
-  fen: string;
-};
-
-const normalizeMiningData = (source: any): PlayerMiningData => {
-  const materialsInput =
-    source && typeof source === "object"
-      ? (source.materials ?? source)
-      : undefined;
-  const materials = createEmptyMiningMaterials();
-  MINING_MATERIAL_NAMES.forEach((name) => {
-    const raw = materialsInput
-      ? (materialsInput as Record<string, unknown>)[name]
-      : undefined;
-    const numeric = typeof raw === "number" ? raw : Number(raw);
-    const value = Number.isFinite(numeric)
-      ? Math.max(0, Math.round(numeric as number))
-      : 0;
-    materials[name] = value;
+const normalizeMiningData = (source: any): PlayerMiningData =>
+  normalizeMiningSnapshot({
+    lastRockDate: source?.lastRockDate,
+    materials:
+      source && typeof source === "object"
+        ? (source.materials ?? source)
+        : undefined,
   });
-  const lastRockDate =
-    source && typeof source.lastRockDate === "string"
-      ? source.lastRockDate
-      : null;
-  return {
-    lastRockDate,
-    materials,
-  };
-};
-
-const controllerVersion = 2;
 
 const buildFreshMatch = ({
   color,
@@ -158,17 +150,7 @@ const buildFreshMatch = ({
   emojiId: number;
   aura?: string;
   seed: MatchSeedRecord;
-}): Match => ({
-  version: controllerVersion,
-  color,
-  emojiId,
-  aura,
-  gameVariant: seed.gameVariant,
-  fen: seed.fen,
-  status: "",
-  flatMovesString: "",
-  timer: "",
-});
+}): Match => buildFreshMatchRecord({ color, emojiId, aura, seed });
 
 const getSeedFromPersistedMatch = (
   match: Match | null | undefined,
@@ -213,7 +195,7 @@ const EVENT_SYNC_PARTICIPANT_CACHE_TTL_MS = 3000;
 const EVENT_SYNC_PARTICIPANT_NEGATIVE_CACHE_TTL_MS = 800;
 const EVENT_SYNC_RETRY_DELAYS_MS = [150, 300] as const;
 
-export type EventScheduleTimezone = "local" | "ET" | "PT" | "CT";
+export type EventScheduleTimezone = SharedEventScheduleTimezone;
 
 export type EventCreateDateTimePayload = {
   scheduledDate: string;
@@ -899,7 +881,7 @@ class Connection {
   }
 
   public connectToInvite(inviteId: string): void {
-    this.openInvite(inviteId, inviteId.startsWith("auto_"));
+    this.openInvite(inviteId, isAutoInviteId(inviteId));
   }
 
   public connectToAutomatch(inviteId: string): void {
@@ -985,7 +967,7 @@ class Connection {
 
   private async transitionToInvite(
     inviteId: string,
-    autojoin = inviteId.startsWith("auto_"),
+    autojoin = isAutoInviteId(inviteId),
   ): Promise<void> {
     const target = this.buildInviteRouteTarget(inviteId, autojoin);
     const appSessionManager = await import("../session/AppSessionManager");
@@ -1092,7 +1074,7 @@ class Connection {
           inviteId: inviteToReconnect,
           snapshotId: null,
           eventId: null,
-          autojoin: inviteToReconnect.startsWith("auto_"),
+          autojoin: isAutoInviteId(inviteToReconnect),
         },
         { force: true },
       );
@@ -1398,7 +1380,7 @@ class Connection {
     }
   }
 
-  public async beginAuthIntent(method: "eth" | "sol" | "apple" | "x"): Promise<{
+  public async beginAuthIntent(method: AuthMethodKey): Promise<{
     ok: boolean;
     intentId: string;
     nonce: string;
@@ -1456,7 +1438,7 @@ class Connection {
   }
 
   public async unlinkAuthMethod(
-    method: "eth" | "sol" | "apple" | "x",
+    method: AuthMethodKey,
   ): Promise<any> {
     try {
       await this.ensureAuthenticated();
@@ -1502,7 +1484,7 @@ class Connection {
 
   public async beginXRedirectAuth(params: {
     intentId: string;
-    consentSource?: "signin" | "settings";
+    consentSource?: XConsentSource;
     returnUrl?: string;
   }): Promise<{
     ok: boolean;
@@ -1811,7 +1793,7 @@ class Connection {
 
   public isAutomatch(): boolean {
     if (this.inviteId) {
-      return this.inviteId.startsWith("auto_");
+      return isAutoInviteId(this.inviteId);
     } else {
       return false;
     }
@@ -1983,25 +1965,7 @@ class Connection {
 
   public rematchSeriesEndIsIndicated(): boolean | null {
     if (!this.latestInvite) return null;
-    return (
-      this.latestInvite.guestRematches?.endsWith("x") ||
-      this.latestInvite.hostRematches?.endsWith("x") ||
-      false
-    );
-  }
-
-  private rematchIndices(rematches: string | null | undefined): number[] {
-    if (!rematches) {
-      return [];
-    }
-    const normalized = rematches.replace(/x+$/, "");
-    if (normalized === "") {
-      return [];
-    }
-    return normalized
-      .split(";")
-      .map((token) => Number.parseInt(token, 10))
-      .filter((value) => Number.isFinite(value) && value > 0);
+    return rematchSeriesEnded(this.latestInvite);
   }
 
   private approvedRematchIndices(
@@ -2030,24 +1994,7 @@ class Connection {
   }
 
   private rematchIndexFromMatchId(matchId: string): number | null {
-    if (!this.inviteId || !matchId) {
-      return null;
-    }
-    if (matchId === this.inviteId) {
-      return 0;
-    }
-    if (!matchId.startsWith(this.inviteId)) {
-      return null;
-    }
-    const suffix = matchId.slice(this.inviteId.length);
-    if (!/^\d+$/.test(suffix)) {
-      return null;
-    }
-    const parsedIndex = Number.parseInt(suffix, 10);
-    if (!Number.isFinite(parsedIndex) || parsedIndex <= 0) {
-      return null;
-    }
-    return parsedIndex;
+    return parseInviteMatchIndex(this.inviteId, matchId);
   }
 
   private hostColorForRematchIndex(
@@ -2097,8 +2044,8 @@ class Connection {
     if (!this.latestInvite || !this.inviteId) {
       return null;
     }
-    const hostIndices = this.rematchIndices(this.latestInvite.hostRematches);
-    const guestIndices = this.rematchIndices(this.latestInvite.guestRematches);
+    const hostIndices = parseRematchIndices(this.latestInvite.hostRematches);
+    const guestIndices = parseRematchIndices(this.latestInvite.guestRematches);
     const approvedIndices = this.approvedRematchIndices(
       hostIndices,
       guestIndices,
@@ -2268,10 +2215,10 @@ class Connection {
 
     const proposingAsHost =
       this.latestInvite.hostId === this.getSameProfilePlayerUid();
-    const guestRematchesLength = this.rematchIndices(
+    const guestRematchesLength = parseRematchIndices(
       this.latestInvite.guestRematches,
     ).length;
-    const hostRematchesLength = this.rematchIndices(
+    const hostRematchesLength = parseRematchIndices(
       this.latestInvite.hostRematches,
     ).length;
 
@@ -3008,25 +2955,6 @@ class Connection {
     return "waiting";
   }
 
-  private getNavigationSortBucket(status: NavigationItemStatus): number {
-    if (status === "pending") {
-      return 20;
-    }
-    if (status === "waiting") {
-      return 30;
-    }
-    if (status === "active") {
-      return 40;
-    }
-    if (status === "ended") {
-      return 50;
-    }
-    if (status === "dismissed") {
-      return 50;
-    }
-    return 30;
-  }
-
   private readTimestampMillis(value: unknown): number {
     if (typeof value === "number" && Number.isFinite(value)) {
       return Math.floor(value);
@@ -3128,7 +3056,7 @@ class Connection {
         entityType: "event",
         eventId,
         status,
-        sortBucket: this.getNavigationSortBucket(status),
+        sortBucket: getNavigationSortBucket(status),
         listSortAtMs:
           this.readTimestampMillis(rawData.listSortAt) || Date.now(),
         startAtMs: this.readTimestampMillis(rawData.startAt) || null,
@@ -3155,15 +3083,11 @@ class Connection {
 
     const rawStatus = this.normalizeNavigationStatus(rawData.status);
     const status = rawStatus === "dismissed" ? "ended" : rawStatus;
-    const sortBucket = this.getNavigationSortBucket(status);
+    const sortBucket = getNavigationSortBucket(status);
     const listSortAtMs = this.readTimestampMillis(rawData.listSortAt);
-    const rawAutomatchStateHint = rawData.automatchStateHint;
-    const automatchStateHint =
-      rawAutomatchStateHint === "pending" ||
-      rawAutomatchStateHint === "matched" ||
-      rawAutomatchStateHint === "canceled"
-        ? rawAutomatchStateHint
-        : null;
+    const automatchStateHint = normalizeStrictAutomatchStateHint(
+      rawData.automatchStateHint,
+    );
     const rawOpponentEmoji = rawData.opponentEmoji ?? rawData.opponentEmojiId;
     const rawOpponentName = rawData.opponentName ?? rawData.opponentDisplayName;
     const opponentEmoji =
@@ -3400,7 +3324,7 @@ class Connection {
       bracketSize: this.normalizeFiniteNumber(rawData.bracketSize, 0),
       roundCount: this.normalizeFiniteNumber(rawData.roundCount, 0),
       thirdPlaceMatch: thirdPlaceMatchInput
-        ? this.mapEventMatch(thirdPlaceMatchInput, "third_place")
+        ? this.mapEventMatch(thirdPlaceMatchInput, THIRD_PLACE_MATCH_KEY)
         : null,
       participants,
       rounds,
@@ -3419,7 +3343,7 @@ class Connection {
       inviteId,
       kind: "auto",
       status: "pending",
-      sortBucket: this.getNavigationSortBucket("pending"),
+      sortBucket: getNavigationSortBucket("pending"),
       listSortAtMs: Date.now(),
       hostLoginId: this.auth.currentUser?.uid ?? null,
       guestLoginId: null,
@@ -3592,21 +3516,6 @@ class Connection {
     return inviteData;
   }
 
-  private extractInviteMatchIndex(matchId: string, inviteId: string): number {
-    if (matchId === inviteId) {
-      return 0;
-    }
-    if (!matchId.startsWith(inviteId)) {
-      return 0;
-    }
-    const suffix = matchId.slice(inviteId.length);
-    if (!/^\d+$/.test(suffix)) {
-      return 0;
-    }
-    const parsed = Number.parseInt(suffix, 10);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
-  }
-
   private buildFallbackSortHint(
     maxMatchIndex: number,
     lastSeenOrder: number,
@@ -3622,48 +3531,6 @@ class Connection {
     return normalizedIndex > 0
       ? normalizedIndex * 1_000_000 + normalizedOrder
       : normalizedOrder;
-  }
-
-  private parseFallbackRematchIndices(rematches: unknown): number[] {
-    if (typeof rematches !== "string" || rematches === "") {
-      return [];
-    }
-    const normalized = rematches.replace(/x+$/, "");
-    if (normalized === "") {
-      return [];
-    }
-    return normalized
-      .split(";")
-      .map((token) => Number.parseInt(token, 10))
-      .filter((value) => Number.isFinite(value) && value > 0);
-  }
-
-  private deriveFallbackLatestMatchId(
-    inviteId: string,
-    inviteData: Invite,
-    fallbackMaxMatchIndex: number,
-  ): string {
-    const hostIndices = this.parseFallbackRematchIndices(
-      inviteData.hostRematches,
-    );
-    const guestIndices = this.parseFallbackRematchIndices(
-      inviteData.guestRematches,
-    );
-    let maxIndex =
-      Number.isFinite(fallbackMaxMatchIndex) && fallbackMaxMatchIndex > 0
-        ? Math.floor(fallbackMaxMatchIndex)
-        : 0;
-    hostIndices.forEach((index) => {
-      if (index > maxIndex) {
-        maxIndex = index;
-      }
-    });
-    guestIndices.forEach((index) => {
-      if (index > maxIndex) {
-        maxIndex = index;
-      }
-    });
-    return maxIndex > 0 ? `${inviteId}${maxIndex}` : inviteId;
   }
 
   private parseFallbackEmojiId(value: unknown): number | null {
@@ -3740,12 +3607,9 @@ class Connection {
     }
 
     const candidates: string[] = [];
-    for (let splitIndex = matchId.length - 1; splitIndex > 0; splitIndex -= 1) {
-      const suffix = matchId.slice(splitIndex);
-      if (!/^\d+$/.test(suffix)) {
-        continue;
-      }
-      const candidateInviteId = matchId.slice(0, splitIndex);
+    for (const candidateInviteId of createInviteCandidatesFromMatchId(
+      matchId,
+    )) {
       const candidateInvite = await this.getInviteForFallback(
         candidateInviteId,
         inviteCache,
@@ -3794,7 +3658,7 @@ class Connection {
     profileCache: Map<string, PlayerProfile | null>,
     emojiCache: Map<string, number | null>,
     fallbackSortHint: number,
-    fallbackMaxMatchIndex: number,
+    latestMatchIdHint: string,
   ): Promise<NavigationGameItem | null> {
     const inviteRecord = inviteData as Invite & {
       automatchStateHint?: unknown;
@@ -3804,19 +3668,13 @@ class Connection {
       typeof inviteRecord.hostId === "string" ? inviteRecord.hostId : null;
     const guestLoginId =
       typeof inviteRecord.guestId === "string" ? inviteRecord.guestId : null;
-    const kind: "auto" | "direct" = inviteId.startsWith("auto_")
+    const kind: "auto" | "direct" = isAutoInviteId(inviteId)
       ? "auto"
       : "direct";
-    const ended =
-      (typeof inviteRecord.hostRematches === "string" &&
-        inviteRecord.hostRematches.endsWith("x")) ||
-      (typeof inviteRecord.guestRematches === "string" &&
-        inviteRecord.guestRematches.endsWith("x"));
-    const rawHint = inviteRecord.automatchStateHint;
-    const automatchStateHint =
-      rawHint === "pending" || rawHint === "matched" || rawHint === "canceled"
-        ? rawHint
-        : null;
+    const ended = rematchSeriesEnded(inviteRecord);
+    const automatchStateHint = normalizeStrictAutomatchStateHint(
+      inviteRecord.automatchStateHint,
+    );
     if (kind === "auto" && !guestLoginId && automatchStateHint !== "pending") {
       return null;
     }
@@ -3829,7 +3687,7 @@ class Connection {
           ? "active"
           : "waiting";
 
-    const sortBucket = this.getNavigationSortBucket(status);
+    const sortBucket = getNavigationSortBucket(status);
     const canceledAt =
       typeof inviteRecord.automatchCanceledAt === "number" &&
       Number.isFinite(inviteRecord.automatchCanceledAt)
@@ -3852,10 +3710,10 @@ class Connection {
       opponentLoginId,
       profileCache,
     );
-    const latestMatchId = this.deriveFallbackLatestMatchId(
+    const latestMatchId = deriveLatestMatchId(
       inviteId,
       inviteData,
-      fallbackMaxMatchIndex,
+      latestMatchIdHint,
     );
     const opponentEmojiFromProfile =
       typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null;
@@ -3915,6 +3773,7 @@ class Connection {
     const inviteIds = new Set<string>();
     const inviteSortHints = new Map<string, number>();
     const inviteMaxMatchIndices = new Map<string, number>();
+    const inviteLatestMatchIdHints = new Map<string, string>();
 
     let lastSeenOrder = matchIds.length;
     for (const matchId of matchIds) {
@@ -3924,10 +3783,11 @@ class Connection {
       );
       if (inviteId) {
         inviteIds.add(inviteId);
-        const maxMatchIndex = this.extractInviteMatchIndex(matchId, inviteId);
+        const maxMatchIndex = parseInviteMatchIndex(inviteId, matchId) ?? 0;
         const previousMaxMatchIndex = inviteMaxMatchIndices.get(inviteId) ?? 0;
         if (maxMatchIndex > previousMaxMatchIndex) {
           inviteMaxMatchIndices.set(inviteId, maxMatchIndex);
+          inviteLatestMatchIdHints.set(inviteId, matchId);
         }
         const nextSortHint = this.buildFallbackSortHint(
           maxMatchIndex,
@@ -3972,7 +3832,7 @@ class Connection {
               profileCache,
               emojiCache,
               inviteSortHints.get(inviteId) ?? 1,
-              inviteMaxMatchIndices.get(inviteId) ?? 0,
+              inviteLatestMatchIdHints.get(inviteId) ?? inviteId,
             );
           } catch {
             return null;
@@ -5451,15 +5311,7 @@ class Connection {
   private rematchSeriesEndIsIndicatedForInvite(
     invite: Invite | null | undefined,
   ): boolean {
-    if (!invite) {
-      return false;
-    }
-    return (
-      (typeof invite.hostRematches === "string" &&
-        invite.hostRematches.endsWith("x")) ||
-      (typeof invite.guestRematches === "string" &&
-        invite.guestRematches.endsWith("x"))
-    );
+    return rematchSeriesEnded(invite);
   }
 
   private getLatestBothSidesApprovedRematchIndexForInvite(
@@ -5469,8 +5321,8 @@ class Connection {
       return null;
     }
     const approvedIndices = this.approvedRematchIndices(
-      this.rematchIndices(invite.hostRematches),
-      this.rematchIndices(invite.guestRematches),
+      parseRematchIndices(invite.hostRematches),
+      parseRematchIndices(invite.guestRematches),
     );
     if (approvedIndices.length === 0) {
       return null;
@@ -5490,8 +5342,8 @@ class Connection {
     invite: Invite,
     actorUid: string | null,
   ): { matchId: string; hasPendingProposal: boolean } {
-    const hostIndices = this.rematchIndices(invite.hostRematches);
-    const guestIndices = this.rematchIndices(invite.guestRematches);
+    const hostIndices = parseRematchIndices(invite.hostRematches);
+    const guestIndices = parseRematchIndices(invite.guestRematches);
     let rematchIndex =
       this.getLatestBothSidesApprovedRematchIndexForInvite(invite);
     let hasPendingProposal = false;
@@ -5877,7 +5729,7 @@ class Connection {
           if (workingInvite.guestId) {
             this.observeMatch(workingInvite.guestId, matchId, nextContext);
           } else {
-            didFindYourOwnInviteThatNobodyJoined(inviteId.startsWith("auto_"));
+            didFindYourOwnInviteThatNobodyJoined(isAutoInviteId(inviteId));
             const inviteRef = ref(this.db, `invites/${inviteId}`);
             const observerKey = `invite-guest-join:${inviteId}:${matchId}`;
             const unregister = this.observeContextValue(
@@ -5959,12 +5811,12 @@ class Connection {
   }
 
   public async createInvite(uid: string, inviteId: string): Promise<boolean> {
-    const hostColor = Math.random() < 0.5 ? "white" : "black";
+    const hostColor = pickHostColor();
     const emojiId = getPlayersEmojiId();
     const matchSeed = buildRandomGameSeed();
 
     const invite: Invite = {
-      version: controllerVersion,
+      version: CONTROLLER_VERSION,
       hostId: uid,
       hostColor,
       guestId: null,

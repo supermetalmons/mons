@@ -1,4 +1,5 @@
 const admin = require("firebase-admin");
+const { cropAddress } = require("@mons/shared/profiles");
 
 const batchReadWithRetry = async (refs) => {
   const initialSnapshots = await Promise.all(
@@ -483,9 +484,9 @@ function getDisplayNameFromAddress(
   if (username && username !== "") {
     baseName = username;
   } else if (ethAddress && ethAddress !== "") {
-    baseName = ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+    baseName = cropAddress(ethAddress);
   } else if (solAddress && solAddress !== "") {
-    baseName = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+    baseName = cropAddress(solAddress);
   }
   const emojiId = includeEmoji ? resolveTelegramEmojiId(emoji) : "";
   const emojiPrefix = emojiId ? `${getTelegramEmojiTag(emojiId)} ` : "";

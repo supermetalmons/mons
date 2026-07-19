@@ -1,12 +1,8 @@
 const admin = require("firebase-admin");
 const { onValueWritten } = require("firebase-functions/v2/database");
-
-const SORT_BUCKETS = {
-  waiting: 30,
-  active: 40,
-  ended: 50,
-  dismissed: 50,
-};
+const {
+  NAVIGATION_SORT_BUCKETS: SORT_BUCKETS,
+} = require("@mons/shared/navigation");
 const NAVIGATION_PARTICIPANT_PREVIEW_LIMIT = 6;
 const MAX_BATCH_WRITES = 450;
 const MAX_TIMESTAMP_MS = 253402300799999;

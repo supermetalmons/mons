@@ -1,3 +1,12 @@
+import {
+  MINING_MATERIAL_NAMES as SHARED_MINING_MATERIAL_NAMES,
+  type MiningMaterialName as SharedMiningMaterialName,
+} from "@mons/shared/mining";
+import type {
+  AutomatchStateHint,
+  NavigationStatus as SharedNavigationStatus,
+} from "@mons/shared/navigation";
+
 export interface Match {
   version: number;
   color: string;
@@ -18,7 +27,7 @@ export interface Invite {
   guestId?: string | null;
   hostRematches?: string | null;
   guestRematches?: string | null;
-  automatchStateHint?: "pending" | "matched" | "canceled" | null;
+  automatchStateHint?: AutomatchStateHint | null;
   automatchCanceledAt?: number | null;
   eventId?: string | null;
   eventRoundIndex?: number | null;
@@ -50,14 +59,12 @@ export interface HistoricalMatchPair {
   guestMatch: Match | null;
 }
 
-export type NavigationItemStatus =
-  | "pending"
-  | "waiting"
-  | "active"
-  | "ended"
-  | "dismissed";
-export type NavigationGameStatus = "pending" | "waiting" | "active" | "ended";
-type NavigationEventStatus = "waiting" | "active" | "ended" | "dismissed";
+export type NavigationItemStatus = SharedNavigationStatus;
+export type NavigationGameStatus = Exclude<
+  SharedNavigationStatus,
+  "dismissed"
+>;
+type NavigationEventStatus = Exclude<SharedNavigationStatus, "pending">;
 type EventStatus = "scheduled" | "active" | "ended" | "dismissed";
 type EventParticipantState = "active" | "eliminated" | "winner";
 type EventMatchStatus = "upcoming" | "pending" | "host" | "guest" | "bye";
@@ -76,7 +83,7 @@ export interface NavigationGameItem {
   opponentProfileId: string | null;
   opponentName: string | null;
   opponentEmoji: number | null;
-  automatchStateHint: "pending" | "matched" | "canceled" | null;
+  automatchStateHint: AutomatchStateHint | null;
   isPendingAutomatch: boolean;
   isFallback?: boolean;
   isOptimistic?: boolean;
@@ -183,15 +190,9 @@ export interface InviteReaction extends Reaction {
   matchId: string;
 }
 
-export const MINING_MATERIAL_NAMES = [
-  "dust",
-  "slime",
-  "gum",
-  "metal",
-  "ice",
-] as const;
+export const MINING_MATERIAL_NAMES = SHARED_MINING_MATERIAL_NAMES;
 
-export type MiningMaterialName = (typeof MINING_MATERIAL_NAMES)[number];
+export type MiningMaterialName = SharedMiningMaterialName;
 
 export type PlayerMiningMaterials = Record<MiningMaterialName, number>;
 

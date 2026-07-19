@@ -1,6 +1,7 @@
 import { connection } from "../connection/connection";
 import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
+import { createRatingUpdater } from "@mons/shared/ratings";
 import { storage } from "./storage";
 import { updateEmojiAndAuraIfNeeded } from "../game/board";
 import { isWatchOnly } from "../game/gameController";
@@ -10,6 +11,8 @@ import {
   resetPendingOwnProfileMiningState,
   syncOwnProfileMiningState,
 } from "../services/ownProfileMiningHydration";
+
+const updateRating = createRatingUpdater(glicko2.Glicko2);
 
 export type PlayerMetadata = {
   uid: string;
@@ -235,40 +238,6 @@ const ethAddressesForUids: { [key: string]: string } = {};
 const solAddressesForUids: { [key: string]: string } = {};
 const ensDict: { [key: string]: { name: string; avatar: string } } = {};
 const allProfilesDict: { [key: string]: PlayerProfile } = {};
-
-const updateRating = (
-  winRating: number,
-  winPlayerGamesCount: number,
-  lossRating: number,
-  lossPlayerGamesCount: number,
-) => {
-  const settings = {
-    tau: 0.75,
-    rating: 1500,
-    rd: 100,
-    vol: 0.06,
-  };
-
-  const ranking = new glicko2.Glicko2(settings);
-  const adjustRd = (gamesCount: number) => Math.max(60, 350 - gamesCount);
-  const winner = ranking.makePlayer(
-    winRating,
-    adjustRd(winPlayerGamesCount),
-    0.06,
-  );
-  const loser = ranking.makePlayer(
-    lossRating,
-    adjustRd(lossPlayerGamesCount),
-    0.06,
-  );
-  const matches: [any, any, number][] = [[winner, loser, 1]];
-  ranking.updateRatings(matches);
-
-  const newWinRating = Math.round(winner.getRating());
-  const newLossRating = Math.round(loser.getRating());
-
-  return [newWinRating, newLossRating];
-};
 
 export function resetPlayerMetadataCaches() {
   Object.keys(usernamesForUids).forEach((key) => delete usernamesForUids[key]);

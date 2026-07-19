@@ -40,16 +40,20 @@ import {
 } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
-import type {
-  EventCreateDateTimePayload,
-  EventScheduleTimezone,
-} from "../connection/connection";
+import type { EventCreateDateTimePayload } from "../connection/connection";
 import {
   getEventModalState,
   openEventModal,
   openEventModalPendingCreate,
   setEventModalPendingCreateError,
 } from "./eventModalController";
+import {
+  EVENT_SCHEDULE_TIMEZONE_OPTIONS,
+  MAX_STARTS_IN_MINUTES,
+  MIN_STARTS_IN_MINUTES,
+  isMonsLinkAdmin,
+  type EventScheduleTimezone,
+} from "@mons/shared/events";
 
 const MATERIAL_TYPES: MiningMaterialName[] = [...MINING_MATERIAL_NAMES];
 const LEADERBOARD_TYPES: LeaderboardType[] = [
@@ -60,24 +64,6 @@ const LEADERBOARD_TYPES: LeaderboardType[] = [
 ];
 const MATERIAL_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
-const MONS_LINK_ADMINS = new Set([
-  "ivan",
-  "meinong",
-  "obi",
-  "bosch",
-  "monsol",
-  "bosch2",
-  "trinket",
-]);
-const EVENT_SCHEDULE_TIMEZONE_OPTIONS: Array<{
-  value: EventScheduleTimezone;
-  label: string;
-}> = [
-  { value: "local", label: "Local" },
-  { value: "ET", label: "ET" },
-  { value: "PT", label: "PT" },
-  { value: "CT", label: "CT" },
-];
 
 type EventScheduleMode = "minutes" | "datetime";
 
@@ -1273,7 +1259,7 @@ const MainMenu: React.FC = () => {
   }, [isMusicOpen]);
 
   const showTotalAsIcons = MATERIAL_TYPES.every((name) => !!materialUrls[name]);
-  const canCreatePilotEvents = MONS_LINK_ADMINS.has(
+  const canCreatePilotEvents = isMonsLinkAdmin(
     storage.getUsername("").trim().toLowerCase(),
   );
 
@@ -1531,8 +1517,8 @@ const MainMenu: React.FC = () => {
                         {eventScheduleMode === "minutes" ? (
                           <ExperimentalInput
                             type="number"
-                            min="1"
-                            max="20160"
+                            min={MIN_STARTS_IN_MINUTES}
+                            max={MAX_STARTS_IN_MINUTES}
                             step="1"
                             value={eventStartsInMinutes}
                             onChange={(event) => {

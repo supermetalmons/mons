@@ -1,0 +1,22 @@
+{
+  "name": "@mons/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "exports": {
+    "./auth": "./auth.js",
+    "./events": "./events.js",
+    "./game-variants": "./game-variants.js",
+    "./ids": "./ids.js",
+    "./match-protocol": "./match-protocol.js",
+    "./mining": "./mining.js",
+    "./navigation": "./navigation.js",
+    "./nfts": "./nfts.js",
+    "./profiles": "./profiles.js",
+    "./ratings": "./ratings.js",
+    "./rematches": "./rematches.js",
+    "./timers": "./timers.js",
+    "./usernames": "./usernames.js",
+    "./x-redirect": "./x-redirect.js"
+  }
+}

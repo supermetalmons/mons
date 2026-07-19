@@ -1,46 +1,19 @@
 const crypto = require("crypto");
 const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v2/https");
+const {
+  USERNAME_LOOKUP_KEY_FIELD,
+  cleanUsername: toCleanString,
+  buildUsernameLookupKey,
+  isAlphanumericUsername,
+  isReservedExplicitUsername,
+  isSafeFirestoreDocIdSegment,
+  getUsernameIndexDocIds,
+} = require("@mons/shared/usernames");
 
 const AUTO_NAME_MAX_ATTEMPTS = 30;
-const USERNAME_ALLOWED_RE = /^[a-zA-Z0-9]+$/;
 const AUTO_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const AUTO_LOWER = "abcdefghijklmnopqrstuvwxyz";
-const USERNAME_LOOKUP_KEY_FIELD = "usernameLookupKey";
-
-const toCleanString = (value) =>
-  typeof value === "string" ? value.trim() : "";
-const buildUsernameLookupKey = (username) =>
-  toCleanString(username).toLowerCase();
-const isAlphanumericUsername = (username) =>
-  USERNAME_ALLOWED_RE.test(toCleanString(username));
-const isReservedExplicitUsername = (name) =>
-  buildUsernameLookupKey(name) === "anon";
-const isSafeFirestoreDocIdSegment = (value) => {
-  const cleaned = toCleanString(value);
-  if (!cleaned || cleaned === "." || cleaned === "..") {
-    return false;
-  }
-  return !cleaned.includes("/");
-};
-
-const getUsernameIndexDocIds = (username) => {
-  const cleaned = toCleanString(username);
-  if (!cleaned) {
-    return [];
-  }
-  const canonical = buildUsernameLookupKey(cleaned);
-  if (!isSafeFirestoreDocIdSegment(canonical)) {
-    return [];
-  }
-  if (canonical === cleaned) {
-    return [canonical];
-  }
-  if (!isSafeFirestoreDocIdSegment(cleaned)) {
-    return [canonical];
-  }
-  return [canonical, cleaned];
-};
 
 const isUsernameOwnedByProfileForKey = (username, profileId, expectedKey) => {
   const cleanedProfileId = toCleanString(profileId);

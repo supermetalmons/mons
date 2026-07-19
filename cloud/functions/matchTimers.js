@@ -2,6 +2,12 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const { batchReadWithRetry } = require("./utils");
 const { requestEventProgress } = require("./eventProgressTasks");
+const {
+  MATCH_TIMER_DURATION_MS,
+  MATCH_TIMER_TERMINAL,
+  formatMatchTimer,
+  parseMatchTimer,
+} = require("@mons/shared/timers");
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
@@ -89,8 +95,8 @@ exports.startMatchTimer = onCall(async (request) => {
     matchData.status === "surrendered" ||
     opponentMatchData.status === "surrendered" ||
     game.winner_color() !== undefined ||
-    matchData.timer === "gg" ||
-    opponentMatchData.timer === "gg"
+    matchData.timer === MATCH_TIMER_TERMINAL ||
+    opponentMatchData.timer === MATCH_TIMER_TERMINAL
   ) {
     throw new HttpsError("failed-precondition", "game is already over.");
   }
@@ -125,9 +131,9 @@ exports.startMatchTimer = onCall(async (request) => {
     );
   }
 
-  const duration = 90000;
+  const duration = MATCH_TIMER_DURATION_MS;
   const targetTimestamp = Date.now() + duration + 500;
-  const timerString = `${turnNumber};${targetTimestamp}`;
+  const timerString = formatMatchTimer(turnNumber, targetTimestamp);
   await matchRef.child("timer").set(timerString);
 
   return {
@@ -169,12 +175,10 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
     await batchReadWithRetry([matchRef, opponentMatchRef, inviteRef]);
 
   const inviteData = inviteSnapshot.val();
-  if (
-    !(
-      (inviteData.hostId === playerId && inviteData.guestId === opponentId) ||
-      (inviteData.hostId === opponentId && inviteData.guestId === playerId)
-    )
-  ) {
+  if (!(
+    (inviteData.hostId === playerId && inviteData.guestId === opponentId) ||
+    (inviteData.hostId === opponentId && inviteData.guestId === playerId)
+  )) {
     throw new HttpsError(
       "permission-denied",
       "Players don't match invite data",
@@ -197,8 +201,8 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
   if (
     matchData.status === "surrendered" ||
     opponentMatchData.status === "surrendered" ||
-    matchData.timer === "gg" ||
-    opponentMatchData.timer === "gg" ||
+    matchData.timer === MATCH_TIMER_TERMINAL ||
+    opponentMatchData.timer === MATCH_TIMER_TERMINAL ||
     game.winner_color() !== undefined
   ) {
     throw new HttpsError("failed-precondition", "game is already over.");
@@ -235,12 +239,13 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
 
   const timer = matchData.timer;
   if (timer && typeof timer === "string") {
-    const [turnNumber, targetTimestamp] = timer.split(";").map(Number);
-    if (!isNaN(turnNumber) && !isNaN(targetTimestamp)) {
+    const parsedTimer = parseMatchTimer(timer);
+    if (parsedTimer) {
+      const { turnNumber, targetTimestamp } = parsedTimer;
       const timeDelta = targetTimestamp - Date.now();
       const sameTurn = game.turn_number() === turnNumber;
       if (sameTurn && timeDelta <= 0) {
-        await matchRef.child("timer").set("gg");
+        await matchRef.child("timer").set(MATCH_TIMER_TERMINAL);
         await maybeEnqueueEventProgressFromInvite({
           inviteData,
           inviteId,

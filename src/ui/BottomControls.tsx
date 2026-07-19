@@ -5,6 +5,9 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
+import { VALID_REACTION_IDS } from "@mons/shared/nfts";
+import { MATCH_TIMER_DURATION_SECONDS } from "@mons/shared/timers";
+import { createEmptyMaterials } from "@mons/shared/mining";
 import {
   FaUndo,
   FaFlag,
@@ -198,8 +201,7 @@ export function didNotDismissAnythingWithOutsideTapJustNow(): boolean {
 
 let isWagerPanelVisible: () => boolean = () => false;
 let handleWagerPanelOutsideTap:
-  | ((event: TouchEvent | MouseEvent) => boolean)
-  | null = null;
+  ((event: TouchEvent | MouseEvent) => boolean) | null = null;
 
 export function setWagerPanelVisibilityChecker(checker: () => boolean) {
   isWagerPanelVisible = checker;
@@ -258,12 +260,22 @@ let pendingDelayedCancelAutomatchRevealAtMs = 0;
 let pendingFreshAutomatchCancelRevealAtMs = 0;
 
 const STICKER_ID_WHITELIST: number[] = [
-  9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163,
-  168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246,
-  250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325,
-  328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430,
-  444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267,
-  900374, 900347, 900382, 900429, 900225, 900999, 900189,
+  ...VALID_REACTION_IDS,
+  900316,
+  900101,
+  900393,
+  90063,
+  900109,
+  900228,
+  900245,
+  900267,
+  900374,
+  900347,
+  900382,
+  900429,
+  900225,
+  900999,
+  900189,
 ];
 const FIXED_STICKER_IDS: number[] = [
   900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374,
@@ -898,8 +910,12 @@ const BottomControls: React.FC = () => {
 
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] =
     useState(false);
-  const [timerConfig, setTimerConfig] = useState({
-    duration: 90,
+  const [timerConfig, setTimerConfig] = useState<{
+    duration: number;
+    progress: number;
+    requestDate: number;
+  }>({
+    duration: MATCH_TIMER_DURATION_SECONDS,
     progress: 0,
     requestDate: Date.now(),
   });
@@ -952,13 +968,9 @@ const BottomControls: React.FC = () => {
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
   const frozenMaterialsRef =
     useRef<Record<MaterialName, number>>(getFrozenMaterials());
-  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({
-    dust: 0,
-    slime: 0,
-    gum: 0,
-    metal: 0,
-    ice: 0,
-  });
+  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>(
+    createEmptyMaterials(),
+  );
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const controlsContainerRef = useRef<HTMLDivElement>(null);
@@ -2683,8 +2695,7 @@ const BottomControls: React.FC = () => {
 
   const handleUndo = (
     event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
+      React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
   ) => {
     if ((event.target as HTMLButtonElement).disabled) return;
     didClickUndoButton();

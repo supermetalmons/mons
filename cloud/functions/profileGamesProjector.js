@@ -4,13 +4,17 @@ const {
   onValueWritten,
 } = require("firebase-functions/v2/database");
 const { onDocumentDeleted } = require("firebase-functions/v2/firestore");
-
-const SORT_BUCKETS = {
-  pending: 20,
-  waiting: 30,
-  active: 40,
-  ended: 50,
-};
+const {
+  rematchSeriesEnded,
+  createInviteCandidatesFromMatchId,
+  deriveLatestMatchId,
+} = require("@mons/shared/rematches");
+const {
+  inferAutomatchStateHint,
+  getNavigationSortBucket,
+} = require("@mons/shared/navigation");
+const { cropAddress } = require("@mons/shared/profiles");
+const { isAutoInviteId } = require("@mons/shared/ids");
 
 const PROFILE_LINK_CATCHUP_MAX_INVITES = 300;
 const PROFILE_LINK_CATCHUP_CONCURRENCY = 20;
@@ -70,40 +74,11 @@ const readTimestampMillis = (value) => {
   return null;
 };
 
-const parseRematchIndices = (rawValue) => {
-  if (typeof rawValue !== "string" || rawValue === "") {
-    return [];
-  }
-  const normalized = rawValue.replace(/x+$/, "");
-  if (normalized === "") {
-    return [];
-  }
-  return normalized
-    .split(";")
-    .map((token) => Number.parseInt(token, 10))
-    .filter((value) => Number.isFinite(value) && value > 0);
-};
-
-const rematchSeriesEnded = (inviteData) => {
-  if (!inviteData || typeof inviteData !== "object") {
-    return false;
-  }
-  const hostRematches =
-    typeof inviteData.hostRematches === "string"
-      ? inviteData.hostRematches
-      : "";
-  const guestRematches =
-    typeof inviteData.guestRematches === "string"
-      ? inviteData.guestRematches
-      : "";
-  return hostRematches.endsWith("x") || guestRematches.endsWith("x");
-};
-
 const truncateAddress = (address) => {
   if (typeof address !== "string" || address.length < 8) {
     return "anon";
   }
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  return cropAddress(address);
 };
 
 const getProfileDisplayName = (profileData) => {
@@ -226,21 +201,6 @@ async function readLoginSummaryFromRtdbMatches(
   return null;
 }
 
-const createInviteCandidatesFromMatchId = (matchId) => {
-  const candidates = [];
-  for (let splitIndex = matchId.length - 1; splitIndex > 0; splitIndex -= 1) {
-    const suffix = matchId.slice(splitIndex);
-    if (!/^\d+$/.test(suffix)) {
-      continue;
-    }
-    const prefix = matchId.slice(0, splitIndex);
-    if (!candidates.includes(prefix)) {
-      candidates.push(prefix);
-    }
-  }
-  return candidates;
-};
-
 const readInviteExists = async (inviteId, inviteExistenceCache) => {
   if (!inviteId) {
     return false;
@@ -314,82 +274,6 @@ async function resolveInviteIdFromMatchId(matchId, options = {}) {
   return existingCandidates[0];
 }
 
-const getHintMatchIndex = (inviteId, latestMatchIdHint) => {
-  const normalizedInviteId = normalizeString(inviteId);
-  const normalizedHint = normalizeString(latestMatchIdHint);
-  if (
-    !normalizedInviteId ||
-    !normalizedHint ||
-    !normalizedHint.startsWith(normalizedInviteId)
-  ) {
-    return 0;
-  }
-  const suffix = normalizedHint.slice(normalizedInviteId.length);
-  if (suffix === "") {
-    return 0;
-  }
-  if (!/^\d+$/.test(suffix)) {
-    return 0;
-  }
-  const parsed = Number.parseInt(suffix, 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
-};
-
-const deriveLatestMatchId = (inviteId, inviteData, latestMatchIdHint) => {
-  const hostIndices = parseRematchIndices(
-    inviteData ? inviteData.hostRematches : null,
-  );
-  const guestIndices = parseRematchIndices(
-    inviteData ? inviteData.guestRematches : null,
-  );
-
-  let maxIndex = 0;
-  hostIndices.forEach((index) => {
-    if (index > maxIndex) {
-      maxIndex = index;
-    }
-  });
-  guestIndices.forEach((index) => {
-    if (index > maxIndex) {
-      maxIndex = index;
-    }
-  });
-
-  const hintedIndex = getHintMatchIndex(inviteId, latestMatchIdHint);
-  if (hintedIndex > maxIndex) {
-    maxIndex = hintedIndex;
-  }
-
-  return maxIndex > 0 ? `${inviteId}${maxIndex}` : inviteId;
-};
-
-const getAutomatchStateHint = (inviteId, inviteData, automatchData) => {
-  if (!inviteId.startsWith("auto_")) {
-    return null;
-  }
-  if (automatchData) {
-    return "pending";
-  }
-  if (normalizeString(inviteData ? inviteData.guestId : null)) {
-    return "matched";
-  }
-  const marker = normalizeString(
-    inviteData ? inviteData.automatchStateHint : null,
-  );
-  if (marker === "pending" || marker === "matched" || marker === "canceled") {
-    return marker;
-  }
-  const canceledAt = inviteData ? inviteData.automatchCanceledAt : null;
-  if (
-    typeof canceledAt === "number" &&
-    Number.isFinite(canceledAt) &&
-    canceledAt > 0
-  ) {
-    return "canceled";
-  }
-  return "canceled";
-};
-
 const isEventOwnedInvite = (inviteData) => {
   if (!inviteData || typeof inviteData !== "object") {
     return false;
@@ -430,7 +314,7 @@ const deriveProjectionStatus = ({
     return "ended";
   }
   const hasGuest = !!normalizeString(inviteData ? inviteData.guestId : null);
-  if (inviteId.startsWith("auto_") && automatchStateHint === "pending") {
+  if (isAutoInviteId(inviteId) && automatchStateHint === "pending") {
     return "pending";
   }
   if (hasGuest) {
@@ -439,24 +323,11 @@ const deriveProjectionStatus = ({
   return "waiting";
 };
 
-const getSortBucket = (status) => {
-  if (status === "active") {
-    return SORT_BUCKETS.active;
-  }
-  if (status === "pending") {
-    return SORT_BUCKETS.pending;
-  }
-  if (status === "ended") {
-    return SORT_BUCKETS.ended;
-  }
-  return SORT_BUCKETS.waiting;
-};
-
 const shouldProjectInvite = ({ inviteId, inviteData, automatchStateHint }) => {
   if (!inviteData || typeof inviteData !== "object") {
     return false;
   }
-  if (!inviteId.startsWith("auto_")) {
+  if (!isAutoInviteId(inviteId)) {
     return true;
   }
   const hasGuest = !!normalizeString(inviteData.guestId);
@@ -677,11 +548,12 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
 
   const ownerProfileIds = getOwnerProfileIds(hostProfileId, guestProfileId);
 
-  const automatchStateHint = getAutomatchStateHint(
-    normalizedInviteId,
-    inviteData,
-    automatchData,
-  );
+  const automatchStateHint = inferAutomatchStateHint({
+    inviteId: normalizedInviteId,
+    queueValue: automatchData,
+    hasGuest: !!guestLoginId,
+    storedStateHint: inviteData ? inviteData.automatchStateHint : null,
+  });
   const latestMatchId = deriveLatestMatchId(
     normalizedInviteId,
     inviteData,
@@ -698,7 +570,7 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
     inviteData,
     automatchStateHint,
   });
-  const sortBucket = getSortBucket(status);
+  const sortBucket = getNavigationSortBucket(status);
   const loginSummaryCache = new Map();
 
   const existingDocsByOwnerProfileId = new Map();
@@ -771,7 +643,7 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
     source: "rtdb-projector",
     entityType: "game",
     inviteId: normalizedInviteId,
-    kind: normalizedInviteId.startsWith("auto_") ? "auto" : "direct",
+    kind: isAutoInviteId(normalizedInviteId) ? "auto" : "direct",
     hostLoginId,
     guestLoginId,
     hostProfileId,

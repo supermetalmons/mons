@@ -1,4 +1,5 @@
 import * as MonsRules from "mons-rules";
+import { cropAddress } from "@mons/shared/profiles";
 import * as SVG from "../utils/svg";
 import {
   isOnlineGame,
@@ -2283,9 +2284,6 @@ function renderPlayersNamesLabels() {
   emitBoardPlayerInfoOverlayState();
 }
 
-const croppedAddress = (address: string) =>
-  address.slice(0, 4) + "..." + address.slice(-4);
-
 const metadataValue = (value: string | null | undefined) => value || undefined;
 
 const getPlayerInfoReactionText = (
@@ -2327,9 +2325,9 @@ function getPlayerMetadataDisplaySnapshot(
   if (normalizedUsername) {
     displayName = normalizedUsername;
   } else if (normalizedEthAddress) {
-    displayName = croppedAddress(normalizedEthAddress);
+    displayName = cropAddress(normalizedEthAddress);
   } else if (normalizedSolAddress) {
-    displayName = croppedAddress(normalizedSolAddress);
+    displayName = cropAddress(normalizedSolAddress);
   } else if (ens !== undefined) {
     displayName = ens;
   }

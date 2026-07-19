@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { unlinkMethodForUid } = require("./authIdentity");
+const { normalizeAuthMethod } = require("@mons/shared/auth");
 
 exports.unlinkAuthMethod = onCall({ invoker: "public" }, async (request) => {
   if (!request.auth) {
@@ -12,14 +13,15 @@ exports.unlinkAuthMethod = onCall({ invoker: "public" }, async (request) => {
     request && request.data && typeof request.data === "object"
       ? request.data
       : {};
-  const method =
+  const rawMethod =
     typeof requestData.method === "string"
       ? requestData.method.trim().toLowerCase()
       : "";
-  if (!method) {
+  if (!rawMethod) {
     throw new HttpsError("invalid-argument", "method is required.");
   }
-  if (!["eth", "sol", "apple", "x"].includes(method)) {
+  const method = normalizeAuthMethod(rawMethod);
+  if (!method) {
     throw new HttpsError("invalid-argument", "Unsupported auth method.");
   }
   const opId = requestData.opId;

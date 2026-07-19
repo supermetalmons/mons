@@ -3,6 +3,7 @@ import {
   NavigationEventItem,
   NavigationItemStatus,
 } from "../connection/connectionModels";
+import { normalizeStrictAutomatchStateHint } from "@mons/shared/navigation";
 
 type NavigationGamesScopeKind = "profile" | "login";
 
@@ -176,13 +177,9 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
       ? Math.floor(raw.listSortAtMs)
       : 0;
   const opponentEmoji = getNormalizedNumberOrNull(raw.opponentEmoji);
-  const rawAutomatchHint = raw.automatchStateHint;
-  const automatchStateHint =
-    rawAutomatchHint === "pending" ||
-    rawAutomatchHint === "matched" ||
-    rawAutomatchHint === "canceled"
-      ? rawAutomatchHint
-      : null;
+  const automatchStateHint = normalizeStrictAutomatchStateHint(
+    raw.automatchStateHint,
+  );
 
   return {
     id: id ?? inviteId,

@@ -1,30 +1,21 @@
-import { MATERIALS, MaterialName } from "./rocksMiningService";
+import {
+  applyMaterialDeltas,
+  computeAvailableMaterials as computeSharedAvailableMaterials,
+  createEmptyMaterials as createSharedEmptyMaterials,
+  normalizeMaterials as normalizeSharedMaterials,
+} from "@mons/shared/mining";
+import type { MaterialName } from "./rocksMiningService";
 
 type FrozenMaterials = Record<MaterialName, number>;
 
 type FrozenListener = (materials: FrozenMaterials) => void;
 
-const createEmptyMaterials = (): FrozenMaterials => {
-  const result = {} as FrozenMaterials;
-  MATERIALS.forEach((name) => {
-    result[name] = 0;
-  });
-  return result;
-};
+const createEmptyMaterials = (): FrozenMaterials =>
+  createSharedEmptyMaterials();
 
 const normalizeMaterials = (
   source?: Partial<Record<MaterialName, number>> | null,
-): FrozenMaterials => {
-  const result = createEmptyMaterials();
-  MATERIALS.forEach((name) => {
-    const raw = source ? (source as Record<string, unknown>)[name] : undefined;
-    const numeric = typeof raw === "number" ? raw : Number(raw);
-    result[name] = Number.isFinite(numeric)
-      ? Math.max(0, Math.round(numeric))
-      : 0;
-  });
-  return result;
-};
+): FrozenMaterials => normalizeSharedMaterials(source);
 
 let frozenMaterials = createEmptyMaterials();
 
@@ -57,14 +48,7 @@ export const subscribeToFrozenMaterials = (listener: FrozenListener) => {
 export const applyFrozenMaterialsDelta = (
   deltas?: Partial<Record<MaterialName, number>> | null,
 ): FrozenMaterials => {
-  const current = getFrozenMaterials();
-  const next = { ...current };
-  MATERIALS.forEach((name) => {
-    const raw = deltas ? (deltas as Record<string, unknown>)[name] : undefined;
-    const delta = typeof raw === "number" ? raw : Number(raw);
-    const value = (next[name] ?? 0) + (Number.isFinite(delta) ? delta : 0);
-    next[name] = Math.max(0, Math.round(value));
-  });
+  const next = applyMaterialDeltas(getFrozenMaterials(), deltas);
   setFrozenMaterials(next);
   return getFrozenMaterials();
 };
@@ -72,13 +56,7 @@ export const applyFrozenMaterialsDelta = (
 export const computeAvailableMaterials = (
   total: FrozenMaterials,
   frozen: FrozenMaterials,
-): FrozenMaterials => {
-  const result = createEmptyMaterials();
-  MATERIALS.forEach((name) => {
-    result[name] = Math.max(0, (total[name] ?? 0) - (frozen[name] ?? 0));
-  });
-  return result;
-};
+): FrozenMaterials => computeSharedAvailableMaterials(total, frozen);
 
 export const resetWagerMaterialsState = () => {
   frozenMaterials = createEmptyMaterials();

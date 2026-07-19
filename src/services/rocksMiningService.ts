@@ -1,6 +1,16 @@
+import {
+  MATERIAL_KEYS,
+  cloneMaterials as cloneSharedMaterials,
+  createDropsForMiningEvent,
+  createDropsFromRandom,
+  createEmptyMaterials as createSharedEmptyMaterials,
+  formatMiningDateLocal,
+  normalizeMaterials as normalizeSharedMaterials,
+  normalizeMiningSnapshot as normalizeSharedMiningSnapshot,
+} from "@mons/shared/mining";
+import { computeHash32 } from "@mons/shared/ids";
 import { connection } from "../connection/connection";
 import {
-  MINING_MATERIAL_NAMES,
   MiningMaterialName,
   PlayerMiningData,
   PlayerMiningMaterials,
@@ -19,29 +29,6 @@ const isAnonymousProfile = (profileId: string): boolean => {
   return profileId === "";
 };
 
-const computeHash32 = (value: string): number => {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
-  }
-  return hash;
-};
-
-const createSeededRandom = (
-  profileId: string,
-  date: string,
-): (() => number) => {
-  const source = profileId ? `${profileId}:${date}` : date;
-  let state = computeHash32(source) || 1;
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let t = state;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-};
-
 type MiningListener = (snapshot: PlayerMiningData) => void;
 
 type DidBreakRockResult = {
@@ -52,63 +39,23 @@ type DidBreakRockResult = {
 
 export type MaterialName = MiningMaterialName;
 
-export const MATERIALS = MINING_MATERIAL_NAMES;
+export const MATERIALS = MATERIAL_KEYS;
 
-const createEmptyMaterials = (): PlayerMiningMaterials => ({
-  dust: 0,
-  slime: 0,
-  gum: 0,
-  metal: 0,
-  ice: 0,
-});
+const createEmptyMaterials = (): PlayerMiningMaterials =>
+  createSharedEmptyMaterials();
 
-const cloneMaterials = (
-  source: PlayerMiningMaterials,
-): PlayerMiningMaterials => {
-  const result = createEmptyMaterials();
-  MATERIALS.forEach((name) => {
-    result[name] = source[name];
-  });
-  return result;
-};
+const cloneMaterials = (source: PlayerMiningMaterials): PlayerMiningMaterials =>
+  cloneSharedMaterials(source);
 
 const normalizeMaterials = (
   source?: Partial<PlayerMiningMaterials> | null,
-): PlayerMiningMaterials => {
-  const base = createEmptyMaterials();
-  MATERIALS.forEach((name) => {
-    const raw = source ? (source as Record<string, unknown>)[name] : undefined;
-    const numeric = typeof raw === "number" ? raw : Number(raw);
-    const value = Number.isFinite(numeric)
-      ? Math.max(0, Math.round(numeric as number))
-      : 0;
-    base[name] = value;
-  });
-  return base;
-};
+): PlayerMiningMaterials => normalizeSharedMaterials(source);
 
 const normalizeSnapshot = (
   source?: PlayerMiningData | null,
-): PlayerMiningData => {
-  if (!source) {
-    return {
-      lastRockDate: null,
-      materials: createEmptyMaterials(),
-    };
-  }
-  return {
-    lastRockDate:
-      typeof source.lastRockDate === "string" ? source.lastRockDate : null,
-    materials: normalizeMaterials(source.materials),
-  };
-};
+): PlayerMiningData => normalizeSharedMiningSnapshot(source);
 
-const formatMiningDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
+const formatMiningDate = formatMiningDateLocal;
 
 const loadInitialSnapshot = (profileId: string): PlayerMiningData => {
   const materials = isAnonymousProfile(profileId)
@@ -164,65 +111,17 @@ const setSnapshot = (
   }
 };
 
-const pickWeightedMaterial = (random: () => number): MiningMaterialName => {
-  const r = random() * 100;
-  if (r < 30) return "dust";
-  if (r < 55) return "slime";
-  if (r < 75) return "gum";
-  if (r < 90) return "metal";
-  return "ice";
-};
-
-const isFirstMiningEvent = (source: PlayerMiningData): boolean => {
-  if (source.lastRockDate) {
-    return false;
-  }
-  return !MATERIALS.some((name) => source.materials[name] > 0);
-};
-
-const createFirstRockDrops = (): {
-  drops: MiningMaterialName[];
-  delta: PlayerMiningMaterials;
-} => {
-  const delta = createEmptyMaterials();
-  delta.dust = 1;
-  return {
-    drops: ["dust"],
-    delta,
-  };
-};
-
-const createDropsFromRandom = (
-  random: () => number,
-): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
-  const count = 2 + Math.floor(random() * 4);
-  const drops: MiningMaterialName[] = [];
-  const delta = createEmptyMaterials();
-  for (let i = 0; i < count; i += 1) {
-    const material = pickWeightedMaterial(random);
-    drops.push(material);
-    delta[material] += 1;
-  }
-  return { drops, delta };
-};
-
 const createDrops = (
   profileId: string,
   date: string,
   currentSnapshot: PlayerMiningData,
-): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
-  if (isFirstMiningEvent(currentSnapshot)) {
-    return createFirstRockDrops();
-  }
-  return createDropsFromRandom(createSeededRandom(profileId, date));
-};
+): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } =>
+  createDropsForMiningEvent(profileId, date, currentSnapshot);
 
 const createTestingDrops = (): {
   drops: MiningMaterialName[];
   delta: PlayerMiningMaterials;
-} => {
-  return createDropsFromRandom(Math.random);
-};
+} => createDropsFromRandom(Math.random);
 
 type MiningSubscription = () => void;
 

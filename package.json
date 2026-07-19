@@ -6,6 +6,7 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
+    "@mons/shared": "file:cloud/functions/shared",
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@tanstack/react-query": "^5.101.2",

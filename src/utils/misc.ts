@@ -1,3 +1,5 @@
+import { INVITE_ID_RANDOM_LENGTH, randomAlphanumeric } from "@mons/shared/ids";
+
 export const isDesktopSafari = (() => {
   const userAgent = window.navigator.userAgent;
   const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
@@ -16,13 +18,7 @@ export const defaultInputEventName = isMobile ? "touchstart" : "click";
 export const defaultEarlyInputEventName = isMobile ? "touchstart" : "mousedown";
 
 export function generateNewInviteId(): string {
-  const letters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let id = "";
-  for (let i = 0; i < 11; i++) {
-    id += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-  return id;
+  return randomAlphanumeric(INVITE_ID_RANDOM_LENGTH);
 }
 
 export function getStableRandomIdForProfileId(
