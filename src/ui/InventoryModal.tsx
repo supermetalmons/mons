@@ -436,11 +436,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
               <LoadingText>
                 {dataOk ? (
                   <ShinyPurpleLink
-                    href="https://magiceden.io/marketplace/swag_pack"
+                    href="https://www.tensor.trade/trade/swag_pack"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    get swag pack
+                    Get Swag Pack
                   </ShinyPurpleLink>
                 ) : (
                   "Failed to load."
