@@ -71,38 +71,25 @@ const LoadingText = styled.div`
   }
 `;
 
-const ShinyPurpleLink = styled.a`
-  display: inline-block;
-  position: relative;
-  background: linear-gradient(90deg, #a855f7, #c084fc, #a855f7);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+const EmptyState = styled(LoadingText)`
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const SwagPackLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #41854c;
+  color: #fff;
   font-weight: 700;
+  line-height: 1;
   text-decoration: none;
-  animation: shine 2.8s linear infinite;
 
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;
-    height: 2px;
-    background: linear-gradient(90deg, #a855f7, #c084fc, #a855f7);
-    background-size: 200% 100%;
-    border-radius: 2px;
-    animation: shine 2.8s linear infinite;
-  }
-
-  @keyframes shine {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 200% 50%;
-    }
+  @media (prefers-color-scheme: dark) {
+    background: #52a455;
   }
 `;
 
@@ -358,19 +345,20 @@ export const InventoryModal = React.forwardRef<
         {isLoading ? (
           <LoadingText>LOADING...</LoadingText>
         ) : avatars.length === 0 && specials.length === 0 ? (
-          <LoadingText>
-            {dataOk ? (
-              <ShinyPurpleLink
+          dataOk ? (
+            <EmptyState>
+              <span>No items yet.</span>
+              <SwagPackLink
                 href="https://www.tensor.trade/trade/swag_pack"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Get Swag Pack
-              </ShinyPurpleLink>
-            ) : (
-              "Failed to load."
-            )}
-          </LoadingText>
+              </SwagPackLink>
+            </EmptyState>
+          ) : (
+            <LoadingText>Failed to load.</LoadingText>
+          )
         ) : (
           <NFTGridContainer>
             <NFTGrid>
