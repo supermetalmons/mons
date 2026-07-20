@@ -41,7 +41,6 @@ import {
   XAuthUiFeedback,
 } from "../connection/xAuthUiFeedback";
 import { NameEditModal } from "./NameEditModal";
-import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
 import { SettingsModal } from "./SettingsModal";
 import {
@@ -239,7 +238,6 @@ const EventSignInTitle = styled(ModalTitle)`
 
 let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
-let getIsInventoryPopupOpen: () => boolean = () => false;
 let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
 let getIsSettingsPopupOpen: () => boolean = () => false;
 
@@ -247,7 +245,6 @@ type ProfileSignInPopupMode = "inline" | "event";
 type ProfileSignInApi = {
   close: () => void;
   editDisplayName: () => void;
-  openInventory: (returnFocusId?: string) => void;
   requestLogout: (returnFocusId?: string) => void;
   openSettings: (returnFocusId?: string) => void;
   hideNotificationBanner: () => void;
@@ -269,10 +266,6 @@ export const closeProfilePopupIfAny = () => {
 
 export const handleEditDisplayName = () => {
   profileSignInApi?.editDisplayName();
-};
-
-export const showInventory = (returnFocusId?: string) => {
-  profileSignInApi?.openInventory(returnFocusId);
 };
 
 export const handleLogout = (returnFocusId?: string) => {
@@ -318,7 +311,6 @@ export function hasProfilePopupVisible(): boolean {
   return (
     getIsProfilePopupOpen() ||
     getIsEditingPopupOpen() ||
-    getIsInventoryPopupOpen() ||
     getIsLogoutConfirmPopupOpen() ||
     getIsSettingsPopupOpen()
   );
@@ -528,10 +520,8 @@ interface ProfileSignInProps {
   authState: AuthState;
 }
 
-const ProfileSignIn: React.FC<ProfileSignInProps> = ({
-  authState,
-}) => {
-  const { authStatus, profileId, solAddress, ethAddress } = authState;
+const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
+  const { authStatus } = authState;
   const [isOpen, setIsOpen] = useState(false);
   const [popupMode, setPopupMode] = useState<ProfileSignInPopupMode>("inline");
   const [isEventModalVisible, setIsEventModalVisible] = useState(() => {
@@ -554,7 +544,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
     formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress),
   );
   const [isEditingName, setIsEditingName] = useState(false);
-  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [settingsInlineMessage, setSettingsInlineMessage] = useState<{
@@ -584,7 +573,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
   const xRedirectVisibilityRecoveryHandlerRef = useRef<(() => void) | null>(
     null,
   );
-  const inventoryReturnFocusIdRef = useRef<string | null>(null);
   const logoutReturnFocusIdRef = useRef<string | null>(null);
   const settingsReturnFocusIdRef = useRef<string | null>(null);
   const isMountedRef = useRef(true);
@@ -695,10 +683,9 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
   }, []);
 
   const closeProfileTransientUiForSettingsReopen = useCallback(() => {
-    inventoryReturnFocusIdRef.current = null;
     logoutReturnFocusIdRef.current = null;
+    closeMenuAndInfoIfAny();
     setIsOpen(false);
-    setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsEditingName(false);
     hideShinyCard();
@@ -790,7 +777,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
     recoverXRedirectNavigationIfStalled,
   ]);
 
-  getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
   getIsProfilePopupOpen = () => isOpen;
   getIsLogoutConfirmPopupOpen = () => isLogoutConfirmOpen;
@@ -970,12 +956,10 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
   }, [authStatus]);
 
   const beginImmediateLogoutUiCleanup = useCallback(() => {
-    inventoryReturnFocusIdRef.current = null;
     logoutReturnFocusIdRef.current = null;
     settingsReturnFocusIdRef.current = null;
     setLogoutUiLocked(true);
     setIsOpen(false);
-    setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsSettingsOpen(false);
     setSettingsInlineMessage(null);
@@ -1063,13 +1047,11 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
   };
 
   const closeProfilePopupInternal = useCallback(() => {
-    inventoryReturnFocusIdRef.current = null;
     logoutReturnFocusIdRef.current = null;
     settingsReturnFocusIdRef.current = null;
     didDismissSomethingWithOutsideTapJustNow();
     setIsOpen(false);
     setPopupMode("inline");
-    setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsSettingsOpen(false);
     setSettingsInlineMessage(null);
@@ -1085,11 +1067,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
   const showSettingsInternal = useCallback((returnFocusId?: string) => {
     settingsReturnFocusIdRef.current = returnFocusId ?? null;
     setIsSettingsOpen(true);
-  }, []);
-
-  const showInventoryInternal = useCallback((returnFocusId?: string) => {
-    inventoryReturnFocusIdRef.current = returnFocusId ?? null;
-    setIsInventoryOpen(true);
   }, []);
 
   const handleEditDisplayNameInternal = useCallback(() => {
@@ -1153,7 +1130,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
     const api: ProfileSignInApi = {
       close: closeProfilePopupInternal,
       editDisplayName: handleEditDisplayNameInternal,
-      openInventory: showInventoryInternal,
       requestLogout: handleLogoutRequestInternal,
       openSettings: showSettingsInternal,
       hideNotificationBanner: hideNotificationBannerInternal,
@@ -1173,7 +1149,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
     handleLogoutRequestInternal,
     hideNotificationBannerInternal,
     openProfileSignInPopupInternal,
-    showInventoryInternal,
     showNotificationBannerInternal,
     showSettingsInternal,
   ]);
@@ -1276,12 +1251,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
     );
     storage.setUsername(newName);
     setIsEditingName(false);
-  };
-
-  const handleDismissInventory = () => {
-    didDismissSomethingWithOutsideTapJustNow();
-    setIsInventoryOpen(false);
-    restoreFocusById(inventoryReturnFocusIdRef);
   };
 
   const handleCancelEditName = () => {
@@ -1706,18 +1675,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({
           initialName={storage.getUsername("")}
           onSave={handleSaveDisplayName}
           onCancel={handleCancelEditName}
-        />
-      )}
-      {isInventoryOpen && (
-        <InventoryModal
-          key={JSON.stringify([
-            authStatus === "authenticated",
-            profileId,
-            solAddress,
-            ethAddress,
-          ])}
-          authState={authState}
-          onCancel={handleDismissInventory}
         />
       )}
       {isLogoutConfirmOpen && (

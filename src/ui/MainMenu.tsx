@@ -80,6 +80,8 @@ import {
   isMonsLinkAdmin,
   type EventScheduleTimezone,
 } from "@mons/shared/events";
+import type { AuthState } from "../connection/authentication";
+import { InventoryModal } from "./InventoryModal";
 
 const MATERIAL_TYPES: MiningMaterialName[] = [...MINING_MATERIAL_NAMES];
 const LEADERBOARD_TYPES: LeaderboardType[] = [
@@ -104,6 +106,7 @@ const TOP_RIGHT_POPOVER_IDS = {
   info: "top-right-info-popover",
   more: "top-right-more-popover",
   music: "top-right-music-popover",
+  inventory: "top-right-inventory-popover",
 } as const;
 
 const FOCUS_CLAIMING_TARGET_SELECTOR =
@@ -934,12 +937,11 @@ export function hasMainMenuPopupsVisible(): boolean {
 }
 
 interface TopRightControlsProps {
-  isAuthenticated: boolean;
+  authState: AuthState;
   isMuted: boolean;
   isVisible: boolean;
   onBeforeOpen: () => void;
   onToggleMute: () => void;
-  onOpenInventory: (returnFocusId?: string) => void;
   onOpenSettings: (returnFocusId?: string) => void;
   onRequestLogout: (returnFocusId?: string) => void;
 }
@@ -955,6 +957,9 @@ const getVisibleTopRightPopover = (
   if (activePopover === "music") {
     return "music";
   }
+  if (activePopover === "inventory") {
+    return "inventory";
+  }
   if (activePopover === "more" && isAuthenticated) {
     return "more";
   }
@@ -965,15 +970,15 @@ const getVisibleTopRightPopover = (
 };
 
 export const TopRightControls: React.FC<TopRightControlsProps> = ({
-  isAuthenticated,
+  authState,
   isMuted,
   isVisible,
   onBeforeOpen,
   onToggleMute,
-  onOpenInventory,
   onOpenSettings,
   onRequestLogout,
 }) => {
+  const isAuthenticated = authState.authStatus === "authenticated";
   const [activeTopRightPopover, setActiveTopRightPopover] =
     useState<TopRightPopoverName>(null);
   const visibleTopRightPopover = getVisibleTopRightPopover(
@@ -984,6 +989,7 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
   const isInfoOpen = visibleTopRightPopover === "info";
   const isMoreOpen = visibleTopRightPopover === "more";
   const isMusicOpen = visibleTopRightPopover === "music";
+  const isInventoryOpen = visibleTopRightPopover === "inventory";
   const isMusicPlaying = useSyncExternalStore(
     subscribeToMusicPlayback,
     getIsMusicPlaying,
@@ -991,10 +997,18 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
   const visibleTopRightPopoverRef = useRef(visibleTopRightPopover);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const musicButtonRef = useRef<HTMLButtonElement>(null);
+  const gemButtonRef = useRef<HTMLButtonElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const musicRef = useRef<HTMLDivElement>(null);
+  const inventoryRef = useRef<HTMLDivElement>(null);
   const musicFirstControlRef = useRef<HTMLButtonElement>(null);
+  const inventoryIdentityKey = JSON.stringify([
+    isAuthenticated,
+    authState.profileId,
+    authState.solAddress,
+    authState.ethAddress,
+  ]);
 
   useLayoutEffect(() => {
     visibleTopRightPopoverRef.current = visibleTopRightPopover;
@@ -1043,12 +1057,16 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
     if (visibleTopRightPopover === null) {
       return;
     }
-    const focusTarget =
-      visibleTopRightPopover === "info"
-        ? infoRef.current
-        : visibleTopRightPopover === "more"
-          ? moreRef.current
-          : musicFirstControlRef.current;
+    let focusTarget: HTMLElement | null;
+    if (visibleTopRightPopover === "info") {
+      focusTarget = infoRef.current;
+    } else if (visibleTopRightPopover === "more") {
+      focusTarget = moreRef.current;
+    } else if (visibleTopRightPopover === "inventory") {
+      focusTarget = inventoryRef.current;
+    } else {
+      focusTarget = musicFirstControlRef.current;
+    }
     if (!focusTarget) {
       return;
     }
@@ -1076,7 +1094,9 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
         const trigger =
           openPopover === "music"
             ? musicButtonRef.current
-            : primaryButtonRef.current;
+            : openPopover === "inventory"
+              ? gemButtonRef.current
+              : primaryButtonRef.current;
         trigger?.focus({ preventScroll: true });
       });
     };
@@ -1101,11 +1121,15 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
           ? infoRef.current
           : openPopover === "more"
             ? moreRef.current
-            : musicRef.current;
+            : openPopover === "inventory"
+              ? inventoryRef.current
+              : musicRef.current;
       const trigger =
         openPopover === "music"
           ? musicButtonRef.current
-          : primaryButtonRef.current;
+          : openPopover === "inventory"
+            ? gemButtonRef.current
+            : primaryButtonRef.current;
       if (popover && !popover.contains(target) && !trigger?.contains(target)) {
         const targetClaimsFocus =
           target instanceof Element &&
@@ -1152,11 +1176,12 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
     updateActiveTopRightPopover(popover);
   };
 
-  const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    onBeforeOpen();
-    onOpenInventory(TOP_RIGHT_CONTROL_IDS.gem);
+  const handleDismissInventory = () => {
+    didDismissSomethingWithOutsideTapJustNow();
+    updateActiveTopRightPopover(null);
+    window.requestAnimationFrame(() => {
+      gemButtonRef.current?.focus({ preventScroll: true });
+    });
   };
 
   const handleMusicPlaybackToggle = () => {
@@ -1210,12 +1235,15 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
             <FaMusic />
           </button>
           <button
+            ref={gemButtonRef}
             id={TOP_RIGHT_CONTROL_IDS.gem}
             type="button"
             className="gem-button"
-            onClick={handleGemButtonClick}
+            onClick={(event) => togglePopover("inventory", event)}
             aria-label="Collectibles"
             aria-haspopup="dialog"
+            aria-controls={TOP_RIGHT_POPOVER_IDS.inventory}
+            aria-expanded={isInventoryOpen}
           >
             <FaRegGem />
           </button>
@@ -1304,6 +1332,16 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
           </MusicControlButton>
         </MusicControlsContainer>
       </MusicPopover>
+
+      {isInventoryOpen && (
+        <InventoryModal
+          key={inventoryIdentityKey}
+          ref={inventoryRef}
+          id={TOP_RIGHT_POPOVER_IDS.inventory}
+          authState={authState}
+          onDismiss={handleDismissInventory}
+        />
+      )}
     </>
   );
 };

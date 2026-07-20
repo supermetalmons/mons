@@ -1,13 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  ModalOverlay,
-  ModalPopup,
-  ModalTitle,
-  ButtonsContainer,
-  SaveButton,
-  handleModalKeyDown,
-} from "./SharedModalComponents";
 import {
   fetchNftsForIdentity,
   getNftIdentityKey,
@@ -20,120 +12,27 @@ import {
 import { AvatarImage } from "./AvatarImage";
 import { storage } from "../utils/storage";
 import type { AuthState } from "../connection/authentication";
+import { TopRightPopoverBase } from "./TopRightPopoverBase";
 
-const InventoryOverlay = styled(ModalOverlay)`
-  user-select: none;
-`;
-
-const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
-  padding: 20px;
-  user-select: none;
-  outline: none;
-  aspect-ratio: 1 / 1;
+const InventoryPopup = styled(TopRightPopoverBase)`
+  box-sizing: border-box;
+  width: min(301px, calc(100dvw - 18px));
+  max-height: calc(100dvh - 113px - env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
-`;
+  user-select: none;
+  transform: none;
+  transition: none;
 
-const InventoryTitle = styled(ModalTitle)`
-  margin: 0;
-`;
-
-const OverlayPanel = styled.div`
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  background: transparent;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0;
-
-  @media (prefers-color-scheme: dark) {
-    background: transparent;
+  &:focus-visible {
+    outline: none;
   }
-`;
-
-const TopOverlay = styled(OverlayPanel)`
-  top: 0;
-  left: 0;
-  right: 0;
-  justify-content: space-between;
-  background-color: var(--color-white);
-  position: absolute;
-  padding: 24px 20px 0 20px;
-  pointer-events: auto;
-  touch-action: pan-y;
-  -ms-touch-action: pan-y;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -16px;
-    height: 16px;
-    background: linear-gradient(to bottom, var(--color-white), transparent);
-    pointer-events: none;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-deep-gray);
-    &::after {
-      background: linear-gradient(
-        to bottom,
-        var(--color-deep-gray),
-        transparent
-      );
-    }
-  }
-`;
-
-const BottomOverlay = styled(OverlayPanel)`
-  bottom: 0;
-  left: 0;
-  right: 0;
-  justify-content: flex-end;
-  background-color: var(--color-white);
-  position: absolute;
-  padding: 0 20px 24px 20px;
-  pointer-events: auto;
-  touch-action: pan-y;
-  -ms-touch-action: pan-y;
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -16px;
-    height: 16px;
-    background: linear-gradient(to top, var(--color-white), transparent);
-    pointer-events: none;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-deep-gray);
-    &::before {
-      background: linear-gradient(to top, var(--color-deep-gray), transparent);
-    }
-  }
-`;
-
-const TopBar = styled.div`
-  display: contents;
-`;
-
-const NFTSection = styled.div`
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
 `;
 
 const Content = styled.div`
+  flex: 1 1 auto;
+  min-height: 0;
   color: var(--color-gray-55);
   font-size: 0.95rem;
   user-select: none;
@@ -142,18 +41,10 @@ const Content = styled.div`
   overflow-wrap: break-word;
   max-width: 100%;
   display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: left;
-  padding-top: 65px;
-  padding-bottom: 72px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 2px 14px 14px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 
@@ -167,17 +58,13 @@ const Content = styled.div`
 `;
 
 const LoadingText = styled.div`
+  min-height: 140px;
   text-align: center;
   font-size: 0.8rem;
   color: var(--color-gray-77);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
 
   @media (prefers-color-scheme: dark) {
     color: var(--leaderboardLoadingTextColorDark);
@@ -221,12 +108,9 @@ const ShinyPurpleLink = styled.a`
 
 const NFTGridContainer = styled.div`
   overflow: visible;
-  margin-top: 0;
-  flex: 1 1 auto;
-  min-height: 140px;
   width: 100%;
   box-sizing: border-box;
-  padding-bottom: 8px;
+  padding: 3px 3px 6px;
 `;
 
 const NFTGrid = styled.div`
@@ -350,16 +234,16 @@ interface SwagAvatarItem {
 }
 
 interface InventoryModalProps {
-  onCancel: () => void;
+  id: string;
+  onDismiss: () => void;
   authState: AuthState;
 }
 
-export const InventoryModal: React.FC<InventoryModalProps> = ({
-  onCancel,
-  authState,
-}) => {
+export const InventoryModal = React.forwardRef<
+  HTMLDivElement,
+  InventoryModalProps
+>(({ id, onDismiss, authState }, ref) => {
   const isAuthenticated = authState.authStatus === "authenticated";
-  const popupRef = useRef<HTMLDivElement>(null);
   const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
   const [specials, setSpecials] = useState<SwagAvatarItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -373,12 +257,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
   );
   const [inventoryRefreshVersion, setInventoryRefreshVersion] = useState(0);
   const ownerKey = isAuthenticated ? getNftIdentityKey(authState) : null;
-
-  useEffect(() => {
-    if (popupRef.current) {
-      popupRef.current.focus();
-    }
-  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -459,128 +337,99 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    handleModalKeyDown(e, popupRef.current, onCancel);
-    if (
-      !e.defaultPrevented &&
-      e.key === "Enter" &&
-      e.target === e.currentTarget
-    ) {
+    if (e.key === "Enter" && e.target === e.currentTarget) {
       e.preventDefault();
       e.stopPropagation();
-      onCancel();
+      onDismiss();
     }
   };
 
   return (
-    <InventoryOverlay onClick={onCancel}>
-      <InventoryPopup
-        ref={popupRef}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-        autoFocus
-        hasNfts={avatars.length > 0 || specials.length > 0}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="collectibles-dialog-title"
-      >
-        <TopOverlay>
-          <TopBar>
-            <InventoryTitle id="collectibles-dialog-title">
-              Collectibles
-            </InventoryTitle>
-          </TopBar>
-        </TopOverlay>
-
-        <NFTSection>
-          <Content>
-            {isLoading ? (
-              <LoadingText>LOADING...</LoadingText>
-            ) : avatars.length === 0 && specials.length === 0 ? (
-              <LoadingText>
-                {dataOk ? (
-                  <ShinyPurpleLink
-                    href="https://www.tensor.trade/trade/swag_pack"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Get Swag Pack
-                  </ShinyPurpleLink>
-                ) : (
-                  "Failed to load."
-                )}
-              </LoadingText>
+    <InventoryPopup
+      ref={ref}
+      id={id}
+      $isOpen
+      onKeyDown={handleKeyDown}
+      tabIndex={-1}
+      role="dialog"
+      aria-label="Collectibles"
+    >
+      <Content>
+        {isLoading ? (
+          <LoadingText>LOADING...</LoadingText>
+        ) : avatars.length === 0 && specials.length === 0 ? (
+          <LoadingText>
+            {dataOk ? (
+              <ShinyPurpleLink
+                href="https://www.tensor.trade/trade/swag_pack"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Swag Pack
+              </ShinyPurpleLink>
             ) : (
-              <NFTGridContainer>
-                <NFTGrid>
-                  {specials.map((item) => (
-                    <AvatarTile
-                      key={`special-${item.id}`}
-                      $isActive={activeItemSelection.specialIds.has(item.id)}
-                      onClick={() => {
-                        if (canApplyInventoryItem()) {
-                          setOwnershipVerifiedSpecialItem(item.id);
-                          setActiveItemSelection(
-                            getActiveInventoryItemSelection(),
-                          );
-                        }
-                      }}
-                    >
-                      <SpecialImage
-                        src={`https://cdn.lil.org/mons/id_cards/misc/bd4/${item.id}.webp`}
-                        alt=""
-                        loading="lazy"
-                      />
-                      {item.count > 1 && (
-                        <CountIndicator count={item.count}>
-                          {item.count}
-                        </CountIndicator>
-                      )}
-                    </AvatarTile>
-                  ))}
-                  {avatars.map((item) => (
-                    <AvatarTile
-                      key={item.id}
-                      $isActive={activeItemSelection.avatarId === item.id}
-                      onClick={() => {
-                        if (canApplyInventoryItem()) {
-                          setOwnershipVerifiedIdCardEmoji(
-                            item.id + 1000,
-                            item.count >= 3 ? "rainbow" : "",
-                          );
-                          setActiveItemSelection(
-                            getActiveInventoryItemSelection(),
-                          );
-                        }
-                      }}
-                    >
-                      <AvatarImage
-                        src={`https://cdn.lil.org/mons/emojipack/swagpack/420/${item.id}.webp`}
-                        alt=""
-                        rainbowAura={item.count >= 3}
-                        loading="lazy"
-                      />
-                      {item.count > 1 && (
-                        <CountIndicator count={item.count}>
-                          {item.count}
-                        </CountIndicator>
-                      )}
-                    </AvatarTile>
-                  ))}
-                </NFTGrid>
-              </NFTGridContainer>
+              "Failed to load."
             )}
-          </Content>
-        </NFTSection>
-
-        <BottomOverlay>
-          <ButtonsContainer style={{ margin: 0 }}>
-            <SaveButton onClick={onCancel} disabled={false}>
-              OK
-            </SaveButton>
-          </ButtonsContainer>
-        </BottomOverlay>
-      </InventoryPopup>
-    </InventoryOverlay>
+          </LoadingText>
+        ) : (
+          <NFTGridContainer>
+            <NFTGrid>
+              {specials.map((item) => (
+                <AvatarTile
+                  key={`special-${item.id}`}
+                  $isActive={activeItemSelection.specialIds.has(item.id)}
+                  onClick={() => {
+                    if (canApplyInventoryItem()) {
+                      setOwnershipVerifiedSpecialItem(item.id);
+                      setActiveItemSelection(getActiveInventoryItemSelection());
+                    }
+                  }}
+                >
+                  <SpecialImage
+                    src={`https://cdn.lil.org/mons/id_cards/misc/bd4/${item.id}.webp`}
+                    alt=""
+                    loading="lazy"
+                  />
+                  {item.count > 1 && (
+                    <CountIndicator count={item.count}>
+                      {item.count}
+                    </CountIndicator>
+                  )}
+                </AvatarTile>
+              ))}
+              {avatars.map((item) => (
+                <AvatarTile
+                  key={item.id}
+                  $isActive={activeItemSelection.avatarId === item.id}
+                  onClick={() => {
+                    if (canApplyInventoryItem()) {
+                      setOwnershipVerifiedIdCardEmoji(
+                        item.id + 1000,
+                        item.count >= 3 ? "rainbow" : "",
+                      );
+                      setActiveItemSelection(getActiveInventoryItemSelection());
+                    }
+                  }}
+                >
+                  <AvatarImage
+                    src={`https://cdn.lil.org/mons/emojipack/swagpack/420/${item.id}.webp`}
+                    alt=""
+                    rainbowAura={item.count >= 3}
+                    loading="lazy"
+                  />
+                  {item.count > 1 && (
+                    <CountIndicator count={item.count}>
+                      {item.count}
+                    </CountIndicator>
+                  )}
+                </AvatarTile>
+              ))}
+            </NFTGrid>
+          </NFTGridContainer>
+        )}
+      </Content>
+    </InventoryPopup>
   );
-};
+});
+
+InventoryModal.displayName = "InventoryModal";

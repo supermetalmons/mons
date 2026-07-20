@@ -39,7 +39,6 @@ import { storage } from "./utils/storage";
 import ProfileSignIn, {
   handleLogout,
   isLogoutUiLocked,
-  showInventory,
   showSettings,
   subscribeToLogoutUiLock,
 } from "./ui/ProfileSignIn";
@@ -88,7 +87,6 @@ const App = () => {
   );
   const shouldHideAuthControls =
     authStatus === "loading" || isLogoutUiLockedState;
-  const isAuthenticated = authStatus === "authenticated";
 
   setIslandButtonDimmed = (dimmed: boolean) => {
     setIsIslandButtonDim(dimmed);
@@ -149,12 +147,11 @@ const App = () => {
                   </Suspense>
                 )}
                 <TopRightControls
+                  authState={authState}
                   isVisible={!shouldHideAuthControls}
-                  isAuthenticated={isAuthenticated}
                   isMuted={isMuted}
                   onBeforeOpen={closeAllKindsOfPopups}
                   onToggleMute={handleMuteToggle}
-                  onOpenInventory={showInventory}
                   onOpenSettings={showSettings}
                   onRequestLogout={handleLogout}
                 />
