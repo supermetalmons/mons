@@ -836,75 +836,26 @@ const MusicPopover = styled(TopRightPopover)`
   width: min(220px, 70dvw);
   padding: 10px;
   text-align: center;
-`;
-
-const MusicMuteButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  width: 100%;
-  min-height: 44px;
-  padding: 0 12px;
-  border: none;
-  outline: none;
-  border-radius: 8px;
-  background: rgba(0, 102, 204, 0.09);
-  color: var(--color-blue-0066cc);
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 800;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    background-color 140ms ease,
-    color 140ms ease,
-    transform 140ms ease;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: rgba(0, 102, 204, 0.14);
-      color: var(--musicControlButtonColorHover);
-    }
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(102, 179, 255, 0.11);
-    color: var(--color-blue-66b3ff);
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: rgba(102, 179, 255, 0.17);
-        color: var(--musicControlButtonColorHoverDark);
-      }
-    }
-  }
-
-  svg {
-    width: 17px;
-    height: 17px;
-    flex: 0 0 auto;
-  }
+  transform: none;
+  transition: none;
 `;
 
 const MusicControlsContainer = styled.div`
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr)) 1px
+    minmax(0, 1fr);
+  gap: 4px;
   align-items: center;
-  justify-content: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(118, 119, 135, 0.17);
+`;
+
+const MusicControlsSeparator = styled.span`
+  width: 1px;
+  height: 20px;
+  background: rgba(118, 119, 135, 0.17);
 
   @media (prefers-color-scheme: dark) {
-    border-top-color: rgba(153, 153, 168, 0.16);
+    background: rgba(153, 153, 168, 0.16);
   }
 `;
 
@@ -912,50 +863,25 @@ const MusicControlButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px 6px;
   border: none;
   border-radius: 6px;
   background: none;
   color: var(--color-blue-0066cc);
   cursor: pointer;
   font-size: 18px;
-  flex: 1;
+  outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    color 140ms ease,
-    transform 140ms ease;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      color: var(--musicControlButtonColorHover);
-    }
-  }
-
-  &:active {
-    transform: scale(0.9);
-  }
-
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-blue-66b3ff);
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        color: var(--musicControlButtonColorHoverDark);
-      }
-    }
   }
 
   svg {
@@ -1068,7 +994,7 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
   const infoRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const musicRef = useRef<HTMLDivElement>(null);
-  const musicMuteButtonRef = useRef<HTMLButtonElement>(null);
+  const musicFirstControlRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     visibleTopRightPopoverRef.current = visibleTopRightPopover;
@@ -1122,7 +1048,7 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
         ? infoRef.current
         : visibleTopRightPopover === "more"
           ? moreRef.current
-          : musicMuteButtonRef.current;
+          : musicFirstControlRef.current;
     if (!focusTarget) {
       return;
     }
@@ -1344,16 +1270,9 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
         aria-hidden={!isMusicOpen}
         tabIndex={-1}
       >
-        <MusicMuteButton
-          ref={musicMuteButtonRef}
-          type="button"
-          onClick={onToggleMute}
-        >
-          {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-          <span>{isMuted ? "Unmute all audio" : "Mute all audio"}</span>
-        </MusicMuteButton>
         <MusicControlsContainer>
           <MusicControlButton
+            ref={musicFirstControlRef}
             type="button"
             onClick={() => playPreviousTrack()}
             aria-label="Previous track"
@@ -1373,6 +1292,15 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
             aria-label="Next track"
           >
             <FaForward />
+          </MusicControlButton>
+          <MusicControlsSeparator aria-hidden="true" />
+          <MusicControlButton
+            type="button"
+            onClick={onToggleMute}
+            aria-label={isMuted ? "Unmute all audio" : "Mute all audio"}
+            aria-pressed={isMuted}
+          >
+            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
           </MusicControlButton>
         </MusicControlsContainer>
       </MusicPopover>
