@@ -1709,7 +1709,7 @@ const createBaseEventRecord = ({
 
 const acquireEventLock = async (eventId, ownerUid) => {
   const lockRef = admin.database().ref(`eventLocks/${eventId}`);
-  const lockId = randomString(16);
+  const lockId = randomAlphanumeric(16);
   const result = await lockRef.transaction((current) => {
     const nowMs = getNowMs();
     if (
@@ -1838,7 +1838,7 @@ const releaseEventLock = async (lockHandle) => {
 const tryAcquireEventSyncThrottle = async (eventId, ownerUid) => {
   const throttleRef = admin.database().ref(`eventSyncThrottles/${eventId}`);
   const nowMs = getNowMs();
-  const token = randomString(10);
+  const token = randomAlphanumeric(10);
   const result = await throttleRef.transaction((current) => {
     const lastStartedAtMs =
       current && typeof current.startedAtMs === "number"
