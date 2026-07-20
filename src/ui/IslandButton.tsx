@@ -385,16 +385,27 @@ const RockSignInButton = styled.button<{
 
 const MaterialsBar = styled.div<{ $visible: boolean }>`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  width: max-content;
+  max-width: calc(100dvw - 60px);
   padding: 0 1px;
   box-sizing: border-box;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 220ms ease;
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
   cursor: pointer;
+`;
+
+const MaterialsBarContent = styled.div`
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  transform: scale(var(--materials-scale, 1));
+  transform-origin: center bottom;
 
   @media (min-width: 480px) {
     gap: 14px;
@@ -424,6 +435,7 @@ const MaterialsBar = styled.div<{ $visible: boolean }>`
 
 const MaterialItem = styled.div`
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 2px;
   background: var(--interactiveHoverBackgroundLight);
@@ -1253,6 +1265,34 @@ function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
     [materialItemRefs],
   );
   const materialsBarRef = useRef<HTMLDivElement | null>(null);
+  const materialsBarContentRef = useRef<HTMLDivElement | null>(null);
+  const updateMaterialsBarScale = useCallback(() => {
+    const bar = materialsBarRef.current;
+    const content = materialsBarContentRef.current;
+    if (!bar || !content) return;
+
+    const barStyle = window.getComputedStyle(bar);
+    const availableWidth =
+      bar.clientWidth -
+      parseFloat(barStyle.paddingLeft) -
+      parseFloat(barStyle.paddingRight);
+    const scale =
+      content.scrollWidth > availableWidth
+        ? availableWidth / content.scrollWidth
+        : 1;
+    content.style.setProperty("--materials-scale", scale.toFixed(4));
+  }, []);
+  useLayoutEffect(() => {
+    updateMaterialsBarScale();
+    window.addEventListener("resize", updateMaterialsBarScale);
+    return () =>
+      window.removeEventListener("resize", updateMaterialsBarScale);
+  }, [
+    islandOverlayShown,
+    materialAmounts,
+    materialUrls,
+    updateMaterialsBarScale,
+  ]);
   const safeHitboxRef = useRef<HTMLDivElement | null>(null);
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
@@ -5868,29 +5908,33 @@ function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
                     ref={materialsBarRef}
                     $visible={islandOverlayVisible && !islandClosing}
                   >
-                    {MATERIALS.map((name) => (
-                      <MaterialItem
-                        ref={(el) => {
-                          materialItemRefs.current[name] = el;
-                        }}
-                        key={name}
-                        onMouseDown={
-                          !isMobile ? handleMaterialItemTap(name) : undefined
-                        }
-                        onTouchStart={
-                          isMobile ? handleMaterialItemTap(name) : undefined
-                        }
-                      >
-                        {materialUrls[name] && (
-                          <MaterialIcon
-                            src={materialUrls[name] || ""}
-                            alt=""
-                            draggable={false}
-                          />
-                        )}
-                        <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
-                      </MaterialItem>
-                    ))}
+                    <MaterialsBarContent ref={materialsBarContentRef}>
+                      {MATERIALS.map((name) => (
+                        <MaterialItem
+                          ref={(el) => {
+                            materialItemRefs.current[name] = el;
+                          }}
+                          key={name}
+                          onMouseDown={
+                            !isMobile ? handleMaterialItemTap(name) : undefined
+                          }
+                          onTouchStart={
+                            isMobile ? handleMaterialItemTap(name) : undefined
+                          }
+                        >
+                          {materialUrls[name] && (
+                            <MaterialIcon
+                              src={materialUrls[name] || ""}
+                              alt=""
+                              draggable={false}
+                            />
+                          )}
+                          <MaterialAmount>
+                            {materialAmounts[name]}
+                          </MaterialAmount>
+                        </MaterialItem>
+                      ))}
+                    </MaterialsBarContent>
                   </MaterialsBar>
                 </SafeHitbox>
               </SafeBarStack>
