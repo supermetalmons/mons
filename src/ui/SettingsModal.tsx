@@ -664,6 +664,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     handleModalKeyDown(e, popupRef.current, onClose);
+    if (
+      !e.defaultPrevented &&
+      e.key === "Enter" &&
+      e.target === e.currentTarget
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+      onClose();
+    }
   };
 
   const runConnectFlow = useCallback(

@@ -748,46 +748,52 @@ const MoreHelpContent = styled.div`
 `;
 
 const MoreActions = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: min(22em, 100%);
+  padding-top: 2px;
 `;
 
-const MoreActionButton = styled.button<{ $danger?: boolean }>`
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
+const MoreActionButton = styled.button`
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
   width: 100%;
-  min-height: 38px;
-  padding: 0;
+  min-width: 0;
+  min-height: 34px;
+  padding: 0 10px;
   border: none;
-  border-radius: 5px;
-  background: transparent;
-  color: ${(props) => (props.$danger ? "var(--dangerTextColor)" : "inherit")};
+  border-radius: 999px;
+  background: rgba(118, 119, 135, 0.08);
+  color: var(--iconLinkButtonTextHover);
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.4;
-  text-align: left;
+  line-height: 1;
+  white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
   transition:
     background-color 140ms ease,
+    color 140ms ease,
     transform 140ms ease;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: rgba(118, 119, 135, 0.09);
+      background: rgba(118, 119, 135, 0.13);
+      color: var(--navigationTextMuted);
     }
   }
 
   &:active {
+    background: rgba(118, 119, 135, 0.16);
     transform: scale(0.98);
   }
 
   &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -2px;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(118, 119, 135, 0.18);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -795,20 +801,28 @@ const MoreActionButton = styled.button<{ $danger?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) =>
-      props.$danger ? "var(--dangerTextColorDark)" : "var(--color-gray-f5)"};
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--iconLinkButtonTextHoverDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background: rgba(255, 255, 255, 0.07);
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--secondaryTextColorDark);
       }
+    }
+
+    &:active {
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.14);
     }
   }
 
   svg {
-    width: 14px;
-    height: 14px;
-    justify-self: center;
+    width: 12px;
+    height: 12px;
     flex: 0 0 auto;
   }
 
@@ -1312,11 +1326,7 @@ export const TopRightControls: React.FC<TopRightControlsProps> = ({
               <FaCog />
               <span>Settings</span>
             </MoreActionButton>
-            <MoreActionButton
-              type="button"
-              $danger
-              onClick={handleLogoutFromMore}
-            >
+            <MoreActionButton type="button" onClick={handleLogoutFromMore}>
               <FaPowerOff />
               <span>Log Out</span>
             </MoreActionButton>

@@ -61,8 +61,6 @@
   --dangerButtonBackgroundDark: #ff453a;
   --dangerButtonBackgroundHoverDark: #ff6159;
   --dangerButtonBackgroundActiveDark: #ff7a72;
-  --dangerTextColor: #c62828;
-  --dangerTextColorDark: #ff7a72;
   --resignButtonBackground: #ff4136;
   --resignButtonBackgroundHover: #e60000;
   --resignButtonBackgroundActive: #d30000;
@@ -366,12 +364,6 @@ img {
 
   &:disabled {
     opacity: 0.5;
-  }
-
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -3px;
-    border-radius: 7px;
   }
 
   @media (hover: hover) and (pointer: fine) {
