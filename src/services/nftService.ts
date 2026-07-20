@@ -1,18 +1,50 @@
 import { connection } from "../connection/connection";
-import { storage } from "../utils/storage";
 import { VALID_REACTION_IDS } from "@mons/shared/nfts";
 import { shuffle } from "@mons/shared/ids";
+import type { AuthState } from "../connection/authentication";
+import type { AuthIdentity } from "../utils/storage";
 
 const USE_STUB_RESPONSE = false;
+export const NFT_CACHE_TTL_MS = 5 * 60 * 1000;
 
-const inFlightRequests: Map<string, Promise<any>> = new Map();
-const responseCache: Map<string, any> = new Map();
+export type NftFetchSnapshot = {
+  data: any;
+  expiresAtMs: number;
+};
+
+const inFlightRequests: Map<string, Promise<NftFetchSnapshot>> = new Map();
+const responseCache: Map<string, NftFetchSnapshot> = new Map();
 let cacheGeneration = 0;
 
-function buildKey(sol: string, eth: string): string {
-  const safeSol = sol || "";
-  const safeEth = eth || "";
-  return `${safeSol}|${safeEth}`;
+function getEmptyNftCollection() {
+  return {
+    ok: true,
+    specials: [],
+    swagpack_avatars: [],
+    swagpack_reactions: [],
+  };
+}
+
+export function getNftIdentityKey({
+  profileId,
+  solAddress,
+  ethAddress,
+}: AuthIdentity): string | null {
+  if (!profileId) {
+    return null;
+  }
+  return JSON.stringify([profileId, solAddress || "", ethAddress || ""]);
+}
+
+function isLegacyMissingAddressError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+  const { code, message } = error as { code?: unknown; message?: unknown };
+  return (
+    (code === "functions/invalid-argument" || code === "invalid-argument") &&
+    message === "Some address is required."
+  );
 }
 
 function generateStubResponse() {
@@ -47,14 +79,24 @@ function generateStubResponse() {
   return { ok: true, specials, swagpack_avatars, swagpack_reactions };
 }
 
-async function fetchNftsByAddresses(sol: string, eth: string): Promise<any> {
+async function fetchNftsByIdentity(
+  key: string,
+  sol: string,
+  eth: string,
+): Promise<NftFetchSnapshot> {
   if (USE_STUB_RESPONSE) {
-    return generateStubResponse();
+    return {
+      data: generateStubResponse(),
+      expiresAtMs: Date.now() + NFT_CACHE_TTL_MS,
+    };
   }
 
-  const key = buildKey(sol, eth);
-  if (responseCache.has(key)) {
-    return responseCache.get(key);
+  const cachedResponse = responseCache.get(key);
+  if (cachedResponse && cachedResponse.expiresAtMs > Date.now()) {
+    return cachedResponse;
+  }
+  if (cachedResponse) {
+    responseCache.delete(key);
   }
   const existing = inFlightRequests.get(key);
   if (existing) {
@@ -64,27 +106,59 @@ async function fetchNftsByAddresses(sol: string, eth: string): Promise<any> {
   const request = connection
     .getNfts(sol, eth)
     .then((data) => {
-      if (requestGeneration === cacheGeneration) {
-        responseCache.set(key, data);
+      const isCurrentGeneration = requestGeneration === cacheGeneration;
+      const snapshot: NftFetchSnapshot = {
+        data,
+        expiresAtMs:
+          isCurrentGeneration && data?.ok === true
+            ? Date.now() + NFT_CACHE_TTL_MS
+            : 0,
+      };
+      if (snapshot.expiresAtMs > 0) {
+        responseCache.set(key, snapshot);
       }
-      inFlightRequests.delete(key);
-      return data;
+      return snapshot;
     })
     .catch((error) => {
-      inFlightRequests.delete(key);
+      if (!sol && !eth && isLegacyMissingAddressError(error)) {
+        const snapshot: NftFetchSnapshot = {
+          data: getEmptyNftCollection(),
+          expiresAtMs:
+            requestGeneration === cacheGeneration
+              ? Date.now() + NFT_CACHE_TTL_MS
+              : 0,
+        };
+        if (snapshot.expiresAtMs > 0) {
+          responseCache.set(key, snapshot);
+        }
+        return snapshot;
+      }
       throw error;
     });
   inFlightRequests.set(key, request);
+  const clearInFlightRequest = () => {
+    if (inFlightRequests.get(key) === request) {
+      inFlightRequests.delete(key);
+    }
+  };
+  void request.then(clearInFlightRequest, clearInFlightRequest);
   return request;
 }
 
-export async function fetchNftsForStoredAddresses(): Promise<any> {
-  const sol = storage.getSolAddress("");
-  const eth = storage.getEthAddress("");
-  if (!sol && !eth) {
-    return null;
+export async function fetchNftsForIdentity(
+  identity: AuthState,
+): Promise<NftFetchSnapshot> {
+  if (identity.authStatus !== "authenticated") {
+    return {
+      data: getEmptyNftCollection(),
+      expiresAtMs: Date.now() + NFT_CACHE_TTL_MS,
+    };
   }
-  return fetchNftsByAddresses(sol, eth);
+  const key = getNftIdentityKey(identity);
+  if (!key) {
+    return { data: { ok: false }, expiresAtMs: 0 };
+  }
+  return fetchNftsByIdentity(key, identity.solAddress, identity.ethAddress);
 }
 
 export function resetNftCache() {

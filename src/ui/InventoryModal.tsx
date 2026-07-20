@@ -6,13 +6,19 @@ import {
   ModalTitle,
   ButtonsContainer,
   SaveButton,
+  handleModalKeyDown,
 } from "./SharedModalComponents";
-import { fetchNftsForStoredAddresses } from "../services/nftService";
+import {
+  fetchNftsForIdentity,
+  getNftIdentityKey,
+} from "../services/nftService";
 import {
   setOwnershipVerifiedIdCardEmoji,
   setOwnershipVerifiedSpecialItem,
 } from "./ShinyCard";
 import { AvatarImage } from "./AvatarImage";
+import { storage } from "../utils/storage";
+import type { AuthState } from "../connection/authentication";
 
 const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
@@ -337,48 +343,70 @@ interface SwagAvatarItem {
 
 interface InventoryModalProps {
   onCancel: () => void;
+  authState: AuthState;
 }
 
-export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
+export const InventoryModal: React.FC<InventoryModalProps> = ({
+  onCancel,
+  authState,
+}) => {
+  const isAuthenticated = authState.authStatus === "authenticated";
   const popupRef = useRef<HTMLDivElement>(null);
   const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
   const [specials, setSpecials] = useState<SwagAvatarItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [dataOk, setDataOk] = useState<boolean | null>(null);
+  const [loadedInventory, setLoadedInventory] = useState<{
+    ownerKey: string;
+    expiresAtMs: number;
+  } | null>(null);
+  const [inventoryRefreshVersion, setInventoryRefreshVersion] = useState(0);
+  const ownerKey = isAuthenticated ? getNftIdentityKey(authState) : null;
 
   useEffect(() => {
-    let isCancelled = false;
     if (popupRef.current) {
       popupRef.current.focus();
     }
+  }, []);
 
+  useEffect(() => {
+    let isCancelled = false;
+    const fetchCurrentInventory = () => fetchNftsForIdentity(authState);
     const fetchTokens = async () => {
       setIsLoading(true);
+      setAvatars([]);
+      setSpecials([]);
+      setDataOk(null);
+      setLoadedInventory(null);
       try {
-        const data = await fetchNftsForStoredAddresses();
+        let snapshot = await fetchCurrentInventory();
         if (isCancelled) {
           return;
         }
+        let isSnapshotFresh = snapshot.expiresAtMs > Date.now();
+        if (
+          snapshot.data?.ok === true &&
+          snapshot.expiresAtMs > 0 &&
+          !isSnapshotFresh
+        ) {
+          snapshot = await fetchCurrentInventory();
+          if (isCancelled) {
+            return;
+          }
+          isSnapshotFresh = snapshot.expiresAtMs > Date.now();
+        }
+        const data = isSnapshotFresh ? snapshot.data : { ok: false };
         const ok = data?.ok === true;
         setDataOk(ok);
-        if (
-          data?.swagpack_avatars &&
-          Array.isArray(data.swagpack_avatars) &&
-          data.swagpack_avatars.length > 0
-        ) {
-          setAvatars(data.swagpack_avatars);
-        } else {
-          setAvatars([]);
-        }
-        if (
-          data?.specials &&
-          Array.isArray(data.specials) &&
-          data.specials.length > 0
-        ) {
-          setSpecials(data.specials);
-        } else {
-          setSpecials([]);
-        }
+        setLoadedInventory(
+          ok && ownerKey
+            ? { ownerKey, expiresAtMs: snapshot.expiresAtMs }
+            : null,
+        );
+        setAvatars(
+          Array.isArray(data?.swagpack_avatars) ? data.swagpack_avatars : [],
+        );
+        setSpecials(Array.isArray(data?.specials) ? data.specials : []);
       } catch {
         if (isCancelled) {
           return;
@@ -386,6 +414,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         setAvatars([]);
         setSpecials([]);
         setDataOk(false);
+        setLoadedInventory(null);
       } finally {
         if (!isCancelled) {
           setIsLoading(false);
@@ -396,24 +425,43 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [authState, inventoryRefreshVersion, ownerKey]);
 
-  const cleanUpAndClose = () => {
-    onCancel();
+  const canApplyInventoryItem = () => {
+    if (
+      !isAuthenticated ||
+      !ownerKey ||
+      loadedInventory?.ownerKey !== ownerKey
+    ) {
+      return false;
+    }
+    const hasCurrentStoredOwner =
+      getNftIdentityKey(storage.getAuthIdentity()) === ownerKey;
+    if (!hasCurrentStoredOwner) {
+      return false;
+    }
+    if (loadedInventory.expiresAtMs <= Date.now()) {
+      setInventoryRefreshVersion((current) => current + 1);
+      return false;
+    }
+    return true;
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    handleModalKeyDown(e, popupRef.current, onCancel);
+    if (
+      !e.defaultPrevented &&
+      e.key === "Enter" &&
+      e.target === e.currentTarget
+    ) {
+      e.preventDefault();
       e.stopPropagation();
-      cleanUpAndClose();
-    } else if (e.key === "Escape") {
-      e.stopPropagation();
-      cleanUpAndClose();
+      onCancel();
     }
   };
 
   return (
-    <InventoryOverlay onClick={cleanUpAndClose}>
+    <InventoryOverlay onClick={onCancel}>
       <InventoryPopup
         ref={popupRef}
         onClick={(e) => e.stopPropagation()}
@@ -421,10 +469,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         tabIndex={0}
         autoFocus
         hasNfts={avatars.length > 0 || specials.length > 0}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="collectibles-dialog-title"
       >
         <TopOverlay>
           <TopBar>
-            <InventoryTitle>Collectibles</InventoryTitle>
+            <InventoryTitle id="collectibles-dialog-title">
+              Collectibles
+            </InventoryTitle>
           </TopBar>
         </TopOverlay>
 
@@ -452,7 +505,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                   {specials.map((item) => (
                     <AvatarTile
                       key={`special-${item.id}`}
-                      onClick={() => setOwnershipVerifiedSpecialItem(item.id)}
+                      onClick={() => {
+                        if (canApplyInventoryItem()) {
+                          setOwnershipVerifiedSpecialItem(item.id);
+                        }
+                      }}
                     >
                       <SpecialImage
                         src={`https://cdn.lil.org/mons/id_cards/misc/bd4/${item.id}.webp`}
@@ -469,12 +526,14 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                   {avatars.map((item) => (
                     <AvatarTile
                       key={item.id}
-                      onClick={() =>
-                        setOwnershipVerifiedIdCardEmoji(
-                          item.id + 1000,
-                          item.count >= 3 ? "rainbow" : "",
-                        )
-                      }
+                      onClick={() => {
+                        if (canApplyInventoryItem()) {
+                          setOwnershipVerifiedIdCardEmoji(
+                            item.id + 1000,
+                            item.count >= 3 ? "rainbow" : "",
+                          );
+                        }
+                      }}
                     >
                       <AvatarImage
                         src={`https://cdn.lil.org/mons/emojipack/swagpack/420/${item.id}.webp`}
@@ -497,7 +556,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
         <BottomOverlay>
           <ButtonsContainer style={{ margin: 0 }}>
-            <SaveButton onClick={cleanUpAndClose} disabled={false}>
+            <SaveButton onClick={onCancel} disabled={false}>
               OK
             </SaveButton>
           </ButtonsContainer>

@@ -71,7 +71,9 @@ let mysticIndex = 0;
 let currentlySelectedStickers: Record<string, string>;
 
 let undoQueue: Array<[string, any]> = [];
+let undoProfileId: string | null = null;
 let panelUndoButton: HTMLButtonElement | null = null;
+let shinyCardGeneration = 0;
 
 export let showsShinyCardSomewhere = false;
 let isEditingMode = false;
@@ -104,7 +106,7 @@ let resizeListener: (() => void) | null = null;
 let enterEditingMode: (() => void) | null = null;
 let handlePointerLeave: (() => void) | null = null;
 
-let displayedOtherPlayerProfile: PlayerProfile | null;
+let displayedOtherPlayerProfile: PlayerProfile | null = null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -119,6 +121,50 @@ const INVENTORY_ONLY_BG_ID = 100;
 const INVENTORY_ONLY_STICKER_TYPE = "big-mon-top-right";
 const INVENTORY_ONLY_STICKER_NAME = "gate";
 type UpdateSource = "default" | "inventory";
+
+const isShowingOwnShinyCard = (): boolean =>
+  showsShinyCardSomewhere && displayedOtherPlayerProfile === null;
+
+const synchronizeUndoQueueWithCurrentProfile = (): string | null => {
+  const currentProfileId = storage.getProfileId("").trim() || null;
+  if (undoProfileId !== currentProfileId) {
+    undoQueue = [];
+    undoProfileId = currentProfileId;
+  }
+  return currentProfileId;
+};
+
+const enqueueUndoForProfile = (
+  profileId: string | null,
+  contentType: string,
+  oldId: any,
+): void => {
+  const currentProfileId = synchronizeUndoQueueWithCurrentProfile();
+  if (!profileId || currentProfileId !== profileId) {
+    return;
+  }
+  undoQueue.push([contentType, oldId]);
+};
+
+const parseStickerMap = (json: string): Record<string, string> => {
+  try {
+    const parsed = JSON.parse(json);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return {};
+    }
+    return Object.fromEntries(
+      Object.entries(parsed).filter(
+        (entry): entry is [string, string] =>
+          typeof entry[0] === "string" && typeof entry[1] === "string",
+      ),
+    );
+  } catch {
+    return {};
+  }
+};
+
+const getStoredOwnStickers = (): Record<string, string> =>
+  parseStickerMap(storage.getCardStickers(""));
 
 const isInventoryOnlyEmojiId = (
   emojiId: string | number | undefined,
@@ -206,8 +252,11 @@ export const showShinyCard = async (
 
   if (isOtherPlayer) {
     displayedOtherPlayerProfile = profile;
+  } else {
+    synchronizeUndoQueueWithCurrentProfile();
   }
 
+  const cardGeneration = ++shinyCardGeneration;
   cardIndex = storage.getCardBackgroundId(defaultCardBgIndex);
   asciimojiIndex = storage.getCardSubtitleId(defaultSubtitleIndex);
   showsShinyCardSomewhere = true;
@@ -317,6 +366,13 @@ export const showShinyCard = async (
     img.style.visibility = "hidden";
   };
   img.onload = () => {
+    if (
+      shinyCardGeneration !== cardGeneration ||
+      ownBgImg !== img ||
+      !img.isConnected
+    ) {
+      return;
+    }
     img.style.visibility = "visible";
     showHiddenWaitingStickers();
   };
@@ -570,10 +626,19 @@ export const showShinyCard = async (
         if (hitArea) {
           hitArea.style.opacity = "0";
           setTimeout(() => {
+            if (shinyCardGeneration === cardGeneration && isEditingMode) {
+              hitArea.style.opacity = "1";
+              return;
+            }
             if (hitArea.parentNode) {
               hitArea.parentNode.removeChild(hitArea);
             }
-            delete stickerHitAreas[stickerType];
+            if (
+              shinyCardGeneration === cardGeneration &&
+              stickerHitAreas[stickerType] === hitArea
+            ) {
+              delete stickerHitAreas[stickerType];
+            }
           }, 200);
         }
       }
@@ -585,6 +650,7 @@ export const showShinyCard = async (
 
   const showEditingPanel = () => {
     if (editingPanel || isOtherPlayer) return;
+    synchronizeUndoQueueWithCurrentProfile();
 
     editingPanel = document.createElement("div");
     editingPanel.className = "shiny-card-editing-panel";
@@ -653,14 +719,23 @@ export const showShinyCard = async (
     document.addEventListener("keydown", editingPanelKeyboardHandler);
     panelUndoButton = undoBtn;
 
+    const panelToShow = editingPanel;
     requestAnimationFrame(() => {
-      editingPanel!.style.opacity = "1";
+      if (
+        shinyCardGeneration !== cardGeneration ||
+        editingPanel !== panelToShow ||
+        !panelToShow.isConnected
+      ) {
+        return;
+      }
+      panelToShow.style.opacity = "1";
       doneButton.focus();
     });
   };
 
   const hideEditingPanel = () => {
     if (!editingPanel) return;
+    const panelToHide = editingPanel;
 
     if (editingPanelKeyboardHandler) {
       document.removeEventListener("keydown", editingPanelKeyboardHandler);
@@ -668,12 +743,12 @@ export const showShinyCard = async (
     }
 
     panelUndoButton = null;
-    editingPanel.style.opacity = "0";
+    panelToHide.style.opacity = "0";
+    editingPanel = null;
     setTimeout(() => {
-      if (editingPanel && editingPanel.parentNode) {
-        editingPanel.parentNode.removeChild(editingPanel);
+      if (panelToHide.parentNode) {
+        panelToHide.parentNode.removeChild(panelToHide);
       }
-      editingPanel = null;
     }, 300);
   };
 
@@ -1181,22 +1256,9 @@ function setupHitAreaForStickerType(
 }
 
 function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
-  let selectedStickers: Record<string, string>;
-  currentlySelectedStickers = {};
-  try {
-    selectedStickers = JSON.parse(stickersJson);
-  } catch {
-    return;
-  }
-
-  if (!selectedStickers || typeof selectedStickers !== "object") {
-    return;
-  }
+  const selectedStickers = parseStickerMap(stickersJson);
   currentlySelectedStickers = selectedStickers;
   for (const [path, sticker] of Object.entries(selectedStickers)) {
-    if (typeof path !== "string" || typeof sticker !== "string") {
-      continue;
-    }
     appendStickerLayer(cardContentsLayer, path, sticker);
   }
 }
@@ -1532,13 +1594,14 @@ const createOverlayStickersImage = (
 };
 
 export const hideShinyCard = () => {
+  shinyCardGeneration += 1;
   showsShinyCardSomewhere = false;
   displayedOtherPlayerProfile = null;
 
   if (editingPanel && editingPanel.parentNode) {
     editingPanel.parentNode.removeChild(editingPanel);
-    editingPanel = null;
   }
+  editingPanel = null;
   if (editingPanelKeyboardHandler) {
     document.removeEventListener("keydown", editingPanelKeyboardHandler);
     editingPanelKeyboardHandler = null;
@@ -1562,6 +1625,24 @@ export const hideShinyCard = () => {
     stickerHitAreas = {};
     dynamicallyRoundedElements = [];
   }
+
+  panelUndoButton = null;
+  ownEmojiImg = null;
+  ownEmojiAuraInner = null;
+  ownEmojiAuraBackground = null;
+  ownBgImg = null;
+  ownSubtitleElement = null;
+  nameElement = null;
+  ownDemonImg = null;
+  ownDrainerImg = null;
+  ownAngelImg = null;
+  ownSpiritImg = null;
+  ownMysticImg = null;
+  ownCardContentsLayer = null;
+  ownCounterElement = null;
+  currentlySelectedStickers = {};
+  enterEditingMode = null;
+  handlePointerLeave = null;
 };
 
 function getBgIdForProfile(profile: PlayerProfile | null): number {
@@ -1586,9 +1667,16 @@ async function showMons(
   profile: PlayerProfile | null,
 ) {
   const alpha = 1;
-  [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] =
-    getMonsIndexes(isOtherPlayer, profile);
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
+  if (
+    !cardContentsLayer.isConnected ||
+    ownCardContentsLayer !== cardContentsLayer
+  ) {
+    return;
+  }
+  const nextMonsIndexes = getMonsIndexes(isOtherPlayer, profile);
+  [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] =
+    nextMonsIndexes;
   const y = "74.37%";
   addImageToCard(
     cardContentsLayer,
@@ -1701,6 +1789,7 @@ async function updateContent(
   oldId: any | null,
   source: UpdateSource = "default",
 ) {
+  const updateProfileId = storage.getProfileId("").trim() || null;
   switch (contentType) {
     case "profileCounter":
       const newCounter = newId;
@@ -1726,16 +1815,16 @@ async function updateContent(
       const nextSmallEmojiUrl = emojis.getEmojiUrl(nextEmojiId);
       storage.setPlayerEmojiAura(nextAura);
       didClickAndChangePlayerEmoji(nextEmojiId, nextSmallEmojiUrl, nextAura);
-      if (ownEmojiImg) {
+      if (isShowingOwnShinyCard() && ownEmojiImg?.isConnected) {
         ownEmojiImg.src = `https://cdn.lil.org/mons/emojipack/regular/${nextEmojiId}.webp`;
       }
-      if (ownEmojiAuraInner) {
+      if (isShowingOwnShinyCard() && ownEmojiAuraInner?.isConnected) {
         setRainbowAuraMask(
           ownEmojiAuraInner,
           `https://cdn.lil.org/mons/emojipack/regular/${nextEmojiId}.webp`,
         );
       }
-      if (ownEmojiAuraBackground) {
+      if (isShowingOwnShinyCard() && ownEmojiAuraBackground?.isConnected) {
         if (nextAura === "rainbow") {
           showRainbowAura(ownEmojiAuraBackground);
         } else {
@@ -1751,14 +1840,18 @@ async function updateContent(
       storage.setCardBackgroundId(newId);
       cardIndex = newId;
       connection.updateCardBackgroundId(newId);
-      ownBgImg!.style.visibility = "hidden";
-      ownBgImg!.src = `https://cdn.lil.org/mons/id_cards/backgrounds/${newCardName}`;
+      if (isShowingOwnShinyCard() && ownBgImg?.isConnected) {
+        ownBgImg.style.visibility = "hidden";
+        ownBgImg.src = `https://cdn.lil.org/mons/id_cards/backgrounds/${newCardName}`;
+      }
       break;
     case "subtitle":
       asciimojiIndex = newId;
-      ownSubtitleElement!.textContent = getAsciimojiAtIndex(newId);
       storage.setCardSubtitleId(newId);
       connection.updateCardSubtitleId(newId);
+      if (isShowingOwnShinyCard() && ownSubtitleElement?.isConnected) {
+        ownSubtitleElement.textContent = getAsciimojiAtIndex(newId);
+      }
       break;
     case "demon":
     case "angel":
@@ -1772,41 +1865,50 @@ async function updateContent(
       ) {
         return;
       }
-      let newImageData = "";
-      let img: HTMLImageElement | null;
-      const getSpriteByKey = (await import(`../assets/monsSprites`))
-        .getSpriteByKey;
+      const ownMonsIndexes = getMonsIndexes(false, null);
+      let img: HTMLImageElement | null = null;
+      let monType: MonType | null = null;
       switch (contentType) {
         case "demon":
-          demonIndex = newId;
-          newImageData = getSpriteByKey(getMonId(MonType.DEMON, newId));
+          ownMonsIndexes[0] = newId;
           img = ownDemonImg;
+          monType = MonType.DEMON;
           break;
         case "angel":
-          angelIndex = newId;
-          newImageData = getSpriteByKey(getMonId(MonType.ANGEL, newId));
+          ownMonsIndexes[1] = newId;
           img = ownAngelImg;
+          monType = MonType.ANGEL;
           break;
         case "drainer":
-          drainerIndex = newId;
-          newImageData = getSpriteByKey(getMonId(MonType.DRAINER, newId));
+          ownMonsIndexes[2] = newId;
           img = ownDrainerImg;
+          monType = MonType.DRAINER;
           break;
         case "spirit":
-          spiritIndex = newId;
-          newImageData = getSpriteByKey(getMonId(MonType.SPIRIT, newId));
+          ownMonsIndexes[3] = newId;
           img = ownSpiritImg;
+          monType = MonType.SPIRIT;
           break;
         case "mystic":
-          mysticIndex = newId;
-          newImageData = getSpriteByKey(getMonId(MonType.MYSTIC, newId));
+          ownMonsIndexes[4] = newId;
           img = ownMysticImg;
+          monType = MonType.MYSTIC;
           break;
       }
-      img!.src = `data:image/webp;base64,${newImageData}`;
-      const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
+      const monsIndexesString = ownMonsIndexes.join(",");
       storage.setProfileMons(monsIndexesString);
       connection.updateProfileMons(monsIndexesString);
+      if (isShowingOwnShinyCard()) {
+        [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] =
+          ownMonsIndexes;
+        if (img?.isConnected && monType !== null) {
+          const getSpriteByKey = (await import(`../assets/monsSprites`))
+            .getSpriteByKey;
+          img.src = `data:image/webp;base64,${getSpriteByKey(
+            getMonId(monType, newId),
+          )}`;
+        }
+      }
       break;
     case "big-mon-top-right":
     case "bottom-left":
@@ -1826,7 +1928,7 @@ async function updateContent(
         return;
       }
 
-      const updatedStickers = { ...currentlySelectedStickers };
+      const updatedStickers = getStoredOwnStickers();
 
       if (nextSticker) {
         updatedStickers[type] = nextSticker;
@@ -1834,17 +1936,18 @@ async function updateContent(
         delete updatedStickers[type];
       }
 
-      currentlySelectedStickers = updatedStickers;
-      didUpdateSticker(type, nextSticker);
-
-      const currentJson = JSON.stringify(currentlySelectedStickers);
+      const currentJson = JSON.stringify(updatedStickers);
       storage.setCardStickers(currentJson);
       connection.updateCardStickers(currentJson);
+      if (isShowingOwnShinyCard()) {
+        currentlySelectedStickers = updatedStickers;
+        didUpdateSticker(type, nextSticker);
+      }
       break;
   }
 
   if (oldId !== null) {
-    undoQueue.push([contentType, oldId]);
+    enqueueUndoForProfile(updateProfileId, contentType, oldId);
   }
 
   updateUndoButton();
@@ -1859,7 +1962,8 @@ function updateExistingCardForAnotherProfile(
   return showShinyCard(profile, displayName, isOtherPlayer);
 }
 
-async function updateUndoButton() {
+function updateUndoButton() {
+  synchronizeUndoQueueWithCurrentProfile();
   if (panelUndoButton) {
     panelUndoButton.disabled = undoQueue.length === 0;
   }
@@ -1871,20 +1975,26 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
       if (royalAguapwoshiDrainerIndex < 0) {
         break;
       }
+      const ownDrainerIndex = getMonsIndexes(false, null)[2];
       updateContent(
         "drainer",
         royalAguapwoshiDrainerIndex,
-        drainerIndex,
+        ownDrainerIndex,
         "inventory",
       );
       didUpdateIdCardMons();
       break;
     case 1:
-      updateContent("bg", INVENTORY_ONLY_BG_ID, cardIndex, "inventory");
+      updateContent(
+        "bg",
+        INVENTORY_ONLY_BG_ID,
+        storage.getCardBackgroundId(defaultCardBgIndex),
+        "inventory",
+      );
       break;
     case 2:
       const type = INVENTORY_ONLY_STICKER_TYPE;
-      const currentSticker = currentlySelectedStickers[type];
+      const currentSticker = getStoredOwnStickers()[type];
       updateContent(
         type,
         INVENTORY_ONLY_STICKER_NAME,
@@ -1910,14 +2020,17 @@ export function setOwnershipVerifiedIdCardEmoji(id: number, aura: string) {
 }
 
 async function didClickIdCardEditUndoButton() {
-  if (undoQueue.length > 0) {
-    const [contentType, oldId] = undoQueue.pop()!;
-    updateContent(
-      contentType,
-      oldId,
-      null,
-      getUndoUpdateSource(contentType, oldId),
-    );
+  synchronizeUndoQueueWithCurrentProfile();
+  if (undoQueue.length === 0) {
     updateUndoButton();
+    return;
   }
+  const [contentType, oldId] = undoQueue.pop()!;
+  updateContent(
+    contentType,
+    oldId,
+    null,
+    getUndoUpdateSource(contentType, oldId),
+  );
+  updateUndoButton();
 }

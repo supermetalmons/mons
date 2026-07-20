@@ -1,5 +1,3 @@
-import { setIsMusicPlayingGlobal } from "../ui/MainMenu";
-
 const tracks = [
   "arploop",
   "band",
@@ -32,9 +30,33 @@ const tracks = [
   "whale2",
 ];
 
+const MAX_TRACK_HISTORY_LENGTH = 100;
+
 let audioElement: HTMLAudioElement | null = null;
 let currentTrack = "";
+let trackHistory: string[] = [];
+let trackHistoryIndex = -1;
 let mediaMetadata: MediaMetadata | null = null;
+let isMusicMuted = false;
+let isMusicPlaying = false;
+const musicPlaybackListeners = new Set<() => void>();
+
+const setMusicPlaying = (playing: boolean): void => {
+  if (isMusicPlaying === playing) {
+    return;
+  }
+  isMusicPlaying = playing;
+  musicPlaybackListeners.forEach((listener) => listener());
+};
+
+export const getIsMusicPlaying = (): boolean => isMusicPlaying;
+
+export const subscribeToMusicPlayback = (listener: () => void) => {
+  musicPlaybackListeners.add(listener);
+  return () => {
+    musicPlaybackListeners.delete(listener);
+  };
+};
 
 function showMonsAlbumArtwork(title: string) {
   if (!mediaMetadata) {
@@ -55,12 +77,36 @@ function showMonsAlbumArtwork(title: string) {
   }
 }
 
-const onPause = () => setIsMusicPlayingGlobal(false);
-const onPlay = () => setIsMusicPlayingGlobal(true);
+const onPause = () => setMusicPlaying(false);
+const onPlay = () => setMusicPlaying(true);
+
+function playAudio(errorMessage: string): void {
+  const element = audioElement;
+  if (!element) {
+    return;
+  }
+  element.play().catch((error) => {
+    if (audioElement === element && element.paused) {
+      setMusicPlaying(false);
+    }
+    console.error(errorMessage, error);
+  });
+}
+
+export function setMusicMuted(muted: boolean): void {
+  isMusicMuted = muted;
+  if (audioElement) {
+    audioElement.muted = muted;
+  }
+}
 
 export function startPlayingMusic(): void {
   if (!audioElement) {
-    audioElement = new Audio(getRandomTrackUrl());
+    currentTrack = getRandomTrack();
+    trackHistory = [currentTrack];
+    trackHistoryIndex = 0;
+    audioElement = new Audio(getTrackUrl(currentTrack));
+    audioElement.muted = isMusicMuted;
     audioElement.addEventListener("ended", playNextTrack);
     audioElement.addEventListener("pause", onPause);
     audioElement.addEventListener("play", onPlay);
@@ -70,13 +116,11 @@ export function startPlayingMusic(): void {
         playNextTrack();
       });
       navigator.mediaSession.setActionHandler("previoustrack", () => {
-        playNextTrack();
+        playPreviousTrack();
       });
     }
   }
-  audioElement.play().catch((error) => {
-    console.error("Error playing audio:", error);
-  });
+  playAudio("Error playing audio:");
   showMonsAlbumArtwork(currentTrack);
 }
 
@@ -94,24 +138,69 @@ export function stopPlayingMusic(): void {
     }
 
     audioElement = null;
+    currentTrack = "";
+    trackHistory = [];
+    trackHistoryIndex = -1;
   }
+  setMusicPlaying(false);
 }
 
 export function playNextTrack(): void {
   if (audioElement) {
-    audioElement.src = getRandomTrackUrl();
-    audioElement.play().catch((error) => {
-      console.error("Error playing next track:", error);
-    });
-    showMonsAlbumArtwork(currentTrack);
+    if (trackHistoryIndex < trackHistory.length - 1) {
+      trackHistoryIndex += 1;
+      playTrack(trackHistory[trackHistoryIndex]);
+      return;
+    }
+
+    const nextTrack = getRandomTrack(currentTrack);
+    trackHistory.push(nextTrack);
+    if (trackHistory.length > MAX_TRACK_HISTORY_LENGTH) {
+      trackHistory.splice(0, trackHistory.length - MAX_TRACK_HISTORY_LENGTH);
+    }
+    trackHistoryIndex = trackHistory.length - 1;
+    playTrack(nextTrack);
   } else {
     startPlayingMusic();
   }
 }
 
-function getRandomTrackUrl(): string {
-  const randomIndex = Math.floor(Math.random() * tracks.length);
-  const randomTrack = tracks[randomIndex];
-  currentTrack = randomTrack;
-  return `https://cdn.lil.org/mons/music/original/${randomTrack}.aac`;
+export function playPreviousTrack(): void {
+  if (!audioElement) {
+    startPlayingMusic();
+    return;
+  }
+
+  if (trackHistoryIndex <= 0) {
+    audioElement.currentTime = 0;
+    playAudio("Error restarting current track:");
+    return;
+  }
+
+  trackHistoryIndex -= 1;
+  playTrack(trackHistory[trackHistoryIndex]);
+}
+
+function playTrack(track: string): void {
+  if (!audioElement) {
+    return;
+  }
+  currentTrack = track;
+  audioElement.src = getTrackUrl(track);
+  playAudio("Error playing track:");
+  showMonsAlbumArtwork(currentTrack);
+}
+
+function getRandomTrack(excludedTrack = ""): string {
+  if (tracks.length === 1) {
+    return tracks[0];
+  }
+
+  const availableTracks = tracks.filter((track) => track !== excludedTrack);
+  const randomIndex = Math.floor(Math.random() * availableTracks.length);
+  return availableTracks[randomIndex];
+}
+
+function getTrackUrl(track: string): string {
+  return `https://cdn.lil.org/mons/music/original/${track}.aac`;
 }

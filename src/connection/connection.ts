@@ -1569,6 +1569,7 @@ class Connection {
     try {
       await this.ensureAuthenticated();
       const getNftsFunction = httpsCallable(this.functions, "getNfts");
+      // Keep the legacy payload for mixed-version rollouts; the server derives ownership.
       const response = await getNftsFunction({ sol, eth });
       return response.data;
     } catch (error) {

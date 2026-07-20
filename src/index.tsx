@@ -2,7 +2,14 @@ import "./session/pendingLogoutWipeBootstrap";
 import "@rainbow-me/rainbowkit/styles.css";
 import "./index.css";
 import ReactDOM from "react-dom/client";
-import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import React, {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -15,8 +22,8 @@ import {
 
 import BoardComponent from "./ui/BoardComponent";
 import MainMenu, {
-  toggleInfoVisibility,
-  toggleMusicVisibility,
+  closeAllKindsOfPopups,
+  TopRightControls,
 } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import {
@@ -26,15 +33,6 @@ import {
 import { connection } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import {
-  FaVolumeUp,
-  FaMusic,
-  FaVolumeMute,
-  FaInfoCircle,
-  FaRegGem,
-  FaPowerOff,
-  FaEllipsisH,
-} from "react-icons/fa";
 import { preloadSounds } from "./content/sounds";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
@@ -62,12 +60,11 @@ export const getIsMuted = (): boolean => globalIsMuted;
 
 const queryClient = new QueryClient();
 
-export let enterProfileEditingMode: (enter: boolean) => void = () => {};
 export let setIslandButtonDimmed: (dimmed: boolean) => void = () => {};
 
 const App = () => {
-  const { authStatus, setAuthStatus } = useAuthStatus();
-  const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
+  const { authState, setAuthStatus } = useAuthStatus();
+  const { authStatus } = authState;
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isIslandButtonDim, setIsIslandButtonDim] = useState(() => {
     const routeState = getCurrentRouteState();
@@ -78,21 +75,31 @@ const App = () => {
   const [isLogoutUiLockedState, setIsLogoutUiLockedState] = useState(() =>
     isLogoutUiLocked(),
   );
-  const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
+  const ethereumAuthAdapter = useMemo(
+    () => createEthereumAuthAdapter(setAuthStatus),
+    [setAuthStatus],
+  );
+  const rainbowKitTheme = useMemo(
+    () => ({
+      lightMode: lightTheme(),
+      darkMode: darkTheme(),
+    }),
+    [],
+  );
   const shouldHideAuthControls =
     authStatus === "loading" || isLogoutUiLockedState;
-
-  enterProfileEditingMode = (enter: boolean) => {
-    setIsProfileEditingMode(enter);
-  };
+  const isAuthenticated = authStatus === "authenticated";
 
   setIslandButtonDimmed = (dimmed: boolean) => {
     setIsIslandButtonDim(dimmed);
   };
 
   useEffect(() => {
-    storage.setIsMuted(isMuted);
+    try {
+      storage.setIsMuted(isMuted);
+    } catch {}
     globalIsMuted = isMuted;
+    soundPlayer.setMuted(isMuted);
   }, [isMuted]);
 
   useEffect(() => {
@@ -112,61 +119,15 @@ const App = () => {
     });
   }, []);
 
-  const handleMuteToggle = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      setIsMuted((prev) => !prev);
-      soundPlayer.initializeOnUserInteraction(true);
-    },
-    [],
-  );
-
-  const handleMusicButtonClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      toggleMusicVisibility();
-    },
-    [],
-  );
-
-  const handleLogOutButtonClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    handleLogout();
-  };
-
-  const handleSettingsButtonClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    showSettings();
-  };
-
-  const handleGemButtonClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    showInventory();
-  };
-
-  const handleInfoButtonClick = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
-    event.stopPropagation();
-    toggleInfoVisibility();
-  };
+  const handleMuteToggle = useCallback(() => {
+    const nextIsMuted = !isMuted;
+    globalIsMuted = nextIsMuted;
+    soundPlayer.setMuted(nextIsMuted);
+    setIsMuted(nextIsMuted);
+    if (!nextIsMuted) {
+      void soundPlayer.initializeOnUserInteraction(true);
+    }
+  }, [isMuted]);
 
   return (
     <WagmiProvider config={config}>
@@ -178,95 +139,32 @@ const App = () => {
           <RainbowKitProvider
             showRecentTransactions={false}
             modalSize="compact"
-            theme={{
-              lightMode: lightTheme(),
-              darkMode: darkTheme(),
-            }}
+            theme={rainbowKitTheme}
           >
             <div className="app-container">
               <div className="top-buttons-container">
-                {!shouldHideAuthControls && (
-                  <>
-                    {shouldLoadIslandButton && (
-                      <Suspense fallback={null}>
-                        <LazyIslandButton dimmed={isIslandButtonDim} />
-                      </Suspense>
-                    )}
-                    <div className="small-top-control-buttons">
-                      {!isProfileEditingMode ? (
-                        <>
-                          <button
-                            className="info-button"
-                            onClick={
-                              !isMobile ? handleInfoButtonClick : undefined
-                            }
-                            onTouchStart={
-                              isMobile ? handleInfoButtonClick : undefined
-                            }
-                            aria-label="Info"
-                          >
-                            <FaInfoCircle />
-                          </button>
-                          <button
-                            className="music-button"
-                            onClick={handleMusicButtonClick}
-                            aria-label="Music"
-                          >
-                            <FaMusic />
-                          </button>
-                          <button
-                            className="sound-button"
-                            onClick={handleMuteToggle}
-                            aria-label={isMuted ? "Unmute" : "Mute"}
-                          >
-                            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            className="info-button"
-                            onClick={
-                              !isMobile ? handleSettingsButtonClick : undefined
-                            }
-                            onTouchStart={
-                              isMobile ? handleSettingsButtonClick : undefined
-                            }
-                            aria-label="Settings"
-                          >
-                            <FaEllipsisH />
-                          </button>
-                          <button
-                            className="music-button"
-                            onClick={
-                              !isMobile ? handleGemButtonClick : undefined
-                            }
-                            onTouchStart={
-                              isMobile ? handleGemButtonClick : undefined
-                            }
-                            aria-label="NFTs"
-                          >
-                            <FaRegGem />
-                          </button>
-                          <button
-                            className="sound-button"
-                            onClick={handleLogOutButtonClick}
-                            aria-label={"Log Out"}
-                          >
-                            <FaPowerOff />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </>
+                {!shouldHideAuthControls && shouldLoadIslandButton && (
+                  <Suspense fallback={null}>
+                    <LazyIslandButton dimmed={isIslandButtonDim} />
+                  </Suspense>
                 )}
+                <TopRightControls
+                  isVisible={!shouldHideAuthControls}
+                  isAuthenticated={isAuthenticated}
+                  isMuted={isMuted}
+                  onBeforeOpen={closeAllKindsOfPopups}
+                  onToggleMute={handleMuteToggle}
+                  onOpenInventory={showInventory}
+                  onOpenSettings={showSettings}
+                  onRequestLogout={handleLogout}
+                />
                 {!shouldHideAuthControls && (
-                  <ProfileSignIn authStatus={authStatus} />
+                  <ProfileSignIn authState={authState} />
                 )}
               </div>
               <BoardComponent />
               <MainMenu />
-              <BottomControls />
+              <BottomControls authState={authState} />
               <EventModal />
             </div>
           </RainbowKitProvider>
@@ -291,6 +189,15 @@ const MIN_TIME_BETWEEN_TOUCHSTARTS = 555; // have seen a tooltip with 500
 
 export function preventTouchstartIfNeeded(event: TouchEvent | MouseEvent) {
   if (!isMobile) {
+    return;
+  }
+  const target = event.target;
+  if (
+    target instanceof Element &&
+    target.closest(
+      ".small-top-control-buttons, [data-top-right-popover='true']",
+    )
+  ) {
     return;
   }
   const currentTime = event.timeStamp;

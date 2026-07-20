@@ -1,4 +1,4 @@
-import { storage } from "../utils/storage";
+import { shouldPreserveStorageKeyOnLogout, storage } from "../utils/storage";
 
 const LOGOUT_SYNC_CHANNEL = "mons-link-logout-sync";
 const LOGOUT_SYNC_STORAGE_KEY = "__mons_link_logout_sync__";
@@ -270,7 +270,10 @@ const clearLocalStorageForLogout = (options?: {
   const preservePendingLogoutWipe =
     options?.preservePendingLogoutWipe !== false;
   getLocalStorageKeys().forEach((key) => {
-    if (key === LOGOUT_SYNC_STORAGE_KEY) {
+    if (
+      key === LOGOUT_SYNC_STORAGE_KEY ||
+      shouldPreserveStorageKeyOnLogout(key)
+    ) {
       return;
     }
     if (preservePendingLogoutWipe && key === LOGOUT_PENDING_WIPE_STORAGE_KEY) {

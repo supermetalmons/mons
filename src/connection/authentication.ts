@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import type { PlayerProfile } from "./connectionModels";
@@ -15,7 +15,7 @@ import {
 import { formatAuthCooldownErrorMessage } from "./authCooldownErrors";
 import { formatXAuthErrorMessage } from "./xAuthErrors";
 import { publishXAuthUiFeedback } from "./xAuthUiFeedback";
-import { storage } from "../utils/storage";
+import { storage, type AuthIdentity } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { didAttemptAuthentication, isWatchOnly } from "../game/gameController";
 import {
@@ -26,9 +26,20 @@ import {
   flushPendingOwnProfileMiningState,
   syncOwnProfileMiningState,
 } from "../services/ownProfileMiningHydration";
-type AuthStatus = "loading" | "unauthenticated" | "authenticated";
+export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
+
+export type AuthState = AuthIdentity & {
+  authStatus: AuthStatus;
+};
+
+const EMPTY_AUTH_IDENTITY: AuthIdentity = {
+  profileId: "",
+  ethAddress: "",
+  solAddress: "",
+};
+
 const ETH_INTENT_STORAGE_KEY = "ethIntentByNonceV1";
 const ETH_INTENT_MAX_ITEMS = 200;
 const ETH_INTENT_MAX_AGE_MS = 10 * 60 * 1000;
@@ -264,22 +275,38 @@ export function setAuthStatusGlobally(status: AuthStatus) {
 }
 
 export function useAuthStatus() {
-  const [authStatus, setAuthStatus] = useState<AuthStatus>(() => {
-    const profileId = storage.getProfileId("");
+  const [authState, setAuthState] = useState<AuthState>(() => {
+    const identity = storage.getAuthIdentity();
     const storedLoginId = storage.getLoginId("");
-    const storedEthAddress = storage.getEthAddress("");
-    const storedSolAddress = storage.getSolAddress("");
     const storedUsername = storage.getUsername("");
-    if (profileId !== "" && storedLoginId !== "") {
+    if (identity.profileId !== "" && storedLoginId !== "") {
       updateProfileDisplayName(
         storedUsername,
-        storedEthAddress,
-        storedSolAddress,
+        identity.ethAddress,
+        identity.solAddress,
       );
-      return "authenticated";
+      return { authStatus: "authenticated", ...identity };
     }
-    return "unauthenticated";
+    return { authStatus: "unauthenticated", ...EMPTY_AUTH_IDENTITY };
   });
+  const { authStatus } = authState;
+  const setAuthStatus = useCallback((nextAuthStatus: AuthStatus) => {
+    const nextIdentity =
+      nextAuthStatus === "authenticated"
+        ? storage.getAuthIdentity()
+        : EMPTY_AUTH_IDENTITY;
+    setAuthState((current) => {
+      if (
+        current.authStatus === nextAuthStatus &&
+        current.profileId === nextIdentity.profileId &&
+        current.ethAddress === nextIdentity.ethAddress &&
+        current.solAddress === nextIdentity.solAddress
+      ) {
+        return current;
+      }
+      return { authStatus: nextAuthStatus, ...nextIdentity };
+    });
+  }, []);
   const authAttemptTimeoutIdsRef = useRef<Set<number>>(new Set());
   const authChangeVersionRef = useRef(0);
 
@@ -659,9 +686,9 @@ export function useAuthStatus() {
       authAttemptTimeoutIds.clear();
       unsubscribe();
     };
-  }, []);
+  }, [setAuthStatus]);
 
-  return { authStatus, setAuthStatus };
+  return { authState, setAuthStatus };
 }
 
 export const createEthereumAuthAdapter = (

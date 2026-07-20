@@ -1,5 +1,16 @@
 import type { AssetsSet, BoardStyleSet } from "../content/boardStyles";
 
+export type AuthIdentity = {
+  profileId: string;
+  ethAddress: string;
+  solAddress: string;
+};
+
+export type ReactionExtraStickerCache = AuthIdentity & {
+  extraIds: number[];
+  expiresAtMs: number;
+};
+
 const STORAGE_KEYS = {
   IS_MUTED: "isMuted",
 
@@ -23,7 +34,10 @@ const STORAGE_KEYS = {
   CARD_BACKGROUND_ID: "cardBackgroundId",
   CARD_SUBTITLE_ID: "cardSubtitleId",
   CARD_STICKERS: "cardStickers",
+  REACTION_EXTRA_STICKER_CACHE: "reactionExtraStickerCache",
+  // Legacy keys are retained so sign-out removes caches written by older builds.
   REACTION_EXTRA_STICKER_IDS: "reactionExtraStickerIds",
+  REACTION_EXTRA_STICKER_PROFILE_ID: "reactionExtraStickerProfileId",
   PROFILE_MONS: "profileMons",
   PROFILE_COUNTER: "profileCounter",
   PLAYER_NONCE: "playerNonce",
@@ -36,6 +50,12 @@ const STORAGE_KEYS = {
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
+
+const LOGOUT_PRESERVED_STORAGE_KEYS = new Set<string>([STORAGE_KEYS.IS_MUTED]);
+
+export const shouldPreserveStorageKeyOnLogout = (key: string): boolean => {
+  return LOGOUT_PRESERVED_STORAGE_KEYS.has(key);
+};
 
 const EXTERNAL_USER_STORAGE_KEY_PREFIXES = [
   "wagmi",
@@ -91,8 +111,19 @@ function setItem<T>(key: StorageKey | string, value: T): void {
 }
 
 export const storage = {
+  getAuthIdentity: (): AuthIdentity => ({
+    profileId: getItem(STORAGE_KEYS.PROFILE_ID, ""),
+    ethAddress: getItem(STORAGE_KEYS.ETH_ADDRESS, ""),
+    solAddress: getItem(STORAGE_KEYS.SOL_ADDRESS, ""),
+  }),
+
   getIsMuted: (defaultValue: boolean): boolean => {
-    return getItem(STORAGE_KEYS.IS_MUTED, defaultValue);
+    try {
+      const storedValue = getItem<unknown>(STORAGE_KEYS.IS_MUTED, defaultValue);
+      return typeof storedValue === "boolean" ? storedValue : defaultValue;
+    } catch {
+      return defaultValue;
+    }
   },
 
   setIsMuted: (value: boolean): void => {
@@ -269,12 +300,43 @@ export const storage = {
     setItem(STORAGE_KEYS.CARD_STICKERS, value);
   },
 
-  getReactionExtraStickerIds: (defaultValue: number[]): number[] => {
-    return getItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_IDS, defaultValue);
+  getReactionExtraStickerCache: (
+    defaultValue: ReactionExtraStickerCache | null,
+  ): ReactionExtraStickerCache | null => {
+    const value = getItem<unknown>(
+      STORAGE_KEYS.REACTION_EXTRA_STICKER_CACHE,
+      defaultValue,
+    );
+    if (typeof value !== "object" || value === null) {
+      return defaultValue;
+    }
+    const cache = value as Record<string, unknown>;
+    if (
+      typeof cache.profileId !== "string" ||
+      typeof cache.ethAddress !== "string" ||
+      typeof cache.solAddress !== "string" ||
+      !Array.isArray(cache.extraIds) ||
+      typeof cache.expiresAtMs !== "number" ||
+      !Number.isFinite(cache.expiresAtMs)
+    ) {
+      return defaultValue;
+    }
+    return {
+      profileId: cache.profileId,
+      ethAddress: cache.ethAddress,
+      solAddress: cache.solAddress,
+      extraIds: cache.extraIds.filter(
+        (id): id is number =>
+          typeof id === "number" && Number.isSafeInteger(id),
+      ),
+      expiresAtMs: cache.expiresAtMs,
+    };
   },
 
-  setReactionExtraStickerIds: (value: number[]): void => {
-    setItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_IDS, value);
+  setReactionExtraStickerCache: (
+    value: ReactionExtraStickerCache | null,
+  ): void => {
+    setItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_CACHE, value);
   },
 
   getProfileMons: (defaultValue: string): string => {
@@ -351,7 +413,9 @@ export const storage = {
 
   signOut: (): void => {
     Object.values(STORAGE_KEYS).forEach((key) => {
-      localStorage.removeItem(key);
+      if (!shouldPreserveStorageKeyOnLogout(key)) {
+        localStorage.removeItem(key);
+      }
     });
     removeMatchingStorageKeys(localStorage, shouldClearExternalUserStorageKey);
     removeMatchingStorageKeys(

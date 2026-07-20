@@ -5,12 +5,14 @@ import { playSounds } from "../content/sounds";
 
 class SoundPlayer {
   private audioContext!: AudioContext;
+  private masterGainNode: GainNode | null = null;
   private audioBufferCache = new Map<string, AudioBuffer>();
   private arrayBufferCache = new Map<string, ArrayBuffer>();
   private arrayBufferPromises = new Map<string, Promise<ArrayBuffer>>();
   public isInitialized = false;
   private playIslandShowUpOnInitComplete = false;
   private isResuming = false;
+  private initializationPromise: Promise<void> | null = null;
 
   constructor() {
     document.addEventListener(
@@ -30,13 +32,48 @@ class SoundPlayer {
     this.playIslandShowUpOnInitComplete = true;
   }
 
+  public setMuted(muted: boolean): void {
+    if (!this.masterGainNode || !this.audioContext) {
+      return;
+    }
+    const value = muted ? 0 : 1;
+    try {
+      this.masterGainNode.gain.setValueAtTime(
+        value,
+        this.audioContext.currentTime,
+      );
+    } catch {
+      this.masterGainNode.gain.value = value;
+    }
+  }
+
   public async initializeOnUserInteraction(force: boolean) {
     const isMuted = getIsMuted();
-    if (this.isInitialized || (isMuted && !force)) return;
+    if (this.isInitialized) return;
+    if (this.initializationPromise) {
+      return this.initializationPromise;
+    }
+    if (isMuted && !force) return;
     if (document.visibilityState !== "visible" && !force) return;
+
+    const initializationPromise = this.performInitialization(force);
+    this.initializationPromise = initializationPromise;
+    try {
+      await initializationPromise;
+    } finally {
+      if (this.initializationPromise === initializationPromise) {
+        this.initializationPromise = null;
+      }
+    }
+  }
+
+  private async performInitialization(force: boolean): Promise<void> {
     this.audioContext = new (
       window.AudioContext || (window as any).webkitAudioContext
     )();
+    this.masterGainNode = this.audioContext.createGain();
+    this.masterGainNode.gain.value = getIsMuted() ? 0 : 1;
+    this.masterGainNode.connect(this.audioContext.destination);
     this.attachStateChangeHandler();
     await this.unlockOnce(force);
     this.isInitialized = true;
@@ -155,6 +192,7 @@ class SoundPlayer {
     if (!this.audioContext) return null;
     if (this.audioContext.state === "closed") {
       this.isInitialized = false;
+      this.masterGainNode = null;
       this.setupRestartListeners();
       return null;
     }
@@ -215,7 +253,7 @@ class SoundPlayer {
       const gainNode = ctx.createGain();
       gainNode.gain.value = Math.max(0, volumeMultiplier);
       source.connect(gainNode);
-      gainNode.connect(ctx.destination);
+      gainNode.connect(this.masterGainNode ?? ctx.destination);
       source.start(0);
     } catch (_) {
       this.setupRestartListeners();

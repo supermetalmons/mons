@@ -1,4 +1,71 @@
 import styled from "styled-components";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
+
+const MODAL_FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled]):not([type='hidden'])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[contenteditable='true']",
+  "[tabindex]:not([tabindex='-1'])",
+].join(",");
+
+const trapModalFocus = (
+  event: ReactKeyboardEvent<HTMLElement>,
+  modal: HTMLElement | null,
+): void => {
+  if (event.key !== "Tab" || !modal) {
+    return;
+  }
+
+  const focusableElements = Array.from(
+    modal.querySelectorAll<HTMLElement>(MODAL_FOCUSABLE_SELECTOR),
+  ).filter(
+    (element) =>
+      element !== modal &&
+      element.getAttribute("aria-hidden") !== "true" &&
+      element.getClientRects().length > 0,
+  );
+
+  if (focusableElements.length === 0) {
+    event.preventDefault();
+    modal.focus({ preventScroll: true });
+    return;
+  }
+
+  const activeIndex = focusableElements.indexOf(
+    document.activeElement as HTMLElement,
+  );
+  const shouldWrapBackward = event.shiftKey && activeIndex <= 0;
+  const shouldWrapForward =
+    !event.shiftKey &&
+    (activeIndex === -1 || activeIndex === focusableElements.length - 1);
+
+  if (!shouldWrapBackward && !shouldWrapForward) {
+    return;
+  }
+
+  event.preventDefault();
+  const nextElement = shouldWrapBackward
+    ? focusableElements[focusableElements.length - 1]
+    : focusableElements[0];
+  nextElement.focus({ preventScroll: true });
+};
+
+export const handleModalKeyDown = (
+  event: ReactKeyboardEvent<HTMLElement>,
+  modal: HTMLElement | null,
+  onDismiss: () => void,
+): void => {
+  trapModalFocus(event, modal);
+  if (event.key !== "Escape") {
+    return;
+  }
+  event.preventDefault();
+  event.stopPropagation();
+  onDismiss();
+};
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -24,6 +91,7 @@ export const ModalPopup = styled.div`
   box-shadow: 0 6px 20px var(--standardBoxShadow);
   width: 85%;
   max-width: 320px;
+  outline: none;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-deep-gray);
@@ -49,7 +117,7 @@ export const ButtonsContainer = styled.div`
   margin-top: 4px;
 `;
 
-const Button = styled.button`
+const Button = styled.button.attrs({ type: "button" })`
   padding: 10px 16px;
   border: none;
   border-radius: 20px;
@@ -61,6 +129,17 @@ const Button = styled.button`
   outline: none;
   touch-action: none;
   transition: background-color 0.2s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-blue-0066cc);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:focus-visible {
+      outline-color: var(--color-blue-66b3ff);
+    }
+  }
 `;
 
 export const CancelButton = styled(Button)`

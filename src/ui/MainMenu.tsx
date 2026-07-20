@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+  useSyncExternalStore,
+} from "react";
 import { logoBase64 } from "../content/uiAssets";
 import {
   didDismissSomethingWithOutsideTapJustNow,
@@ -26,14 +33,33 @@ import {
   FaStop,
   FaBackward,
   FaForward,
+  FaCog,
+  FaPowerOff,
+  FaVolumeMute,
+  FaVolumeUp,
+  FaMusic,
+  FaInfoCircle,
+  FaRegGem,
+  FaEllipsisH,
 } from "react-icons/fa";
 import { showsShinyCardSomewhere } from "./ShinyCard";
 import {
   startPlayingMusic,
   stopPlayingMusic,
   playNextTrack,
+  playPreviousTrack,
+  setMusicMuted,
+  getIsMusicPlaying,
+  subscribeToMusicPlayback,
 } from "../content/music";
-import { InfoPopover } from "./InfoPopover";
+import {
+  HowToPlayContent,
+  HowToPlayPopoverSurface,
+  HowToPlaySeparator,
+  howToPlayContentStyles,
+  InfoPopover,
+} from "./InfoPopover";
+import { TopRightPopoverBase } from "./TopRightPopoverBase";
 import {
   MINING_MATERIAL_NAMES,
   MiningMaterialName,
@@ -66,6 +92,27 @@ const MATERIAL_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
 
 type EventScheduleMode = "minutes" | "datetime";
+
+const TOP_RIGHT_CONTROL_IDS = {
+  info: "top-right-info-button",
+  more: "top-right-more-button",
+  music: "top-right-music-button",
+  gem: "top-right-gem-button",
+} as const;
+
+const TOP_RIGHT_POPOVER_IDS = {
+  info: "top-right-info-popover",
+  more: "top-right-more-popover",
+  music: "top-right-music-popover",
+} as const;
+
+const FOCUS_CLAIMING_TARGET_SELECTOR =
+  "a[href], area[href], button:not([disabled]), input:not([disabled]), " +
+  "select:not([disabled]), textarea:not([disabled]), summary, iframe, " +
+  "audio[controls], video[controls], label, [tabindex], " +
+  "[contenteditable]:not([contenteditable='false'])";
+
+type TopRightPopoverName = keyof typeof TOP_RIGHT_POPOVER_IDS | null;
 
 const pad2 = (value: number): string => String(value).padStart(2, "0");
 
@@ -690,43 +737,145 @@ const ExperimentalInlineError = styled.div`
   }
 `;
 
-const MusicPopover = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  top: 56px;
-  right: 9pt;
+const TopRightPopover = styled(TopRightPopoverBase)`
+  box-sizing: border-box;
+`;
+
+const MorePopover = styled(HowToPlayPopoverSurface)``;
+
+const MoreHelpContent = styled.div`
+  ${howToPlayContentStyles}
+`;
+
+const MoreActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+`;
+
+const MoreActionButton = styled.button<{ $danger?: boolean }>`
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: ${(props) => (props.$danger ? "var(--dangerTextColor)" : "inherit")};
+  cursor: pointer;
   font-size: 12px;
-  background-color: var(--overlay-light-95);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  border-radius: 7pt;
-  padding: 12px;
-  width: min(200px, 60dvw);
-  box-shadow: none;
-  z-index: 60010;
-  opacity: ${(props) => (props.isOpen ? 1 : 0)};
-  pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
-  text-align: center;
-  cursor: default;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    transform 140ms ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgba(118, 119, 135, 0.09);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--overlay-dark-95);
-    color: var(--color-gray-f5);
+    color: ${(props) =>
+      props.$danger ? "var(--dangerTextColorDark)" : "var(--color-gray-f5)"};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.07);
+      }
+    }
   }
 
-  @media screen and (max-height: 500px) {
-    top: 53px;
+  svg {
+    width: 14px;
+    height: 14px;
+    justify-self: center;
+    flex: 0 0 auto;
   }
 
-  @media screen and (max-height: 453px) {
-    top: 50px;
+  @media (pointer: coarse) {
+    min-height: 44px;
+  }
+`;
+
+const MusicPopover = styled(TopRightPopover)`
+  width: min(220px, 70dvw);
+  padding: 10px;
+  text-align: center;
+`;
+
+const MusicMuteButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  background: rgba(0, 102, 204, 0.09);
+  color: var(--color-blue-0066cc);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 800;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgba(0, 102, 204, 0.14);
+      color: var(--musicControlButtonColorHover);
+    }
   }
 
-  @media screen and (max-width: 420px) {
-    right: 8px;
+  &:active {
+    transform: scale(0.98);
   }
 
-  @media screen and (max-width: 387px) {
-    right: 6px;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(102, 179, 255, 0.11);
+    color: var(--color-blue-66b3ff);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: rgba(102, 179, 255, 0.17);
+        color: var(--musicControlButtonColorHoverDark);
+      }
+    }
+  }
+
+  svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
   }
 `;
 
@@ -735,6 +884,13 @@ const MusicControlsContainer = styled.div`
   gap: 8px;
   align-items: center;
   justify-content: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(118, 119, 135, 0.17);
+
+  @media (prefers-color-scheme: dark) {
+    border-top-color: rgba(153, 153, 168, 0.16);
+  }
 `;
 
 const MusicControlButton = styled.button`
@@ -754,11 +910,27 @@ const MusicControlButton = styled.button`
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transition:
+    color 140ms ease,
+    transform 140ms ease;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       color: var(--musicControlButtonColorHover);
     }
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -777,53 +949,428 @@ const MusicControlButton = styled.button`
   }
 `;
 
-let getIsMenuOpen: () => boolean = () => false;
-let getIsInfoOpen: () => boolean = () => false;
-let getIsMusicOpen: () => boolean = () => false;
-let toggleInfoVisibilityImpl: () => void = () => {};
-let toggleMusicVisibilityImpl: () => void = () => {};
-let closeMenuAndInfoIfAnyImpl: () => void = () => {};
-let closeAllKindsOfPopupsImpl: () => void = () => {};
-let closeMenuAndInfoIfAllowedForEventImpl: (
-  event: TouchEvent | MouseEvent,
-) => void = () => {};
-let setIsMusicPlayingGlobalImpl: (playing: boolean) => void = () => {};
-
-export const toggleInfoVisibility = () => {
-  toggleInfoVisibilityImpl();
+type MainMenuApi = {
+  close: () => void;
+  closeIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
+  isOpen: () => boolean;
 };
 
-export const toggleMusicVisibility = () => {
-  toggleMusicVisibilityImpl();
+type TopRightControlsApi = {
+  close: () => void;
+  hasVisiblePopover: () => boolean;
+};
+
+let mainMenuApi: MainMenuApi | null = null;
+let topRightControlsApi: TopRightControlsApi | null = null;
+
+const closeTopRightPopover = () => {
+  topRightControlsApi?.close();
 };
 
 export const closeMenuAndInfoIfAny = () => {
-  closeMenuAndInfoIfAnyImpl();
+  mainMenuApi?.close();
+  closeTopRightPopover();
 };
 
 export const closeAllKindsOfPopups = () => {
-  closeAllKindsOfPopupsImpl();
+  closeProfilePopupIfAny();
+  closeNavigationAndAppearancePopupIfAny();
+  mainMenuApi?.close();
+  closeTopRightPopover();
 };
 
 export const closeMenuAndInfoIfAllowedForEvent = (
   event: TouchEvent | MouseEvent,
 ) => {
-  closeMenuAndInfoIfAllowedForEventImpl(event);
-};
-
-export const setIsMusicPlayingGlobal = (playing: boolean) => {
-  setIsMusicPlayingGlobalImpl(playing);
+  mainMenuApi?.closeIfAllowedForEvent(event);
 };
 
 export function hasMainMenuPopupsVisible(): boolean {
-  return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
+  return (
+    (mainMenuApi?.isOpen() ?? false) ||
+    (topRightControlsApi?.hasVisiblePopover() ?? false)
+  );
 }
+
+interface TopRightControlsProps {
+  isAuthenticated: boolean;
+  isMuted: boolean;
+  isVisible: boolean;
+  onBeforeOpen: () => void;
+  onToggleMute: () => void;
+  onOpenInventory: (returnFocusId?: string) => void;
+  onOpenSettings: (returnFocusId?: string) => void;
+  onRequestLogout: (returnFocusId?: string) => void;
+}
+
+const getVisibleTopRightPopover = (
+  activePopover: TopRightPopoverName,
+  isVisible: boolean,
+  isAuthenticated: boolean,
+): TopRightPopoverName => {
+  if (!isVisible) {
+    return null;
+  }
+  if (activePopover === "music") {
+    return "music";
+  }
+  if (activePopover === "more" && isAuthenticated) {
+    return "more";
+  }
+  if (activePopover === "info" && !isAuthenticated) {
+    return "info";
+  }
+  return null;
+};
+
+export const TopRightControls: React.FC<TopRightControlsProps> = ({
+  isAuthenticated,
+  isMuted,
+  isVisible,
+  onBeforeOpen,
+  onToggleMute,
+  onOpenInventory,
+  onOpenSettings,
+  onRequestLogout,
+}) => {
+  const [activeTopRightPopover, setActiveTopRightPopover] =
+    useState<TopRightPopoverName>(null);
+  const visibleTopRightPopover = getVisibleTopRightPopover(
+    activeTopRightPopover,
+    isVisible,
+    isAuthenticated,
+  );
+  const isInfoOpen = visibleTopRightPopover === "info";
+  const isMoreOpen = visibleTopRightPopover === "more";
+  const isMusicOpen = visibleTopRightPopover === "music";
+  const isMusicPlaying = useSyncExternalStore(
+    subscribeToMusicPlayback,
+    getIsMusicPlaying,
+  );
+  const visibleTopRightPopoverRef = useRef(visibleTopRightPopover);
+  const primaryButtonRef = useRef<HTMLButtonElement>(null);
+  const musicButtonRef = useRef<HTMLButtonElement>(null);
+  const infoRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
+  const musicRef = useRef<HTMLDivElement>(null);
+  const musicMuteButtonRef = useRef<HTMLButtonElement>(null);
+
+  useLayoutEffect(() => {
+    visibleTopRightPopoverRef.current = visibleTopRightPopover;
+  }, [visibleTopRightPopover]);
+
+  const updateActiveTopRightPopover = useCallback(
+    (nextPopover: TopRightPopoverName) => {
+      visibleTopRightPopoverRef.current = getVisibleTopRightPopover(
+        nextPopover,
+        isVisible,
+        isAuthenticated,
+      );
+      setActiveTopRightPopover(nextPopover);
+    },
+    [isAuthenticated, isVisible],
+  );
+
+  useEffect(() => {
+    const api: TopRightControlsApi = {
+      close: () => updateActiveTopRightPopover(null),
+      hasVisiblePopover: () => visibleTopRightPopoverRef.current !== null,
+    };
+    topRightControlsApi = api;
+    return () => {
+      if (topRightControlsApi === api) {
+        topRightControlsApi = null;
+      }
+    };
+  }, [updateActiveTopRightPopover]);
+
+  useEffect(() => {
+    setMusicMuted(isMuted);
+  }, [isMuted]);
+
+  useEffect(() => {
+    if (activeTopRightPopover !== null && visibleTopRightPopover === null) {
+      updateActiveTopRightPopover(null);
+    }
+  }, [
+    activeTopRightPopover,
+    updateActiveTopRightPopover,
+    visibleTopRightPopover,
+  ]);
+
+  useEffect(() => {
+    if (visibleTopRightPopover === null) {
+      return;
+    }
+    const focusTarget =
+      visibleTopRightPopover === "info"
+        ? infoRef.current
+        : visibleTopRightPopover === "more"
+          ? moreRef.current
+          : musicMuteButtonRef.current;
+    if (!focusTarget) {
+      return;
+    }
+    const animationFrame = window.requestAnimationFrame(() => {
+      focusTarget.focus({ preventScroll: true });
+    });
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [visibleTopRightPopover]);
+
+  useEffect(() => {
+    if (visibleTopRightPopover === null) {
+      return;
+    }
+    const openPopover = visibleTopRightPopover;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      updateActiveTopRightPopover(null);
+      window.requestAnimationFrame(() => {
+        const trigger =
+          openPopover === "music"
+            ? musicButtonRef.current
+            : primaryButtonRef.current;
+        trigger?.focus({ preventScroll: true });
+      });
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [updateActiveTopRightPopover, visibleTopRightPopover]);
+
+  useEffect(() => {
+    if (visibleTopRightPopover === null) {
+      return;
+    }
+    const openPopover = visibleTopRightPopover;
+    const handleTapOutside = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      const popover =
+        openPopover === "info"
+          ? infoRef.current
+          : openPopover === "more"
+            ? moreRef.current
+            : musicRef.current;
+      const trigger =
+        openPopover === "music"
+          ? musicButtonRef.current
+          : primaryButtonRef.current;
+      if (popover && !popover.contains(target) && !trigger?.contains(target)) {
+        const targetClaimsFocus =
+          target instanceof Element &&
+          target.closest(FOCUS_CLAIMING_TARGET_SELECTOR) !== null;
+        const hadPopoverFocus = popover.contains(document.activeElement);
+        didDismissSomethingWithOutsideTapJustNow();
+        updateActiveTopRightPopover(null);
+        if (hadPopoverFocus) {
+          window.requestAnimationFrame(() => {
+            const activeElement = document.activeElement;
+            if (
+              (event.defaultPrevented || !targetClaimsFocus) &&
+              (activeElement === null ||
+                activeElement === document.body ||
+                popover.contains(activeElement)) &&
+              trigger?.isConnected
+            ) {
+              trigger.focus({ preventScroll: true });
+            }
+          });
+        }
+      }
+    };
+
+    document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
+    return () => {
+      document.removeEventListener(
+        defaultEarlyInputEventName,
+        handleTapOutside,
+      );
+    };
+  }, [updateActiveTopRightPopover, visibleTopRightPopover]);
+
+  const togglePopover = (
+    popover: Exclude<TopRightPopoverName, null>,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.stopPropagation();
+    if (visibleTopRightPopover === popover) {
+      updateActiveTopRightPopover(null);
+      return;
+    }
+    onBeforeOpen();
+    updateActiveTopRightPopover(popover);
+  };
+
+  const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onBeforeOpen();
+    onOpenInventory(TOP_RIGHT_CONTROL_IDS.gem);
+  };
+
+  const handleMusicPlaybackToggle = () => {
+    if (isMusicPlaying) {
+      stopPlayingMusic();
+    } else {
+      startPlayingMusic();
+    }
+  };
+
+  const handleOpenSettingsFromMore = () => {
+    updateActiveTopRightPopover(null);
+    onOpenSettings(TOP_RIGHT_CONTROL_IDS.more);
+  };
+
+  const handleLogoutFromMore = () => {
+    updateActiveTopRightPopover(null);
+    onRequestLogout(TOP_RIGHT_CONTROL_IDS.more);
+  };
+
+  const primaryTopRightPopover = isAuthenticated ? "more" : "info";
+
+  return (
+    <>
+      {isVisible && (
+        <div className="small-top-control-buttons">
+          <button
+            ref={primaryButtonRef}
+            id={TOP_RIGHT_CONTROL_IDS[primaryTopRightPopover]}
+            type="button"
+            className={isAuthenticated ? "more-button" : "info-button"}
+            onClick={(event) => togglePopover(primaryTopRightPopover, event)}
+            aria-label={isAuthenticated ? "More" : "Info"}
+            aria-haspopup="dialog"
+            aria-controls={TOP_RIGHT_POPOVER_IDS[primaryTopRightPopover]}
+            aria-expanded={visibleTopRightPopover === primaryTopRightPopover}
+          >
+            {isAuthenticated ? <FaEllipsisH /> : <FaInfoCircle />}
+          </button>
+          <button
+            ref={musicButtonRef}
+            id={TOP_RIGHT_CONTROL_IDS.music}
+            type="button"
+            className="music-button"
+            onClick={(event) => togglePopover("music", event)}
+            aria-label="Music"
+            aria-haspopup="dialog"
+            aria-controls={TOP_RIGHT_POPOVER_IDS.music}
+            aria-expanded={isMusicOpen}
+          >
+            <FaMusic />
+          </button>
+          <button
+            id={TOP_RIGHT_CONTROL_IDS.gem}
+            type="button"
+            className="gem-button"
+            onClick={handleGemButtonClick}
+            aria-label="Collectibles"
+            aria-haspopup="dialog"
+          >
+            <FaRegGem />
+          </button>
+        </div>
+      )}
+
+      {!isAuthenticated && (
+        <InfoPopover
+          ref={infoRef}
+          id={TOP_RIGHT_POPOVER_IDS.info}
+          isOpen={isInfoOpen}
+        />
+      )}
+
+      {isAuthenticated && (
+        <MorePopover
+          ref={moreRef}
+          id={TOP_RIGHT_POPOVER_IDS.more}
+          $isOpen={isMoreOpen}
+          role="dialog"
+          aria-label="More"
+          aria-hidden={!isMoreOpen}
+          tabIndex={-1}
+        >
+          <MoreHelpContent>
+            <HowToPlayContent />
+            <br />
+            <HowToPlaySeparator ariaHidden />
+          </MoreHelpContent>
+          <MoreActions>
+            <MoreActionButton
+              type="button"
+              onClick={handleOpenSettingsFromMore}
+            >
+              <FaCog />
+              <span>Settings</span>
+            </MoreActionButton>
+            <MoreActionButton
+              type="button"
+              $danger
+              onClick={handleLogoutFromMore}
+            >
+              <FaPowerOff />
+              <span>Log Out</span>
+            </MoreActionButton>
+          </MoreActions>
+        </MorePopover>
+      )}
+
+      <MusicPopover
+        ref={musicRef}
+        id={TOP_RIGHT_POPOVER_IDS.music}
+        $isOpen={isMusicOpen}
+        role="dialog"
+        aria-label="Music"
+        aria-hidden={!isMusicOpen}
+        tabIndex={-1}
+      >
+        <MusicMuteButton
+          ref={musicMuteButtonRef}
+          type="button"
+          onClick={onToggleMute}
+        >
+          {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+          <span>{isMuted ? "Unmute all audio" : "Mute all audio"}</span>
+        </MusicMuteButton>
+        <MusicControlsContainer>
+          <MusicControlButton
+            type="button"
+            onClick={() => playPreviousTrack()}
+            aria-label="Previous track"
+          >
+            <FaBackward />
+          </MusicControlButton>
+          <MusicControlButton
+            type="button"
+            onClick={handleMusicPlaybackToggle}
+            aria-label={isMusicPlaying ? "Stop music" : "Play music"}
+          >
+            {isMusicPlaying ? <FaStop /> : <FaPlay />}
+          </MusicControlButton>
+          <MusicControlButton
+            type="button"
+            onClick={() => playNextTrack()}
+            aria-label="Next track"
+          >
+            <FaForward />
+          </MusicControlButton>
+        </MusicControlsContainer>
+      </MusicPopover>
+    </>
+  );
+};
 
 const MainMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const [isMusicOpen, setIsMusicOpen] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const [eventStartsInMinutes, setEventStartsInMinutes] = useState("5");
@@ -877,8 +1424,12 @@ const MainMenu: React.FC = () => {
   );
   const animationFrameRef = useRef<number | null>(null);
   const activeIndicesRef = useRef<number[]>([]);
+  const isMenuOpenRef = useRef(isMenuOpen);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  setIsMusicPlayingGlobalImpl = setIsMusicPlaying;
+  useLayoutEffect(() => {
+    isMenuOpenRef.current = isMenuOpen;
+  }, [isMenuOpen]);
 
   useEffect(() => {
     let mounted = true;
@@ -968,33 +1519,11 @@ const MainMenu: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  getIsMenuOpen = () => isMenuOpen;
-  getIsInfoOpen = () => isInfoOpen;
-  getIsMusicOpen = () => isMusicOpen;
-
-  useEffect(() => {
-    return () => {
-      getIsMenuOpen = () => false;
-      getIsInfoOpen = () => false;
-      getIsMusicOpen = () => false;
-      toggleInfoVisibilityImpl = () => {};
-      toggleMusicVisibilityImpl = () => {};
-      closeMenuAndInfoIfAnyImpl = () => {};
-      closeAllKindsOfPopupsImpl = () => {};
-      closeMenuAndInfoIfAllowedForEventImpl = () => {};
-      setIsMusicPlayingGlobalImpl = () => {};
-    };
-  }, []);
-
-  const menuRef = useRef<HTMLDivElement>(null);
-  const infoRef = useRef<HTMLDivElement>(null);
-  const musicRef = useRef<HTMLDivElement>(null);
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     if (!isMenuOpen) {
       setShowExperimental(false);
-      setIsMusicOpen(false);
+      closeTopRightPopover();
     }
   };
 
@@ -1022,16 +1551,6 @@ const MainMenu: React.FC = () => {
     setEventScheduledTimezone("local");
     setEventAnnounceOnTelegram(false);
     setEventCreateError("");
-  };
-
-  const handleMusicPlaybackToggle = () => {
-    if (isMusicPlaying) {
-      stopPlayingMusic();
-      setIsMusicPlaying(false);
-    } else {
-      startPlayingMusic();
-      setIsMusicPlaying(true);
-    }
   };
 
   const handleBooleanToggle =
@@ -1131,59 +1650,41 @@ const MainMenu: React.FC = () => {
     eventAnnounceOnTelegram,
   ]);
 
-  toggleInfoVisibilityImpl = () => {
-    if (!isInfoOpen) {
-      closeProfilePopupIfAny();
-      closeNavigationAndAppearancePopupIfAny();
-      setIsMenuOpen(false);
-      setIsMusicOpen(false);
-    }
-    setIsInfoOpen(!isInfoOpen);
-  };
-
-  toggleMusicVisibilityImpl = () => {
-    if (!isMusicOpen) {
-      closeProfilePopupIfAny();
-      closeNavigationAndAppearancePopupIfAny();
-      setIsMenuOpen(false);
-      setIsInfoOpen(false);
-    }
-    setIsMusicOpen(!isMusicOpen);
-  };
-
-  closeMenuAndInfoIfAnyImpl = () => {
-    setIsInfoOpen(false);
-    setIsMenuOpen(false);
-    setIsMusicOpen(false);
-  };
-
   const closeMainMenuPopupsHandler = useCallback(() => {
-    setIsInfoOpen(false);
     setIsMenuOpen(false);
-    setIsMusicOpen(false);
+    closeTopRightPopover();
   }, []);
 
-  const closeAllKindsOfPopupsHandler = useCallback(() => {
-    closeProfilePopupIfAny();
-    closeNavigationAndAppearancePopupIfAny();
-    closeMainMenuPopupsHandler();
-  }, [closeMainMenuPopupsHandler]);
-
-  closeAllKindsOfPopupsImpl = closeAllKindsOfPopupsHandler;
+  const closeMenuIfAllowedForEvent = useCallback(
+    (event: TouchEvent | MouseEvent) => {
+      if (
+        isMenuOpenRef.current &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        closeMainMenuPopupsHandler();
+      }
+    },
+    [closeMainMenuPopupsHandler],
+  );
 
   useEffect(() => {
     return registerMainMenuTransientUiHandler(closeMainMenuPopupsHandler);
   }, [closeMainMenuPopupsHandler]);
 
-  closeMenuAndInfoIfAllowedForEventImpl = (event: TouchEvent | MouseEvent) => {
-    if (
-      isMenuOpen &&
-      menuRef.current &&
-      !menuRef.current.contains(event.target as Node)
-    ) {
-      closeMenuAndInfoIfAnyImpl();
-    }
-  };
+  useEffect(() => {
+    const api: MainMenuApi = {
+      close: closeMainMenuPopupsHandler,
+      closeIfAllowedForEvent: closeMenuIfAllowedForEvent,
+      isOpen: () => isMenuOpenRef.current,
+    };
+    mainMenuApi = api;
+    return () => {
+      if (mainMenuApi === api) {
+        mainMenuApi = null;
+      }
+    };
+  }, [closeMainMenuPopupsHandler, closeMenuIfAllowedForEvent]);
 
   useEffect(() => {
     const handleTapOutside = (event: any) => {
@@ -1209,54 +1710,6 @@ const MainMenu: React.FC = () => {
       document.removeEventListener("touchstart", handleTapOutside);
     };
   }, [isMenuOpen]);
-
-  useEffect(() => {
-    const handleTapOutside = (event: any) => {
-      event.stopPropagation();
-      const isInfoButton = event.target.closest(".info-button");
-      if (
-        isInfoOpen &&
-        infoRef.current &&
-        !infoRef.current.contains(event.target as Node) &&
-        !isInfoButton
-      ) {
-        didDismissSomethingWithOutsideTapJustNow();
-        setIsInfoOpen(false);
-      }
-    };
-
-    document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
-    return () => {
-      document.removeEventListener(
-        defaultEarlyInputEventName,
-        handleTapOutside,
-      );
-    };
-  }, [isInfoOpen]);
-
-  useEffect(() => {
-    const handleTapOutside = (event: any) => {
-      event.stopPropagation();
-      const isMusicButton = event.target.closest(".music-button");
-      if (
-        isMusicOpen &&
-        musicRef.current &&
-        !musicRef.current.contains(event.target as Node) &&
-        !isMusicButton
-      ) {
-        didDismissSomethingWithOutsideTapJustNow();
-        setIsMusicOpen(false);
-      }
-    };
-
-    document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
-    return () => {
-      document.removeEventListener(
-        defaultEarlyInputEventName,
-        handleTapOutside,
-      );
-    };
-  }, [isMusicOpen]);
 
   const showTotalAsIcons = MATERIAL_TYPES.every((name) => !!materialUrls[name]);
   const canCreatePilotEvents = isMonsLinkAdmin(
@@ -1613,8 +2066,7 @@ const MainMenu: React.FC = () => {
                     closeNavigationAndAppearancePopupIfAny();
                   }
                   toggleMenu();
-                  setIsInfoOpen(false);
-                  setIsMusicOpen(false);
+                  closeTopRightPopover();
                 },
               }
             : {
@@ -1629,30 +2081,13 @@ const MainMenu: React.FC = () => {
                     closeNavigationAndAppearancePopupIfAny();
                   }
                   setIsMenuOpen(true);
-                  setIsInfoOpen(false);
-                  setIsMusicOpen(false);
+                  closeTopRightPopover();
                 },
               })}
         >
           <img src={logoBase64} alt="" />
         </RockButton>
       </RockButtonContainer>
-
-      <InfoPopover ref={infoRef} isOpen={isInfoOpen} />
-
-      <MusicPopover ref={musicRef} isOpen={isMusicOpen}>
-        <MusicControlsContainer>
-          <MusicControlButton onClick={() => playNextTrack()}>
-            <FaBackward />
-          </MusicControlButton>
-          <MusicControlButton onClick={handleMusicPlaybackToggle}>
-            {isMusicPlaying ? <FaStop /> : <FaPlay />}
-          </MusicControlButton>
-          <MusicControlButton onClick={() => playNextTrack()}>
-            <FaForward />
-          </MusicControlButton>
-        </MusicControlsContainer>
-      </MusicPopover>
     </>
   );
 };

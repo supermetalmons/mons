@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { VALID_REACTION_IDS } = require("@mons/shared/nfts");
+const { readProfileByLoginUid } = require("./profileLookup");
 
 exports.getNfts = onCall(async (request) => {
   if (!request.auth) {
@@ -9,11 +10,23 @@ exports.getNfts = onCall(async (request) => {
     );
   }
 
-  const sol = request.data.sol;
-  const eth = request.data.eth;
-
+  const profileDocument = await readProfileByLoginUid(request.auth.uid, [
+    "sol",
+    "eth",
+  ]);
+  if (!profileDocument) {
+    throw new HttpsError("not-found", "profile-not-found");
+  }
+  const profile = profileDocument.data() || {};
+  const sol = profile.sol ?? "";
+  const eth = profile.eth ?? "";
   if (!sol && !eth) {
-    throw new HttpsError("invalid-argument", "Some address is required.");
+    return {
+      ok: true,
+      specials: [],
+      swagpack_avatars: [],
+      swagpack_reactions: [],
+    };
   }
 
   try {
@@ -50,13 +63,20 @@ exports.getNfts = onCall(async (request) => {
           },
         );
         const solData = await solResponse.json();
-        if (!solResponse.ok) {
-          return [];
+        if (!solResponse.ok || solData?.error) {
+          throw new Error("Helius searchAssets request failed.");
         }
-        const resultNode = solData?.result || {};
-        const items = resultNode?.items || [];
+        const resultNode = solData?.result;
+        if (
+          !resultNode ||
+          typeof resultNode !== "object" ||
+          !Array.isArray(resultNode.items)
+        ) {
+          throw new Error("Helius searchAssets response was malformed.");
+        }
+        const items = resultNode.items;
         total =
-          typeof resultNode?.total === "number" ? resultNode.total : total;
+          typeof resultNode.total === "number" ? resultNode.total : total;
         for (const item of items) {
           const jsonUri = item?.content?.json_uri || "";
           if (typeof jsonUri !== "string" || jsonUri.length === 0) continue;
@@ -75,7 +95,7 @@ exports.getNfts = onCall(async (request) => {
         }
         fetched += items.length;
         if (!items.length || fetched >= total || items.length < limit) break;
-        cursor = resultNode?.cursor;
+        cursor = resultNode.cursor;
         if (!cursor) break;
       }
       return Array.from(idCounts.entries()).map(([id, count]) => ({
@@ -111,6 +131,6 @@ exports.getNfts = onCall(async (request) => {
     return { ok: true, specials, swagpack_avatars, swagpack_reactions };
   } catch (error) {
     console.error("Error fetching NFTs:", error);
-    return { ok: false };
+    throw new HttpsError("unavailable", "nft-provider-unavailable");
   }
 });

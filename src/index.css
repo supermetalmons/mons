@@ -61,6 +61,8 @@
   --dangerButtonBackgroundDark: #ff453a;
   --dangerButtonBackgroundHoverDark: #ff6159;
   --dangerButtonBackgroundActiveDark: #ff7a72;
+  --dangerTextColor: #c62828;
+  --dangerTextColorDark: #ff7a72;
   --resignButtonBackground: #ff4136;
   --resignButtonBackgroundHover: #e60000;
   --resignButtonBackgroundActive: #d30000;
@@ -340,8 +342,9 @@ img {
 }
 
 .music-button,
-.sound-button,
-.info-button {
+.info-button,
+.more-button,
+.gem-button {
   border: none;
   cursor: pointer;
   font-size: 13px;
@@ -365,6 +368,12 @@ img {
     opacity: 0.5;
   }
 
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -3px;
+    border-radius: 7px;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
       color: var(--mutedTextColorHover);
@@ -384,7 +393,8 @@ img {
 
 .music-button,
 .info-button,
-.sound-button {
+.more-button,
+.gem-button {
   margin-left: 2pt;
   margin-right: 2pt;
 
@@ -394,7 +404,7 @@ img {
   }
 }
 
-.sound-button {
+.gem-button {
   margin-right: 6pt;
 
   @media (max-width: 380px) {
@@ -402,7 +412,8 @@ img {
   }
 }
 
-.info-button {
+.info-button,
+.more-button {
   margin-left: 6pt;
 
   @media (max-width: 380px) {

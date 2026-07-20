@@ -13,6 +13,7 @@ import {
   ModalTitle,
   ButtonsContainer,
   SaveButton,
+  handleModalKeyDown,
 } from "./SharedModalComponents";
 import { connection } from "../connection/connection";
 import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
@@ -34,6 +35,8 @@ import {
 } from "../connection/xConnection";
 import { formatXAuthErrorMessage } from "../connection/xAuthErrors";
 import { isMobile } from "../utils/misc";
+import { notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
+import { resetNftCache } from "../services/nftService";
 
 const SettingsPopup = styled(ModalPopup)`
   padding: 20px;
@@ -302,11 +305,7 @@ type AuthIntentResponse = {
 };
 
 type AppleButtonUiState =
-  | "idle"
-  | "preparing"
-  | "confirm"
-  | "connecting"
-  | "verifying";
+  "idle" | "preparing" | "confirm" | "connecting" | "verifying";
 
 const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
 
@@ -663,11 +662,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     void refreshLinkedMethods();
   }, [isLoading, refreshLinkedMethods]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      e.stopPropagation();
-      onClose();
-    }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    handleModalKeyDown(e, popupRef.current, onClose);
   };
 
   const runConnectFlow = useCallback(
@@ -903,6 +899,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             storage.getEthAddress(""),
             storage.getSolAddress(""),
           );
+          if (method === "eth" || method === "sol") {
+            resetNftCache();
+            storage.setReactionExtraStickerCache(null);
+            setAuthStatusGlobally("authenticated");
+            notifyOtherTabsAboutSignIn(
+              storage.getProfileId(""),
+              storage.getLoginId(""),
+            );
+          }
         }
       } catch (error) {
         console.error(`Failed to unlink ${method}:`, error);
@@ -1057,8 +1062,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
         tabIndex={0}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-dialog-title"
       >
-        <SettingsTitle>Settings</SettingsTitle>
+        <SettingsTitle id="settings-dialog-title">Settings</SettingsTitle>
         <MethodsList>
           {renderMethodRow("eth", "Ethereum")}
           {renderMethodRow("sol", "Solana")}

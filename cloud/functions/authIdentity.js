@@ -21,6 +21,7 @@ const {
 const {
   assignRandomUsernameIfNeededForWalletlessProfile,
 } = require("./usernameRegistry");
+const { readProfileByLoginUid } = require("./profileLookup");
 
 const INTENT_TTL_MS = 5 * 60 * 1000;
 const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
@@ -558,22 +559,6 @@ const ensureProfileClaimAndRtdb = async (uid, profileId) => {
   if (writes.length > 0) {
     await Promise.all(writes);
   }
-};
-
-const readProfileByLoginUid = async (uid) => {
-  const firestore = admin.firestore();
-  const snapshot = await firestore
-    .collection("users")
-    .where("logins", "array-contains", uid)
-    .limit(2)
-    .get();
-  if (snapshot.empty) {
-    return null;
-  }
-  if (snapshot.size > 1) {
-    throw new HttpsError("failed-precondition", "login-profile-conflict");
-  }
-  return snapshot.docs[0];
 };
 
 const readProfileByMethod = async (method, normalizedValue, rawValue) => {

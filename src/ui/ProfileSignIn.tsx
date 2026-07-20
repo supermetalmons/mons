@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import { cropAddress } from "@mons/shared/profiles";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { flushSync } from "react-dom";
@@ -11,7 +17,10 @@ import {
   closeMenuAndInfoIfAllowedForEvent,
   closeMenuAndInfoIfAny,
 } from "./MainMenu";
-import { setAuthStatusGlobally } from "../connection/authentication";
+import {
+  setAuthStatusGlobally,
+  type AuthState,
+} from "../connection/authentication";
 import { handleLoginSuccess } from "../connection/loginSuccess";
 import {
   preloadAppleSignInLibrary,
@@ -47,7 +56,6 @@ import {
   showsShinyCardSomewhere,
   updateShinyCardDisplayName,
 } from "./ShinyCard";
-import { enterProfileEditingMode } from "../index";
 import { registerProfileTransientUiHandler } from "./uiSession";
 import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 
@@ -234,47 +242,49 @@ let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
 let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
 let getIsSettingsPopupOpen: () => boolean = () => false;
-let closeProfilePopupIfAnyImpl: () => void = () => {};
-let handleEditDisplayNameImpl: () => void = () => {};
-let showInventoryImpl: () => void = () => {};
-let handleLogoutImpl: () => void = () => {};
-let showSettingsImpl: () => void = () => {};
-let hideNotificationBannerImpl: () => void = () => {};
-let showNotificationBannerImpl: (
-  title: string,
-  subtitle: string,
-  emojiId: string,
-  successHandler: () => void,
-) => void = () => {};
-let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
+
 type ProfileSignInPopupMode = "inline" | "event";
-let openProfileSignInPopupImpl: (
-  mode?: ProfileSignInPopupMode,
-) => void = () => {};
+type ProfileSignInApi = {
+  close: () => void;
+  editDisplayName: () => void;
+  openInventory: (returnFocusId?: string) => void;
+  requestLogout: (returnFocusId?: string) => void;
+  openSettings: (returnFocusId?: string) => void;
+  hideNotificationBanner: () => void;
+  showNotificationBanner: (
+    title: string,
+    subtitle: string,
+    emojiId: string,
+    successHandler: () => void,
+  ) => void;
+  openSignInPopup: (mode?: ProfileSignInPopupMode) => void;
+};
+let profileSignInApi: ProfileSignInApi | null = null;
+let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
 let pendingSignInInlineAuthError: string | null | undefined = undefined;
 
 export const closeProfilePopupIfAny = () => {
-  closeProfilePopupIfAnyImpl();
+  profileSignInApi?.close();
 };
 
 export const handleEditDisplayName = () => {
-  handleEditDisplayNameImpl();
+  profileSignInApi?.editDisplayName();
 };
 
-export const showInventory = () => {
-  showInventoryImpl();
+export const showInventory = (returnFocusId?: string) => {
+  profileSignInApi?.openInventory(returnFocusId);
 };
 
-export const handleLogout = () => {
-  handleLogoutImpl();
+export const handleLogout = (returnFocusId?: string) => {
+  profileSignInApi?.requestLogout(returnFocusId);
 };
 
-export const showSettings = () => {
-  showSettingsImpl();
+export const showSettings = (returnFocusId?: string) => {
+  profileSignInApi?.openSettings(returnFocusId);
 };
 
 export const hideNotificationBanner = () => {
-  hideNotificationBannerImpl();
+  profileSignInApi?.hideNotificationBanner();
 };
 
 export const showNotificationBanner = (
@@ -283,7 +293,12 @@ export const showNotificationBanner = (
   emojiId: string,
   successHandler: () => void,
 ) => {
-  showNotificationBannerImpl(title, subtitle, emojiId, successHandler);
+  profileSignInApi?.showNotificationBanner(
+    title,
+    subtitle,
+    emojiId,
+    successHandler,
+  );
 };
 
 export const setSignInInlineAuthError = (message: string | null) => {
@@ -292,11 +307,11 @@ export const setSignInInlineAuthError = (message: string | null) => {
 };
 
 export const openProfileSignInPopup = () => {
-  openProfileSignInPopupImpl("inline");
+  profileSignInApi?.openSignInPopup("inline");
 };
 
 export const openProfileSignInPopupForEvent = () => {
-  openProfileSignInPopupImpl("event");
+  profileSignInApi?.openSignInPopup("event");
 };
 
 export function hasProfilePopupVisible(): boolean {
@@ -509,7 +524,14 @@ const getXButtonLabel = (state: XButtonUiState): string => {
   return "X";
 };
 
-const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
+interface ProfileSignInProps {
+  authState: AuthState;
+}
+
+const ProfileSignIn: React.FC<ProfileSignInProps> = ({
+  authState,
+}) => {
+  const { authStatus, profileId, solAddress, ethAddress } = authState;
   const [isOpen, setIsOpen] = useState(false);
   const [popupMode, setPopupMode] = useState<ProfileSignInPopupMode>("inline");
   const [isEventModalVisible, setIsEventModalVisible] = useState(() => {
@@ -562,6 +584,9 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const xRedirectVisibilityRecoveryHandlerRef = useRef<(() => void) | null>(
     null,
   );
+  const inventoryReturnFocusIdRef = useRef<string | null>(null);
+  const logoutReturnFocusIdRef = useRef<string | null>(null);
+  const settingsReturnFocusIdRef = useRef<string | null>(null);
   const isMountedRef = useRef(true);
   const isOpenRef = useRef(isOpen);
   const authStatusRef = useRef(authStatus);
@@ -569,6 +594,23 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const nextSettingsInlineMessageIdRef = useRef(0);
   const shouldReopenSettingsAfterXRedirectRef = useRef(
     peekXRedirectResult()?.consentSource === "settings",
+  );
+
+  const restoreFocusById = useCallback(
+    (returnFocusIdRef: { current: string | null }) => {
+      const returnFocusId = returnFocusIdRef.current;
+      returnFocusIdRef.current = null;
+      if (!returnFocusId) {
+        return;
+      }
+      window.requestAnimationFrame(() => {
+        const target = document.getElementById(returnFocusId);
+        if (target instanceof HTMLElement && target.isConnected) {
+          target.focus({ preventScroll: true });
+        }
+      });
+    },
+    [],
   );
 
   const appleText = getAppleButtonLabel(appleButtonState);
@@ -653,12 +695,13 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   }, []);
 
   const closeProfileTransientUiForSettingsReopen = useCallback(() => {
+    inventoryReturnFocusIdRef.current = null;
+    logoutReturnFocusIdRef.current = null;
     setIsOpen(false);
     setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsEditingName(false);
     hideShinyCard();
-    enterProfileEditingMode(false);
   }, []);
 
   const scheduleAppleConfirmExpiryTimeout = useCallback(() => {
@@ -770,7 +813,7 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
       if (
         target instanceof Element &&
         target.closest(
-          ".info-button, .sound-button, .music-button, tr, .shiny-card-done-button",
+          ".info-button, .more-button, .gem-button, .music-button, tr, .shiny-card-done-button",
         )
       ) {
         return;
@@ -778,7 +821,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
 
       if (isPlayerCardTrigger && showsShinyCardSomewhere) {
         setIsOpen(false);
-        enterProfileEditingMode(false);
         return;
       }
 
@@ -790,7 +832,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
         didDismissSomethingWithOutsideTapJustNow();
         setIsOpen(false);
         hideShinyCard();
-        enterProfileEditingMode(false);
         if (!isMobile) {
           closeMenuAndInfoIfAllowedForEvent(event);
         }
@@ -806,6 +847,7 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   });
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       clearEthereumConnectRetryTimeout();
@@ -928,6 +970,9 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   }, [authStatus]);
 
   const beginImmediateLogoutUiCleanup = useCallback(() => {
+    inventoryReturnFocusIdRef.current = null;
+    logoutReturnFocusIdRef.current = null;
+    settingsReturnFocusIdRef.current = null;
     setLogoutUiLocked(true);
     setIsOpen(false);
     setIsInventoryOpen(false);
@@ -936,7 +981,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
     setSettingsInlineMessage(null);
     setIsEditingName(false);
     hideShinyCard();
-    enterProfileEditingMode(false);
     // Keep auth controls hidden until the hard reload lands to avoid flicker.
     setAuthStatusGlobally("loading");
   }, []);
@@ -987,9 +1031,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
     }, 400);
   }, []);
 
-  hideNotificationBannerImpl = hideNotificationBannerInternal;
-  showNotificationBannerImpl = showNotificationBannerInternal;
-
   const performLogout = () => {
     const logoutAttemptId = beginLogoutAttempt();
     beginImmediateLogoutUiCleanup();
@@ -1022,6 +1063,9 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   };
 
   const closeProfilePopupInternal = useCallback(() => {
+    inventoryReturnFocusIdRef.current = null;
+    logoutReturnFocusIdRef.current = null;
+    settingsReturnFocusIdRef.current = null;
     didDismissSomethingWithOutsideTapJustNow();
     setIsOpen(false);
     setPopupMode("inline");
@@ -1031,7 +1075,25 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
     setSettingsInlineMessage(null);
     setIsEditingName(false);
     hideShinyCard();
-    enterProfileEditingMode(false);
+  }, []);
+
+  const handleLogoutRequestInternal = useCallback((returnFocusId?: string) => {
+    logoutReturnFocusIdRef.current = returnFocusId ?? null;
+    setIsLogoutConfirmOpen(true);
+  }, []);
+
+  const showSettingsInternal = useCallback((returnFocusId?: string) => {
+    settingsReturnFocusIdRef.current = returnFocusId ?? null;
+    setIsSettingsOpen(true);
+  }, []);
+
+  const showInventoryInternal = useCallback((returnFocusId?: string) => {
+    inventoryReturnFocusIdRef.current = returnFocusId ?? null;
+    setIsInventoryOpen(true);
+  }, []);
+
+  const handleEditDisplayNameInternal = useCallback(() => {
+    setIsEditingName(true);
   }, []);
 
   useEffect(() => {
@@ -1040,14 +1102,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
       closeProfilePopupInternal,
     );
   }, [closeProfilePopupInternal, hideNotificationBannerInternal]);
-
-  handleLogoutImpl = () => {
-    setIsLogoutConfirmOpen(true);
-  };
-
-  showSettingsImpl = () => {
-    setIsSettingsOpen(true);
-  };
 
   const recoverFromStalePendingXSignInRedirect = useCallback(() => {
     clearPendingXSignInStaleTimeout();
@@ -1095,22 +1149,34 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
     ],
   );
 
-  closeProfilePopupIfAnyImpl = closeProfilePopupInternal;
-  openProfileSignInPopupImpl = openProfileSignInPopupInternal;
-
-  useEffect(() => {
-    return () => {
-      closeProfilePopupIfAnyImpl = () => {};
-      handleEditDisplayNameImpl = () => {};
-      showInventoryImpl = () => {};
-      handleLogoutImpl = () => {};
-      showSettingsImpl = () => {};
-      hideNotificationBannerImpl = () => {};
-      showNotificationBannerImpl = () => {};
-      setSignInInlineAuthErrorImpl = () => {};
-      openProfileSignInPopupImpl = () => {};
+  useLayoutEffect(() => {
+    const api: ProfileSignInApi = {
+      close: closeProfilePopupInternal,
+      editDisplayName: handleEditDisplayNameInternal,
+      openInventory: showInventoryInternal,
+      requestLogout: handleLogoutRequestInternal,
+      openSettings: showSettingsInternal,
+      hideNotificationBanner: hideNotificationBannerInternal,
+      showNotificationBanner: showNotificationBannerInternal,
+      openSignInPopup: openProfileSignInPopupInternal,
     };
-  }, []);
+    profileSignInApi = api;
+
+    return () => {
+      if (profileSignInApi === api) {
+        profileSignInApi = null;
+      }
+    };
+  }, [
+    closeProfilePopupInternal,
+    handleEditDisplayNameInternal,
+    handleLogoutRequestInternal,
+    hideNotificationBannerInternal,
+    openProfileSignInPopupInternal,
+    showInventoryInternal,
+    showNotificationBannerInternal,
+    showSettingsInternal,
+  ]);
 
   useEffect(() => {
     setSignInInlineAuthErrorImpl = (message) => {
@@ -1190,10 +1256,8 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
     if (authStatus === "authenticated") {
       if (isOpen) {
         hideShinyCard();
-        enterProfileEditingMode(false);
       } else {
         showShinyCard(null, profileDisplayName, false);
-        enterProfileEditingMode(true);
       }
     }
 
@@ -1202,14 +1266,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
     }
 
     setIsOpen(!isOpen);
-  };
-
-  showInventoryImpl = () => {
-    setIsInventoryOpen(true);
-  };
-
-  handleEditDisplayNameImpl = () => {
-    setIsEditingName(true);
   };
 
   const handleSaveDisplayName = (newName: string) => {
@@ -1225,6 +1281,7 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const handleDismissInventory = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsInventoryOpen(false);
+    restoreFocusById(inventoryReturnFocusIdRef);
   };
 
   const handleCancelEditName = () => {
@@ -1233,18 +1290,21 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   };
 
   const handleConfirmLogout = () => {
+    logoutReturnFocusIdRef.current = null;
     performLogout();
   };
 
   const handleCancelLogout = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsLogoutConfirmOpen(false);
+    restoreFocusById(logoutReturnFocusIdRef);
   };
 
   const handleCloseSettings = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsSettingsOpen(false);
     setSettingsInlineMessage(null);
+    restoreFocusById(settingsReturnFocusIdRef);
   };
 
   const ensurePreparedAppleIntent =
@@ -1357,7 +1417,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
         hideShinyCard();
-        enterProfileEditingMode(false);
       }
 
       setSolanaText("Solana");
@@ -1451,7 +1510,6 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
         hideShinyCard();
-        enterProfileEditingMode(false);
         return;
       }
       setAppleStateIfMounted("idle");
@@ -1650,7 +1708,18 @@ const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
           onCancel={handleCancelEditName}
         />
       )}
-      {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
+      {isInventoryOpen && (
+        <InventoryModal
+          key={JSON.stringify([
+            authStatus === "authenticated",
+            profileId,
+            solAddress,
+            ethAddress,
+          ])}
+          authState={authState}
+          onCancel={handleDismissInventory}
+        />
+      )}
       {isLogoutConfirmOpen && (
         <LogoutConfirmModal
           onConfirm={handleConfirmLogout}

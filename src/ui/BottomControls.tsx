@@ -57,6 +57,7 @@ import {
 import type { RematchSeriesNavigatorItem } from "../game/gameController";
 import { connection } from "../connection/connection";
 import type { NavigationGamesPageCursor } from "../connection/connection";
+import type { AuthState } from "../connection/authentication";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction, playSounds } from "../content/sounds";
@@ -90,7 +91,11 @@ import {
   WagerButtonAmount,
   ShimmerText,
 } from "./BottomControlsStyles";
-import { fetchNftsForStoredAddresses } from "../services/nftService";
+import {
+  fetchNftsForIdentity,
+  getNftIdentityKey,
+  NFT_CACHE_TTL_MS,
+} from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent, {
@@ -122,7 +127,10 @@ import {
   subscribeToFrozenMaterials,
 } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
-import { storage } from "../utils/storage";
+import {
+  storage,
+  type ReactionExtraStickerCache,
+} from "../utils/storage";
 import {
   getCurrentTarget,
   isTransitionInProgress,
@@ -281,6 +289,16 @@ const FIXED_STICKER_IDS: number[] = [
   900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374,
   900347, 900382, 900429, 900225, 900999,
 ];
+type StickerEntitlementState = {
+  stickerIds: number[];
+  ownerKey: string | null;
+  expiresAtMs: number;
+};
+const EMPTY_STICKER_ENTITLEMENT: StickerEntitlementState = {
+  stickerIds: FIXED_STICKER_IDS,
+  ownerKey: null,
+  expiresAtMs: 0,
+};
 const MATERIAL_IMAGE_BASE_URL = "https://cdn.lil.org/mons/rocks/materials";
 const STICKER_IMAGE_BASE_URL = "https://cdn.lil.org/mons/emojipack/swagpack/64";
 const NAVIGATION_GAMES_PAGE_SIZE = 80;
@@ -422,7 +440,12 @@ const mergeStickerIds = (base: number[], extra: number[]): number[] => {
 
 const normalizeStickerIds = (value: unknown): number[] => {
   if (!Array.isArray(value)) return [];
-  return value.filter((id): id is number => typeof id === "number");
+  return value.filter(
+    (id): id is number =>
+      typeof id === "number" &&
+      Number.isSafeInteger(id) &&
+      VALID_REACTION_IDS.includes(id),
+  );
 };
 
 const getSwagpackReactionStickerIds = (value: unknown): number[] => {
@@ -439,11 +462,34 @@ const areStickerIdArraysEqual = (left: number[], right: number[]): boolean => {
   return true;
 };
 
-const getInitialStickerIds = (): number[] => {
-  const cachedExtraIds = normalizeStickerIds(
-    storage.getReactionExtraStickerIds([]),
-  );
-  return mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds);
+const getStoredStickerOwnerKey = (): string | null => {
+  return getNftIdentityKey(storage.getAuthIdentity());
+};
+
+const hasUsableStickerCacheExpiry = (expiresAtMs: number): boolean => {
+  const now = Date.now();
+  return expiresAtMs > now && expiresAtMs <= now + NFT_CACHE_TTL_MS;
+};
+
+const toUsableStickerEntitlement = (
+  cache: ReactionExtraStickerCache | null,
+  expectedOwnerKey: string,
+): StickerEntitlementState | null => {
+  if (
+    !cache ||
+    getNftIdentityKey(cache) !== expectedOwnerKey ||
+    !hasUsableStickerCacheExpiry(cache.expiresAtMs)
+  ) {
+    return null;
+  }
+  return {
+    stickerIds: mergeStickerIds(
+      FIXED_STICKER_IDS,
+      normalizeStickerIds(cache.extraIds),
+    ),
+    ownerKey: expectedOwnerKey,
+    expiresAtMs: cache.expiresAtMs,
+  };
 };
 
 const RematchSeriesInlineControl = styled.div`
@@ -801,7 +847,15 @@ const getEventCloudAvatarsFromNavigationSources = (
   return eventItem.participantPreview.slice(0, EVENT_CLOUD_MAX_AVATARS);
 };
 
-const BottomControls: React.FC = () => {
+interface BottomControlsProps {
+  authState: AuthState;
+}
+
+const BottomControls: React.FC<BottomControlsProps> = ({
+  authState,
+}) => {
+  const { authStatus, profileId, ethAddress, solAddress } = authState;
+  const isAuthenticated = authStatus === "authenticated";
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
   const [isEndMatchConfirmed, setIsEndMatchConfirmed] = useState(false);
   const [isInviteLinkButtonVisible, setIsInviteLinkButtonVisible] =
@@ -919,9 +973,43 @@ const BottomControls: React.FC = () => {
     progress: 0,
     requestDate: Date.now(),
   });
-  const [stickerIds, setStickerIds] = useState<number[]>(() =>
-    getInitialStickerIds(),
+  const [stickerEntitlement, setStickerEntitlement] =
+    useState<StickerEntitlementState>(EMPTY_STICKER_ENTITLEMENT);
+  const currentStickerOwnerKey = isAuthenticated
+    ? getNftIdentityKey(authState)
+    : null;
+  const clearStickerEntitlement = useCallback(() => {
+    setStickerEntitlement((current) => {
+      if (
+        current.ownerKey === null &&
+        current.expiresAtMs === 0 &&
+        areStickerIdArraysEqual(current.stickerIds, FIXED_STICKER_IDS)
+      ) {
+        return current;
+      }
+      return EMPTY_STICKER_ENTITLEMENT;
+    });
+  }, []);
+  const applyStickerEntitlement = useCallback(
+    (next: StickerEntitlementState) => {
+      setStickerEntitlement((current) =>
+        current.ownerKey === next.ownerKey &&
+        current.expiresAtMs > next.expiresAtMs
+          ? current
+          : next,
+      );
+    },
+    [],
   );
+  const hasStickerEntitlementForCurrentOwner =
+    currentStickerOwnerKey !== null &&
+    stickerEntitlement.ownerKey === currentStickerOwnerKey;
+  const hasFreshStickerEntitlement =
+    hasStickerEntitlementForCurrentOwner &&
+    stickerEntitlement.expiresAtMs > Date.now();
+  const visibleStickerIds = hasStickerEntitlementForCurrentOwner
+    ? stickerEntitlement.stickerIds
+    : FIXED_STICKER_IDS;
   const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(
     undefined,
   );
@@ -1306,14 +1394,6 @@ const BottomControls: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isReactionPickerVisible) return;
-    const nextStickerIds = getInitialStickerIds();
-    setStickerIds((prev) =>
-      areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds,
-    );
-  }, [isReactionPickerVisible]);
-
-  useEffect(() => {
     if (!isReactionPickerVisible) {
       setPickerMaxHeight(undefined);
       return;
@@ -1333,7 +1413,7 @@ const BottomControls: React.FC = () => {
     requestAnimationFrame(() => {
       setPickerMaxHeight(el.scrollHeight);
     });
-  }, [stickerIds, isReactionPickerVisible, isWagerMode, wagerSelection]);
+  }, [visibleStickerIds, isReactionPickerVisible, isWagerMode, wagerSelection]);
 
   const updateTimerConfirmPosition = useCallback(() => {
     if (!timerButtonRef.current || !controlsContainerRef.current) return;
@@ -1384,30 +1464,105 @@ const BottomControls: React.FC = () => {
   useEffect(() => {
     if (!isReactionPickerVisible) return;
     let isCancelled = false;
+    const ownerKeyAtRequest = currentStickerOwnerKey;
+    if (ownerKeyAtRequest === null) {
+      clearStickerEntitlement();
+      return;
+    }
+    if (getStoredStickerOwnerKey() !== ownerKeyAtRequest) {
+      clearStickerEntitlement();
+      return;
+    }
+    const cached = storage.getReactionExtraStickerCache(null);
+    const cachedEntitlement = toUsableStickerEntitlement(
+      cached,
+      ownerKeyAtRequest,
+    );
+    if (cachedEntitlement) {
+      applyStickerEntitlement(cachedEntitlement);
+    } else {
+      setStickerEntitlement((current) =>
+        current.ownerKey === ownerKeyAtRequest
+          ? current
+          : EMPTY_STICKER_ENTITLEMENT,
+      );
+    }
     const fetchReactions = async () => {
       try {
-        const data = await fetchNftsForStoredAddresses();
-        const extraIds = getSwagpackReactionStickerIds(
-          data?.swagpack_reactions,
-        );
-        if (isCancelled) return;
-        const nextStickerIds = mergeStickerIds(FIXED_STICKER_IDS, extraIds);
-        setStickerIds((prev) =>
-          areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds,
-        );
-        const cachedExtraIds = normalizeStickerIds(
-          storage.getReactionExtraStickerIds([]),
-        );
-        if (!areStickerIdArraysEqual(cachedExtraIds, extraIds)) {
-          storage.setReactionExtraStickerIds(extraIds);
+        const snapshot = await fetchNftsForIdentity(authState);
+        const { data, expiresAtMs } = snapshot;
+        if (
+          isCancelled ||
+          data?.ok !== true ||
+          expiresAtMs <= Date.now() ||
+          getStoredStickerOwnerKey() !== ownerKeyAtRequest
+        ) {
+          return;
         }
-      } catch (_) {}
+        const currentCache = storage.getReactionExtraStickerCache(null);
+        const currentCacheEntitlement = toUsableStickerEntitlement(
+          currentCache,
+          ownerKeyAtRequest,
+        );
+        if (
+          currentCacheEntitlement &&
+          currentCacheEntitlement.expiresAtMs > expiresAtMs
+        ) {
+          applyStickerEntitlement(currentCacheEntitlement);
+          return;
+        }
+        const extraIds = getSwagpackReactionStickerIds(data.swagpack_reactions);
+        const nextStickerIds = mergeStickerIds(FIXED_STICKER_IDS, extraIds);
+        applyStickerEntitlement({
+          stickerIds: nextStickerIds,
+          ownerKey: ownerKeyAtRequest,
+          expiresAtMs,
+        });
+        const nextCache = {
+          profileId,
+          ethAddress,
+          solAddress,
+          extraIds,
+          expiresAtMs,
+        };
+        if (
+          !currentCacheEntitlement ||
+          currentCacheEntitlement.expiresAtMs !== expiresAtMs ||
+          !areStickerIdArraysEqual(
+            normalizeStickerIds(currentCache?.extraIds),
+            extraIds,
+          )
+        ) {
+          storage.setReactionExtraStickerCache(nextCache);
+        }
+      } catch {}
     };
     fetchReactions();
     return () => {
       isCancelled = true;
     };
-  }, [isReactionPickerVisible]);
+  }, [
+    applyStickerEntitlement,
+    authState,
+    clearStickerEntitlement,
+    currentStickerOwnerKey,
+    ethAddress,
+    isReactionPickerVisible,
+    profileId,
+    solAddress,
+  ]);
+
+  useEffect(() => {
+    setStickerEntitlement((current) => {
+      if (
+        current.ownerKey === null ||
+        current.ownerKey === currentStickerOwnerKey
+      ) {
+        return current;
+      }
+      return EMPTY_STICKER_ENTITLEMENT;
+    });
+  }, [currentStickerOwnerKey]);
 
   useEffect(() => {
     if (!isReactionPickerVisible) {
@@ -1449,9 +1604,9 @@ const BottomControls: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isReactionPickerVisible || !stickerIds.length) return;
+    if (!isReactionPickerVisible || !visibleStickerIds.length) return;
     let mounted = true;
-    stickerIds.forEach((id) => {
+    visibleStickerIds.forEach((id) => {
       getStickerImageUrl(id).then((url) => {
         if (!mounted) return;
         setStickerUrls((prev) => {
@@ -1463,7 +1618,7 @@ const BottomControls: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [isReactionPickerVisible, stickerIds]);
+  }, [isReactionPickerVisible, visibleStickerIds]);
 
   useEffect(() => {
     let mounted = true;
@@ -2551,6 +2706,18 @@ const BottomControls: React.FC = () => {
         setIsReactionPickerVisible(false);
         return;
       }
+      const isFixedSticker = FIXED_STICKER_IDS.includes(stickerId);
+      if (
+        !isFixedSticker &&
+        (currentStickerOwnerKey === null ||
+          stickerEntitlement.ownerKey !== currentStickerOwnerKey ||
+          stickerEntitlement.expiresAtMs <= Date.now() ||
+          getStoredStickerOwnerKey() !== currentStickerOwnerKey ||
+          !stickerEntitlement.stickerIds.includes(stickerId))
+      ) {
+        setIsReactionPickerVisible(false);
+        return;
+      }
       setIsReactionPickerVisible(false);
       showVideoReaction(
         isMetadataSideDisplayedAtOpponentSlot(false),
@@ -2581,7 +2748,14 @@ const BottomControls: React.FC = () => {
         }, 9999);
       }
     },
-    [isVoiceReactionButtonVisible, setMatchScopedTimeout],
+    [
+      currentStickerOwnerKey,
+      isVoiceReactionButtonVisible,
+      setMatchScopedTimeout,
+      stickerEntitlement.expiresAtMs,
+      stickerEntitlement.ownerKey,
+      stickerEntitlement.stickerIds,
+    ],
   );
 
   const handleReactionSelect = useCallback(
@@ -2622,7 +2796,7 @@ const BottomControls: React.FC = () => {
   const opponentProfile = opponentUid
     ? getStashedPlayerProfile(opponentUid)
     : undefined;
-  const playerHasProfile = storage.getProfileId("") !== "";
+  const playerHasProfile = isAuthenticated && profileId !== "";
   const opponentHasProfile = !!(opponentProfile && opponentProfile.id);
   const hasAgreedWager = !!wagerState?.agreed;
   const hasResolvedWager = !!wagerState?.resolved;
@@ -3681,10 +3855,14 @@ const BottomControls: React.FC = () => {
                 <ReactionPill onClick={() => handleReactionSelect("gg")}>
                   gg
                 </ReactionPill>
-                {stickerIds.map((id) => (
+                {visibleStickerIds.map((id) => (
                   <StickerPill
                     key={id}
                     onClick={() => handleStickerSelect(id)}
+                    disabled={
+                      !FIXED_STICKER_IDS.includes(id) &&
+                      !hasFreshStickerEntitlement
+                    }
                     aria-label={`Sticker ${id}`}
                   >
                     <img

@@ -7,6 +7,7 @@ import {
   ButtonsContainer,
   CancelButton,
   DangerButton,
+  handleModalKeyDown,
 } from "./SharedModalComponents";
 
 const LogoutPopup = styled(ModalPopup)`
@@ -36,14 +37,8 @@ export const LogoutConfirmModal: React.FC<LogoutConfirmModalProps> = ({
     }
   }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.stopPropagation();
-      onConfirm();
-    } else if (e.key === "Escape") {
-      e.stopPropagation();
-      onCancel();
-    }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    handleModalKeyDown(e, popupRef.current, onCancel);
   };
 
   return (
@@ -53,8 +48,11 @@ export const LogoutConfirmModal: React.FC<LogoutConfirmModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
         tabIndex={0}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="logout-dialog-title"
       >
-        <LogoutTitle>Log Out?</LogoutTitle>
+        <LogoutTitle id="logout-dialog-title">Log Out?</LogoutTitle>
         <ButtonsContainer>
           <CancelButton onClick={onCancel}>Cancel</CancelButton>
           <DangerButton onClick={onConfirm}>Log Out</DangerButton>
