@@ -753,6 +753,7 @@ const MoreActions = styled.div`
   gap: 8px;
   width: min(22em, 100%);
   padding-top: 2px;
+  margin-bottom: 6px;
 `;
 
 const MoreActionButton = styled.button`
