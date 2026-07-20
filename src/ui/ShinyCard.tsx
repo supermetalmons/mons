@@ -173,6 +173,42 @@ const isInventoryOnlyEmojiId = (
   return Number.isFinite(parsed) && parsed >= swagpackStart;
 };
 
+export type ActiveInventoryItemSelection = {
+  avatarId: number | null;
+  specialIds: ReadonlySet<number>;
+};
+
+export const getActiveInventoryItemSelection =
+  (): ActiveInventoryItemSelection => {
+    const storedEmojiId = Number.parseInt(storage.getPlayerEmojiId(""), 10);
+    const specialIds = new Set<number>();
+
+    if (
+      royalAguapwoshiDrainerIndex >= 0 &&
+      getMonsIndexes(false, null)[2] === royalAguapwoshiDrainerIndex
+    ) {
+      specialIds.add(0);
+    }
+    if (
+      storage.getCardBackgroundId(defaultCardBgIndex) === INVENTORY_ONLY_BG_ID
+    ) {
+      specialIds.add(1);
+    }
+    if (
+      getStoredOwnStickers()[INVENTORY_ONLY_STICKER_TYPE] ===
+      INVENTORY_ONLY_STICKER_NAME
+    ) {
+      specialIds.add(2);
+    }
+
+    return {
+      avatarId: isInventoryOnlyEmojiId(storedEmojiId)
+        ? storedEmojiId - swagpackStart
+        : null,
+      specialIds,
+    };
+  };
+
 const getNextRegularCardBackgroundId = (currentBgId: number): number => {
   if (
     !Number.isFinite(currentBgId) ||

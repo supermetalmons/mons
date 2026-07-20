@@ -13,6 +13,7 @@ import {
   getNftIdentityKey,
 } from "../services/nftService";
 import {
+  getActiveInventoryItemSelection,
   setOwnershipVerifiedIdCardEmoji,
   setOwnershipVerifiedSpecialItem,
 } from "./ShinyCard";
@@ -256,10 +257,13 @@ const NFTNameContainer = styled.div`
   }
 `;
 
-const AvatarTile = styled(NFTNameContainer)`
+const AvatarTile = styled(NFTNameContainer)<{ $isActive: boolean }>`
   position: relative;
   padding: 0;
   overflow: visible;
+  outline: ${(props) =>
+    props.$isActive ? "2px solid var(--color-blue-primary)" : "none"};
+  outline-offset: 2px;
   transition:
     transform 0.13s ease-out,
     box-shadow 0.13s ease-out;
@@ -297,6 +301,10 @@ const AvatarTile = styled(NFTNameContainer)`
     &:active::after {
       opacity: 0.12;
     }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    outline-color: var(--color-blue-primary-dark);
   }
 `;
 
@@ -360,6 +368,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
     ownerKey: string;
     expiresAtMs: number;
   } | null>(null);
+  const [activeItemSelection, setActiveItemSelection] = useState(
+    getActiveInventoryItemSelection,
+  );
   const [inventoryRefreshVersion, setInventoryRefreshVersion] = useState(0);
   const ownerKey = isAuthenticated ? getNftIdentityKey(authState) : null;
 
@@ -505,9 +516,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                   {specials.map((item) => (
                     <AvatarTile
                       key={`special-${item.id}`}
+                      $isActive={activeItemSelection.specialIds.has(item.id)}
                       onClick={() => {
                         if (canApplyInventoryItem()) {
                           setOwnershipVerifiedSpecialItem(item.id);
+                          setActiveItemSelection(
+                            getActiveInventoryItemSelection(),
+                          );
                         }
                       }}
                     >
@@ -526,11 +541,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                   {avatars.map((item) => (
                     <AvatarTile
                       key={item.id}
+                      $isActive={activeItemSelection.avatarId === item.id}
                       onClick={() => {
                         if (canApplyInventoryItem()) {
                           setOwnershipVerifiedIdCardEmoji(
                             item.id + 1000,
                             item.count >= 3 ? "rainbow" : "",
+                          );
+                          setActiveItemSelection(
+                            getActiveInventoryItemSelection(),
                           );
                         }
                       }}
