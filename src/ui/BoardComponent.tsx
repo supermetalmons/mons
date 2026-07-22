@@ -216,8 +216,6 @@ const playerInfoOverlayStatesEqual = (
   a.wagerLayoutRevision === b.wagerLayoutRevision;
 
 let latestBoardPlayerInfoOverlayState = createEmptyPlayerInfoOverlayState();
-let latestBoardHistoryDiverged = false;
-const boardHistoryDivergenceListeners = new Set<(diverged: boolean) => void>();
 let setTopBoardOverlayVisibleImpl: (
   blurry: boolean,
   svgElement: SVGElement | null,
@@ -300,11 +298,6 @@ export const setBoardPlayerInfoOverlayState = (
 ) => {
   latestBoardPlayerInfoOverlayState = state;
   setBoardPlayerInfoOverlayStateImpl(state);
-};
-
-export const setBoardHistoryDiverged = (diverged: boolean) => {
-  latestBoardHistoryDiverged = diverged;
-  boardHistoryDivergenceListeners.forEach((listener) => listener(diverged));
 };
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
@@ -1536,9 +1529,6 @@ const BoardComponent: React.FC = () => {
   const [prefersDarkMode, setPrefersDarkMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
   const [isGridVisible, setIsGridVisible] = useState(
     !isCustomPictureBoardEnabled(),
   );
@@ -1568,9 +1558,6 @@ const BoardComponent: React.FC = () => {
   const [frozenMaterials, setFrozenMaterialsState] =
     useState(getFrozenMaterials());
   const [watchOnlySnapshot, setWatchOnlySnapshot] = useState(isWatchOnly);
-  const [boardHistoryDiverged, setBoardHistoryDivergedState] = useState(
-    latestBoardHistoryDiverged,
-  );
   const [playerUidSnapshot, setPlayerUidSnapshot] = useState(
     playerSideMetadata.uid,
   );
@@ -1926,17 +1913,6 @@ const BoardComponent: React.FC = () => {
   const wagerPanelHasActions = showOpponentActions || showPlayerActions;
 
   useEffect(() => {
-    const listener = (diverged: boolean) => {
-      setBoardHistoryDivergedState(diverged);
-    };
-    boardHistoryDivergenceListeners.add(listener);
-    setBoardHistoryDivergedState(latestBoardHistoryDiverged);
-    return () => {
-      boardHistoryDivergenceListeners.delete(listener);
-    };
-  }, []);
-
-  useEffect(() => {
     const unsubscribe = subscribeToWagerState((state) => {
       setWagerState(state);
       setWatchOnlySnapshot(isWatchOnly);
@@ -2026,24 +2002,6 @@ const BoardComponent: React.FC = () => {
       update(event.matches);
     };
     update(mediaQuery.matches);
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", handleChange);
-      return () => {
-        mediaQuery.removeEventListener("change", handleChange);
-      };
-    }
-    mediaQuery.addListener(handleChange);
-    return () => {
-      mediaQuery.removeListener(handleChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const handleChange = (event: MediaQueryListEvent) => {
-      setPrefersReducedMotion(event.matches);
-    };
-    setPrefersReducedMotion(mediaQuery.matches);
     if (typeof mediaQuery.addEventListener === "function") {
       mediaQuery.addEventListener("change", handleChange);
       return () => {
@@ -3111,7 +3069,7 @@ const BoardComponent: React.FC = () => {
     !!loadedPictureBoardUrls[pictureBoardBackgroundUrl];
   const boardClassName = `board-svg ${
     isPangchiuBoardLayout ? "grid-hidden" : "grid-visible"
-  }${boardHistoryDiverged ? " board-history-diverged" : ""}`;
+  }`;
   const topVideoReactionStyle = {
     top: isPangchiuBoardLayout ? "7.05%" : "7.02%",
     height: isPangchiuBoardLayout
@@ -3639,91 +3597,6 @@ const BoardComponent: React.FC = () => {
       >
         <g id="avatarLayer"></g>
         <g id="effectsLayer" transform={activeBoardTransform}></g>
-        {boardHistoryDiverged && (
-          <>
-            <defs>
-              <filter
-                id="board-history-glitch-noise"
-                x="-15%"
-                y="-15%"
-                width="130%"
-                height="130%"
-                colorInterpolationFilters="sRGB"
-              >
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.012 0.19"
-                  numOctaves={1}
-                  seed={4}
-                  result="noise"
-                >
-                  {!prefersReducedMotion && (
-                    <animate
-                      attributeName="seed"
-                      values="4;11;2;17;7;13"
-                      dur="0.72s"
-                      calcMode="discrete"
-                      repeatCount="indefinite"
-                    />
-                  )}
-                </feTurbulence>
-                <feColorMatrix
-                  in="noise"
-                  type="matrix"
-                  values="0.2 0 0 0 0.08
-                          0 0.9 0 0 0.1
-                          0 0 1 0 0.18
-                          0 0 0 0.5 0"
-                  result="tintedNoise"
-                />
-                <feComposite
-                  in="tintedNoise"
-                  in2="SourceGraphic"
-                  operator="in"
-                />
-              </filter>
-            </defs>
-            <g
-              className="board-history-glitch-overlay"
-              transform={activeBoardTransform}
-              aria-hidden="true"
-            >
-              <rect
-                className="board-history-glitch-noise"
-                x="0"
-                y="0"
-                width="1100"
-                height="1100"
-                fill="rgba(255,255,255,0.32)"
-                filter="url(#board-history-glitch-noise)"
-              />
-              <rect
-                className="board-history-glitch-slice board-history-glitch-slice-a"
-                x="-90"
-                y="142"
-                width="1280"
-                height="13"
-                fill="#25f6ff"
-              />
-              <rect
-                className="board-history-glitch-slice board-history-glitch-slice-b"
-                x="-60"
-                y="486"
-                width="1220"
-                height="25"
-                fill="#ff2f87"
-              />
-              <rect
-                className="board-history-glitch-slice board-history-glitch-slice-c"
-                x="-110"
-                y="823"
-                width="1320"
-                height="9"
-                fill="#f6ff3d"
-              />
-            </g>
-          </>
-        )}
         {botStrengthControlOverlay.visible &&
           botStrengthControlOverlay.size > 0 && (
             <g

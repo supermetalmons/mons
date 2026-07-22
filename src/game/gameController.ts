@@ -80,10 +80,7 @@ import {
   showNotificationBanner,
   hideNotificationBanner,
 } from "../ui/ProfileSignIn";
-import {
-  setBoardHistoryDiverged,
-  showVideoReaction,
-} from "../ui/BoardComponent";
+import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
 import {
   getWagerState,
@@ -398,8 +395,6 @@ let didSetBlackProcessedMovesCount = false;
 let currentGameModelMatchId: string | null = null;
 let whiteFlatMovesString: string | null = null;
 let blackFlatMovesString: string | null = null;
-let divergedMoveHistoryMatchId: string | null = null;
-let incompleteMoveStreamMatchId: string | null = null;
 
 let wagerMatchId: string | null = null;
 
@@ -459,73 +454,32 @@ const applyGameSeedToCurrentGame = (
   return game;
 };
 
+const gameModelFromFen = (fen: unknown): MonsRules.MonsGameModel | null => {
+  if (typeof fen !== "string") {
+    return null;
+  }
+  try {
+    return MonsRules.MonsGameModel.from_fen(fen) ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const installCurrentGameModel = (gameModel: MonsRules.MonsGameModel): void => {
+  setCurrentVariant(inferStoredGameVariantFromFen(gameModel.fen()));
+  game = gameModel;
+};
+
 const loadCurrentGameFromFen = (fen: string): boolean => {
-  const gameFromFen = MonsRules.MonsGameModel.from_fen(fen);
+  const gameFromFen = gameModelFromFen(fen);
   if (!gameFromFen) {
     return false;
   }
-  setCurrentVariant(inferStoredGameVariantFromFen(fen));
-  game = gameFromFen;
+  installCurrentGameModel(gameFromFen);
   return true;
 };
 
 var currentInputs: Location[] = [];
-
-const activeMatchHasDivergedMoveHistory = (): boolean => {
-  const activeMatchId = connection.getActiveMatchId();
-  return activeMatchId !== null && divergedMoveHistoryMatchId === activeMatchId;
-};
-
-const activeMatchHasIncompleteMoveStreams = (): boolean => {
-  const activeMatchId = connection.getActiveMatchId();
-  return (
-    activeMatchId !== null && incompleteMoveStreamMatchId === activeMatchId
-  );
-};
-
-const syncBoardHistoryDivergenceEffect = (): void => {
-  const displayedMatchId =
-    boardViewMode === "historicalView"
-      ? viewedRematchMatchId
-      : boardViewMode === "activeLive"
-        ? connection.getActiveMatchId()
-        : null;
-  setBoardHistoryDiverged(
-    divergedMoveHistoryMatchId !== null &&
-      divergedMoveHistoryMatchId === displayedMatchId,
-  );
-};
-
-const clearIncompleteMoveStreams = (): void => {
-  incompleteMoveStreamMatchId = null;
-};
-
-const clearMoveHistoryDivergence = (): void => {
-  divergedMoveHistoryMatchId = null;
-  clearIncompleteMoveStreams();
-  syncBoardHistoryDivergenceEffect();
-};
-
-const markMoveStreamsIncomplete = (matchId: string): void => {
-  if (connection.getActiveMatchId() !== matchId) {
-    return;
-  }
-  incompleteMoveStreamMatchId = matchId;
-};
-
-const markMoveHistoryDiverged = (matchId: string): void => {
-  if (connection.getActiveMatchId() !== matchId) {
-    return;
-  }
-  clearIncompleteMoveStreams();
-  divergedMoveHistoryMatchId = matchId;
-  currentInputs = [];
-  Board.removeHighlights();
-  Board.hideItemSelectionOrConfirmationOverlay();
-  setUndoEnabled(false);
-  setAutomoveActionEnabled(false);
-  syncBoardHistoryDivergenceEffect();
-};
 
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
@@ -926,7 +880,6 @@ function playIncomingInviteReaction(
 }
 
 function applyBoardUiForCurrentView() {
-  syncBoardHistoryDivergenceEffect();
   if (boardViewMode === "historicalView") {
     clearTimerVictoryClaimTimeout();
     Board.stopMonsBoardAsDisplayAnimations();
@@ -1066,7 +1019,6 @@ function restoreLiveBoardView() {
 }
 
 function prepareForNewLocalLiveMatch() {
-  clearMoveHistoryDivergence();
   nextBoardRenderSession();
   boardViewMode = "activeLive";
   clearViewedRematchState();
@@ -1316,15 +1268,8 @@ function canHandleLiveBoardInput(): boolean {
   return (
     boardViewMode === "activeLive" &&
     !flashbackMode &&
+    (!isReconnect || didConnect) &&
     !isTransitionInProgress()
-  );
-}
-
-function canHandleMoveInput(): boolean {
-  return (
-    canHandleLiveBoardInput() &&
-    !activeMatchHasDivergedMoveHistory() &&
-    !activeMatchHasIncompleteMoveStreams()
   );
 }
 
@@ -1440,27 +1385,178 @@ function getViewedMatchBoardFlipped(
   return activeBoardShouldBeFlipped();
 }
 
-function movesArrayFromFlatString(flatMovesString: string | null): string[] {
-  if (!flatMovesString || flatMovesString === "") {
+function getPreferredMatchFromHistoricalPair(
+  pair: HistoricalMatchPair,
+): Match | null {
+  const hostMatch = pair.hostMatch;
+  const guestMatch = pair.guestMatch;
+  if (hostMatch && !guestMatch) {
+    return isValidGameFen(hostMatch.fen) ? hostMatch : null;
+  }
+  if (!hostMatch && guestMatch) {
+    return isValidGameFen(guestMatch.fen) ? guestMatch : null;
+  }
+  if (!hostMatch || !guestMatch) {
+    return null;
+  }
+  const hostFenIsValid = isValidGameFen(hostMatch.fen);
+  const guestFenIsValid = isValidGameFen(guestMatch.fen);
+  if (hostFenIsValid && !guestFenIsValid) {
+    return hostMatch;
+  }
+  if (!hostFenIsValid && guestFenIsValid) {
+    return guestMatch;
+  }
+  if (!hostFenIsValid || !guestFenIsValid) {
+    return null;
+  }
+  const localPlayerUid = isWatchOnly
+    ? null
+    : Board.playerSideMetadata.uid || connection.getSameProfilePlayerUid();
+  if (localPlayerUid) {
+    if (pair.hostPlayerId === localPlayerUid) {
+      return hostMatch;
+    }
+    if (pair.guestPlayerId === localPlayerUid) {
+      return guestMatch;
+    }
+  }
+  const hostMovesLength =
+    typeof hostMatch.flatMovesString === "string"
+      ? hostMatch.flatMovesString.length
+      : 0;
+  const guestMovesLength =
+    typeof guestMatch.flatMovesString === "string"
+      ? guestMatch.flatMovesString.length
+      : 0;
+  if (guestMovesLength > hostMovesLength) {
+    return guestMatch;
+  }
+  return hostMatch;
+}
+
+function isValidGameFen(fen: unknown): boolean {
+  const gameFromFen = gameModelFromFen(fen);
+  if (!gameFromFen) {
+    return false;
+  }
+  gameFromFen.free();
+  return true;
+}
+
+type TrustedMatchPairGame = {
+  gameModel: MonsRules.MonsGameModel;
+  whiteMovesCount: number;
+  blackMovesCount: number;
+};
+
+function normalizePersistedMoveHistory(value: unknown): string | null {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  return typeof value === "string" ? value : null;
+}
+
+function persistedMoveCount(flatMovesString: string): number {
+  return flatMovesString === "" ? 0 : flatMovesString.split("-").length;
+}
+
+function getVerifiedFenCandidate(
+  match: Match,
+  whiteMovesString: string,
+  blackMovesString: string,
+): MonsRules.MonsGameModel | null {
+  const candidate = gameModelFromFen(match.fen);
+  if (!candidate) {
+    return null;
+  }
+  try {
+    if (candidate.verify_moves(whiteMovesString, blackMovesString)) {
+      return candidate;
+    }
+  } catch {
+    // Invalid persisted input is not a trusted replay candidate.
+  }
+  candidate.free();
+  return null;
+}
+
+function getTrustedGameFromMatchPair(
+  pair: HistoricalMatchPair,
+): TrustedMatchPairGame | null {
+  const hostMatch = pair.hostMatch;
+  const guestMatch = pair.guestMatch;
+  if (!hostMatch || !guestMatch) {
+    return null;
+  }
+  const haveOppositeStoredColors =
+    (hostMatch.color === "white" && guestMatch.color === "black") ||
+    (hostMatch.color === "black" && guestMatch.color === "white");
+  if (!haveOppositeStoredColors) {
+    return null;
+  }
+
+  const whiteMatch = hostMatch.color === "white" ? hostMatch : guestMatch;
+  const blackMatch = hostMatch.color === "black" ? hostMatch : guestMatch;
+  const whiteMovesString = normalizePersistedMoveHistory(
+    whiteMatch.flatMovesString,
+  );
+  const blackMovesString = normalizePersistedMoveHistory(
+    blackMatch.flatMovesString,
+  );
+  if (whiteMovesString === null || blackMovesString === null) {
+    return null;
+  }
+
+  const hostCandidate = getVerifiedFenCandidate(
+    hostMatch,
+    whiteMovesString,
+    blackMovesString,
+  );
+  const guestCandidate = getVerifiedFenCandidate(
+    guestMatch,
+    whiteMovesString,
+    blackMovesString,
+  );
+  let verifiedGame: MonsRules.MonsGameModel | null = null;
+  if (hostCandidate && guestCandidate) {
+    let candidatesAgree = false;
+    try {
+      candidatesAgree = hostCandidate.fen() === guestCandidate.fen();
+    } catch {
+      candidatesAgree = false;
+    }
+    if (!candidatesAgree) {
+      hostCandidate.free();
+      guestCandidate.free();
+      return null;
+    }
+    verifiedGame = hostCandidate;
+    guestCandidate.free();
+  } else {
+    verifiedGame = hostCandidate ?? guestCandidate;
+  }
+  if (!verifiedGame) {
+    return null;
+  }
+  return {
+    gameModel: verifiedGame,
+    whiteMovesCount: persistedMoveCount(whiteMovesString),
+    blackMovesCount: persistedMoveCount(blackMovesString),
+  };
+}
+
+function movesArrayFromFlatString(flatMovesString: unknown): string[] {
+  if (typeof flatMovesString !== "string" || flatMovesString === "") {
     return [];
   }
   return flatMovesString.split("-").filter((move) => move !== "");
 }
 
-const isValidPersistedMoveOutput = (output: MonsRules.OutputModel): boolean =>
-  output.kind === MonsRules.OutputModelKind.Events;
-
-const matchesHaveOppositeColors = (first: Match, second: Match): boolean =>
-  (first.color === "white" && second.color === "black") ||
-  (first.color === "black" && second.color === "white");
-
-type MoveStreamReplayFailure = "incomplete" | "corrupt";
-
 function buildGameFromMoveStreams(
   gameVariant: unknown,
   whiteMovesString: string,
   blackMovesString: string,
-  onFailure?: (failure: MoveStreamReplayFailure) => void,
 ): MonsRules.MonsGameModel | null {
   const gameFromMoves = createGameModelForStoredVariant(gameVariant);
   const whiteMoves = movesArrayFromFlatString(whiteMovesString);
@@ -1471,137 +1567,57 @@ function buildGameFromMoveStreams(
     const activeColor = gameFromMoves.active_color();
     if (activeColor === MonsRules.Color.White) {
       if (whiteIndex >= whiteMoves.length) {
-        onFailure?.("incomplete");
         return null;
       }
       const output = gameFromMoves.process_input_fen(whiteMoves[whiteIndex]);
-      if (!isValidPersistedMoveOutput(output)) {
-        onFailure?.("corrupt");
+      if (output.kind === MonsRules.OutputModelKind.InvalidInput) {
         return null;
       }
       whiteIndex += 1;
     } else if (activeColor === MonsRules.Color.Black) {
       if (blackIndex >= blackMoves.length) {
-        onFailure?.("incomplete");
         return null;
       }
       const output = gameFromMoves.process_input_fen(blackMoves[blackIndex]);
-      if (!isValidPersistedMoveOutput(output)) {
-        onFailure?.("corrupt");
+      if (output.kind === MonsRules.OutputModelKind.InvalidInput) {
         return null;
       }
       blackIndex += 1;
     } else {
-      onFailure?.("corrupt");
       return null;
     }
   }
   return gameFromMoves;
 }
 
-type CurrentMoveReplayResult =
-  "unavailable" | MoveStreamReplayFailure | "reconstructed";
-
-function reconstructCurrentGameFromMoveStreams(
-  matchId: string,
-  shouldRenderLiveBoard?: boolean,
-): CurrentMoveReplayResult {
-  const pair = connection.getCachedHistoricalMatchPair(matchId);
-  const hostMatch = pair?.hostMatch;
-  const guestMatch = pair?.guestMatch;
-  if (!pair || !hostMatch || !guestMatch) {
-    return "unavailable";
-  }
-
-  const variantsDisagree =
-    hostMatch.gameVariant !== undefined &&
-    guestMatch.gameVariant !== undefined &&
-    normalizeStoredGameVariant(hostMatch.gameVariant) !==
-      normalizeStoredGameVariant(guestMatch.gameVariant);
-  if (!matchesHaveOppositeColors(hostMatch, guestMatch) || variantsDisagree) {
-    markMoveHistoryDiverged(matchId);
-    return "corrupt";
-  }
-
-  const whiteMatch = hostMatch.color === "white" ? hostMatch : guestMatch;
-  const blackMatch = hostMatch.color === "black" ? hostMatch : guestMatch;
-  const gameVariant = getHistoricalPairGameVariant(pair);
-  let replayFailure: MoveStreamReplayFailure | null = null;
-  const replayedGame = buildGameFromMoveStreams(
-    gameVariant,
-    whiteMatch.flatMovesString ?? "",
-    blackMatch.flatMovesString ?? "",
-    (failure) => {
-      replayFailure = failure;
-    },
-  );
-  if (!replayedGame) {
-    if (replayFailure === "corrupt") {
-      markMoveHistoryDiverged(matchId);
-    } else {
-      markMoveStreamsIncomplete(matchId);
-    }
-    return replayFailure ?? "incomplete";
-  }
-
-  setCurrentVariant(gameVariant);
-  game = replayedGame;
-  currentGameModelMatchId = matchId;
-  whiteFlatMovesString = null;
-  blackFlatMovesString = null;
-  setProcessedMovesCountForColor("white", movesCountOfMatch(whiteMatch));
-  setProcessedMovesCountForColor("black", movesCountOfMatch(blackMatch));
-  clearMoveHistoryDivergence();
-  showMoveHistoryButton(true);
-  if (isMoveHistoryPopupOpen && boardViewMode !== "historicalView") {
-    triggerMoveHistoryPopupReload();
-  }
-  if (shouldRenderLiveBoard) {
-    Board.setBoardFlipped(activeBoardShouldBeFlipped());
-    setNewBoard(false);
-    updateUndoButtonBasedOnGameState();
-  }
-  if (shouldRenderLiveBoard && !isWatchOnly) {
-    setAutomoveActionEnabled(
-      !isGameOver && game.winner_color() === undefined && isPlayerSideTurn(),
-    );
-  }
-  return "reconstructed";
-}
-
 function getHistoricalPairGameVariant(
   pair: HistoricalMatchPair,
 ): StoredGameVariant {
-  const storedVariant =
-    pair.hostMatch?.gameVariant ?? pair.guestMatch?.gameVariant;
-  if (storedVariant === undefined) {
-    const cachedFen = pair.hostMatch?.fen ?? pair.guestMatch?.fen;
-    return cachedFen
-      ? inferStoredGameVariantFromFen(cachedFen)
-      : legacyDefaultGameVariant;
-  }
-  return normalizeStoredGameVariant(storedVariant);
+  return normalizeStoredGameVariant(
+    pair.hostMatch?.gameVariant ?? pair.guestMatch?.gameVariant,
+  );
 }
 
 function getReconstructedGameFromPair(
   matchId: string,
   pair: HistoricalMatchPair,
 ): MonsRules.MonsGameModel | null {
-  if (
-    pair.hostMatch &&
-    pair.guestMatch &&
-    !matchesHaveOppositeColors(pair.hostMatch, pair.guestMatch)
-  ) {
+  if (!pair.hostMatch || !pair.guestMatch) {
     return null;
   }
   const { whiteMoves, blackMoves } = getMatchMovesByColor(matchId, pair);
   if (whiteMoves === null || blackMoves === null) {
     return null;
   }
+  const normalizedWhiteMoves = normalizePersistedMoveHistory(whiteMoves);
+  const normalizedBlackMoves = normalizePersistedMoveHistory(blackMoves);
+  if (normalizedWhiteMoves === null || normalizedBlackMoves === null) {
+    return null;
+  }
   return buildGameFromMoveStreams(
     getHistoricalPairGameVariant(pair),
-    whiteMoves,
-    blackMoves,
+    normalizedWhiteMoves,
+    normalizedBlackMoves,
   );
 }
 
@@ -1617,15 +1633,22 @@ function getBestHistoricalGameModel(
   matchId: string,
   pair: HistoricalMatchPair,
 ): MonsRules.MonsGameModel | null {
+  const trustedGame = getTrustedGameFromMatchPair(pair);
+  if (trustedGame) {
+    return trustedGame.gameModel;
+  }
+  const preferredMatch = getPreferredMatchFromHistoricalPair(pair);
+  if (preferredMatch) {
+    const baseGame = gameModelFromFen(preferredMatch.fen);
+    if (baseGame) {
+      return baseGame;
+    }
+  }
   const reconstructedGame = getReconstructedGameFromPair(matchId, pair);
   if (reconstructedGame) {
     return reconstructedGame;
   }
-  // Deterministic snapshot fallback only — never choose via is_later_than.
-  const cachedMatch = pair.hostMatch ?? pair.guestMatch;
-  return cachedMatch
-    ? (MonsRules.MonsGameModel.from_fen(cachedMatch.fen) ?? null)
-    : null;
+  return null;
 }
 
 function getScoreFromHistoricalPair(
@@ -2327,6 +2350,9 @@ function updateWagerDisplayForMoveNavigation(
   selectedIndex: number,
   totalEntities: number,
 ) {
+  if (shouldDeferWagerStateForUninstalledMatch()) {
+    return;
+  }
   if (!currentWagerState || !currentWagerState.resolved) {
     return;
   }
@@ -2438,7 +2464,6 @@ export async function go(routeStateOverride?: RouteState) {
     void closeEventModal({ skipHomeTransition: true, reason: "route_change" });
   }
   clearAllManagedGameTimeouts();
-  clearMoveHistoryDivergence();
   resetBotScoreReactionState();
   isGameWithBot = false;
   nextBoardRenderSession();
@@ -2482,7 +2507,11 @@ export async function go(routeStateOverride?: RouteState) {
         state: summarizeWagerState(state),
       });
       applyWagerState();
-      if (isGameOver && !(isMoveHistoryPopupOpen && flashbackMode)) {
+      if (
+        !shouldDeferWagerStateForUninstalledMatch() &&
+        isGameOver &&
+        !(isMoveHistoryPopupOpen && flashbackMode)
+      ) {
         const outcomeState = syncWagerOutcome();
         logWagerDebug("subscription:sync-on-gameover", { outcomeState });
       }
@@ -2613,7 +2642,6 @@ export function disposeGameSession(nextRouteState?: RouteState) {
   const preserveWaitingAnimation =
     preserveAutomatchUi || preserveManualInviteAnimation;
   clearAllManagedGameTimeouts();
-  clearMoveHistoryDivergence();
   resetBotScoreReactionState();
   isGameWithBot = false;
   nextBoardRenderSession();
@@ -2864,7 +2892,6 @@ export function didJustCreateRematchProposalSuccessfully(
   previousMatchId: string | null,
   previousMatchPair: HistoricalMatchPair | null,
 ) {
-  clearMoveHistoryDivergence();
   if (boardViewMode !== "historicalView") {
     clearViewedRematchState();
   }
@@ -3310,6 +3337,9 @@ const resolveAutomoveOutput = async (
 };
 
 function automove(onAutomoveButtonClick: boolean = false) {
+  if (isReconnect && !didConnect) {
+    return;
+  }
   const sessionGuard = getSessionGuard();
   const shouldUseSelectedBotMode =
     isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
@@ -3332,13 +3362,6 @@ function automove(onAutomoveButtonClick: boolean = false) {
     if (isBotsRoute()) {
       return;
     }
-    if (activeMatchHasDivergedMoveHistory()) {
-      setAutomoveActionEnabled(false);
-      return;
-    }
-    if (activeMatchHasIncompleteMoveStreams()) {
-      return;
-    }
     if (!isGameWithBot || isPlayerSideTurn()) {
       setAutomoveActionEnabled(true);
     } else {
@@ -3356,10 +3379,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
           if (!sessionGuard()) {
             return;
           }
-          if (
-            activeMatchHasDivergedMoveHistory() ||
-            activeMatchHasIncompleteMoveStreams()
-          ) {
+          if (isReconnect && !didConnect) {
             syncAutomoveActionState();
             return;
           }
@@ -3430,6 +3450,9 @@ function automove(onAutomoveButtonClick: boolean = false) {
 }
 
 function didConfirmRematchProposal() {
+  if (isReconnect && !didConnect) {
+    return;
+  }
   if (puzzleMode) {
     const nextProblem = getNextProblem(selectedProblem!.id);
     if (nextProblem) {
@@ -3470,6 +3493,9 @@ function didConfirmRematchProposal() {
 }
 
 export function didClickEndMatchButton() {
+  if (isReconnect && !didConnect) {
+    return;
+  }
   const wasWaitingForRematch =
     isWaitingForRematchResponse && boardViewMode !== "historicalView";
   showPrimaryAction(PrimaryActionType.None);
@@ -3601,7 +3627,7 @@ export function didClickConfirmResignButton() {
 }
 
 export function canHandleUndo(): boolean {
-  if (!canHandleMoveInput() || isWatchOnly || isGameOver) {
+  if (!canHandleLiveBoardInput() || isWatchOnly || isGameOver) {
     return false;
   } else if (isOnlineGame || isGameWithBot) {
     return game.can_takeback(playerSideColor);
@@ -3611,7 +3637,7 @@ export function canHandleUndo(): boolean {
 }
 
 export function didClickUndoButton() {
-  if (!canHandleMoveInput()) {
+  if (!canHandleLiveBoardInput()) {
     return;
   }
   if (canHandleUndo()) {
@@ -3656,7 +3682,7 @@ function isPlayerSideTurn(): boolean {
 
 export function didSelectInputModifier(inputModifier: InputModifier) {
   if (
-    !canHandleMoveInput() ||
+    !canHandleLiveBoardInput() ||
     (isOnlineGame && !didConnect) ||
     isWatchOnly ||
     isGameOver ||
@@ -3675,7 +3701,7 @@ export function didClickSquare(location: Location) {
     }
   }
   if (
-    !canHandleMoveInput() ||
+    !canHandleLiveBoardInput() ||
     (isOnlineGame && !didConnect) ||
     isWatchOnly ||
     isGameOver ||
@@ -4025,6 +4051,9 @@ function applyOutput(
             game.active_color() === MonsRules.Color.Black,
             finishLocation,
             () => {
+              if (!canHandleLiveBoardInput()) {
+                return;
+              }
               if (handleStaleOnlineLocalOutput(expectedMatchId)) {
                 return;
               }
@@ -4449,7 +4478,7 @@ function resetToTheStartOfThePuzzle() {
 }
 
 export function didClickAutomoveButton() {
-  if (!canHandleMoveInput()) return;
+  if (!canHandleLiveBoardInput()) return;
   if (isGameOver) return;
   automove(true);
 }
@@ -4467,12 +4496,27 @@ function hasBothEthOrSolAddresses(): boolean {
   );
 }
 
+function bindVerifiedGameToMatch(matchId: string): void {
+  currentGameModelMatchId = matchId;
+  whiteFlatMovesString = null;
+  blackFlatMovesString = null;
+  showMoveHistoryButton(true);
+  if (isMoveHistoryPopupOpen && boardViewMode !== "historicalView") {
+    triggerMoveHistoryPopupReload();
+  }
+}
+
 function verifyMovesIfNeeded(
   matchId: string,
-  flatMovesString: string,
+  flatMovesString: unknown,
   color: string,
 ) {
   if (currentGameModelMatchId === matchId && game.is_moves_verified()) {
+    return;
+  }
+
+  const normalizedMoves = normalizePersistedMoveHistory(flatMovesString);
+  if (normalizedMoves === null) {
     return;
   }
 
@@ -4483,20 +4527,18 @@ function verifyMovesIfNeeded(
   }
 
   if (color === "white") {
-    whiteFlatMovesString = flatMovesString;
+    whiteFlatMovesString = normalizedMoves;
   } else {
-    blackFlatMovesString = flatMovesString;
+    blackFlatMovesString = normalizedMoves;
   }
 
   if (whiteFlatMovesString !== null && blackFlatMovesString !== null) {
-    let result = game.verify_moves(whiteFlatMovesString, blackFlatMovesString);
+    const result = game.verify_moves(
+      whiteFlatMovesString,
+      blackFlatMovesString,
+    );
     if (result) {
-      whiteFlatMovesString = null;
-      blackFlatMovesString = null;
-      showMoveHistoryButton(true);
-      if (isMoveHistoryPopupOpen && boardViewMode !== "historicalView") {
-        triggerMoveHistoryPopupReload();
-      }
+      bindVerifiedGameToMatch(matchId);
     }
   }
 }
@@ -4584,6 +4626,15 @@ function isWagerOutcomeAnimationBlocking() {
   return false;
 }
 
+function shouldDeferWagerStateForUninstalledMatch(): boolean {
+  const activeMatchId = connection.getActiveMatchId();
+  return (
+    boardViewMode === "activeLive" &&
+    activeMatchId !== null &&
+    wagerMatchId !== activeMatchId
+  );
+}
+
 function applyWagerState() {
   logWagerDebug("apply:start", {
     state: summarizeWagerState(currentWagerState),
@@ -4600,6 +4651,10 @@ function applyWagerState() {
   if (boardViewMode !== "activeLive" && boardViewMode !== "historicalView") {
     logWagerDebug("apply:clear-non-live-view");
     Board.clearWagerPilesForNewMatch();
+    return;
+  }
+  if (shouldDeferWagerStateForUninstalledMatch()) {
+    logWagerDebug("apply:skip-match-not-installed");
     return;
   }
   const isHistoricalView = boardViewMode === "historicalView";
@@ -4815,7 +4870,7 @@ function processInput(
   inputModifier: InputModifier,
   inputLocation?: Location,
 ) {
-  if (!canHandleMoveInput()) {
+  if (!canHandleLiveBoardInput()) {
     return;
   }
   if (isBotsRoute()) {
@@ -4989,8 +5044,125 @@ function hasItemAt(location: Location): boolean {
   }
 }
 
-function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
+type InitialGameHydration =
+  | {
+      kind: "provisional";
+      gameModel: MonsRules.MonsGameModel;
+    }
+  | {
+      kind: "trusted";
+      trustedGame: TrustedMatchPairGame;
+      pair: HistoricalMatchPair;
+    };
+
+function prepareInitialGameHydration(
+  match: Match,
+  matchId: string,
+): InitialGameHydration | null {
+  if (isReconnect || isWatchOnly) {
+    const pair = connection.getCachedHistoricalMatchPair(matchId);
+    if (!pair) {
+      return null;
+    }
+    const trustedGame = getTrustedGameFromMatchPair(pair);
+    return trustedGame ? { kind: "trusted", trustedGame, pair } : null;
+  }
+
+  const provisionalGame = gameModelFromFen(match.fen);
+  return provisionalGame
+    ? { kind: "provisional", gameModel: provisionalGame }
+    : null;
+}
+
+function installInitialGameHydration(
+  matchId: string,
+  hydration: InitialGameHydration,
+): void {
+  if (hydration.kind === "provisional") {
+    installCurrentGameModel(hydration.gameModel);
+    return;
+  }
+  installTrustedGameForMatch(matchId, hydration.trustedGame);
+}
+
+function installTrustedGameForMatch(
+  matchId: string,
+  trustedGame: TrustedMatchPairGame,
+): void {
+  installCurrentGameModel(trustedGame.gameModel);
+  bindVerifiedGameToMatch(matchId);
+  setProcessedMovesCounts(
+    trustedGame.whiteMovesCount,
+    trustedGame.blackMovesCount,
+  );
+}
+
+function setupWatchOnlyPlayersFromMatchPair(
+  pair: HistoricalMatchPair,
+): void {
+  const players = [
+    { uid: pair.hostPlayerId, match: pair.hostMatch },
+    { uid: pair.guestPlayerId, match: pair.guestMatch },
+  ];
+  for (const player of players) {
+    if (!player.uid || !player.match) {
+      continue;
+    }
+    const isOpponentSide = player.match.color === "black";
+    Board.setupPlayerId(player.uid, isOpponentSide);
+    Board.updateEmojiAndAuraIfNeeded(
+      player.match.emojiId.toString(),
+      player.match.aura,
+      isOpponentSide,
+    );
+  }
+}
+
+function seedTimerStashesFromMatchPair(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): void {
+  if (timerStashMatchId !== matchId) {
+    resetTimerStateForMatch(matchId);
+  }
+  for (const pairedMatch of [pair.hostMatch, pair.guestMatch]) {
+    if (pairedMatch?.color === "white" && whiteTimerStash === null) {
+      setTimerStashForColor(matchId, "white", pairedMatch.timer);
+    } else if (pairedMatch?.color === "black" && blackTimerStash === null) {
+      setTimerStashForColor(matchId, "black", pairedMatch.timer);
+    }
+  }
+}
+
+function getSurrenderedMatch(
+  currentMatch: Match,
+  pair: HistoricalMatchPair | null,
+): Match | null {
+  if (currentMatch.status === "surrendered") {
+    return currentMatch;
+  }
+  if (pair?.hostMatch?.status === "surrendered") {
+    return pair.hostMatch;
+  }
+  if (pair?.guestMatch?.status === "surrendered") {
+    return pair.guestMatch;
+  }
+  return null;
+}
+
+function didConnectTo(
+  match: Match,
+  matchPlayerUid: string,
+  matchId: string,
+  hydration: InitialGameHydration,
+): void {
   ensureBoardViewInvariants("didConnectTo:before");
+  installInitialGameHydration(matchId, hydration);
+  const trustedPair = hydration.kind === "trusted" ? hydration.pair : null;
+  if (trustedPair) {
+    seedTimerStashesFromMatchPair(matchId, trustedPair);
+  }
+  const surrenderedMatch = getSurrenderedMatch(match, trustedPair);
   const shouldRenderLiveBoard = !shouldPreserveHistoricalViewForCurrentInvite();
   const incomingIsOpponentSide = isObservedMatchOpponentSide(
     match,
@@ -5023,9 +5195,6 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
 
   if (isWatchOnly) {
     playerSideColor = MonsRules.Color.White;
-    if (shouldRenderLiveBoard) {
-      Board.setupPlayerId(matchPlayerUid, incomingIsOpponentSide);
-    }
   } else {
     playerSideColor = incomingIsOpponentSide
       ? match.color === "white"
@@ -5040,55 +5209,28 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   }
 
   if (shouldRenderLiveBoard) {
-    Board.updateEmojiAndAuraIfNeeded(
-      match.emojiId.toString(),
-      match.aura,
-      incomingIsOpponentSide,
-    );
+    if (isWatchOnly && trustedPair) {
+      setupWatchOnlyPlayersFromMatchPair(trustedPair);
+    } else {
+      Board.updateEmojiAndAuraIfNeeded(
+        match.emojiId.toString(),
+        match.aura,
+        incomingIsOpponentSide,
+      );
+    }
     applyWagerState();
     Board.markWagerInitialStateReceived();
   }
 
-  const currentMoveReplayResult: CurrentMoveReplayResult =
-    isReconnect || isWatchOnly
-      ? reconstructCurrentGameFromMoveStreams(matchId)
-      : "unavailable";
-
-  // Only use a FEN snapshot when we do not yet have both move streams, or when
-  // the board is already glitched and we just need something to display under it.
-  // Never hydrate from a single-side FEN while streams are merely incomplete.
-  const shouldLoadFenSnapshot =
-    currentMoveReplayResult === "unavailable" ||
-    currentMoveReplayResult === "corrupt";
-  if (
-    shouldLoadFenSnapshot &&
-    (!isReconnect || isWatchOnly) &&
-    !loadCurrentGameFromFen(match.fen)
-  ) {
-    return;
-  }
   if (game.winner_color() !== undefined) {
     disableAndHideUndoResignAndTimerControls();
     Board.hideTimerCountdownDigits();
   }
 
-  if (
-    currentMoveReplayResult !== "reconstructed" &&
-    currentMoveReplayResult !== "corrupt"
-  ) {
-    verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
-  }
+  verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
 
   if (shouldRenderLiveBoard) {
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
-  }
-
-  if (
-    currentMoveReplayResult === "unavailable" &&
-    (isReconnect || isWatchOnly)
-  ) {
-    const movesCount = movesCountOfMatch(match);
-    setProcessedMovesCountForColor(match.color, movesCount);
   }
 
   if (shouldRenderLiveBoard) {
@@ -5096,8 +5238,8 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     updateUndoButtonBasedOnGameState();
     const thereIsWinner = game.winner_color() !== undefined;
 
-    if (match.status === "surrendered") {
-      handleResignStatus(true, match.color);
+    if (surrenderedMatch) {
+      handleResignStatus(true, surrenderedMatch.color);
     } else if (!isWatchOnly && !isGameOver && !thereIsWinner) {
       showResignButton();
       showMoveHistoryButton(true);
@@ -5113,16 +5255,8 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
       }
     }
   }
-  if (
-    currentMoveReplayResult === "reconstructed" &&
-    !isWatchOnly &&
-    !isGameOver &&
-    game.winner_color() === undefined
-  ) {
-    setAutomoveActionEnabled(isPlayerSideTurn());
-  }
-  if (!shouldRenderLiveBoard && match.status === "surrendered") {
-    handleResignStatusWithoutRender(true, match.color);
+  if (!shouldRenderLiveBoard && surrenderedMatch) {
+    handleResignStatusWithoutRender(true, surrenderedMatch.color);
   }
 
   updateDisplayedTimerIfNeeded(true, match, matchId);
@@ -5285,6 +5419,9 @@ function showTimerCountdown(
                 if (connection.getActiveMatchId() !== timerClaimMatchId) {
                   return;
                 }
+                if (isReconnect && !didConnect) {
+                  return;
+                }
                 if (
                   boardViewMode !== "activeLive" ||
                   isGameOver ||
@@ -5395,6 +5532,16 @@ function setProcessedMovesCountForColor(color: string, count: number) {
     blackProcessedMovesCount = count;
     didSetBlackProcessedMovesCount = true;
   }
+}
+
+function setProcessedMovesCounts(
+  whiteMovesCount: number,
+  blackMovesCount: number,
+): void {
+  whiteProcessedMovesCount = whiteMovesCount;
+  blackProcessedMovesCount = blackMovesCount;
+  didSetWhiteProcessedMovesCount = true;
+  didSetBlackProcessedMovesCount = true;
 }
 
 function handleVictoryByTimer(
@@ -5699,21 +5846,6 @@ export function didReceiveInviteReactionUpdate(
   lastReactionTime = currentTime;
 }
 
-function applyMatchStatusAndTimerWithoutMoveProcessing(
-  match: Match,
-  shouldRenderLiveBoard: boolean,
-  matchId: string,
-): void {
-  if (match.status === "surrendered") {
-    if (shouldRenderLiveBoard) {
-      handleResignStatus(false, match.color);
-    } else {
-      handleResignStatusWithoutRender(false, match.color);
-    }
-  }
-  updateDisplayedTimerIfNeeded(false, match, matchId);
-}
-
 export function didReceiveMatchUpdate(
   match: Match,
   matchPlayerUid: string,
@@ -5725,6 +5857,10 @@ export function didReceiveMatchUpdate(
   }
   ensureBoardViewInvariants("didReceiveMatchUpdate:start");
   if (!didConnect) {
+    const hydration = prepareInitialGameHydration(match, matchId);
+    if (!hydration) {
+      return;
+    }
     isWaitingForInviteToGetAccepted = false;
     resetOnlineReconnectRequestState();
     if (boardViewMode !== "historicalView") {
@@ -5746,8 +5882,18 @@ export function didReceiveMatchUpdate(
       pendingRematchNavigationToLiveBoard = true;
       applyBoardUiForCurrentView();
     }
-    didConnectTo(match, matchPlayerUid, matchId);
+    didConnectTo(match, matchPlayerUid, matchId, hydration);
     didConnect = true;
+    if (isReconnect) {
+      updateUndoButtonBasedOnGameState();
+      if (
+        !isWatchOnly &&
+        !isGameOver &&
+        game.winner_color() === undefined
+      ) {
+        setAutomoveActionEnabled(true);
+      }
+    }
     if (isWatchOnly && connection.rematchSeriesEndIsIndicated()) {
       setEndMatchVisible(true);
       setEndMatchConfirmed(true);
@@ -5782,51 +5928,7 @@ export function didReceiveMatchUpdate(
     }
   }
 
-  const isWaitingForInitialMoveStreams =
-    (isReconnect || isWatchOnly) &&
-    (!didSetWhiteProcessedMovesCount || !didSetBlackProcessedMovesCount);
-  const didNotHaveBothMatchesSetupBeforeThisUpdate =
-    isWatchOnly && isWaitingForInitialMoveStreams;
-  if (
-    isWaitingForInitialMoveStreams ||
-    divergedMoveHistoryMatchId === matchId ||
-    incompleteMoveStreamMatchId === matchId
-  ) {
-    const moveReplayResult = reconstructCurrentGameFromMoveStreams(
-      matchId,
-      shouldRenderLiveBoard,
-    );
-    if (moveReplayResult === "reconstructed" && !shouldRenderLiveBoard) {
-      didMutateLiveGameWithoutRender = true;
-    }
-    if (
-      moveReplayResult === "unavailable" ||
-      moveReplayResult === "incomplete"
-    ) {
-      applyMatchStatusAndTimerWithoutMoveProcessing(
-        match,
-        shouldRenderLiveBoard,
-        matchId,
-      );
-      return;
-    }
-  }
-
-  if (
-    isGameOver &&
-    !(
-      isWatchOnly &&
-      (!didSetWhiteProcessedMovesCount || !didSetBlackProcessedMovesCount)
-    )
-  ) {
-    return;
-  }
-  if (divergedMoveHistoryMatchId === matchId) {
-    applyMatchStatusAndTimerWithoutMoveProcessing(
-      match,
-      shouldRenderLiveBoard,
-      matchId,
-    );
+  if (isGameOver) {
     return;
   }
 
@@ -5835,45 +5937,25 @@ export function didReceiveMatchUpdate(
   if (movesCount > processedMovesCount) {
     const movesFens = movesFensArray(match);
     let nextProcessedMovesCount = processedMovesCount;
-    const recoverFromInvalidMove = () => {
-      const replayResult = reconstructCurrentGameFromMoveStreams(
-        matchId,
-        shouldRenderLiveBoard,
-      );
-      if (replayResult !== "reconstructed") {
-        setProcessedMovesCountForColor(match.color, nextProcessedMovesCount);
+    for (let i = processedMovesCount; i < movesCount; i++) {
+      const moveFen = movesFens[i];
+      const output = game.process_input_fen(moveFen);
+      if (output.kind !== MonsRules.OutputModelKind.Events) {
+        break;
       }
-      applyMatchStatusAndTimerWithoutMoveProcessing(
-        match,
-        shouldRenderLiveBoard,
-        matchId,
-      );
-    };
-    if (shouldRenderLiveBoard) {
-      for (let i = processedMovesCount; i < movesCount; i++) {
-        const moveFen = movesFens[i];
-        const output = game.process_input_fen(moveFen);
-        if (!isValidPersistedMoveOutput(output)) {
-          recoverFromInvalidMove();
-          return;
-        }
+      if (shouldRenderLiveBoard) {
         applyOutput([], "", output, true, false, AssistedInputKind.None);
-        nextProcessedMovesCount = i + 1;
+      } else {
+        didMutateLiveGameWithoutRender = true;
       }
-    } else {
-      didMutateLiveGameWithoutRender = true;
-      for (let i = processedMovesCount; i < movesCount; i++) {
-        const moveFen = movesFens[i];
-        const output = game.process_input_fen(moveFen);
-        if (!isValidPersistedMoveOutput(output)) {
-          recoverFromInvalidMove();
-          return;
-        }
-        nextProcessedMovesCount = i + 1;
-      }
+      nextProcessedMovesCount = i + 1;
     }
 
     setProcessedMovesCountForColor(match.color, nextProcessedMovesCount);
+
+    if (match.fen !== game.fen()) {
+      console.log("fens do not match");
+    }
     if (!shouldRenderLiveBoard && game.winner_color() !== undefined) {
       isGameOver = true;
     }
@@ -5881,27 +5963,17 @@ export function didReceiveMatchUpdate(
 
   if (match.status === "surrendered") {
     if (shouldRenderLiveBoard) {
-      handleResignStatus(
-        didNotHaveBothMatchesSetupBeforeThisUpdate,
-        match.color,
-      );
+      handleResignStatus(false, match.color);
     } else {
       didMutateLiveGameWithoutRender = true;
-      handleResignStatusWithoutRender(
-        didNotHaveBothMatchesSetupBeforeThisUpdate,
-        match.color,
-      );
+      handleResignStatusWithoutRender(false, match.color);
     }
   }
 
   if (didMutateLiveGameWithoutRender) {
     triggerMoveHistoryPopupReload();
   }
-  updateDisplayedTimerIfNeeded(
-    didNotHaveBothMatchesSetupBeforeThisUpdate,
-    match,
-    matchId,
-  );
+  updateDisplayedTimerIfNeeded(false, match, matchId);
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
@@ -5909,22 +5981,30 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   if (!activeMatchId || activeMatchId !== matchId) {
     return;
   }
+  currentInputs = [];
+  Board.removeHighlights();
+  Board.hideItemSelectionOrConfirmationOverlay();
   ensureBoardViewInvariants("didRecoverMyMatch:before");
   const shouldRenderLiveBoard = !shouldPreserveHistoricalViewForCurrentInvite();
+  setWatchOnlyState(false);
+  setWatchOnlyVisible(false);
+  isReconnect = true;
+  didConnect = false;
+  playerSideColor =
+    match.color === "white" ? MonsRules.Color.White : MonsRules.Color.Black;
+  const recoveredGame = gameModelFromFen(match.fen);
+  if (!recoveredGame) {
+    return;
+  }
+
   if (shouldRenderLiveBoard) {
     clearViewedRematchState();
     boardViewMode = "activeLive";
     nextBoardRenderSession();
   }
-  setWatchOnlyState(false);
-  setWatchOnlyVisible(false);
-  isReconnect = true;
   resetWagerStateForMatch(matchId);
   resetBotScoreReactionState();
-
-  playerSideColor =
-    match.color === "white" ? MonsRules.Color.White : MonsRules.Color.Black;
-  if (!loadCurrentGameFromFen(match.fen)) return;
+  installCurrentGameModel(recoveredGame);
   if (shouldRenderLiveBoard) {
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
   }
@@ -5933,8 +6013,6 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
     Board.hideTimerCountdownDigits();
   }
   verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
-  const movesCount = movesCountOfMatch(match);
-  setProcessedMovesCountForColor(match.color, movesCount);
   if (shouldRenderLiveBoard) {
     Board.updateEmojiAndAuraIfNeeded(
       match.emojiId.toString(),
@@ -5991,9 +6069,23 @@ export function enterWatchOnlyMode() {
 }
 
 function movesFensArray(match: Match): string[] {
-  return movesArrayFromFlatString(match.flatMovesString);
+  const flatMovesString = match.flatMovesString;
+  if (!flatMovesString || flatMovesString === "") {
+    return [];
+  }
+  return flatMovesString.split("-");
 }
 
 function movesCountOfMatch(match: Match): number {
-  return movesArrayFromFlatString(match.flatMovesString).length;
+  const flatMovesString = match.flatMovesString;
+  if (!flatMovesString || flatMovesString === "") {
+    return 0;
+  }
+  let count = 1;
+  for (let i = 0; i < flatMovesString.length; i++) {
+    if (flatMovesString[i] === "-") {
+      count++;
+    }
+  }
+  return count;
 }
