@@ -9,7 +9,8 @@ export type EventPrizeEventId =
   | typeof SHELVES_PRIZES_EVENT_ID
   | typeof VEHICLE_WAMMIN_PRIZES_EVENT_ID
   | typeof SWAG_PACK_PRIZES_EVENT_ID
-  | typeof REVERIE_BANNERS_PRIZES_EVENT_ID;
+  | typeof REVERIE_BANNERS_PRIZES_EVENT_ID
+  | typeof MI_NOTE_CARDS_PRIZES_EVENT_ID;
 export type EventPrizeId =
   | "1092"
   | "1111"
@@ -39,11 +40,15 @@ export type EventPrizeId =
   | "131"
   | "316"
   | "317"
-  | "318";
+  | "318"
+  | "561"
+  | "1025"
+  | "1195";
 export type EventPrizeStandard = "core" | "compressed";
 export type EventPrizeDefinition = Readonly<{
   id: EventPrizeId;
   imageUrl: string;
+  telegramImageUrl?: string;
   imageWidth: number;
   imageHeight: number;
   assetAddress: string;
@@ -124,6 +129,7 @@ declare const SHELVES_PRIZES_EVENT_ID = "Q7uRdLXyVKF";
 declare const VEHICLE_WAMMIN_PRIZES_EVENT_ID = "wjFa2d03Ciu";
 declare const SWAG_PACK_PRIZES_EVENT_ID = "d9RtIQY8ONs";
 declare const REVERIE_BANNERS_PRIZES_EVENT_ID = "PCTotuzfUPu";
+declare const MI_NOTE_CARDS_PRIZES_EVENT_ID = "vMBZ6dI1dQ5";
 declare const EVENT_PRIZE_CONFIGS: Readonly<
   Record<EventPrizeEventId, EventPrizeConfig>
 >;
@@ -189,6 +195,7 @@ export {
   EVENT_PRIZE_CONFIGS,
   EVENT_PRIZE_REVEAL_WINDOW_MS,
   LEGACY_CORE_PRIZES_EVENT_ID,
+  MI_NOTE_CARDS_PRIZES_EVENT_ID,
   PLANET_PEPPA_PRIZES_EVENT_ID,
   RARE_WEITSMANS_PRIZES_EVENT_ID,
   REVERIE_BANNERS_PRIZES_EVENT_ID,

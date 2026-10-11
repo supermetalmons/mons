@@ -63,6 +63,56 @@ test("builds the exact Planet Peppa caption and ordered prize images", () => {
   assert.equal(EVENT_PRIZE_ANNOUNCEMENT_GRACE_MS, 60_000);
 });
 
+test("uses Mi Note Cards JPGs for Telegram while retaining website WebPs", () => {
+  const eventId = "vMBZ6dI1dQ5";
+  const result = buildEventPrizeAnnouncement({ eventId });
+  assert.deepEqual(result, {
+    collectionName: "mi note cards",
+    eventId,
+    eventUrl: `https://mons.link/event/${eventId}`,
+    imageUrls: [
+      "https://cdn.lil.org/nft/mi_note_cards/square/561.jpg",
+      "https://cdn.lil.org/nft/mi_note_cards/square/1025.jpg",
+      "https://cdn.lil.org/nft/mi_note_cards/square/1195.jpg",
+    ],
+    parseMode: "HTML",
+    text: 'sunday mons treats — <tg-spoiler>mi note cards</tg-spoiler>\n\nstarting in 1 hour\n\nhttps://mons.link/event/vMBZ6dI1dQ5 <tg-emoji emoji-id="5355002036817525409">&#11088;</tg-emoji>',
+  });
+  assert.deepEqual(
+    prizeCatalog
+      .getEventPrizeConfig(eventId)
+      .prizes.map((prize) => prize.imageUrl),
+    [
+      "https://cdn.lil.org/nft/mi_note_cards/clean/561.webp",
+      "https://cdn.lil.org/nft/mi_note_cards/clean/1025.webp",
+      "https://cdn.lil.org/nft/mi_note_cards/clean/1195.webp",
+    ],
+  );
+  assert.equal(isEventPrizeAnnouncementEvent(eventId, SCHEDULED_EVENT), true);
+});
+
+test("chooses each Telegram image override and falls back to the website image", (t) => {
+  const renderer = withPrizeConfig(t, {
+    ...CONFIG,
+    prizes: [
+      {
+        ...CONFIG.prizes[0],
+        telegramImageUrl: "https://example.com/first.jpg",
+      },
+      CONFIG.prizes[1],
+      {
+        ...CONFIG.prizes[2],
+        telegramImageUrl: "https://example.com/third.jpg",
+      },
+    ],
+  });
+  assert.deepEqual(renderer.buildEventPrizeAnnouncement(DATA).imageUrls, [
+    "https://example.com/first.jpg",
+    CONFIG.prizes[1].imageUrl,
+    "https://example.com/third.jpg",
+  ]);
+});
+
 test("uses approved catalog names in lowercase and trims event IDs", () => {
   for (const [eventId, collectionName] of [
     ["NN3eRzoZo80", "scarecrow"],

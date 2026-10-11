@@ -11,7 +11,8 @@ export type EventPrizeEventId =
   | typeof SHELVES_PRIZES_EVENT_ID
   | typeof VEHICLE_WAMMIN_PRIZES_EVENT_ID
   | typeof SWAG_PACK_PRIZES_EVENT_ID
-  | typeof REVERIE_BANNERS_PRIZES_EVENT_ID;
+  | typeof REVERIE_BANNERS_PRIZES_EVENT_ID
+  | typeof MI_NOTE_CARDS_PRIZES_EVENT_ID;
 
 export type EventPrizeId =
   | "1092"
@@ -42,13 +43,17 @@ export type EventPrizeId =
   | "131"
   | "316"
   | "317"
-  | "318";
+  | "318"
+  | "561"
+  | "1025"
+  | "1195";
 
 export type EventPrizeStandard = "core" | "compressed";
 
 export type EventPrizeDefinition = Readonly<{
   id: EventPrizeId;
   imageUrl: string;
+  telegramImageUrl?: string;
   imageWidth: number;
   imageHeight: number;
   assetAddress: string;
@@ -141,6 +146,7 @@ const SHELVES_PRIZES_EVENT_ID = "Q7uRdLXyVKF";
 const VEHICLE_WAMMIN_PRIZES_EVENT_ID = "wjFa2d03Ciu";
 const SWAG_PACK_PRIZES_EVENT_ID = "d9RtIQY8ONs";
 const REVERIE_BANNERS_PRIZES_EVENT_ID = "PCTotuzfUPu";
+const MI_NOTE_CARDS_PRIZES_EVENT_ID = "vMBZ6dI1dQ5";
 const CORE_PRIZE_COLLECTION_ADDRESS =
   "2xF7dq3maFLud8FQUYAyLiWucdF7RePyzHJs7NkurkoD";
 const COMPRESSED_PRIZE_COLLECTION_ADDRESS =
@@ -159,6 +165,8 @@ const SWAG_PACK_COLLECTION_ADDRESS =
   "C22esis7kQMbX9JGWsMaKvsh1X5GeBmHPju28jiKDyAP";
 const REVERIE_BANNERS_COLLECTION_ADDRESS =
   "E8k3YeCQeJ3oWT25Jc7EPg6wGtN2vDfHa1SzNqVY765L";
+const MI_NOTE_CARDS_COLLECTION_ADDRESS =
+  "BtEknBg1b9ZLJHLTGJcadxeQhQwtdVsoPGDrc9cXwczG";
 const SCARECROW_PRIZE_IMAGE_SIZE = Object.freeze({
   imageWidth: 420,
   imageHeight: 525,
@@ -195,10 +203,15 @@ const REVERIE_BANNERS_IMAGE_SIZE = Object.freeze({
   imageWidth: 1500,
   imageHeight: 500,
 });
+const MI_NOTE_CARDS_IMAGE_SIZE = Object.freeze({
+  imageWidth: 1000,
+  imageHeight: 1400,
+});
 
 const createPrize = ({
   id,
   imageUrl,
+  telegramImageUrl,
   imageWidth,
   imageHeight,
   assetAddress,
@@ -209,6 +222,7 @@ const createPrize = ({
   Object.freeze({
     id,
     imageUrl,
+    ...(telegramImageUrl !== undefined ? { telegramImageUrl } : {}),
     imageWidth,
     imageHeight,
     assetAddress,
@@ -551,6 +565,45 @@ const EVENT_PRIZE_CONFIGS: Readonly<
       }),
     ]),
   }),
+  [MI_NOTE_CARDS_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: MI_NOTE_CARDS_PRIZES_EVENT_ID,
+    collectionName: "Mi Note Cards",
+    prizes: Object.freeze([
+      createPrize({
+        ...MI_NOTE_CARDS_IMAGE_SIZE,
+        id: "561",
+        imageUrl: "https://cdn.lil.org/nft/mi_note_cards/clean/561.webp",
+        telegramImageUrl:
+          "https://cdn.lil.org/nft/mi_note_cards/square/561.jpg",
+        assetAddress: "hzyZZej6eMGC4GBUdwLR62g4jCLSKjQgMSh9nq8mroN",
+        collectionAddress: MI_NOTE_CARDS_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...MI_NOTE_CARDS_IMAGE_SIZE,
+        id: "1025",
+        imageUrl: "https://cdn.lil.org/nft/mi_note_cards/clean/1025.webp",
+        telegramImageUrl:
+          "https://cdn.lil.org/nft/mi_note_cards/square/1025.jpg",
+        assetAddress: "DtLxbSoyneJRJBkmD3tGmBgeLLc34TMjX6MwSKHL6cVN",
+        collectionAddress: MI_NOTE_CARDS_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...MI_NOTE_CARDS_IMAGE_SIZE,
+        id: "1195",
+        imageUrl: "https://cdn.lil.org/nft/mi_note_cards/clean/1195.webp",
+        telegramImageUrl:
+          "https://cdn.lil.org/nft/mi_note_cards/square/1195.jpg",
+        assetAddress: "GTqiGjNpMKaNJuTdzbyCMh7pC5SW6CGNyRJpjiBA3Xvv",
+        collectionAddress: MI_NOTE_CARDS_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
 });
 
 const normalizeString = (value: unknown) =>
@@ -774,6 +827,7 @@ export {
   EVENT_PRIZE_CONFIGS,
   EVENT_PRIZE_REVEAL_WINDOW_MS,
   LEGACY_CORE_PRIZES_EVENT_ID,
+  MI_NOTE_CARDS_PRIZES_EVENT_ID,
   PLANET_PEPPA_PRIZES_EVENT_ID,
   RARE_WEITSMANS_PRIZES_EVENT_ID,
   REVERIE_BANNERS_PRIZES_EVENT_ID,

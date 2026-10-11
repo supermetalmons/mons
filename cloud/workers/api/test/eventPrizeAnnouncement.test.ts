@@ -205,6 +205,51 @@ test("sends a catalog album independently of event Telegram preferences and stor
   assert.equal(state.locks.size, 0);
 });
 
+test("sends and persists Mi Note Cards Telegram JPGs across a safe retry", async () => {
+  const eventId = "vMBZ6dI1dQ5";
+  const requestId = `event:${eventId}:prizes:v1`;
+  const state = fixture({ ...INPUT, eventId });
+  const imageUrls = [
+    "https://cdn.lil.org/nft/mi_note_cards/square/561.jpg",
+    "https://cdn.lil.org/nft/mi_note_cards/square/1025.jpg",
+    "https://cdn.lil.org/nft/mi_note_cards/square/1195.jpg",
+  ];
+  state.dependencies.send = async (input) => {
+    state.sends.push(input);
+    return {
+      ok: false,
+      classification: "retryable",
+      code: "rate-limited",
+      description: "retry later",
+      httpStatus: 429,
+      retryAfterSeconds: 12,
+    };
+  };
+  assert.deepEqual(await state.deliver(), {
+    status: "retryable",
+    reason: "rate-limited",
+    retryAtMs: RUN_AT_MS + 12_000,
+  });
+  const previous = structuredClone(state.values.get(requestId)!);
+  assert.deepEqual(previous.payload?.imageUrls, imageUrls);
+  state.setNow(RUN_AT_MS + 12_000);
+  state.dependencies.send = async (input) => {
+    state.sends.push(input);
+    return SUCCESS;
+  };
+  assert.deepEqual(await state.deliver(), { status: "sent" });
+  assert.deepEqual(
+    state.sends.map((input) => input.imageUrls),
+    [imageUrls, imageUrls],
+  );
+  const receipt = state.values.get(requestId)!;
+  assert.deepEqual(receipt.payload, previous.payload);
+  assert.equal(receipt.payloadDigest, previous.payloadDigest);
+  assert.equal(receipt.status, "sent");
+  assert.equal(receipt.attemptCount, 2);
+  assert.deepEqual(receipt.messageIds, [101, 102, 103]);
+});
+
 test("rejects invalid, late-discovered and expired schedules without reserving delivery", async () => {
   for (const [input, time, reason] of [
     [{ ...INPUT, runAtMs: INPUT.runAtMs - 1 }, RUN_AT_MS, "invalid-schedule"],

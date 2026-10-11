@@ -84,7 +84,9 @@ const buildEventPrizeAnnouncement = (input) => {
     collectionName,
     eventId,
     eventUrl,
-    imageUrls: config.prizes.map((prize) => prize.imageUrl),
+    imageUrls: config.prizes.map(
+      (prize) => prize.telegramImageUrl ?? prize.imageUrl,
+    ),
     parseMode: EVENT_PRIZE_ANNOUNCEMENT_PARSE_MODE,
     text,
   };

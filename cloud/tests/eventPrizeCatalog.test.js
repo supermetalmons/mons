@@ -9,6 +9,7 @@ const {
   COMPRESSED_PRIZES_EVENT_ID,
   EVENT_PRIZE_REVEAL_WINDOW_MS,
   LEGACY_CORE_PRIZES_EVENT_ID,
+  MI_NOTE_CARDS_PRIZES_EVENT_ID,
   PLANET_PEPPA_PRIZES_EVENT_ID,
   RARE_WEITSMANS_PRIZES_EVENT_ID,
   SHELVES_PRIZES_EVENT_ID,
@@ -596,6 +597,84 @@ for (const {
     }
   });
 }
+
+test("maps MI Note Cards to claimable Core prizes with separate Telegram images", () => {
+  const eventId = MI_NOTE_CARDS_PRIZES_EVENT_ID;
+  const config = getEventPrizeConfig(eventId);
+  assert.equal(eventId, "vMBZ6dI1dQ5");
+  assert.equal(config.eventId, eventId);
+  assert.equal(config.collectionName, "Mi Note Cards");
+  assert.deepEqual(
+    config.prizes.map((prize) => ({
+      id: prize.id,
+      imageUrl: prize.imageUrl,
+      telegramImageUrl: prize.telegramImageUrl,
+      imageWidth: prize.imageWidth,
+      imageHeight: prize.imageHeight,
+      assetAddress: prize.assetAddress,
+      collectionAddress: prize.collectionAddress,
+      standard: prize.standard,
+      claimAvailable: prize.claimAvailable,
+    })),
+    [
+      {
+        id: "561",
+        assetAddress: "hzyZZej6eMGC4GBUdwLR62g4jCLSKjQgMSh9nq8mroN",
+      },
+      {
+        id: "1025",
+        assetAddress: "DtLxbSoyneJRJBkmD3tGmBgeLLc34TMjX6MwSKHL6cVN",
+      },
+      {
+        id: "1195",
+        assetAddress: "GTqiGjNpMKaNJuTdzbyCMh7pC5SW6CGNyRJpjiBA3Xvv",
+      },
+    ].map((prize) => ({
+      ...prize,
+      imageUrl: `https://cdn.lil.org/nft/mi_note_cards/clean/${prize.id}.webp`,
+      telegramImageUrl: `https://cdn.lil.org/nft/mi_note_cards/square/${prize.id}.jpg`,
+      imageWidth: 1000,
+      imageHeight: 1400,
+      collectionAddress: "BtEknBg1b9ZLJHLTGJcadxeQhQwtdVsoPGDrc9cXwczG",
+      standard: "core",
+      claimAvailable: true,
+    })),
+  );
+  assert.equal(isEventPrizeEvent(eventId), true);
+  for (const prize of config.prizes) {
+    assert.equal(bs58.default.decode(prize.assetAddress).length, 32);
+    assert.equal(bs58.default.decode(prize.collectionAddress).length, 32);
+    assert.equal(isEventPrizeId(eventId, prize.id), true);
+    assert.equal(isEventPrizeId(LEGACY_CORE_PRIZES_EVENT_ID, prize.id), false);
+    assert.equal(
+      isToggleEventPrizeSelectionRequest({ eventId, prizeId: prize.id }),
+      true,
+    );
+    assert.equal(
+      isEventPrizeWithdrawalRequest({
+        eventId,
+        prizeId: prize.id,
+        solanaAddress: "11111111111111111111111111111111",
+      }),
+      true,
+    );
+  }
+  for (const prizeId of ["1092", "unknown", " 561 "]) {
+    assert.equal(isEventPrizeId(eventId, prizeId), false);
+    assert.equal(
+      isToggleEventPrizeSelectionRequest({ eventId, prizeId }),
+      false,
+    );
+    assert.equal(
+      isEventPrizeWithdrawalRequest({
+        eventId,
+        prizeId,
+        solanaAddress: "11111111111111111111111111111111",
+      }),
+      false,
+    );
+  }
+});
 
 test("catalog membership rejects inherited keys and padded IDs", () => {
   for (const eventId of ["constructor", "toString", "__proto__"]) {

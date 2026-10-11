@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
 const {
+  MI_NOTE_CARDS_PRIZES_EVENT_ID,
   SHELVES_PRIZES_EVENT_ID,
   VEHICLE_WAMMIN_PRIZES_EVENT_ID,
 } = require("@mons/shared/event-prizes");
@@ -213,6 +214,7 @@ test("assigns Planet Peppa prizes by preference with the supplied fallback order
 for (const [collectionName, eventId, prizeIds] of [
   ["Shelves", SHELVES_PRIZES_EVENT_ID, ["865", "1643", "1213"]],
   ["Vehicle Wammin", VEHICLE_WAMMIN_PRIZES_EVENT_ID, ["1241", "443", "1274"]],
+  ["MI Note Cards", MI_NOTE_CARDS_PRIZES_EVENT_ID, ["561", "1025", "1195"]],
 ]) {
   test(`assigns ${collectionName} prizes by preference with the supplied fallback order`, () => {
     const [firstPrizeId, secondPrizeId, thirdPrizeId] = prizeIds;
@@ -265,6 +267,8 @@ test("validates prize IDs against their configured event", () => {
   assert.equal(isEventPrizeId(SHELVES_PRIZES_EVENT_ID, "1241"), false);
   assert.equal(isEventPrizeId(VEHICLE_WAMMIN_PRIZES_EVENT_ID, "1241"), true);
   assert.equal(isEventPrizeId(VEHICLE_WAMMIN_PRIZES_EVENT_ID, "865"), false);
+  assert.equal(isEventPrizeId(MI_NOTE_CARDS_PRIZES_EVENT_ID, "561"), true);
+  assert.equal(isEventPrizeId(MI_NOTE_CARDS_PRIZES_EVENT_ID, "1092"), false);
   assert.deepEqual(build({ first: "1092" }, "unsupported"), {});
 });
 
