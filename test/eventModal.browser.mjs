@@ -106,7 +106,7 @@ async function openEvent(page, id = "event-a", patch = {}) {
 }
 
 mounted(
-  "the live event view keeps creator actions visible and responsive without simulation controls",
+  "creator actions open in a top-left menu and preserve the event on dismissal",
   async (page) => {
     await call(page, "mount", {
       mode: "view",
@@ -114,99 +114,108 @@ mounted(
       loginUid: "p1-login",
     });
     await call(page, "receive", "event-a");
-    const administration = page.getByRole("group", {
+    const trigger = page.getByRole("button", { name: "Event administration" });
+    const administration = page.getByRole("menu", {
       name: "Event administration",
     });
-    await administration.waitFor();
-    assert.equal(
-      await administration
-        .getByRole("button", { name: "Postpone", exact: true })
-        .count(),
-      1,
-    );
-    assert.equal(
-      await administration
-        .getByRole("button", { name: "Remove Participant", exact: true })
-        .count(),
-      1,
-    );
-    assert.equal(
-      await page.getByRole("button", { name: "Bracket stub helper" }).count(),
-      0,
-    );
-    assert.equal(
-      await page.getByRole("button", { name: "Generate", exact: true }).count(),
-      0,
-    );
-    assert.equal(
-      await page.getByRole("button", { name: "Live", exact: true }).count(),
-      0,
-    );
+    await trigger.waitFor();
+    assert.equal(await administration.count(), 0);
+    assert.equal(await page.getByText("Postpone", { exact: true }).count(), 0);
     for (const viewport of [
       { width: 1200, height: 900 },
       { width: 360, height: 740 },
     ]) {
       await page.setViewportSize(viewport);
-      await page.waitForFunction(() => {
-        const row = document.querySelector(
-          '[aria-label="Event administration"]',
-        );
-        const bounds = row?.getBoundingClientRect();
-        return (
-          bounds &&
-          bounds.width > 0 &&
-          bounds.x >= 0 &&
-          bounds.right <= innerWidth + 1 &&
-          bounds.bottom <= innerHeight
-        );
-      });
-      const rowBounds = await administration.boundingBox();
-      assert.ok(rowBounds && rowBounds.height > 0);
-      const bottomTop = await administration.evaluate(
-        (element) => element.parentElement.getBoundingClientRect().top,
-      );
-      const participant = await page
-        .locator('button[data-player-card-trigger="true"]')
-        .filter({ hasText: "P2" })
-        .boundingBox();
-      assert.ok(participant && participant.y + participant.height <= bottomTop);
+      const triggerBounds = await trigger.boundingBox();
+      assert.ok(triggerBounds && triggerBounds.x < 20 && triggerBounds.y < 20);
+      await trigger.click();
+      assert.equal(await trigger.getAttribute("aria-expanded"), "true");
+      const menuBounds = await administration.boundingBox();
+      assert.ok(menuBounds && menuBounds.x === triggerBounds.x);
+      assert.ok(menuBounds.y >= triggerBounds.y + triggerBounds.height);
+      assert.ok(menuBounds.x + menuBounds.width <= viewport.width);
+      assert.equal(await administration.getByRole("menuitem").count(), 2);
       if (process.env.MONS_EVENT_SCREENSHOT_DIRECTORY) {
         await page.screenshot({
           path: `${process.env.MONS_EVENT_SCREENSHOT_DIRECTORY}/event-admin-${viewport.width}.png`,
         });
       }
+      await page.keyboard.press("Escape");
+      assert.equal(await administration.count(), 0);
+      assert.equal(
+        await trigger.evaluate((element) => element === document.activeElement),
+        true,
+      );
+      assert.equal((await snapshot(page)).modalState.isOpen, true);
     }
-    await call(page, "responses", ["5"], [true]);
-    await administration
-      .getByRole("button", { name: "Postpone", exact: true })
-      .click();
-    assert.deepEqual(await calls(page, "postpone"), [["event-a", 5]]);
+    await trigger.press("ArrowDown");
+    const postpone = administration.getByRole("menuitem", {
+      name: "Postpone",
+      exact: true,
+    });
+    const remove = administration.getByRole("menuitem", {
+      name: "Remove Participant",
+      exact: true,
+    });
     assert.equal(
-      await administration
-        .getByRole("button", { name: "...", exact: true })
-        .isDisabled(),
+      await postpone.evaluate((element) => element === document.activeElement),
       true,
     );
+    await page.keyboard.press("Escape");
+    await trigger.press("ArrowUp");
+    assert.equal(
+      await remove.evaluate((element) => element === document.activeElement),
+      true,
+    );
+    await page.keyboard.press("Escape");
+    await trigger.click();
+    assert.equal(
+      await postpone.evaluate((element) => element === document.activeElement),
+      true,
+    );
+    await page.keyboard.press("ArrowDown");
+    assert.equal(
+      await remove.evaluate((element) => element === document.activeElement),
+      true,
+    );
+    await page.keyboard.press("Home");
+    assert.equal(
+      await postpone.evaluate((element) => element === document.activeElement),
+      true,
+    );
+    await trigger.focus();
+    await trigger.press("ArrowUp");
+    assert.equal(
+      await remove.evaluate((element) => element === document.activeElement),
+      true,
+    );
+    await page.mouse.click(5, 5);
+    assert.equal(await administration.count(), 0);
+    assert.equal((await snapshot(page)).modalState.isOpen, true);
+    await trigger.click();
+    await call(page, "responses", ["5"], [true]);
+    await postpone.click();
+    assert.deepEqual(await calls(page, "postpone"), [["event-a", 5]]);
+    assert.equal(await administration.count(), 0);
+    await trigger.click();
+    assert.equal(await postpone.isDisabled(), true);
     await call(page, "complete", "postpone");
     await call(page, "responses", ["1"], [true]);
-    await administration
-      .getByRole("button", { name: "Remove Participant", exact: true })
-      .click();
+    await remove.click();
     assert.deepEqual(await calls(page, "remove"), [["event-a", "p2"]]);
-    assert.equal(
-      await administration
-        .getByRole("button", { name: "...", exact: true })
-        .isDisabled(),
-      true,
-    );
+    assert.equal(await administration.count(), 0);
+    await trigger.click();
+    assert.equal(await remove.isDisabled(), true);
     await call(page, "complete", "remove");
+    await page.keyboard.press("Escape");
+    await call(page, "advance", 1500);
     await page.mouse.click(5, 5);
     assert.equal((await snapshot(page)).modalState.isOpen, false);
   },
 );
 
 mounted(
-  "crowded mobile event participants stay above the administration controls",
+  "crowded mobile event participants stay above the bottom controls",
   async (page) => {
     await page.setViewportSize({ width: 320, height: 568 });
     await call(page, "mount", {
@@ -232,18 +241,20 @@ mounted(
       ),
     );
     await call(page, "receive", "event-a", { participants });
-    const administration = page.getByRole("group", {
-      name: "Event administration",
+    const copyLink = page.getByRole("button", {
+      name: "Copy Link",
+      exact: true,
     });
-    await administration.waitFor();
+    await copyLink.waitFor();
     await page.evaluate(
       () =>
         new Promise((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(resolve)),
         ),
     );
-    const bottomTop = await administration.evaluate(
-      (element) => element.parentElement.getBoundingClientRect().top,
+    const bottomTop = await copyLink.evaluate(
+      (element) =>
+        element.parentElement.parentElement.getBoundingClientRect().top,
     );
     const last = page.locator('button[data-player-card-trigger="true"]').last();
     const bounds = await last.boundingBox();
@@ -274,7 +285,7 @@ mounted(
     await call(page, "receive", "event-a");
     await page.getByRole("button", { name: "Join", exact: true }).waitFor();
     assert.equal(
-      await page.getByRole("group", { name: "Event administration" }).count(),
+      await page.getByRole("button", { name: "Event administration" }).count(),
       0,
     );
     if (process.env.MONS_EVENT_SCREENSHOT_DIRECTORY) {
@@ -284,10 +295,13 @@ mounted(
     }
     await call(page, "mount", {
       mode: "view",
-      profileId: "admin",
-      loginUid: "admin-login",
+      profileId: "p1",
+      loginUid: "p1-login",
       username: "ivan",
     });
+    await call(page, "receive", "event-a");
+    const trigger = page.getByRole("button", { name: "Event administration" });
+    await trigger.click();
     await call(page, "receive", "event-a", {
       status: "active",
       startedAtMs: 999_000,
@@ -314,40 +328,120 @@ mounted(
         },
       },
     });
-    const disqualify = page.getByRole("button", {
+    const disqualify = page.getByRole("menuitem", {
       name: "Disqualify",
       exact: true,
     });
     await disqualify.waitFor();
     assert.equal(await disqualify.isEnabled(), true);
+    assert.equal(
+      await disqualify.evaluate(
+        (element) => element === document.activeElement,
+      ),
+      true,
+    );
+    await page.keyboard.press("Escape");
+    assert.equal(await page.getByRole("menu").count(), 0);
+    await trigger.click();
     await call(page, "responses", ["1"], [true]);
     await disqualify.click();
     assert.deepEqual(await calls(page, "disqualify"), [["event-a", "0_0"]]);
+    await trigger.click();
+    assert.equal(await disqualify.isDisabled(), true);
     await call(page, "complete", "disqualify");
+    assert.equal(
+      await disqualify.evaluate(
+        (element) => element === document.activeElement,
+      ),
+      true,
+    );
+    await trigger.focus();
+    await trigger.press("ArrowDown");
+    assert.equal(
+      await disqualify.evaluate(
+        (element) => element === document.activeElement,
+      ),
+      true,
+    );
   },
 );
 
 mounted(
-  "leaving is one click and suppresses duplicate pending requests",
+  "leaving suppresses duplicate requests until the post-success refresh",
   async (page) => {
     await mountActions(page);
     await call(page, "invoke", "leave");
     await call(page, "invoke", "leave");
     assert.deepEqual(await calls(page, "leave"), [["event-a"]]);
     assert.equal((await snapshot(page)).isLeaving, true);
+    await call(page, "override", { isEventFresh: false });
     await call(page, "complete", "leave");
+    assert.equal((await snapshot(page)).isLeaving, true);
+    await call(page, "invoke", "leave");
+    await call(page, "invoke", "join");
+    assert.deepEqual(await calls(page, "leave"), [["event-a"]]);
+    assert.deepEqual(await calls(page, "join"), []);
+    await call(page, "override", { isEventFresh: true });
     assert.equal((await snapshot(page)).isLeaving, false);
     assert.deepEqual((await snapshot(page)).alerts, []);
   },
 );
 
 mounted(
-  "leaving rechecks the start boundary and blocks stale events",
+  "leaving immediately uses the sharing colors while freshness and profiles resolve",
+  async (page) => {
+    for (const colorScheme of ["light", "dark"]) {
+      await page.emulateMedia({ colorScheme });
+      await call(page, "mount", {
+        mode: "view",
+        fresh: false,
+        deferredCanonicalIds: true,
+      });
+      await call(page, "receive", "event-a");
+      const leave = page.getByRole("button", { name: "Leave", exact: true });
+      const copy = page.getByRole("button", { name: "Copy Link", exact: true });
+      await leave.waitFor();
+      assert.equal(await leave.isDisabled(), false);
+      const colors = (element) => {
+        const style = getComputedStyle(element);
+        return {
+          color: style.color,
+          backgroundColor: style.backgroundColor,
+          opacity: style.opacity,
+        };
+      };
+      assert.deepEqual(
+        await leave.evaluate(colors),
+        await copy.evaluate(colors),
+      );
+      await leave.click();
+      assert.deepEqual(await calls(page, "leave"), [["event-a"]]);
+      assert.equal(await leave.isDisabled(), true);
+      await call(page, "receive", "event-a");
+      await call(page, "fresh", "event-a", true);
+      assert.equal(await leave.isDisabled(), true);
+      await call(page, "fresh", "event-a", false);
+      await call(page, "complete", "leave");
+      assert.equal(await leave.isDisabled(), true);
+      const participants = await page.evaluate(() => ({
+        p1: window.eventHarness.participant("p1"),
+      }));
+      await call(page, "receive", "event-a", { participants });
+      await call(page, "fresh", "event-a", true);
+      assert.equal(await leave.count(), 0);
+      const join = page.getByRole("button", { name: "Join", exact: true });
+      assert.equal(await join.isDisabled(), false);
+      await join.click();
+      assert.deepEqual(await calls(page, "join"), [["event-a"]]);
+    }
+  },
+);
+
+mounted(
+  "leaving rechecks the start boundary and blocks loading or unrelated events",
   async (page) => {
     for (const overrides of [
-      { isEventFresh: false },
       { isLoading: true },
-      { isResolvingEventProfileIds: true },
       { eventRecord: { eventId: "old-event", startAtMs: 1_100_000 } },
     ]) {
       await mountActions(page, overrides);
@@ -444,6 +538,135 @@ mounted(
 );
 
 mounted(
+  "joining hides Leave for this opening regardless of response and snapshot order",
+  async (page) => {
+    const participants = await page.evaluate(() => ({
+      p1: window.eventHarness.participant("p1"),
+    }));
+    for (const snapshotFirst of [false, true]) {
+      await call(page, "mount", { mode: "view" });
+      await call(page, "receive", "event-a", { participants });
+      const join = page.getByRole("button", { name: "Join", exact: true });
+      const leave = page.getByRole("button", { name: "Leave", exact: true });
+      await join.click();
+      await call(page, "fresh", "event-a", false);
+      assert.equal(await join.isDisabled(), true);
+      assert.equal(await leave.count(), 0);
+      if (snapshotFirst) {
+        await call(page, "receive", "event-a");
+        await call(page, "fresh", "event-a", true);
+        assert.equal(await join.count(), 0);
+        assert.equal(await leave.count(), 0);
+      }
+      await call(page, "complete", "join");
+      if (!snapshotFirst) {
+        assert.equal(await join.isDisabled(), true);
+        await call(page, "receive", "event-a");
+        await call(page, "fresh", "event-a", true);
+      }
+      assert.equal(await join.count(), 0);
+      assert.equal(await leave.count(), 0);
+      assert.deepEqual(await calls(page, "join"), [["event-a"]]);
+      await call(page, "close");
+      await openEvent(page, "event-a");
+      assert.equal(await leave.isEnabled(), true);
+    }
+  },
+);
+
+mounted(
+  "switching events clears Leave suppression without reviving an old join",
+  async (page) => {
+    await call(page, "mount", { mode: "view" });
+    const participants = await page.evaluate(() => ({
+      p1: window.eventHarness.participant("p1"),
+    }));
+    await call(page, "receive", "event-a", { participants });
+    await page.getByRole("button", { name: "Join", exact: true }).click();
+    await openEvent(page, "event-b");
+    const leave = page.getByRole("button", { name: "Leave", exact: true });
+    assert.equal(await leave.isEnabled(), true);
+    await call(page, "complete", "join");
+    assert.equal(await leave.isEnabled(), true);
+    await openEvent(page, "event-a");
+    assert.equal(await leave.isEnabled(), true);
+  },
+);
+
+mounted(
+  "failed joins can retry while stale and still hide Leave after succeeding",
+  async (page) => {
+    await call(page, "mount", { mode: "view" });
+    const participants = await page.evaluate(() => ({
+      p1: window.eventHarness.participant("p1"),
+    }));
+    await call(page, "receive", "event-a", { participants });
+    const join = page.getByRole("button", { name: "Join", exact: true });
+    const leave = page.getByRole("button", { name: "Leave", exact: true });
+    await join.click();
+    await call(page, "fresh", "event-a", false);
+    await call(page, "complete", "join", 0, "reject");
+    assert.equal(await join.isEnabled(), true);
+    await join.click();
+    assert.deepEqual(await calls(page, "join"), [["event-a"], ["event-a"]]);
+    await call(page, "complete", "join", 1);
+    assert.equal(await join.isDisabled(), true);
+    await call(page, "receive", "event-a");
+    await call(page, "fresh", "event-a", true);
+    assert.equal(await join.count(), 0);
+    assert.equal(await leave.count(), 0);
+  },
+);
+
+mounted(
+  "successful joins wait for fresh canonical membership and allow a resolved nonmember to retry",
+  async (page) => {
+    for (const canonicalId of ["p2", "retired-profile"]) {
+      await call(page, "mount", {
+        fresh: false,
+        deferredCanonicalIds: true,
+        loginUid: "another-login",
+      });
+      const participants = await page.evaluate(() => ({
+        p1: window.eventHarness.participant("p1"),
+        "retired-profile": window.eventHarness.participant("retired-profile"),
+      }));
+      await call(page, "receive", "event-a", { participants });
+      await call(page, "capture", "join");
+      await call(page, "invoke", "join");
+      await call(page, "complete", "join");
+      assert.equal((await snapshot(page)).isJoining, true);
+      await call(page, "invokeSaved", "join");
+      await call(page, "invoke", "join");
+      assert.deepEqual(await calls(page, "join"), [["event-a"]]);
+      await call(page, "fresh", "event-a", true);
+      assert.equal((await snapshot(page)).isJoining, true);
+      const canonicalRequests = await calls(page, "canonical");
+      const participantIndex = canonicalRequests.findIndex(
+        ([id]) => id === "retired-profile",
+      );
+      const creatorIndex = canonicalRequests.findIndex(([id]) => id === "p1");
+      await call(
+        page,
+        "complete",
+        "canonical",
+        participantIndex,
+        "resolve",
+        canonicalId,
+      );
+      assert.equal((await snapshot(page)).resolvingProfiles, true);
+      assert.equal((await snapshot(page)).isJoining, canonicalId !== "p2");
+      await call(page, "complete", "canonical", creatorIndex, "resolve", "p1");
+      assert.equal((await snapshot(page)).isJoining, false);
+      if (canonicalId !== "p2") {
+        await call(page, "invoke", "join");
+        assert.deepEqual(await calls(page, "join"), [["event-a"], ["event-a"]]);
+      }
+    }
+  },
+);
+
+mounted(
   "join callbacks from a previous or closed modal cannot submit",
   async (page) => {
     for (const next of ["open", "close"]) {
@@ -464,6 +687,7 @@ mounted(
     await call(page, "receive", "event-a");
     await call(page, "invoke", "join");
     assert.deepEqual((await snapshot(page)).popups, ["signin"]);
+    assert.equal((await snapshot(page)).hasAttemptedJoin, false);
     await openEvent(page, "event-b");
     await call(page, "open", "event-a");
     await call(page, "fail", "event-a");
@@ -475,6 +699,7 @@ mounted(
     assert.equal((await snapshot(page)).intervals, 1);
     await call(page, "advance", 350);
     assert.deepEqual(await calls(page, "join"), [["event-a"]]);
+    assert.equal((await snapshot(page)).hasAttemptedJoin, true);
   },
 );
 

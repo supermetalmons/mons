@@ -24,6 +24,7 @@ import {
   computeSymmetricalBracket,
 } from "./bracketGeometry";
 import { EventAvatar } from "./EventAvatar";
+import { EventAdminMenu } from "./EventAdminMenu";
 import {
   BRACKET_AVATAR_PX,
   BRACKET_EDGE_PADDING_X,
@@ -151,12 +152,8 @@ const EventModal: React.FC = () => {
   const controller = useEventModalController();
   const { modalState, eventRecord, isLoading, isEventFresh, nowMs } =
     controller.session;
-  const {
-    currentProfileId,
-    currentLoginUid,
-    eventProfileIds,
-    isResolvingEventProfileIds,
-  } = controller.identity;
+  const { currentProfileId, currentLoginUid, eventProfileIds } =
+    controller.identity;
   const {
     participants,
     participantsById,
@@ -174,6 +171,7 @@ const EventModal: React.FC = () => {
   const {
     isJoining,
     isLeaving,
+    hasAttemptedJoin,
     join: handleJoinClick,
     leave: handleLeaveClick,
     selectPrize: handlePrizeSelectionClick,
@@ -605,8 +603,6 @@ const EventModal: React.FC = () => {
     isJoining ||
     isLeaving ||
     isUpdatingPrizeSelection;
-  const isLeavePending =
-    isJoinPending || !isEventFresh || isResolvingEventProfileIds;
 
   const shouldKeepVisibleForOutsideDismiss = useCallback(() => {
     const hasShinyCardElement =
@@ -853,6 +849,35 @@ const EventModal: React.FC = () => {
     removableScheduledParticipants.length > 0;
   const disableDisqualifyButton =
     isDisqualifying || livePendingMatches.length <= 0;
+  const adminActions = [
+    ...(canPostponeScheduledEvent
+      ? [
+          {
+            label: "Postpone",
+            disabled: isPostponing,
+            onSelect: handlePostponeClick,
+          },
+        ]
+      : []),
+    ...(canRemoveScheduledParticipant
+      ? [
+          {
+            label: "Remove Participant",
+            disabled: isRemovingParticipant,
+            onSelect: handleRemoveParticipantClick,
+          },
+        ]
+      : []),
+    ...(canDisqualifyFromLiveBracket
+      ? [
+          {
+            label: "Disqualify",
+            disabled: disableDisqualifyButton,
+            onSelect: handleDisqualifyClick,
+          },
+        ]
+      : []),
+  ];
   const showEventPrizes =
     !!eventPrizeConfig && !!eventRecord && !isDismissedState;
   const showTopBarEventPrizes = showEventPrizes && !showEndedAwards;
@@ -896,6 +921,9 @@ const EventModal: React.FC = () => {
       onTouchCancelCapture={handleBackdropTouchCancel}
       onClick={handleBackdropClick}
     >
+      {modalState.eventId && !isDismissedState && adminActions.length > 0 && (
+        <EventAdminMenu key={modalState.eventId} actions={adminActions} />
+      )}
       {!isDismissedState && (topBarTitleText || showTopBarEventPrizes) && (
         <TopBar ref={topBarRef}>
           <TopBarStack>
@@ -1317,22 +1345,24 @@ const EventModal: React.FC = () => {
               </BottomPillButton>
             )}
 
-            {canLeaveEvent(
-              eventRecord,
-              currentProfileId,
-              nowMs,
-              currentLoginUid,
-              eventProfileIds,
-            ) && (
-              <BottomPillButton
-                type="button"
-                onClick={() => void handleLeaveClick()}
-                disabled={isLeavePending}
-                $isViewOnly={isLeavePending}
-              >
-                Leave
-              </BottomPillButton>
-            )}
+            {!hasAttemptedJoin &&
+              canLeaveEvent(
+                eventRecord,
+                currentProfileId,
+                nowMs,
+                currentLoginUid,
+                eventProfileIds,
+              ) && (
+                <BottomPillButton
+                  type="button"
+                  $isBlue
+                  onClick={() => void handleLeaveClick()}
+                  disabled={isJoinPending}
+                  $isViewOnly={isJoinPending}
+                >
+                  Leave
+                </BottomPillButton>
+              )}
 
             {eventUiState.playableMatch && (
               <BottomPillButton
@@ -1358,39 +1388,6 @@ const EventModal: React.FC = () => {
                 </BottomPillButton>
               )}
           </ButtonRow>
-          {(canPostponeScheduledEvent ||
-            canRemoveScheduledParticipant ||
-            canDisqualifyFromLiveBracket) && (
-            <ButtonRow role="group" aria-label="Event administration">
-              {canPostponeScheduledEvent && (
-                <BottomPillButton
-                  type="button"
-                  onClick={handlePostponeClick}
-                  disabled={isPostponing}
-                >
-                  {isPostponing ? "..." : "Postpone"}
-                </BottomPillButton>
-              )}
-              {canRemoveScheduledParticipant && (
-                <BottomPillButton
-                  type="button"
-                  onClick={handleRemoveParticipantClick}
-                  disabled={isRemovingParticipant}
-                >
-                  {isRemovingParticipant ? "..." : "Remove Participant"}
-                </BottomPillButton>
-              )}
-              {canDisqualifyFromLiveBracket && (
-                <BottomPillButton
-                  type="button"
-                  onClick={handleDisqualifyClick}
-                  disabled={disableDisqualifyButton}
-                >
-                  {isDisqualifying ? "..." : "Disqualify"}
-                </BottomPillButton>
-              )}
-            </ButtonRow>
-          )}
         </BottomBar>
       )}
     </Overlay>

@@ -39,6 +39,7 @@ export type EventModalActionsOptions = {
   isLoading: boolean;
   nowMs: number;
   currentProfileId: string;
+  isJoined: boolean;
   eventProfileIds: EventProfileIds;
   isResolvingEventProfileIds: boolean;
   eventPrizeConfig: EventPrizeConfig | null;
@@ -55,6 +56,7 @@ export function useEventModalActions({
   isLoading,
   nowMs,
   currentProfileId,
+  isJoined,
   eventProfileIds,
   isResolvingEventProfileIds,
   eventPrizeConfig,
@@ -63,9 +65,16 @@ export function useEventModalActions({
   canManageDisqualifications,
   removableScheduledParticipants,
 }: EventModalActionsOptions) {
-  const [isJoining, setIsJoining] = useState(false);
+  const [joinStatus, setJoinStatus] = useState<
+    "idle" | "pending" | "refreshing"
+  >("idle");
+  const isJoining = joinStatus !== "idle";
+  const [hasAttemptedJoin, setHasAttemptedJoin] = useState(false);
   const activeJoinRequestRef = useRef<object | null>(null);
-  const [isLeaving, setIsLeaving] = useState(false);
+  const [leaveStatus, setLeaveStatus] = useState<
+    "idle" | "pending" | "refreshing"
+  >("idle");
+  const isLeaving = leaveStatus !== "idle";
   const activeLeaveRequestRef = useRef<object | null>(null);
   const [isDisqualifying, setIsDisqualifying] = useState(false);
   const [isPostponing, setIsPostponing] = useState(false);
@@ -82,10 +91,29 @@ export function useEventModalActions({
   }, []);
   const resetParticipationRequests = useCallback(() => {
     activeJoinRequestRef.current = null;
-    setIsJoining(false);
+    setJoinStatus("idle");
+    setHasAttemptedJoin(false);
     activeLeaveRequestRef.current = null;
-    setIsLeaving(false);
+    setLeaveStatus("idle");
   }, []);
+
+  useEffect(() => {
+    if (
+      joinStatus !== "refreshing" ||
+      !isEventFresh ||
+      (!isJoined && isResolvingEventProfileIds)
+    ) {
+      return;
+    }
+    activeJoinRequestRef.current = null;
+    setJoinStatus("idle");
+  }, [isEventFresh, isJoined, isResolvingEventProfileIds, joinStatus]);
+
+  useEffect(() => {
+    if (leaveStatus !== "refreshing" || !isEventFresh) return;
+    activeLeaveRequestRef.current = null;
+    setLeaveStatus("idle");
+  }, [isEventFresh, leaveStatus]);
 
   useEffect(() => {
     setIsPostponing(false);
@@ -119,14 +147,19 @@ export function useEventModalActions({
     if (activeJoinRequestRef.current) return;
     const request = {};
     activeJoinRequestRef.current = request;
-    setIsJoining(true);
+    setHasAttemptedJoin(true);
+    setJoinStatus("pending");
     void connection
       .joinEvent(eventId)
-      .catch(() => {})
-      .finally(() => {
+      .then(() => {
+        if (activeJoinRequestRef.current === request) {
+          setJoinStatus("refreshing");
+        }
+      })
+      .catch(() => {
         if (activeJoinRequestRef.current === request) {
           activeJoinRequestRef.current = null;
-          setIsJoining(false);
+          setJoinStatus("idle");
         }
       });
   }, []);
@@ -299,8 +332,6 @@ export function useEventModalActions({
       !modalState.isOpen ||
       getEventModalState() !== modalState ||
       eventRecord?.eventId !== modalState.eventId ||
-      !isEventFresh ||
-      isResolvingEventProfileIds ||
       isLoading ||
       activeJoinRequestRef.current ||
       activeLeaveRequestRef.current ||
@@ -317,9 +348,11 @@ export function useEventModalActions({
     }
     const request = {};
     activeLeaveRequestRef.current = request;
-    setIsLeaving(true);
+    setLeaveStatus("pending");
+    let succeeded = false;
     try {
       await connection.leaveEvent(modalState.eventId);
+      succeeded = true;
     } catch (error) {
       if (
         activeLeaveRequestRef.current !== request ||
@@ -334,19 +367,21 @@ export function useEventModalActions({
       window.alert(message || "Failed to leave event. Please try again.");
     } finally {
       if (activeLeaveRequestRef.current === request) {
-        activeLeaveRequestRef.current = null;
-        if (getEventModalState() === modalState) {
-          setIsLeaving(false);
+        if (succeeded && getEventModalState() === modalState) {
+          setLeaveStatus("refreshing");
+        } else {
+          activeLeaveRequestRef.current = null;
+          if (getEventModalState() === modalState) {
+            setLeaveStatus("idle");
+          }
         }
       }
     }
   }, [
     eventRecord,
     eventProfileIds,
-    isEventFresh,
     isLoading,
     isPrizeSelectionPending,
-    isResolvingEventProfileIds,
     modalState,
   ]);
 
@@ -549,6 +584,7 @@ export function useEventModalActions({
     participation: {
       isJoining,
       isLeaving,
+      hasAttemptedJoin,
       join: handleJoinClick,
       leave: handleLeaveClick,
       selectPrize: handlePrizeSelectionClick,

@@ -115,6 +115,7 @@ export function useEventModalController() {
     isLoading,
     nowMs,
     currentProfileId,
+    isJoined: eventUiState.isJoined,
     eventProfileIds,
     isResolvingEventProfileIds,
     eventPrizeConfig,
