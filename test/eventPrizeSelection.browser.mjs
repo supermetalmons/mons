@@ -423,6 +423,128 @@ test(
 );
 
 test(
+  "concealed portrait artwork fills the card without zoom or washed-out edges",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await page.addStyleTag({
+        content:
+          '[aria-label="Event prizes"] button > span[aria-hidden="true"] { visibility: hidden !important; }',
+      });
+      const button = prizeButton(page, "1092");
+      const image = button.locator("img");
+      for (const viewport of [
+        { width: 1200, height: 900 },
+        { width: 360, height: 740 },
+      ]) {
+        await page.setViewportSize(viewport);
+        for (const colorScheme of ["light", "dark"]) {
+          await page.emulateMedia({ colorScheme });
+          await page.evaluate(() =>
+            window.harness.setView({ concealed: true }),
+          );
+          const presentation = await image.evaluate((img) => {
+            const style = getComputedStyle(img);
+            const filterId = style.filter.match(/#([^"')]+)["']?\)$/)?.[1];
+            const imageBounds = img.getBoundingClientRect();
+            const cardBounds = img.parentElement.getBoundingClientRect();
+            return {
+              naturalWidth: img.naturalWidth,
+              naturalHeight: img.naturalHeight,
+              objectFit: style.objectFit,
+              transform: style.transform,
+              opacity: style.opacity,
+              concealmentFilterPresent: Boolean(
+                filterId &&
+                document.getElementById(decodeURIComponent(filterId)) instanceof
+                  SVGFilterElement,
+              ),
+              imageBounds: imageBounds.toJSON(),
+              cardBounds: cardBounds.toJSON(),
+            };
+          });
+          assert.ok(presentation.naturalHeight > presentation.naturalWidth);
+          assert.equal(presentation.objectFit, "cover");
+          assert.equal(presentation.transform, "none");
+          assert.equal(presentation.opacity, "1");
+          assert.equal(presentation.concealmentFilterPresent, true);
+          assert.ok(
+            Math.abs(
+              presentation.cardBounds.width - presentation.cardBounds.height,
+            ) < 1,
+          );
+          for (const dimension of ["x", "y", "width", "height"]) {
+            assert.ok(
+              Math.abs(
+                presentation.imageBounds[dimension] -
+                  presentation.cardBounds[dimension],
+              ) < 1,
+            );
+          }
+          const screenshot = await button.screenshot();
+          const samples = await page.evaluate(
+            async (dataUrl) => {
+              const screenshot = new Image();
+              screenshot.src = dataUrl;
+              await screenshot.decode();
+              const canvas = document.createElement("canvas");
+              canvas.width = screenshot.naturalWidth;
+              canvas.height = screenshot.naturalHeight;
+              const context = canvas.getContext("2d");
+              context.drawImage(screenshot, 0, 0);
+              const centerX = Math.floor(canvas.width / 2);
+              const centerY = Math.floor(canvas.height / 2);
+              return [
+                [centerX, centerY],
+                [3, centerY],
+                [canvas.width - 4, centerY],
+                [centerX, 3],
+                [centerX, canvas.height - 4],
+                [8, 8],
+                [canvas.width - 9, canvas.height - 9],
+              ].map(([x, y]) => ({
+                x,
+                y,
+                rgb: [...context.getImageData(x, y, 1, 1).data].slice(0, 3),
+              }));
+            },
+            `data:image/png;base64,${screenshot.toString("base64")}`,
+          );
+          for (const sample of samples) {
+            assert.ok(
+              sample.rgb.every(
+                (channel, index) =>
+                  Math.abs(channel - [136, 170, 153][index]) <= 6,
+              ),
+              `${colorScheme} ${viewport.width}px at ${sample.x},${sample.y}: ${sample.rgb}`,
+            );
+          }
+          await page.evaluate(() =>
+            window.harness.setView({ concealed: false }),
+          );
+          const revealed = await image.evaluate((img) => ({
+            filter: getComputedStyle(img).filter,
+            transform: getComputedStyle(img).transform,
+            width: img.width,
+            height: img.height,
+            declaredWidth: Number(img.getAttribute("width")),
+            declaredHeight: Number(img.getAttribute("height")),
+          }));
+          assert.equal(revealed.filter, "none");
+          assert.equal(revealed.transform, "none");
+          assert.ok(
+            Math.abs(
+              revealed.width / revealed.height -
+                revealed.declaredWidth / revealed.declaredHeight,
+            ) < 0.03,
+          );
+        }
+      }
+    });
+  },
+);
+
+test(
   "the real event modal replaces scheduled prizes with ended awards at desktop and narrow sizes",
   { timeout: 60000 },
   async () => {

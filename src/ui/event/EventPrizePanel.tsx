@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import type { EventPrizeDefinition } from "@mons/shared/event-prizes";
 import type {
   EventParticipant,
@@ -11,6 +11,7 @@ import {
   MysteryPrizeSparkles,
   PrizeChoice,
   PrizeChoiceButton,
+  PrizeConcealmentFilters,
   PrizeImage,
   PrizeSelectionAvatarMotion,
   PrizeSelectionAvatarSlot,
@@ -76,6 +77,7 @@ export const EventPrizePanel: React.FC<EventPrizePanelProps> = ({
   onSelect: handlePrizeSelectionClick,
   onParticipantClick: handleParticipantClick,
 }) => {
+  const concealmentFilterId = useId();
   const {
     selections: eventPrizeSelections,
     isUpdating: isUpdatingPrizeSelection,
@@ -90,6 +92,31 @@ export const EventPrizePanel: React.FC<EventPrizePanelProps> = ({
       aria-label="Event prizes"
       aria-busy={isUpdatingPrizeSelection ? "true" : undefined}
     >
+      {areEventPrizesConcealed && (
+        <PrizeConcealmentFilters aria-hidden="true" focusable="false">
+          <defs>
+            <filter
+              id={concealmentFilterId}
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              colorInterpolationFilters="sRGB"
+            >
+              <feFlood floodColor="currentColor" result="background" />
+              <feComposite
+                in="SourceGraphic"
+                in2="background"
+                operator="over"
+              />
+              <feGaussianBlur stdDeviation="23" />
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0" intercept="1" />
+              </feComponentTransfer>
+            </filter>
+          </defs>
+        </PrizeConcealmentFilters>
+      )}
       {displayedEventPrizes.map(({ prize, assignment }, index) => {
         const selectedParticipants = participants.filter(
           (participant) =>
@@ -135,6 +162,11 @@ export const EventPrizePanel: React.FC<EventPrizePanelProps> = ({
             >
               <PrizeImage
                 $concealed={areEventPrizesConcealed}
+                style={
+                  areEventPrizesConcealed
+                    ? { filter: `url("#${concealmentFilterId}")` }
+                    : undefined
+                }
                 src={prize.imageUrl}
                 alt={areEventPrizesConcealed ? "" : prize.alt}
                 width={prize.imageWidth}

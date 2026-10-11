@@ -174,13 +174,24 @@ export const PrizeChoiceButton = styled.button<{
     `}
 `;
 
+export const PrizeConcealmentFilters = styled.svg`
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  color: #f2f1f4;
+
+  @media (prefers-color-scheme: dark) {
+    color: #29262e;
+  }
+`;
+
 export const PrizeImage = styled.img<{ $concealed?: boolean }>`
   display: block;
   min-width: 0;
   height: 100%;
   max-width: 100%;
   width: 100%;
-  filter: ${(props) => (props.$concealed ? "blur(10px)" : "none")};
 
   ${(props) =>
     props.$concealed &&
