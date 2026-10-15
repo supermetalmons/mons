@@ -120,7 +120,6 @@ import {
   isWagerPanelVisible,
   resetWagerPanelApi,
   unbindBottomControlsApi,
-  type PrimaryAction,
   type CloseNavigationAndAppearancePopupOptions,
 } from "./controls/bottomControlsPort";
 import type { GameControlsAction } from "./controls/bottomControlsState";
@@ -837,34 +836,11 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     }
   };
 
-  const setBrushAndNavigationButtonDimmedHandler = (dimmed: boolean) => {
-    updateGameControlsPresentation({
-      navigationDimmed: dimmed,
-      appearanceDimmed: dimmed,
-    });
-  };
-
   const showVoiceReactionButtonHandler = (show: boolean) => {
     updateGameControlsPresentation({ voiceReactionVisible: show });
     if (!show) {
       dispatchControlsUi({ type: "dismissPopups", reaction: true });
     }
-  };
-
-  const showMoveHistoryButtonHandler = (show: boolean) => {
-    updateGameControlsPresentation({ moveHistoryVisible: show });
-  };
-
-  const showResignButtonHandler = () => {
-    dispatchGameControls({ type: "showResign" });
-  };
-
-  const showWaitingStateTextHandler = (text: string) => {
-    updateGameControlsPresentation({ waitingText: text });
-  };
-
-  const setIsReadyToCopyExistingInviteLinkHandler = () => {
-    updateGameControlsPresentation({ inviteReadyToCopy: true });
   };
 
   const hideTimerButtonsHandler = () => {
@@ -916,26 +892,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     return hasBottomControlsPopups(controlsUi) || isWagerPanelVisible();
   };
 
-  const enableTimerVictoryClaimHandler = () => {
-    dispatchGameControls({ type: "showVictoryClaim" });
-  };
-
-  const setPlaySamePuzzleAgainButtonVisibleHandler = (visible: boolean) => {
-    updateGameControlsPresentation({ replayPuzzleVisible: visible });
-  };
-
-  const setEndMatchVisibleHandler = (visible: boolean) => {
-    updateGameControlsPresentation({ endMatchVisible: visible });
-  };
-
-  const setEndMatchConfirmedHandler = (confirmed: boolean) => {
-    updateGameControlsPresentation({ endMatchConfirmed: confirmed });
-  };
-
-  const setBotGameOptionVisibleHandler = (visible: boolean) => {
-    updateGameControlsPresentation({ botGameVisible: visible });
-  };
-
   const setInviteLinkActionVisibleHandler = (visible: boolean) => {
     updateGameControlsPresentation({ inviteLinkVisible: visible });
     if (!visible) {
@@ -943,38 +899,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
       updateGameControlsPresentation({ inviteReadyToCopy: false });
       setInviteCopiedTmpState(false);
     }
-  };
-
-  const setHomeVisibleHandler = (visible: boolean) => {
-    updateGameControlsPresentation({ homeVisible: visible });
-  };
-
-  const setAutomoveActionEnabledHandler = (enabled: boolean) => {
-    dispatchGameControls({ type: "setAutomoveEnabled", enabled });
-  };
-
-  const setAutomoveActionVisibleHandler = (visible: boolean) => {
-    dispatchGameControls({ type: "setAutomoveVisible", visible });
-  };
-
-  const setUndoVisibleHandler = (visible: boolean) => {
-    dispatchGameControls({ type: "setUndoVisible", visible });
-  };
-
-  const setWatchOnlyVisibleHandler = (visible: boolean) => {
-    updateGameControlsPresentation({ watchOnlyVisible: visible });
-  };
-
-  const setUndoEnabledHandler = (enabled: boolean) => {
-    dispatchGameControls({ type: "setUndoEnabled", enabled });
-  };
-
-  const showPrimaryActionHandler = (action: PrimaryAction) => {
-    dispatchGameControls({ type: "setPrimaryAction", action });
-  };
-
-  const disableAndHideUndoResignAndTimerControlsHandler = () => {
-    dispatchGameControls({ type: "hideGameControls" });
   };
 
   const toggleReactionPickerHandler = () => {
@@ -1297,35 +1221,13 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
       hasNavigationPopupVisible: hasNavigationPopupVisibleHandler,
       hasBottomPopupsVisible: hasBottomPopupsVisibleHandler,
       showVoiceReactionButton: showVoiceReactionButtonHandler,
-      showMoveHistoryButton: showMoveHistoryButtonHandler,
-      showResignButton: showResignButtonHandler,
       setInviteLinkActionVisible: setInviteLinkActionVisibleHandler,
       setAutomatchEnabled: setAutomatchEnabledHandler,
       setAutomatchVisible: setAutomatchVisibleHandler,
-      setBotGameOptionVisible: setBotGameOptionVisibleHandler,
-      setPlaySamePuzzleAgainButtonVisible:
-        setPlaySamePuzzleAgainButtonVisibleHandler,
       setAutomatchWaitingState: setAutomatchWaitingStateHandler,
-      setBrushAndNavigationButtonDimmed:
-        setBrushAndNavigationButtonDimmedHandler,
-      showWaitingStateText: showWaitingStateTextHandler,
-      setHomeVisible: setHomeVisibleHandler,
-      setEndMatchVisible: setEndMatchVisibleHandler,
-      setEndMatchConfirmed: setEndMatchConfirmedHandler,
-      setUndoVisible: setUndoVisibleHandler,
-      setAutomoveActionEnabled: setAutomoveActionEnabledHandler,
-      setAutomoveActionVisible: setAutomoveActionVisibleHandler,
-      setWatchOnlyVisible: setWatchOnlyVisibleHandler,
-      setUndoEnabled: setUndoEnabledHandler,
-      disableAndHideUndoResignAndTimerControls:
-        disableAndHideUndoResignAndTimerControlsHandler,
-      setIsReadyToCopyExistingInviteLink:
-        setIsReadyToCopyExistingInviteLinkHandler,
       hideTimerButtons: hideTimerButtonsHandler,
       showTimerButtonProgressing: showTimerButtonProgressingHandler,
       toggleReactionPicker: toggleReactionPickerHandler,
-      enableTimerVictoryClaim: enableTimerVictoryClaimHandler,
-      showPrimaryAction: showPrimaryActionHandler,
     });
     return () => unbindBottomControlsApi(boundApi);
   });

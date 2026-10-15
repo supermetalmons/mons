@@ -19,8 +19,6 @@ const { createGameControlsStore } =
   await import("../src/game/gameControlsStore.ts");
 const { deriveGameControlsView } =
   await import("../src/game/gameControlsModel.ts");
-const { gameControlsReducer } =
-  await import("../src/ui/controls/bottomControlsState.ts");
 const { deriveBoardViewControls } =
   await import("../src/game/boardViewPolicy.ts");
 
@@ -66,16 +64,64 @@ test("synchronous presentation updates expose current context and preserve unrel
   assert.equal(observed.at(-1).presentation.homeVisible, true);
 });
 
+test("sequential control dispatches read the latest state and preserve unrelated presentation", () => {
+  const store = createGameControlsStore(config);
+  store.updateContext({ sessionId: 4, isOnlineGame: true });
+  store.updatePresentation({ endMatchConfirmed: true, waitingText: "waiting" });
+  const before = store.getSnapshot();
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+
+  store.dispatchGameControls({ type: "setUndoVisible", visible: true });
+  store.dispatchGameControls({ type: "setUndoEnabled", enabled: true });
+  store.dispatchGameControls({ type: "setAutomoveEnabled", enabled: false });
+  store.dispatchGameControls({ type: "setPrimaryAction", action: "rematch" });
+
+  const snapshot = store.getSnapshot();
+  assert.equal(observed.length, 4);
+  assert.equal(observed.at(-1), snapshot);
+  assert.equal(snapshot.context, before.context);
+  assert.equal(snapshot.presentation.endMatchConfirmed, true);
+  assert.equal(snapshot.presentation.waitingText, "waiting");
+  assert.deepEqual(snapshot.presentation.gameControls.undo, {
+    visible: true,
+    enabled: true,
+  });
+  assert.equal(snapshot.presentation.gameControls.automove.enabled, false);
+  assert.equal(snapshot.presentation.gameControls.primaryAction, "rematch");
+  assert.equal(
+    snapshot.presentation.gameControls.timer,
+    before.presentation.gameControls.timer,
+  );
+  assert.deepEqual(before.presentation.gameControls.undo, {
+    visible: false,
+    enabled: false,
+  });
+  assert.equal(observed[0].presentation.gameControls.undo.enabled, false);
+});
+
+test("no-op control dispatches retain the snapshot and do not notify subscribers", () => {
+  const store = createGameControlsStore(config);
+  let notifications = 0;
+  store.subscribe(() => notifications++);
+  const initial = store.getSnapshot();
+  store.dispatchGameControls({ type: "setUndoVisible", visible: false });
+  store.dispatchGameControls({ type: "enableTimer" });
+  store.dispatchGameControls({ type: "hideGameControls" });
+  assert.equal(store.getSnapshot(), initial);
+  assert.equal(notifications, 0);
+
+  store.dispatchGameControls({ type: "showResign" });
+  const changed = store.getSnapshot();
+  store.dispatchGameControls({ type: "showResign" });
+  assert.notEqual(changed, initial);
+  assert.equal(store.getSnapshot(), changed);
+  assert.equal(notifications, 1);
+});
+
 test("context changes never recreate timer configuration or reset disabled requests", () => {
   const store = createGameControlsStore(config);
-  const dispatch = (action) => {
-    store.updatePresentation({
-      gameControls: gameControlsReducer(
-        store.getSnapshot().presentation.gameControls,
-        action,
-      ),
-    });
-  };
+  const dispatch = store.dispatchGameControls;
   const timer = { duration: 60, progress: 15, requestDate: 5000 };
   dispatch({ type: "showTimerProgress", config: timer });
   dispatch({ type: "enableTimer" });
@@ -153,14 +199,9 @@ test("view selectors use published role, completion, series and puzzle facts", (
   let view = deriveGameControlsView(store.getSnapshot());
   assert.equal(view.canWagerInCurrentGame, false);
   assert.equal(view.isWatchOnlyMatchFinished, true);
-  store.updatePresentation({
-    gameControls: gameControlsReducer(
-      store.getSnapshot().presentation.gameControls,
-      {
-        type: "setPrimaryAction",
-        action: "rematch",
-      },
-    ),
+  store.dispatchGameControls({
+    type: "setPrimaryAction",
+    action: "rematch",
   });
   store.updateContext({ puzzleMode: true, selectedPuzzleId: "lesson" });
   view = deriveGameControlsView(store.getSnapshot());
@@ -181,16 +222,4 @@ test("explicit presentation reset keeps the current context and caller's timer t
     store.getSnapshot().presentation.gameControls.timer.config,
     resetConfig,
   );
-});
-
-test("compatibility presentation commands remain no-ops without a mounted owner", async () => {
-  const { getGameControlsSnapshot } =
-    await import("../src/game/gameControlsStore.ts");
-  const port = await import("../src/ui/controls/bottomControlsPort.ts");
-  const before = getGameControlsSnapshot();
-  port.setHomeVisible(true);
-  port.showResignButton();
-  port.showTimerButtonProgressing(10, 20, true);
-  port.setIsReadyToCopyExistingInviteLink();
-  assert.equal(getGameControlsSnapshot(), before);
 });

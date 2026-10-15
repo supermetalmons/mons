@@ -16,6 +16,8 @@ registerHooks({
   },
 });
 
+const bottomControlsPort =
+  await import("../src/ui/controls/bottomControlsPort.ts");
 const {
   PrimaryActionType,
   bindBottomControlsApi,
@@ -29,7 +31,15 @@ const {
   isWagerPanelVisible,
   handleWagerPanelOutsideTap,
   resetWagerPanelApi,
-} = await import("../src/ui/controls/bottomControlsPort.ts");
+} = bottomControlsPort;
+const {
+  dispatchGameControls,
+  getGameControlsSnapshot,
+  resetGameControlsPresentation,
+  subscribeGameControls,
+  updateGameControlsContext,
+  updateGameControlsPresentation,
+} = await import("../src/game/gameControlsStore.ts");
 const {
   CANCEL_AUTOMATCH_REVEAL_DELAY_MS,
   NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS,
@@ -57,8 +67,129 @@ const {
   writeNavigationGamesRuntimeCache,
 } = await import("../src/services/navigationGamesCache.ts");
 
-test("bottom controls port forwards the current binding and preserves rematch actions", () => {
+const timerConfig = { duration: 60, progress: 12, requestDate: 4000 };
+const pureControlCommands = [
+  {
+    name: "showMoveHistoryButton",
+    args: [true],
+    presentation: { moveHistoryVisible: true },
+  },
+  {
+    name: "showResignButton",
+    gameControls: { resignVisible: true },
+  },
+  {
+    name: "setBotGameOptionVisible",
+    args: [true],
+    presentation: { botGameVisible: true },
+  },
+  {
+    name: "setPlaySamePuzzleAgainButtonVisible",
+    args: [true],
+    presentation: { replayPuzzleVisible: true },
+  },
+  {
+    name: "setBrushAndNavigationButtonDimmed",
+    args: [true],
+    presentation: { navigationDimmed: true, appearanceDimmed: true },
+  },
+  {
+    name: "showWaitingStateText",
+    args: ["Waiting for opponent"],
+    presentation: { waitingText: "Waiting for opponent" },
+  },
+  {
+    name: "setHomeVisible",
+    args: [true],
+    presentation: { homeVisible: true },
+  },
+  {
+    name: "setEndMatchVisible",
+    args: [true],
+    presentation: { endMatchVisible: true },
+  },
+  {
+    name: "setEndMatchConfirmed",
+    args: [true],
+    presentation: { endMatchConfirmed: true },
+  },
+  {
+    name: "setUndoVisible",
+    args: [true],
+    gameControls: { undo: { visible: true, enabled: false } },
+  },
+  {
+    name: "setAutomoveActionEnabled",
+    args: [false],
+    gameControls: { automove: { visible: false, enabled: false } },
+  },
+  {
+    name: "setAutomoveActionVisible",
+    args: [true],
+    gameControls: { automove: { visible: true, enabled: true } },
+  },
+  {
+    name: "setWatchOnlyVisible",
+    args: [true],
+    presentation: { watchOnlyVisible: true },
+  },
+  {
+    name: "setUndoEnabled",
+    args: [true],
+    gameControls: { undo: { visible: false, enabled: true } },
+  },
+  {
+    name: "disableAndHideUndoResignAndTimerControls",
+    prepare: () => {
+      dispatchGameControls({ type: "showTimerProgress", config: timerConfig });
+      dispatchGameControls({ type: "enableTimer" });
+      dispatchGameControls({ type: "disableVictoryClaim" });
+      dispatchGameControls({ type: "setUndoVisible", visible: true });
+      dispatchGameControls({ type: "setUndoEnabled", enabled: true });
+      dispatchGameControls({ type: "setAutomoveVisible", visible: true });
+      dispatchGameControls({ type: "setAutomoveEnabled", enabled: false });
+      dispatchGameControls({ type: "showResign" });
+      dispatchGameControls({ type: "setPrimaryAction", action: "rematch" });
+      dispatchGameControls({ type: "setConfirmation", confirmation: "timer" });
+    },
+    gameControls: {
+      undo: { visible: false, enabled: false },
+      automove: { visible: false, enabled: false },
+      resignVisible: false,
+      timer: {
+        mode: "hidden",
+        config: timerConfig,
+        startEnabled: true,
+        claimEnabled: false,
+      },
+      confirmation: "none",
+    },
+  },
+  {
+    name: "setIsReadyToCopyExistingInviteLink",
+    presentation: { inviteReadyToCopy: true },
+  },
+  {
+    name: "enableTimerVictoryClaim",
+    gameControls: {
+      timer: {
+        mode: "claim",
+        config: timerConfig,
+        startEnabled: false,
+        claimEnabled: true,
+      },
+    },
+  },
+  {
+    name: "showPrimaryAction",
+    args: [PrimaryActionType.Rematch],
+    gameControls: { primaryAction: "rematch" },
+  },
+];
+
+test("bottom controls port preserves current binding ownership for effects and presentation", () => {
   const events = [];
+  resetGameControlsPresentation(timerConfig);
   const first = {
     setAutomatchEnabled: (enabled) => events.push(["first", enabled]),
   };
@@ -66,7 +197,6 @@ test("bottom controls port forwards the current binding and preserves rematch ac
     setAutomatchEnabled: (enabled) => events.push(["second", enabled]),
     hasBottomPopupsVisible: () => true,
     hasNavigationPopupVisible: () => true,
-    showPrimaryAction: (action) => events.push(["action", action]),
   };
 
   bindBottomControlsApi(first);
@@ -75,10 +205,11 @@ test("bottom controls port forwards the current binding and preserves rematch ac
   setAutomatchEnabled(false);
   showPrimaryAction(PrimaryActionType.Rematch);
 
-  assert.deepEqual(events, [
-    ["second", false],
-    ["action", "rematch"],
-  ]);
+  assert.deepEqual(events, [["second", false]]);
+  assert.equal(
+    getGameControlsSnapshot().presentation.gameControls.primaryAction,
+    PrimaryActionType.Rematch,
+  );
   assert.equal(hasBottomPopupsVisible(), true);
   assert.equal(hasNavigationPopupVisible(), true);
 
@@ -86,6 +217,88 @@ test("bottom controls port forwards the current binding and preserves rematch ac
   assert.equal(hasBottomPopupsVisible(), false);
   assert.equal(hasNavigationPopupVisible(), false);
   assert.doesNotThrow(() => setAutomatchEnabled(true));
+});
+
+test("all pure control commands update only their intended state while bound", () => {
+  const owner = bindBottomControlsApi({});
+  try {
+    for (const command of pureControlCommands) {
+      resetGameControlsPresentation(timerConfig);
+      updateGameControlsContext({ sessionId: 6, isOnlineGame: true });
+      updateGameControlsPresentation({
+        inviteLinkVisible: true,
+        voiceReactionVisible: true,
+        navigationVisible: true,
+      });
+      command.prepare?.();
+      const before = getGameControlsSnapshot();
+      let notifications = 0;
+      const unsubscribe = subscribeGameControls(() => notifications++);
+      try {
+        bottomControlsPort[command.name](...(command.args ?? []));
+        const after = getGameControlsSnapshot();
+        assert.equal(after.context, before.context, command.name);
+        assert.deepEqual(
+          after.presentation,
+          {
+            ...before.presentation,
+            ...command.presentation,
+            gameControls: {
+              ...before.presentation.gameControls,
+              ...command.gameControls,
+            },
+          },
+          command.name,
+        );
+        assert.equal(
+          after.presentation.gameControls.timer.config,
+          before.presentation.gameControls.timer.config,
+          command.name,
+        );
+        assert.equal(notifications, 1, command.name);
+        bottomControlsPort[command.name](...(command.args ?? []));
+        assert.equal(getGameControlsSnapshot(), after, command.name);
+        assert.equal(notifications, 1, command.name);
+      } finally {
+        unsubscribe();
+      }
+    }
+  } finally {
+    unbindBottomControlsApi(owner);
+  }
+});
+
+test("all pure control commands remain no-ops before binding and after unbinding", () => {
+  resetGameControlsPresentation(timerConfig);
+  let notifications = 0;
+  const unsubscribe = subscribeGameControls(() => notifications++);
+  const assertUnmountedCommandsDoNothing = () => {
+    for (const command of pureControlCommands) {
+      resetGameControlsPresentation(timerConfig);
+      command.prepare?.();
+      const before = getGameControlsSnapshot();
+      const notificationsBefore = notifications;
+      bottomControlsPort[command.name](...(command.args ?? []));
+      assert.equal(getGameControlsSnapshot(), before, command.name);
+      assert.equal(notifications, notificationsBefore, command.name);
+    }
+    const before = getGameControlsSnapshot();
+    const notificationsBefore = notifications;
+    bottomControlsPort.showTimerButtonProgressing(10, 20, true);
+    assert.equal(getGameControlsSnapshot(), before);
+    assert.equal(notifications, notificationsBefore);
+  };
+  try {
+    assertUnmountedCommandsDoNothing();
+    notifications = 0;
+    const owner = bindBottomControlsApi({});
+    showPrimaryAction(PrimaryActionType.JoinGame);
+    assert.equal(notifications, 1);
+    unbindBottomControlsApi(owner);
+    assertUnmountedCommandsDoNothing();
+  } finally {
+    unsubscribe();
+  }
 });
 
 test("wager outside-tap registration remains independently replaceable", () => {

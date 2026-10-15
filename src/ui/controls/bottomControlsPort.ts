@@ -1,12 +1,14 @@
-export const primaryActionTypes = {
-  None: "none",
-  JoinGame: "joinGame",
-  Rematch: "rematch",
-} as const;
+import {
+  dispatchGameControls,
+  updateGameControlsPresentation,
+} from "../../game/gameControlsStore";
+import type { PrimaryAction } from "./primaryAction";
 
-export const PrimaryActionType = primaryActionTypes;
-export type PrimaryAction =
-  (typeof primaryActionTypes)[keyof typeof primaryActionTypes];
+export {
+  primaryActionTypes,
+  PrimaryActionType,
+  type PrimaryAction,
+} from "./primaryAction";
 
 export type CloseNavigationAndAppearancePopupOptions = {
   preserveNavigationSelection?: boolean;
@@ -20,26 +22,10 @@ export type BottomControlsApi = {
   hasNavigationPopupVisible(): boolean;
   hasBottomPopupsVisible(): boolean;
   showVoiceReactionButton(show: boolean): void;
-  showMoveHistoryButton(show: boolean): void;
-  showResignButton(): void;
   setInviteLinkActionVisible(visible: boolean): void;
   setAutomatchEnabled(enabled: boolean): void;
   setAutomatchVisible(visible: boolean): void;
-  setBotGameOptionVisible(visible: boolean): void;
-  setPlaySamePuzzleAgainButtonVisible(visible: boolean): void;
   setAutomatchWaitingState(waiting: boolean): void;
-  setBrushAndNavigationButtonDimmed(dimmed: boolean): void;
-  showWaitingStateText(text: string): void;
-  setHomeVisible(visible: boolean): void;
-  setEndMatchVisible(visible: boolean): void;
-  setEndMatchConfirmed(confirmed: boolean): void;
-  setUndoVisible(visible: boolean): void;
-  setAutomoveActionEnabled(enabled: boolean): void;
-  setAutomoveActionVisible(visible: boolean): void;
-  setWatchOnlyVisible(visible: boolean): void;
-  setUndoEnabled(enabled: boolean): void;
-  disableAndHideUndoResignAndTimerControls(): void;
-  setIsReadyToCopyExistingInviteLink(): void;
   hideTimerButtons(): void;
   showTimerButtonProgressing(
     currentProgress: number,
@@ -47,8 +33,6 @@ export type BottomControlsApi = {
     enableWhenTargetReached: boolean,
   ): void;
   toggleReactionPicker(): void;
-  enableTimerVictoryClaim(): void;
-  showPrimaryAction(action: PrimaryAction): void;
 };
 
 let api: BottomControlsApi | null = null;
@@ -82,10 +66,15 @@ export const hasBottomPopupsVisible = (): boolean =>
 export const showVoiceReactionButton = (show: boolean): void =>
   api?.showVoiceReactionButton(show);
 
-export const showMoveHistoryButton = (show: boolean): void =>
-  api?.showMoveHistoryButton(show);
+export const showMoveHistoryButton = (show: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ moveHistoryVisible: show });
+};
 
-export const showResignButton = (): void => api?.showResignButton();
+export const showResignButton = (): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "showResign" });
+};
 
 export const setInviteLinkActionVisible = (visible: boolean): void =>
   api?.setInviteLinkActionVisible(visible);
@@ -96,50 +85,81 @@ export const setAutomatchEnabled = (enabled: boolean): void =>
 export const setAutomatchVisible = (visible: boolean): void =>
   api?.setAutomatchVisible(visible);
 
-export const setBotGameOptionVisible = (visible: boolean): void =>
-  api?.setBotGameOptionVisible(visible);
+export const setBotGameOptionVisible = (visible: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ botGameVisible: visible });
+};
 
-export const setPlaySamePuzzleAgainButtonVisible = (visible: boolean): void =>
-  api?.setPlaySamePuzzleAgainButtonVisible(visible);
+export const setPlaySamePuzzleAgainButtonVisible = (visible: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ replayPuzzleVisible: visible });
+};
 
 export const setAutomatchWaitingState = (waiting: boolean): void =>
   api?.setAutomatchWaitingState(waiting);
 
-export const setBrushAndNavigationButtonDimmed = (dimmed: boolean): void =>
-  api?.setBrushAndNavigationButtonDimmed(dimmed);
+export const setBrushAndNavigationButtonDimmed = (dimmed: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({
+    navigationDimmed: dimmed,
+    appearanceDimmed: dimmed,
+  });
+};
 
-export const showWaitingStateText = (text: string): void =>
-  api?.showWaitingStateText(text);
+export const showWaitingStateText = (text: string): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ waitingText: text });
+};
 
-export const setHomeVisible = (visible: boolean): void =>
-  api?.setHomeVisible(visible);
+export const setHomeVisible = (visible: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ homeVisible: visible });
+};
 
-export const setEndMatchVisible = (visible: boolean): void =>
-  api?.setEndMatchVisible(visible);
+export const setEndMatchVisible = (visible: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ endMatchVisible: visible });
+};
 
-export const setEndMatchConfirmed = (confirmed: boolean): void =>
-  api?.setEndMatchConfirmed(confirmed);
+export const setEndMatchConfirmed = (confirmed: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ endMatchConfirmed: confirmed });
+};
 
-export const setUndoVisible = (visible: boolean): void =>
-  api?.setUndoVisible(visible);
+export const setUndoVisible = (visible: boolean): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "setUndoVisible", visible });
+};
 
-export const setAutomoveActionEnabled = (enabled: boolean): void =>
-  api?.setAutomoveActionEnabled(enabled);
+export const setAutomoveActionEnabled = (enabled: boolean): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "setAutomoveEnabled", enabled });
+};
 
-export const setAutomoveActionVisible = (visible: boolean): void =>
-  api?.setAutomoveActionVisible(visible);
+export const setAutomoveActionVisible = (visible: boolean): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "setAutomoveVisible", visible });
+};
 
-export const setWatchOnlyVisible = (visible: boolean): void =>
-  api?.setWatchOnlyVisible(visible);
+export const setWatchOnlyVisible = (visible: boolean): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ watchOnlyVisible: visible });
+};
 
-export const setUndoEnabled = (enabled: boolean): void =>
-  api?.setUndoEnabled(enabled);
+export const setUndoEnabled = (enabled: boolean): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "setUndoEnabled", enabled });
+};
 
-export const disableAndHideUndoResignAndTimerControls = (): void =>
-  api?.disableAndHideUndoResignAndTimerControls();
+export const disableAndHideUndoResignAndTimerControls = (): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "hideGameControls" });
+};
 
-export const setIsReadyToCopyExistingInviteLink = (): void =>
-  api?.setIsReadyToCopyExistingInviteLink();
+export const setIsReadyToCopyExistingInviteLink = (): void => {
+  if (!api) return;
+  updateGameControlsPresentation({ inviteReadyToCopy: true });
+};
 
 export const hideTimerButtons = (): void => api?.hideTimerButtons();
 
@@ -156,11 +176,15 @@ export const showTimerButtonProgressing = (
 
 export const toggleReactionPicker = (): void => api?.toggleReactionPicker();
 
-export const enableTimerVictoryClaim = (): void =>
-  api?.enableTimerVictoryClaim();
+export const enableTimerVictoryClaim = (): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "showVictoryClaim" });
+};
 
-export const showPrimaryAction = (action: PrimaryAction): void =>
-  api?.showPrimaryAction(action);
+export const showPrimaryAction = (action: PrimaryAction): void => {
+  if (!api) return;
+  dispatchGameControls({ type: "setPrimaryAction", action });
+};
 
 type WagerPanelApi = {
   isVisible(): boolean;

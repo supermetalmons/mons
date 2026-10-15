@@ -2198,12 +2198,49 @@ test(
         window.harness.respondAutomatch(1, { ok: false }, false),
       );
       await page.clock.runFor(10001);
-      await page.evaluate(() =>
-        window.harness.run(() => {
-          window.harness.port.showResignButton();
-          window.dispatchEvent(new Event("focus"));
-        }),
-      );
+      const unmountedUpdates = await page.evaluate(() => {
+        const { port, controlsStore, run } = window.harness;
+        const snapshot = controlsStore.getGameControlsSnapshot();
+        const before = structuredClone(snapshot);
+        let notifications = 0;
+        const unsubscribe = controlsStore.subscribeGameControls(() => {
+          notifications += 1;
+        });
+        try {
+          run(() => {
+            port.setBrushAndNavigationButtonDimmed(true);
+            port.showMoveHistoryButton(true);
+            port.showResignButton();
+            port.showWaitingStateText("waiting after unmount");
+            port.setIsReadyToCopyExistingInviteLink();
+            port.enableTimerVictoryClaim();
+            port.setPlaySamePuzzleAgainButtonVisible(true);
+            port.setEndMatchVisible(true);
+            port.setEndMatchConfirmed(true);
+            port.setBotGameOptionVisible(true);
+            port.setHomeVisible(true);
+            port.setAutomoveActionEnabled(false);
+            port.setAutomoveActionVisible(true);
+            port.setUndoVisible(true);
+            port.setWatchOnlyVisible(true);
+            port.setUndoEnabled(true);
+            port.showPrimaryAction(port.PrimaryActionType.Rematch);
+            port.disableAndHideUndoResignAndTimerControls();
+            window.dispatchEvent(new Event("focus"));
+          });
+          return {
+            before,
+            after: controlsStore.getGameControlsSnapshot(),
+            sameSnapshot: controlsStore.getGameControlsSnapshot() === snapshot,
+            notifications,
+          };
+        } finally {
+          unsubscribe();
+        }
+      });
+      assert.equal(unmountedUpdates.sameSnapshot, true);
+      assert.equal(unmountedUpdates.notifications, 0);
+      assert.deepEqual(unmountedUpdates.after, unmountedUpdates.before);
       assert.equal(await page.locator("#root").textContent(), "");
       assert.deepEqual(
         await page.evaluate(() => window.harness.environment.calls),

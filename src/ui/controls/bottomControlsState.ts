@@ -1,4 +1,4 @@
-import { PrimaryActionType, type PrimaryAction } from "./bottomControlsPort";
+import { PrimaryActionType, type PrimaryAction } from "./primaryAction";
 
 export type TimerConfig = {
   duration: number;

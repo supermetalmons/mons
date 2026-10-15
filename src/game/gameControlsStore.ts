@@ -1,6 +1,8 @@
 import { MATCH_TIMER_DURATION_SECONDS } from "@mons/shared/timers";
 import {
   createGameControlsState,
+  gameControlsReducer,
+  type GameControlsAction,
   type TimerConfig,
 } from "../ui/controls/bottomControlsState";
 import {
@@ -25,6 +27,14 @@ export function createGameControlsStore(initialTimerConfig: TimerConfig) {
   };
   const listeners = new Set<() => void>();
   const notify = () => listeners.forEach((listener) => listener());
+  const updatePresentation = (updates: Partial<GameControlsPresentation>) => {
+    if (!hasChanges(snapshot.presentation, updates)) return;
+    snapshot = {
+      ...snapshot,
+      presentation: { ...snapshot.presentation, ...updates },
+    };
+    notify();
+  };
   return {
     getSnapshot: () => snapshot,
     subscribe: (listener: () => void) => {
@@ -38,13 +48,14 @@ export function createGameControlsStore(initialTimerConfig: TimerConfig) {
       snapshot = { ...snapshot, context: { ...snapshot.context, ...updates } };
       notify();
     },
-    updatePresentation: (updates: Partial<GameControlsPresentation>) => {
-      if (!hasChanges(snapshot.presentation, updates)) return;
-      snapshot = {
-        ...snapshot,
-        presentation: { ...snapshot.presentation, ...updates },
-      };
-      notify();
+    updatePresentation,
+    dispatchGameControls: (action: GameControlsAction) => {
+      updatePresentation({
+        gameControls: gameControlsReducer(
+          snapshot.presentation.gameControls,
+          action,
+        ),
+      });
     },
     resetPresentation: (timerConfig: TimerConfig) => {
       snapshot = {
@@ -69,5 +80,6 @@ export const subscribeGameControls = gameControlsStore.subscribe;
 export const updateGameControlsContext = gameControlsStore.updateContext;
 export const updateGameControlsPresentation =
   gameControlsStore.updatePresentation;
+export const dispatchGameControls = gameControlsStore.dispatchGameControls;
 export const resetGameControlsPresentation =
   gameControlsStore.resetPresentation;

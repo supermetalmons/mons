@@ -22,7 +22,7 @@ const {
   automatchControlsReducer,
 } = await import("../src/ui/controls/bottomControlsState.ts");
 const { PrimaryActionType } =
-  await import("../src/ui/controls/bottomControlsPort.ts");
+  await import("../src/ui/controls/primaryAction.ts");
 
 const config = Object.freeze({ duration: 60, progress: 10, requestDate: 1000 });
 const gameState = (...actions) =>
