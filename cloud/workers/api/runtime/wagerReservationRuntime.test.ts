@@ -2,8 +2,15 @@ import { env } from "cloudflare:workers";
 import type { D1Migration } from "cloudflare:test";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { createEmptyMaterials } from "@mons/shared/mining";
+import {
+  WAGER_STORAGE_VERSION,
+  WAGER_STORAGE_VERSION_HEADER,
+} from "@mons/shared/wagers";
 import type { GameplayRepository } from "../src/gameplayRepository.ts";
-import { createWagerReservationRuntime } from "../src/wagerReservationRuntime.ts";
+import {
+  assertWagerClientVersion,
+  createWagerReservationRuntime,
+} from "../src/wagerReservationRuntime.ts";
 import { reserveFrozenMaterialsOnce } from "../src/wagerReservationOperations.ts";
 import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
 
@@ -11,9 +18,12 @@ const testEnv = env as Env & { TEST_PROFILE_D1_MIGRATIONS: D1Migration[] };
 const db = env.PROFILE_DB;
 const materials = (dust = 0) => ({ ...createEmptyMaterials(), dust });
 
-function observeBalanceReads(
-  intercept: (read: () => Promise<unknown>) => Promise<unknown> = (read) =>
-    read(),
+function observeReservationRuntime(
+  intercept: (
+    execute: () => Promise<unknown>,
+    query: string,
+    method: "first" | "run",
+  ) => Promise<unknown> = (execute) => execute(),
 ) {
   const sessions: Parameters<D1Database["withSession"]>[0][] = [];
   const queries: string[] = [];
@@ -25,10 +35,14 @@ function observeBalanceReads(
       get(target, property) {
         if (property === "bind")
           return (...values: unknown[]) => wrap(target.bind(...values), query);
-        if (property === "first")
+        if (property === "first" || property === "run")
           return async (...args: unknown[]) => {
             queries.push(query);
-            return intercept(() => Reflect.apply(target.first, target, args));
+            return intercept(
+              () => Reflect.apply(target[property], target, args),
+              query,
+              property,
+            );
           };
         const value = Reflect.get(target, property, target);
         return typeof value === "function" ? value.bind(target) : value;
@@ -85,7 +99,7 @@ async function freezeReservations() {
 
 function versionedRequest() {
   return new Request("https://api.mons.link/wagers/proposals/send", {
-    headers: { "X-Mons-Wager-Storage-Version": "1" },
+    headers: { [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION },
   });
 }
 
@@ -126,14 +140,7 @@ describe("D1 wager reservation runtime", () => {
     const runtime = createWagerReservationRuntime(env, repository, {
       now: () => 2_000_000,
     });
-    await expect(
-      runtime.assertClientVersion(
-        new Request("https://api.mons.link/wagers/proposals/send"),
-      ),
-    ).rejects.toThrow("Reload this page");
-    await expect(
-      runtime.assertClientVersion(versionedRequest()),
-    ).resolves.toBeUndefined();
+    assertWagerClientVersion(versionedRequest());
     expect(
       await runtime.run("send", (admitted) =>
         reserveFrozenMaterialsOnce(
@@ -168,6 +175,147 @@ describe("D1 wager reservation runtime", () => {
     ).rejects.toThrow("wager-reservation-writes-disabled");
     expect(frozenWork).toBe(0);
     expect(sourceAccesses).toBe(0);
+  });
+
+  it("validates the client without D1 and reads control once when admitting work", async () => {
+    const observed = observeReservationRuntime();
+    expect(() =>
+      assertWagerClientVersion(
+        new Request("https://api.mons.link/wagers/proposals/send"),
+      ),
+    ).toThrow("Reload this page");
+    assertWagerClientVersion(versionedRequest());
+    expect(observed.queries).toEqual([]);
+    let work = 0;
+    await observed.runtime.run("send", async () => {
+      work++;
+    });
+    expect(work).toBe(1);
+    expect(
+      observed.queries.filter((query) =>
+        query.includes("FROM wager_reservation_runtime_control"),
+      ),
+    ).toHaveLength(1);
+    expect(
+      await db
+        .prepare(
+          "SELECT COUNT(*) AS count FROM wager_reservation_write_admissions",
+        )
+        .first("count"),
+    ).toBe(0);
+  });
+
+  it.each(["control-read", "admission-insert"] as const)(
+    "blocks domain work when reservations freeze after %s",
+    async (boundary) => {
+      let frozen = false;
+      let work = 0;
+      const observed = observeReservationRuntime(
+        async (execute, query, method) => {
+          const result = await execute();
+          const atBoundary =
+            boundary === "control-read"
+              ? method === "first" &&
+                query.includes("FROM wager_reservation_runtime_control")
+              : method === "run" &&
+                query.includes(
+                  "INSERT INTO wager_reservation_write_admissions",
+                );
+          if (!frozen && atBoundary) {
+            frozen = true;
+            await freezeReservations();
+          }
+          return result;
+        },
+      );
+      assertWagerClientVersion(versionedRequest());
+      await expect(
+        observed.runtime.run("send", async () => {
+          work++;
+        }),
+      ).rejects.toMatchObject({ status: 503, code: "unavailable" });
+      expect(frozen).toBe(true);
+      expect(work).toBe(0);
+      expect(
+        await db
+          .prepare(
+            "SELECT COUNT(*) AS count FROM wager_reservation_write_admissions",
+          )
+          .first("count"),
+      ).toBe(0);
+    },
+  );
+
+  it("keeps atomic write guards when reservations freeze after pre-work validation", async () => {
+    const runtime = createWagerReservationRuntime(
+      env,
+      {} as GameplayRepository,
+      {
+        now: () => 2_000_000,
+      },
+    );
+    let work = 0;
+    assertWagerClientVersion(versionedRequest());
+    await expect(
+      runtime.run("send", async (admitted) => {
+        work++;
+        await freezeReservations();
+        return reserveFrozenMaterialsOnce(
+          admitted,
+          "host",
+          "reservation",
+          "dust",
+          3,
+          materials(10),
+          () => 2_000_000,
+          new AbortController().signal,
+        );
+      }),
+    ).rejects.toThrow("wager-operation-unavailable");
+    expect(work).toBe(1);
+    expect(await runtime.readBalance("host")).toEqual({
+      frozen: materials(),
+      revision: 0,
+    });
+    for (const table of [
+      "wager_frozen_operations",
+      "wager_reservation_write_admissions",
+    ]) {
+      expect(
+        await db
+          .prepare(`SELECT COUNT(*) AS count FROM ${table}`)
+          .first("count"),
+      ).toBe(0);
+    }
+  });
+
+  it("rejects malformed reservation controls before dispatching domain work", async () => {
+    for (const control of [
+      null,
+      {},
+      { storage_mode: "firebase", freeze_generation: 0 },
+      { storage_mode: "d1", freeze_generation: -1 },
+      { storage_mode: "d1", freeze_generation: 1.5 },
+    ]) {
+      let work = 0;
+      const observed = observeReservationRuntime(async (execute, query) =>
+        query.includes("FROM wager_reservation_runtime_control")
+          ? control
+          : execute(),
+      );
+      assertWagerClientVersion(versionedRequest());
+      await expect(
+        observed.runtime.run("send", async () => {
+          work++;
+        }),
+      ).rejects.toMatchObject({
+        status: 503,
+        code: "unavailable",
+        message: "wager-reservation-unavailable",
+      });
+      expect(work).toBe(0);
+      expect(observed.queries).toHaveLength(1);
+    }
   });
 
   it("fails unavailable D1 control closed without querying gameplay storage", async () => {
@@ -209,7 +357,7 @@ describe("D1 wager reservation runtime", () => {
       await seedBalance("host", 3, 7);
       await seedBalance("other", 9, 8);
       if (mode === "frozen") await freezeReservations();
-      const observed = observeBalanceReads();
+      const observed = observeReservationRuntime();
       expect(await observed.runtime.readBalance("host")).toEqual({
         frozen: materials(3),
         revision: 7,
@@ -252,7 +400,7 @@ describe("D1 wager reservation runtime", () => {
       { ...absent, freeze_generation: 1.5 },
       { ...absent, freeze_generation: Number.MAX_SAFE_INTEGER + 1 },
     ]) {
-      const observed = observeBalanceReads(async () => row);
+      const observed = observeReservationRuntime(async () => row);
       await expect(observed.runtime.readBalance("host")).rejects.toMatchObject({
         status: 503,
         code: "unavailable",
@@ -283,14 +431,14 @@ describe("D1 wager reservation runtime", () => {
       { ...balance, revision: 0 },
       { ...balance, revision: Number.MAX_SAFE_INTEGER + 1 },
     ]) {
-      const observed = observeBalanceReads(async () => row);
+      const observed = observeReservationRuntime(async () => row);
       await expect(observed.runtime.readBalance("host")).rejects.toThrow();
       expect(observed.queries).toHaveLength(1);
     }
   });
 
   it("fails closed when the primary snapshot query rejects", async () => {
-    const observed = observeBalanceReads(async () => {
+    const observed = observeReservationRuntime(async () => {
       throw new Error("d1-query-unavailable");
     });
     await expect(observed.runtime.readBalance("host")).rejects.toMatchObject({
@@ -302,7 +450,7 @@ describe("D1 wager reservation runtime", () => {
   });
 
   it("rejects invalid actors before opening a primary session", async () => {
-    const observed = observeBalanceReads();
+    const observed = observeReservationRuntime();
     await expect(observed.runtime.readBalance("bad/key")).rejects.toThrow(
       "invalid-wager-frozen-key",
     );
@@ -324,7 +472,7 @@ describe("D1 wager reservation runtime", () => {
           .bind(JSON.stringify(materials(9)))
           .run();
       };
-      const observed = observeBalanceReads(async (read) => {
+      const observed = observeReservationRuntime(async (read) => {
         if (changed) return read();
         changed = true;
         if (timing === "before") await freezeAndUpdate();

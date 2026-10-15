@@ -1,14 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createEmptyMaterials } from "@mons/shared/mining";
+import {
+  WAGER_STORAGE_VERSION,
+  WAGER_STORAGE_VERSION_HEADER,
+} from "@mons/shared/wagers";
 import { AuthApiFailure } from "../src/authErrors.ts";
 import { handleGameplayRoute } from "../src/gameplayRoute.ts";
 import { createGameplayRepository } from "../src/gameplayRepository.ts";
 import type { ProfileOwnershipSnapshot } from "../src/profileOwnership.ts";
-import {
-  WagerClientUpdateRequired,
-  type WagerReservationRuntime,
-} from "../src/wagerReservationRuntime.ts";
+import type { WagerReservationRuntime } from "../src/wagerReservationRuntime.ts";
+import { WagerReservationWritesDisabled } from "../src/wagerReservationControl.ts";
 import { TELEGRAM_TEST_ENV, withProfileControl } from "./testEnv.ts";
 
 const context = { waitUntil: () => undefined };
@@ -77,7 +79,6 @@ function fixture(owners: Record<string, string | null> = {}) {
     } satisfies ProfileOwnershipSnapshot;
   };
   const reservations: WagerReservationRuntime = {
-    assertClientVersion: async () => undefined,
     readBalance: async () => {
       reads++;
       return { frozen, revision: 1 };
@@ -224,45 +225,57 @@ test("verified absent balance remains a successful zero snapshot", async () => {
   assert.equal(((await response.json()) as { revision: number }).revision, 0);
 });
 
-test("old wager clients fail before write gates, rate limits, body parsing, or mutation", async () => {
+test("missing and unsupported wager versions fail before profile gates, rate limits, body parsing, or admission", async () => {
   for (const path of ["send", "accept", "cancel", "decline"]
     .map((action) => `/wagers/proposals/${action}`)
     .concat("/wagers/outcomes/resolve")) {
-    const value = fixture();
-    const logs: unknown[] = [];
-    value.reservations.assertClientVersion = async () => {
-      throw new WagerClientUpdateRequired();
-    };
-    const guardedEnv = {
-      ...withProfileControl(environment, "frozen"),
-      AUTH_RATE_LIMITER: {
-        limit: async () => {
-          throw new Error("unexpected-rate-limit");
+    for (const version of [undefined, "0", "2", "1, 1"]) {
+      const value = fixture();
+      const logs: unknown[] = [];
+      let admissions = 0;
+      value.reservations.run = async () => {
+        admissions++;
+        throw new Error("unexpected-admission");
+      };
+      const guardedEnv = {
+        ...withProfileControl(environment, "frozen"),
+        AUTH_RATE_LIMITER: {
+          limit: async () => {
+            throw new Error("unexpected-rate-limit");
+          },
         },
-      },
-    } as Env;
-    const response = await handleGameplayRoute(
-      request({}, path),
-      guardedEnv,
-      context,
-      {
-        ...value.dependencies,
-        logFailure: (kind) => logs.push(kind),
-        logCoordinationFailure: (record) => logs.push(record),
-      },
-    );
-    assert.equal(response.status, 409);
-    assert.equal(
-      response.headers.get("Access-Control-Allow-Origin"),
-      "https://mons.link",
-    );
-    assert.equal(response.headers.get("Cache-Control"), "no-store");
-    assert.deepEqual(await response.json(), {
-      ok: false,
-      error: "client-update-required",
-      message: "Reload this page to continue wagering.",
-    });
-    assert.deepEqual(logs, []);
+      } as Env;
+      const response = await handleGameplayRoute(
+        request(
+          {},
+          path,
+          version === undefined
+            ? {}
+            : { [WAGER_STORAGE_VERSION_HEADER]: version },
+        ),
+        guardedEnv,
+        context,
+        {
+          ...value.dependencies,
+          logFailure: (kind) => logs.push(kind),
+          logCoordinationFailure: (record) => logs.push(record),
+        },
+      );
+      assert.equal(response.status, 409);
+      assert.equal(
+        response.headers.get("Access-Control-Allow-Origin"),
+        "https://mons.link",
+      );
+      assert.equal(response.headers.get("Cache-Control"), "no-store");
+      assert.deepEqual(await response.json(), {
+        ok: false,
+        error: "client-update-required",
+        message: "Reload this page to continue wagering.",
+      });
+      assert.equal(admissions, 0);
+      assert.deepEqual(value.counts(), { reads: 0, snapshots: 0 });
+      assert.deepEqual(logs, []);
+    }
   }
 });
 
@@ -278,42 +291,127 @@ test("unauthenticated requests cannot read frozen balances", async () => {
   assert.equal(value.counts().reads, 0);
 });
 
-test("rechecks client storage version after activation races admission dispatch", async () => {
+test("current wager clients still require reservation admission before domain work", async () => {
   const value = fixture();
-  let activated = false;
-  let versionChecks = 0;
   let admissions = 0;
   let domainReads = 0;
   value.repository.readInviteMetadata = async () => {
     domainReads++;
     throw new Error("unexpected-domain-work");
   };
-  value.reservations.assertClientVersion = async (incoming) => {
-    versionChecks++;
-    assert.equal(incoming.headers.has("X-Mons-Wager-Storage-Version"), false);
-    if (activated) throw new WagerClientUpdateRequired();
-  };
-  value.reservations.run = async (_kind, work) => {
+  value.reservations.run = async () => {
     admissions++;
-    activated = true;
-    return work(value.repository, async () => undefined);
+    throw new WagerReservationWritesDisabled();
   };
   const response = await handleGameplayRoute(
     request(
       { inviteId: "invite", matchId: "invite", material: "dust", count: 1 },
       "/wagers/proposals/send",
+      { [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION },
     ),
     environment,
     context,
     value.dependencies,
   );
-  assert.equal(response.status, 409);
+  assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), {
     ok: false,
-    error: "client-update-required",
-    message: "Reload this page to continue wagering.",
+    error: "unavailable",
+    message: "wager-reservation-writes-disabled",
   });
-  assert.equal(versionChecks, 2);
   assert.equal(admissions, 1);
   assert.equal(domainReads, 0);
+});
+
+test("wager request validation finishes before unavailable reservation admission", async () => {
+  for (const { body, rateLimited, status, admissions } of [
+    { body: {}, rateLimited: false, status: 400, admissions: 0 },
+    { body: {}, rateLimited: true, status: 429, admissions: 0 },
+    {
+      body: { inviteId: "invite", matchId: "invite" },
+      rateLimited: false,
+      status: 503,
+      admissions: 1,
+    },
+  ]) {
+    const value = fixture();
+    let attempts = 0;
+    value.reservations.run = async () => {
+      attempts++;
+      throw new AuthApiFailure(
+        503,
+        "unavailable",
+        "wager-reservation-unavailable",
+      );
+    };
+    const response = await handleGameplayRoute(
+      request(body, "/wagers/outcomes/resolve", {
+        [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION,
+      }),
+      {
+        ...environment,
+        AUTH_RATE_LIMITER: { limit: async () => ({ success: !rateLimited }) },
+      } as Env,
+      context,
+      value.dependencies,
+    );
+    assert.equal(response.status, status);
+    assert.equal(attempts, admissions);
+    assert.deepEqual(value.counts(), { reads: 0, snapshots: 0 });
+  }
+});
+
+test("authentication still precedes wager client version validation", async () => {
+  const value = fixture();
+  const response = await handleGameplayRoute(
+    request({}, "/wagers/proposals/send"),
+    environment,
+    context,
+    {
+      ...value.dependencies,
+      verifyIdentity: async () => {
+        throw new AuthApiFailure(401, "unauthenticated", "invalid-token");
+      },
+    },
+  );
+  assert.equal(response.status, 401);
+  assert.equal(value.counts().reads, 0);
+});
+
+test("the initial match-state gate still precedes authentication and wager version validation", async () => {
+  const value = fixture();
+  let authentications = 0;
+  const response = await handleGameplayRoute(
+    request({}, "/wagers/proposals/send"),
+    {
+      ...environment,
+      PROFILE_GAMES_DB: new Proxy(environment.PROFILE_GAMES_DB, {
+        get(target, property) {
+          if (property === "withSession")
+            return () => {
+              throw new Error("match-control-unavailable");
+            };
+          const current = Reflect.get(target, property, target);
+          return typeof current === "function" ? current.bind(target) : current;
+        },
+      }),
+    },
+    context,
+    {
+      ...value.dependencies,
+      verifyIdentity: async () => {
+        authentications++;
+        return { uid: "login" };
+      },
+    },
+  );
+  assert.equal(response.status, 503);
+  assert.equal(response.headers.get("Retry-After"), "60");
+  assert.deepEqual(await response.json(), {
+    ok: false,
+    error: "unavailable",
+    message: "match-state-control-unavailable",
+  });
+  assert.equal(authentications, 0);
+  assert.deepEqual(value.counts(), { reads: 0, snapshots: 0 });
 });

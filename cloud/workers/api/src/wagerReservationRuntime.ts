@@ -14,7 +14,6 @@ import type { WagerFrozenBalance } from "./wagerFrozenStore.ts";
 import {
   acquireWagerReservationAdmission,
   assertWagerReservationAdmission,
-  readWagerReservationControl,
   releaseWagerReservationAdmission,
   wagerReservationAdmissionGuards,
   type WagerReservationAdmission,
@@ -26,8 +25,15 @@ export class WagerClientUpdateRequired extends Error {
   }
 }
 
+export function assertWagerClientVersion(request: Request): void {
+  if (
+    request.headers.get(WAGER_STORAGE_VERSION_HEADER) !== WAGER_STORAGE_VERSION
+  ) {
+    throw new WagerClientUpdateRequired();
+  }
+}
+
 export type WagerReservationRuntime = {
-  assertClientVersion: (request: Request) => Promise<void>;
   readBalance: (playerUid: string) => Promise<WagerFrozenBalance>;
   run: <T>(
     kind: string,
@@ -44,22 +50,12 @@ export function createWagerReservationRuntime(
   { now = Date.now, logFailure = console.error } = {},
 ): WagerReservationRuntime {
   const db = env.PROFILE_DB;
-  const readControl = () => readWagerReservationControl(db);
   const assertAdmission = async (admission: WagerReservationAdmission) => {
     await assertProfileMutationAllowed(env);
     await assertWagerReservationAdmission(db, admission, now());
   };
 
   return {
-    async assertClientVersion(request) {
-      if (
-        request.headers.get(WAGER_STORAGE_VERSION_HEADER) !==
-        WAGER_STORAGE_VERSION
-      ) {
-        throw new WagerClientUpdateRequired();
-      }
-      await readControl();
-    },
     readBalance: (playerUid) => readWagerReservationBalance(db, playerUid),
     async run(kind, work) {
       const admission = await acquireWagerReservationAdmission(db, kind, now());

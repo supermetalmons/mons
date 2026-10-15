@@ -6,6 +6,10 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
 import type { MiningSnapshot } from "@mons/shared/mining";
+import {
+  WAGER_STORAGE_VERSION,
+  WAGER_STORAGE_VERSION_HEADER,
+} from "@mons/shared/wagers";
 import { Game } from "mons-rules";
 import { AuthApiFailure } from "../src/authErrors.ts";
 import {
@@ -2176,6 +2180,7 @@ function request(body: unknown): Request {
     headers: {
       Origin: "https://mons.link",
       "Content-Type": "application/json",
+      [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION,
     },
     body: JSON.stringify(body),
   });

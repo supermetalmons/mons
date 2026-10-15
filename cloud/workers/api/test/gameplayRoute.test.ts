@@ -6,6 +6,11 @@ import {
 } from "./wagerFrozenTestUtils.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
+import {
+  WAGER_FROZEN_READ_PATH,
+  WAGER_STORAGE_VERSION,
+  WAGER_STORAGE_VERSION_HEADER,
+} from "@mons/shared/wagers";
 import { Game } from "mons-rules";
 import {
   MATCH_MOVE_PATH,
@@ -325,7 +330,13 @@ function request(
 ): Request {
   return new Request(`https://api.mons.link${path}`, {
     method,
-    headers: { Origin: origin, "Content-Type": "application/json" },
+    headers: {
+      Origin: origin,
+      "Content-Type": "application/json",
+      ...(path.startsWith("/wagers/") && path !== WAGER_FROZEN_READ_PATH
+        ? { [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION }
+        : {}),
+    },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
 }

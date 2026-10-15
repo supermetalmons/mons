@@ -1529,6 +1529,220 @@ test("repeatedly converges same-UID queues hidden behind the bounded query", asy
   );
 });
 
+test("cancellation rejects stale queue and invite snapshots", async (t) => {
+  const queued = {
+    inviteId: "auto_stale_cancel",
+    data: { uid: identity.uid, timestamp: 1, telegramDeliveryVersion: 2 },
+  };
+  for (const { name, queue, invite } of [
+    {
+      name: "uid",
+      queue: { uid: "different-host" },
+      invite: { hostId: "different-host" },
+    },
+    { name: "timestamp", queue: { timestamp: 2 }, invite: {} },
+    {
+      name: "delivery version",
+      queue: { telegramDeliveryVersion: 1 },
+      invite: {},
+    },
+    { name: "host", queue: {}, invite: { hostId: "different-host" } },
+    { name: "guest", queue: {}, invite: { guestId: "joined-player" } },
+  ]) {
+    await t.test(name, async () => {
+      const value = repository();
+      const dispatched: string[] = [];
+      value.readAutomatchEntry = async () => ({ ...queued.data, ...queue });
+      value.readInviteMetadata = async () => ({
+        hostId: identity.uid,
+        guestId: null,
+        ...invite,
+      });
+      value.commitSessionChanges = async () => assert.fail("unexpected commit");
+
+      const canceled = await cancelQueuedAutomatch(queued, value, {
+        assertMutationAllowed: async () => assert.fail("unexpected mutation"),
+        enqueueTelegramProjection: async () => {
+          dispatched.push("telegram");
+        },
+        enqueueProfileGameProjection: async () => {
+          dispatched.push("profile");
+        },
+      });
+
+      assert.equal(canceled, false);
+      assert.deepEqual(dispatched, []);
+    });
+  }
+});
+
+test("non-v2 cancellations request only the profile projection", async (t) => {
+  for (const telegramDeliveryVersion of [undefined, 1, "2"]) {
+    await t.test(String(telegramDeliveryVersion), async () => {
+      const queued = {
+        inviteId: "auto_legacy_cancel",
+        data: { uid: identity.uid, timestamp: 1, telegramDeliveryVersion },
+      };
+      const value = repository();
+      const events: string[] = [];
+      const profileTasks: unknown[] = [];
+      let committed: Parameters<
+        AutomatchRepository["commitSessionChanges"]
+      >[0] = [];
+      value.readAutomatchEntry = async () => queued.data;
+      value.readInviteMetadata = async () => ({ hostId: identity.uid });
+      value.commitSessionChanges = async (changes) => {
+        events.push("commit");
+        committed = changes;
+      };
+
+      const canceled = await cancelQueuedAutomatch(queued, value, {
+        createProjectionRequestId: () => "legacy-cancel",
+        assertMutationAllowed: async () => {
+          events.push("guard");
+        },
+        enqueueTelegramProjection: async () => {
+          events.push("telegram");
+        },
+        enqueueProfileGameProjection: async (task) => {
+          events.push("profile");
+          profileTasks.push(task);
+        },
+      });
+
+      assert.equal(canceled, true);
+      assert.deepEqual(events, ["guard", "commit", "profile"]);
+      assert.deepEqual(profileTasks, [
+        {
+          kind: "automatch-profile-game-projection",
+          inviteId: queued.inviteId,
+          requestId: "legacy-cancel",
+        },
+      ]);
+      assert.deepEqual(
+        committed.map((change) => change.kind),
+        ["automatch-entry", "invite-fields", "profile-outbox"],
+      );
+      assert.deepEqual(committed[0], {
+        kind: "automatch-entry",
+        inviteId: queued.inviteId,
+        value: null,
+      });
+      assert.deepEqual(committed[1], {
+        kind: "invite-fields",
+        inviteId: queued.inviteId,
+        value: {
+          automatchStateHint: "canceled",
+          automatchCanceledAt: STATE_SERVER_TIMESTAMP,
+        },
+      });
+    });
+  }
+});
+
+test("cancellation requires the matching outbox request to prove an ambiguous commit", async () => {
+  const queued = {
+    inviteId: "auto_wrong_cancel_proof",
+    data: { uid: identity.uid, timestamp: 1, telegramDeliveryVersion: 2 },
+  };
+  const value = repository();
+  let attempted = false;
+  let waits = 0;
+  let proofReads = 0;
+  const dispatched: string[] = [];
+  const patchError = new Error("cancel-response-lost");
+  value.readAutomatchEntry = async () => (attempted ? null : queued.data);
+  value.readInviteMetadata = async () => ({
+    hostId: identity.uid,
+    guestId: null,
+    automatchStateHint: attempted ? "canceled" : "pending",
+    automatchCanceledAt: attempted ? 2 : null,
+  });
+  value.readAutomatchProfileOutbox = async () => {
+    proofReads += 1;
+    return { requestId: "another-cancellation" };
+  };
+  value.commitSessionChanges = async () => {
+    attempted = true;
+    throw patchError;
+  };
+
+  await assert.rejects(
+    cancelQueuedAutomatch(queued, value, {
+      createProjectionRequestId: () => "this-cancellation",
+      enqueueTelegramProjection: async () => {
+        dispatched.push("telegram");
+      },
+      enqueueProfileGameProjection: async () => {
+        dispatched.push("profile");
+      },
+      wait: async () => {
+        waits += 1;
+      },
+    }),
+    (error) => error === patchError,
+  );
+
+  assert.equal(waits, 20);
+  assert.equal(proofReads, 21);
+  assert.deepEqual(dispatched, []);
+});
+
+test("a committed cancellation dispatches in order despite a release-only failure", async () => {
+  const queued = {
+    inviteId: "auto_cancel_release_only",
+    data: { uid: identity.uid, timestamp: 1, telegramDeliveryVersion: 2 },
+  };
+  const value = repository();
+  const events: string[] = [];
+  const dispatched: unknown[] = [];
+  value.readAutomatchEntry = async () => {
+    assert.deepEqual(events, []);
+    return queued.data;
+  };
+  value.readInviteMetadata = async () => {
+    assert.deepEqual(events, []);
+    return { hostId: identity.uid, guestId: null };
+  };
+  value.readAutomatchProfileOutbox = async () =>
+    assert.fail("unexpected proof read");
+  value.commitSessionChanges = async () => {
+    events.push("commit");
+  };
+  coordinationFor(value).mutationLocks.release = async () => {
+    events.push("release");
+    throw new GameSessionMutationLockFailure("release");
+  };
+
+  const canceled = await cancelQueuedAutomatch(queued, value, {
+    createProjectionRequestId: () => "release-only",
+    enqueueTelegramProjection: async (task) => {
+      dispatched.push(task);
+      events.push("telegram");
+    },
+    enqueueProfileGameProjection: async (task) => {
+      dispatched.push(task);
+      events.push("profile");
+    },
+    wait: async () => assert.fail("unexpected proof wait"),
+  });
+
+  assert.equal(canceled, true);
+  assert.deepEqual(events, ["commit", "release", "telegram", "profile"]);
+  assert.deepEqual(dispatched, [
+    {
+      kind: "automatch-telegram-projection",
+      inviteId: queued.inviteId,
+      requestId: "release-only",
+    },
+    {
+      kind: "automatch-profile-game-projection",
+      inviteId: queued.inviteId,
+      requestId: "release-only",
+    },
+  ]);
+});
+
 test("shared cancellation reconciles an ambiguous committed patch", async () => {
   const queued = {
     inviteId: "auto_ambiguous",

@@ -219,7 +219,6 @@ export function createTestWagerReservationRuntime(
 ): WagerReservationRuntime {
   repository.wagerFrozen ??= createMemoryWagerFrozenStore();
   return {
-    assertClientVersion: async () => undefined,
     readBalance: (playerUid) => repository.wagerFrozen!.readBalance(playerUid),
     run: (_kind, work) => work(repository, async () => undefined),
   };

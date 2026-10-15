@@ -727,6 +727,218 @@ test("repairs completed replays without reacquiring or finalizing", async () => 
   assert.equal(state.patches.length, 0);
 });
 
+test("observed completions dispatch only pending projections in recovery order", async (t) => {
+  const cases = [
+    {
+      name: "both pending",
+      data: completedData({
+        telegramProjectionState: "pending",
+        profileGameProjectionState: "pending",
+      }),
+      expected: ["telegram", "profile"],
+    },
+    {
+      name: "Telegram pending and profile done",
+      data: completedData({
+        telegramProjectionState: "pending",
+        profileGameProjectionState: "done",
+      }),
+      expected: ["telegram"],
+    },
+    {
+      name: "Telegram dead and profile pending",
+      data: completedData({
+        telegramProjectionState: "dead",
+        profileGameProjectionState: "pending",
+      }),
+      expected: ["profile"],
+    },
+    {
+      name: "completed projections",
+      data: completedData({
+        telegramProjectionState: "done",
+        profileGameProjectionState: "dead",
+      }),
+      expected: [],
+    },
+    { name: "missing markers", data: completedData(), expected: [] },
+    { name: "legacy completion", data: null, expected: [] },
+  ];
+  for (const entry of ["existing", "lease"] as const) {
+    for (const scenario of cases) {
+      await t.test(`${entry}: ${scenario.name}`, async () => {
+        const state = createRepository({
+          completed: entry === "existing",
+          failMatchReads: entry === "existing",
+          leaseStatus: "done",
+        });
+        const read = state.repository.readRatingUpdate;
+        state.repository.readRatingUpdate = async (...args) => {
+          await read(...args);
+          return entry === "existing" ? scenario.data : null;
+        };
+        const acquire = state.repository.tryAcquireRatingLease;
+        state.repository.tryAcquireRatingLease = async (...args) => ({
+          ...(await acquire(...args)),
+          data: scenario.data,
+        });
+        const steps: string[] = [];
+        coordination(state.repository).timerStarts.deletePair = async () => {
+          steps.push("timers");
+        };
+        assert.deepEqual(
+          await updateRatings(identity, request, state.repository, {
+            enqueueTelegramProjection: async () => {
+              steps.push("telegram");
+            },
+            enqueueProfileGameProjection: async () => {
+              steps.push("profile");
+            },
+          }),
+          { ok: true },
+        );
+        assert.deepEqual(steps, ["timers", ...scenario.expected]);
+        assert.equal(state.getAttempts(), entry === "existing" ? 0 : 1);
+        assert.equal(state.getFinalized(), 0);
+        assert.equal(state.getOperationReads(), 1);
+      });
+    }
+  }
+});
+
+test("finalizer replays retain finalized projection eligibility and order", async (t) => {
+  for (const status of ["committed", "replayed"] as const) {
+    for (const kind of ["v2", "legacy", "event"] as const) {
+      await t.test(`${status}: ${kind}`, async () => {
+        const state = createRepository({
+          invite: {
+            hostId: request.playerId,
+            guestId: request.opponentId,
+            ...(kind !== "legacy" ? { telegramDeliveryVersion: 2 } : {}),
+            ...(kind === "event"
+              ? { eventOwned: true, eventId: "event-1" }
+              : {}),
+          },
+        });
+        if (status === "replayed") {
+          state.repository.finalizeRatingUpdate = async () => ({
+            status: "replayed",
+            data: completedData({
+              telegramProjectionState: "done",
+              profileGameProjectionState: "done",
+            }),
+          });
+        }
+        const dispatched: string[] = [];
+        assert.deepEqual(
+          await updateRatings(identity, request, state.repository, {
+            enqueueEventProgress: async () => {
+              dispatched.push("event");
+            },
+            enqueueTelegramProjection: async () => {
+              dispatched.push("telegram");
+            },
+            enqueueProfileGameProjection: async () => {
+              dispatched.push("profile");
+            },
+          }),
+          { ok: true },
+        );
+        assert.deepEqual(
+          dispatched,
+          kind === "v2"
+            ? ["profile", "telegram"]
+            : kind === "event"
+              ? ["event", "profile"]
+              : ["profile"],
+        );
+        assert.equal(state.getAttempts(), 1);
+      });
+    }
+  }
+});
+
+test("completion repairs finish before dispatch and stop on repair failures", async (t) => {
+  for (const failure of [null, "outbox", "timers", "challenge"] as const) {
+    await t.test(failure || "success", async () => {
+      const state = createRepository({
+        leaseStatus: "done",
+        invite: {
+          hostId: request.playerId,
+          guestId: request.opponentId,
+          ...(failure !== "challenge"
+            ? { eventOwned: true, eventId: "event-1" }
+            : {}),
+        },
+      });
+      const data = completedData({
+        shouldUpdateFebruaryChallenge: failure === "challenge",
+        telegramProjectionState: "pending",
+        profileGameProjectionState: "pending",
+      });
+      const acquire = state.repository.tryAcquireRatingLease;
+      state.repository.tryAcquireRatingLease = async (...args) => ({
+        ...(await acquire(...args)),
+        data,
+      });
+      const steps: string[] = [];
+      const repairFailure = new Error("repair-failed");
+      const recordRepair = (step: string) => {
+        steps.push(step);
+        if (step === failure) throw repairFailure;
+      };
+      state.repository.putEventProgressOutbox = async () => {
+        recordRepair("outbox");
+      };
+      coordination(state.repository).timerStarts.deletePair = async () => {
+        recordRepair("timers");
+      };
+      state.repository.applyFebruaryChallengeReplay = async (...args) => {
+        assert.deepEqual(args, ["profile-player", "profile-opponent"]);
+        recordRepair("challenge");
+      };
+      const result = updateRatings(identity, request, state.repository, {
+        assertMutationAllowed: async () => {
+          steps.push("guard");
+        },
+        enqueueEventProgress: async () => {
+          steps.push("event");
+        },
+        enqueueTelegramProjection: async () => {
+          steps.push("telegram");
+        },
+        enqueueProfileGameProjection: async () => {
+          steps.push("profile");
+        },
+      });
+      if (failure) {
+        await assert.rejects(result, (error) => error === repairFailure);
+        assert.deepEqual(
+          steps,
+          failure === "outbox"
+            ? ["guard", "outbox"]
+            : failure === "timers"
+              ? ["guard", "outbox", "guard", "timers"]
+              : ["guard", "timers", "challenge"],
+        );
+      } else {
+        assert.deepEqual(await result, { ok: true });
+        assert.deepEqual(steps, [
+          "guard",
+          "outbox",
+          "guard",
+          "timers",
+          "event",
+          "telegram",
+          "profile",
+        ]);
+      }
+      assert.equal(state.getAttempts(), 1);
+      assert.equal(state.getFinalized(), 0);
+    });
+  }
+});
+
 test("repairs D1 timer marker cleanup on a completed replay", async () => {
   const state = createRepository({ completed: true, failMatchReads: true });
   const stores = coordination(state.repository);

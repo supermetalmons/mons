@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import {
+  WAGER_FROZEN_READ_PATH,
+  WAGER_STORAGE_VERSION,
+  WAGER_STORAGE_VERSION_HEADER,
+} from "@mons/shared/wagers";
 import { AuthApiFailure } from "../src/authErrors.ts";
 import type { GameplayRepository } from "../src/gameplayRepository.ts";
 import { type GameplayRouteDependencies } from "../src/gameplayRoute.ts";
@@ -224,6 +229,9 @@ function request(path: string, body: unknown = {}, method = "POST"): Request {
     headers: {
       Origin: "https://mons.link",
       "Content-Type": "application/json",
+      ...(path.startsWith("/wagers/") && path !== WAGER_FROZEN_READ_PATH
+        ? { [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION }
+        : {}),
     },
     ...(method === "POST" ? { body: JSON.stringify(body) } : {}),
   });
@@ -389,7 +397,6 @@ function fixture(route: RouteCase) {
       },
     },
     wagerReservations: {
-      assertClientVersion: async () => undefined,
       readBalance: async (playerUid) => {
         assert.equal(playerUid, uid);
         effects.push("frozen-balance");

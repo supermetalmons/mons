@@ -76,7 +76,6 @@ function runWager<T>(
   return reservations.run(
     runtime.pathname,
     async (admittedRepository, admissionGuard) => {
-      await reservations.assertClientVersion(runtime.request);
       return work(admittedRepository, async () => {
         await runtime.assertMutationAllowed();
         await admissionGuard();

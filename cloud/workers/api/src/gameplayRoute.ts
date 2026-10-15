@@ -32,6 +32,7 @@ import { assertProfileMutationAllowed } from "./profileCanonicalActivation.ts";
 import type { WorkerExecutionContext } from "./sessionAuth.ts";
 import { enforceWagerOutcomeRateLimit } from "./wagerOutcome.ts";
 import {
+  assertWagerClientVersion,
   createWagerReservationRuntime,
   WagerClientUpdateRequired,
 } from "./wagerReservationRuntime.ts";
@@ -187,7 +188,7 @@ async function handleGameplayRequest(
           ? dependencies.wagerReservations ||
             createWagerReservationRuntime(env, repository)
           : null;
-      if (isWagerMutation) await reservations?.assertClientVersion(request);
+      if (isWagerMutation) assertWagerClientVersion(request);
       const automatchOperationId =
         pathname === "/automatch/start"
           ? readAutomatchOperationId(request)

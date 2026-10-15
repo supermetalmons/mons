@@ -1,14 +1,22 @@
 import type { RandomSource } from "@mons/shared/ids";
 import type { StartAutomatchResponse } from "@mons/shared/navigation";
 import {
-  buildAutomatchProfileGameProjectionTask,
-  buildAutomatchProjectionTask,
+  automatchTelegramDeliveryVersion,
+  automatchTimestamp,
+  cancelQueuedAutomatch,
+} from "./automatch/cancellation.ts";
+import {
   buildMatchedAutomatchPlan,
   buildPendingAutomatchPlan,
   matchedAutomatchResponse,
   pendingAutomatchResponse,
   profileOrFallback,
 } from "./automatch/plans.ts";
+import {
+  AUTOMATCH_CANCELLATION_RECONCILE_TIMEOUT_MS,
+  AUTOMATCH_TOTAL_TIMEOUT_MS,
+} from "./automatch/policy.ts";
+import { enqueueAutomatchProjections } from "./automatch/projections.ts";
 import {
   buildAutomatchReceiptChanges,
   buildAutomatchReplayTasks,
@@ -17,18 +25,12 @@ import {
 } from "./automatch/receipts.ts";
 import type {
   AutomatchDependencies,
-  AutomatchPlanDependencies,
   AutomatchReceipt,
   AutomatchRequesterSnapshot,
   QueuedAutomatch,
   StartAutomatchOperationRequest,
   SuccessfulStartAutomatchResponse,
 } from "./automatch/types.ts";
-import {
-  TELEGRAM_AUTOMATCH_VERSION,
-  buildAutomatchTelegramProjectionChanges,
-  buildAutomatchTelegramLifecycleChanges,
-} from "../../../runtime/telegram/automatchSource.js";
 import { getDisplayNameFromAddress } from "../../../runtime/telegramDisplay.js";
 import { AuthApiFailure } from "./authErrors.ts";
 import { isAutomatchQueueSelectionConflict } from "./automatchQueueD1.ts";
@@ -37,16 +39,8 @@ import {
   measureAutomatchPhase,
 } from "./automatchTelemetry.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
-import {
-  STATE_SERVER_TIMESTAMP,
-  stateIncrement,
-} from "./stateCompatibility.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
 import type { AutomatchRepository } from "./gameplayContracts.ts";
-import { requestAutomatchProfileProjection } from "./gameSessionProjectionChanges.ts";
-import type { GameSessionChange } from "./gameSessionContracts.ts";
-import type { AutomatchProfileGameProjectionTask } from "./profileGameProjectionTasks.ts";
-import type { AutomatchTelegramProjectionTask } from "./telegramProjectionTasks.ts";
 import {
   GameSessionMutationLeaseReleaseFailure,
   withGameSessionMutationLease,
@@ -61,16 +55,21 @@ import {
   type ProfileOwnershipSnapshot,
 } from "./profileOwnership.ts";
 
+export { cancelQueuedAutomatch } from "./automatch/cancellation.ts";
+export { AUTOMATCH_TOTAL_TIMEOUT_MS } from "./automatch/policy.ts";
+export {
+  createAutomatchProfileGameProjectionTask,
+  createAutomatchProjectionTask,
+  enqueueAutomatchProfileGameProjection,
+  enqueueAutomatchProjection,
+} from "./automatch/projections.ts";
+
 const MAX_AUTOMATCH_RETRY_COUNT = 3;
 const MAX_AUTOMATCH_SELECTION_ATTEMPTS = 32;
-export const AUTOMATCH_TOTAL_TIMEOUT_MS = 20_000;
 const AUTOMATCH_OWNER_LOCK_MIN_RETRY_MS = 25;
 const AUTOMATCH_OWNER_LOCK_MAX_RETRY_MS = 1_000;
 const AUTOMATCH_UID_LOOKUP_LIMIT = 2;
 const AUTOMATCH_OWNER_LOGIN_UID_LIMIT = 512;
-const AUTOMATCH_CANCELLATION_RECONCILE_TIMEOUT_MS = 1_000;
-const AUTOMATCH_CANCELLATION_RECONCILE_DELAY_MS = 50;
-const AUTOMATCH_CANCELLATION_FINAL_READ_TIMEOUT_MS = 250;
 
 function toRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -249,83 +248,6 @@ function secureRandom(): number {
   return values[0] / 0x1_0000_0000;
 }
 
-export function createAutomatchProjectionTask(
-  inviteId: string,
-  dependencies: AutomatchPlanDependencies,
-  requestId = (
-    dependencies.createProjectionRequestId || (() => crypto.randomUUID())
-  )(),
-): AutomatchTelegramProjectionTask {
-  return buildAutomatchProjectionTask(inviteId, requestId);
-}
-
-export function createAutomatchProfileGameProjectionTask(
-  inviteId: string,
-  dependencies: AutomatchPlanDependencies,
-): AutomatchProfileGameProjectionTask {
-  return buildAutomatchProfileGameProjectionTask(
-    inviteId,
-    (dependencies.createProjectionRequestId || (() => crypto.randomUUID()))(),
-  );
-}
-
-export async function enqueueAutomatchProjection(
-  task: AutomatchTelegramProjectionTask,
-  dependencies: AutomatchDependencies,
-): Promise<void> {
-  if (!dependencies.enqueueTelegramProjection) {
-    return;
-  }
-  try {
-    await dependencies.enqueueTelegramProjection(task);
-  } catch {
-    (
-      dependencies.logProjectionFailure ||
-      ((failedTask) =>
-        console.error(
-          JSON.stringify({
-            event: "automatch_telegram_projection_enqueue_failed",
-            inviteId: failedTask.inviteId,
-          }),
-        ))
-    )(task);
-  }
-}
-
-export async function enqueueAutomatchProfileGameProjection(
-  task: AutomatchProfileGameProjectionTask,
-  dependencies: AutomatchDependencies,
-): Promise<void> {
-  if (!dependencies.enqueueProfileGameProjection) {
-    return;
-  }
-  try {
-    await dependencies.enqueueProfileGameProjection(task);
-  } catch {
-    (
-      dependencies.logProfileGameProjectionFailure ||
-      ((failedTask) =>
-        console.error(
-          JSON.stringify({
-            event: "automatch_profile_game_projection_enqueue_failed",
-            inviteId: failedTask.inviteId,
-          }),
-        ))
-    )(task);
-  }
-}
-
-async function enqueueAutomatchProjections(
-  telegramTask: AutomatchTelegramProjectionTask | null,
-  profileTask: AutomatchProfileGameProjectionTask,
-  dependencies: AutomatchDependencies,
-): Promise<void> {
-  if (telegramTask) {
-    await enqueueAutomatchProjection(telegramTask, dependencies);
-  }
-  await enqueueAutomatchProfileGameProjection(profileTask, dependencies);
-}
-
 async function replayAutomatchReceipt(
   receipt: AutomatchReceipt,
   dependencies: AutomatchDependencies,
@@ -340,16 +262,6 @@ async function replayAutomatchReceipt(
     );
   }
   return receipt.response;
-}
-
-function automatchTimestamp(value: unknown): number {
-  return Math.floor(finiteNumber(value));
-}
-
-function automatchTelegramDeliveryVersion(value: unknown): number | null {
-  return value === TELEGRAM_AUTOMATCH_VERSION
-    ? TELEGRAM_AUTOMATCH_VERSION
-    : null;
 }
 
 async function didCommitAutomatchReceipt(
@@ -372,205 +284,6 @@ async function didCommitAutomatchReceipt(
   } catch {
     return false;
   }
-}
-
-async function readAutomatchCancellationProof(
-  inviteId: string,
-  expectedUid: string,
-  requestId: string,
-  repository: AutomatchRepository,
-  signal: AbortSignal,
-): Promise<boolean> {
-  try {
-    const [queueValue, inviteValue, outboxRequestId] = await Promise.all([
-      repository.readAutomatchEntry(inviteId, signal),
-      repository.readInviteMetadata(inviteId, signal),
-      repository.readAutomatchProfileOutbox(inviteId, signal),
-    ]);
-    const invite = toRecord(inviteValue);
-    return Boolean(
-      queueValue === null &&
-      normalizeString(invite?.hostId) === expectedUid &&
-      !normalizeString(invite?.guestId) &&
-      invite?.automatchStateHint === "canceled" &&
-      typeof invite.automatchCanceledAt === "number" &&
-      Number.isFinite(invite.automatchCanceledAt) &&
-      normalizeString(toRecord(outboxRequestId)?.requestId) === requestId,
-    );
-  } catch {
-    return false;
-  }
-}
-
-async function didCommitAutomatchCancellation(
-  inviteId: string,
-  expectedUid: string,
-  requestId: string,
-  repository: AutomatchRepository,
-  signal: AbortSignal,
-  wait: (milliseconds: number, signal: AbortSignal) => Promise<void>,
-): Promise<boolean> {
-  for (
-    let elapsedMs = 0;
-    elapsedMs < AUTOMATCH_CANCELLATION_RECONCILE_TIMEOUT_MS;
-    elapsedMs += AUTOMATCH_CANCELLATION_RECONCILE_DELAY_MS
-  ) {
-    if (
-      await readAutomatchCancellationProof(
-        inviteId,
-        expectedUid,
-        requestId,
-        repository,
-        signal,
-      )
-    ) {
-      return true;
-    }
-    try {
-      await wait(AUTOMATCH_CANCELLATION_RECONCILE_DELAY_MS, signal);
-    } catch {
-      break;
-    }
-  }
-  return readAutomatchCancellationProof(
-    inviteId,
-    expectedUid,
-    requestId,
-    repository,
-    AbortSignal.timeout(AUTOMATCH_CANCELLATION_FINAL_READ_TIMEOUT_MS),
-  );
-}
-
-export async function cancelQueuedAutomatch(
-  queued: QueuedAutomatch,
-  repository: AutomatchRepository,
-  dependencies: AutomatchDependencies,
-  signal: AbortSignal = dependencies.signal ||
-    AbortSignal.timeout(AUTOMATCH_TOTAL_TIMEOUT_MS),
-): Promise<boolean> {
-  const expectedUid = normalizeString(queued.data.uid);
-  if (!expectedUid) return false;
-  const expectedTimestamp = automatchTimestamp(queued.data.timestamp);
-  const expectedTelegramDeliveryVersion = automatchTelegramDeliveryVersion(
-    queued.data.telegramDeliveryVersion,
-  );
-  const profileGameProjectionTask = createAutomatchProfileGameProjectionTask(
-    queued.inviteId,
-    dependencies,
-  );
-  const projectionTask = expectedTelegramDeliveryVersion
-    ? createAutomatchProjectionTask(
-        queued.inviteId,
-        dependencies,
-        profileGameProjectionTask.requestId,
-      )
-    : null;
-  let patchAttempted = false;
-  let canceled = false;
-  try {
-    canceled = await withGameSessionMutationLease(
-      queued.inviteId,
-      profileGameProjectionTask.requestId,
-      dependencies.mutationLocks,
-      async () => {
-        const [currentQueueValue, currentInvite] = await Promise.all([
-          repository.readAutomatchEntry(queued.inviteId, signal),
-          repository.readInviteMetadata(queued.inviteId, signal),
-        ]);
-        const currentGuestId = currentInvite?.guestId;
-        const currentHostId = currentInvite?.hostId;
-        const currentQueue = toRecord(currentQueueValue);
-        const currentUid = normalizeString(currentQueue?.uid);
-        if (
-          !currentQueue ||
-          currentUid !== expectedUid ||
-          automatchTimestamp(currentQueue.timestamp) !== expectedTimestamp ||
-          automatchTelegramDeliveryVersion(
-            currentQueue.telegramDeliveryVersion,
-          ) !== expectedTelegramDeliveryVersion ||
-          normalizeString(currentGuestId) ||
-          normalizeString(currentHostId) !== currentUid
-        ) {
-          return false;
-        }
-        const changes: GameSessionChange[] = [
-          { kind: "automatch-entry", inviteId: queued.inviteId, value: null },
-          {
-            kind: "invite-fields",
-            inviteId: queued.inviteId,
-            value: {
-              automatchStateHint: "canceled",
-              automatchCanceledAt: STATE_SERVER_TIMESTAMP,
-            },
-          },
-          ...requestAutomatchProfileProjection({
-            inviteId: queued.inviteId,
-            requestId: profileGameProjectionTask.requestId,
-            timestamp: STATE_SERVER_TIMESTAMP,
-          }),
-        ];
-        if (expectedTelegramDeliveryVersion) {
-          changes.push(
-            ...buildAutomatchTelegramLifecycleChanges({
-              inviteId: queued.inviteId,
-              lifecycle: "canceled",
-              timestamp: STATE_SERVER_TIMESTAMP,
-              generation: stateIncrement(1),
-            }),
-            ...buildAutomatchTelegramProjectionChanges({
-              inviteId: queued.inviteId,
-              requestId: projectionTask?.requestId || "",
-              timestamp: STATE_SERVER_TIMESTAMP,
-            }),
-          );
-        }
-        await dependencies.assertMutationAllowed?.();
-        patchAttempted = true;
-        await repository.commitSessionChanges(changes, signal);
-        return true;
-      },
-    );
-  } catch (error) {
-    if (!patchAttempted) throw error;
-    if (
-      !(error instanceof GameSessionMutationLeaseReleaseFailure) ||
-      !error.workCompleted
-    ) {
-      const reconciliationSignal = AbortSignal.timeout(
-        AUTOMATCH_CANCELLATION_RECONCILE_TIMEOUT_MS,
-      );
-      if (
-        !(await didCommitAutomatchCancellation(
-          queued.inviteId,
-          expectedUid,
-          profileGameProjectionTask.requestId,
-          repository,
-          reconciliationSignal,
-          dependencies.wait ||
-            ((milliseconds, waitSignal) =>
-              scheduler.wait(milliseconds, { signal: waitSignal })),
-        ))
-      ) {
-        throw error;
-      }
-    }
-    canceled = true;
-    if (error instanceof GameSessionMutationLeaseReleaseFailure) {
-      await enqueueAutomatchProjections(
-        projectionTask,
-        profileGameProjectionTask,
-        dependencies,
-      );
-      return true;
-    }
-  }
-  if (!canceled) return false;
-  await enqueueAutomatchProjections(
-    projectionTask,
-    profileGameProjectionTask,
-    dependencies,
-  );
-  return true;
 }
 
 async function convergeOwnedQueuedAutomatches(

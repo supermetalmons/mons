@@ -40,6 +40,7 @@ import type {
   RatingProfilePatch,
   RatingRepairData,
   RatingRepository,
+  RatingUpdateData,
 } from "./ratingContracts.ts";
 import {
   TELEGRAM_PROJECTION_SCHEMA_VERSION,
@@ -567,6 +568,49 @@ async function dispatchEventProgress(
   }
 }
 
+type RatingCompletion =
+  | { kind: "observed"; data: RatingUpdateData | null }
+  | {
+      kind: "finalized";
+      data: RatingRepairData;
+      telegramProjection: boolean;
+    };
+
+async function finishRatingUpdate(
+  request: RatingUpdateRequest,
+  operationId: string,
+  completion: RatingCompletion,
+  repository: RatingRepository,
+  dependencies: RatingUpdateDependencies,
+  eventId: string | null,
+  nowMs: number,
+): Promise<RatingUpdateResponse> {
+  const progress = await repairRatingSideEffects(
+    request,
+    completion.data,
+    repository,
+    dependencies.timerStarts,
+    dependencies.assertMutationAllowed,
+    eventId,
+    nowMs,
+  );
+  await dispatchEventProgress(progress, dependencies);
+  if (completion.kind === "observed") {
+    if (completion.data?.telegramProjectionState === "pending") {
+      await enqueueRatingProjection(operationId, dependencies);
+    }
+    if (completion.data?.profileGameProjectionState === "pending") {
+      await enqueueProfileGameProjection(operationId, dependencies);
+    }
+  } else {
+    await enqueueProfileGameProjection(operationId, dependencies);
+    if (completion.telegramProjection) {
+      await enqueueRatingProjection(operationId, dependencies);
+    }
+  }
+  return { ok: true };
+}
+
 export async function updateRatings(
   identity: RequestIdentity,
   request: RatingUpdateRequest,
@@ -611,23 +655,15 @@ export async function updateRatings(
     throw new AuthApiFailure(503, "unavailable", "rating-completion-conflict");
   }
   if (completed === true || existing?.status === "done") {
-    const progress = await repairRatingSideEffects(
+    return finishRatingUpdate(
       request,
-      existing,
+      operationId,
+      { kind: "observed", data: existing },
       repository,
-      dependencies.timerStarts,
-      dependencies.assertMutationAllowed,
+      dependencies,
       progressEventId,
       now(),
     );
-    await dispatchEventProgress(progress, dependencies);
-    if (existing?.telegramProjectionState === "pending") {
-      await enqueueRatingProjection(operationId, dependencies);
-    }
-    if (existing?.profileGameProjectionState === "pending") {
-      await enqueueProfileGameProjection(operationId, dependencies);
-    }
-    return { ok: true };
   }
   const [playerValue, opponentValue] = await readGameplayMatchPair(repository, {
     inviteId: request.inviteId,
@@ -675,23 +711,15 @@ export async function updateRatings(
     leaseMs: RATING_UPDATE_LEASE_MS,
   });
   if (lease.status === "done") {
-    const progress = await repairRatingSideEffects(
+    return finishRatingUpdate(
       request,
-      lease.data,
+      operationId,
+      { kind: "observed", data: lease.data },
       repository,
-      dependencies.timerStarts,
-      dependencies.assertMutationAllowed,
+      dependencies,
       progressEventId,
       now(),
     );
-    await dispatchEventProgress(progress, dependencies);
-    if (lease.data?.telegramProjectionState === "pending") {
-      await enqueueRatingProjection(operationId, dependencies);
-    }
-    if (lease.data?.profileGameProjectionState === "pending") {
-      await enqueueProfileGameProjection(operationId, dependencies);
-    }
-    return { ok: true };
   }
   if (lease.status !== "acquired") {
     return { ok: true, skipped: true };
@@ -723,24 +751,21 @@ export async function updateRatings(
   if (finalized.status === "lost") {
     return { ok: true, skipped: true };
   }
-  const progress = await repairRatingSideEffects(
+  return finishRatingUpdate(
     request,
-    finalized.data,
+    operationId,
+    {
+      kind: "finalized",
+      data: finalized.data,
+      telegramProjection:
+        invite.telegramDeliveryVersion === TELEGRAM_AUTOMATCH_VERSION &&
+        !eventMetadata.isEventMatch,
+    },
     repository,
-    dependencies.timerStarts,
-    dependencies.assertMutationAllowed,
+    dependencies,
     progressEventId,
     now(),
   );
-  await dispatchEventProgress(progress, dependencies);
-  await enqueueProfileGameProjection(operationId, dependencies);
-  if (
-    invite.telegramDeliveryVersion === TELEGRAM_AUTOMATCH_VERSION &&
-    !getRatingEventMetadata(invite).isEventMatch
-  ) {
-    await enqueueRatingProjection(operationId, dependencies);
-  }
-  return { ok: true };
 }
 
 export {
