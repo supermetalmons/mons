@@ -264,7 +264,6 @@ test("navigation toolbar delegates its data and preserves picker wiring", () => 
   assert.doesNotMatch(source, /connection\.subscribeProfileGames/);
   assert.doesNotMatch(source, /connection\.getProfileGamesPage/);
   assert.doesNotMatch(source, /writeNavigationGamesRuntimeCache/);
-  assert.match(source, /getEventParticipantPreview\(effectiveInviteEventId\)/);
 });
 
 test("toolbar delegates automatch state, deadlines, and requests to its feature hook", () => {

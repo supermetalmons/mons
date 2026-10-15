@@ -28,6 +28,7 @@ export const environment = {
   inviteRequests: [],
   subscriptions: [],
   eventSubscriptions: [],
+  eventSnapshots: new Map(),
   activeContext: null,
   inviteEventId: null,
   inviteEventOwned: false,
@@ -102,6 +103,7 @@ export const connection = {
   subscribeToEvent(eventId, update) {
     const subscription = { eventId, update, active: true };
     environment.eventSubscriptions.push(subscription);
+    if (environment.eventSnapshots.has(eventId)) update(environment.eventSnapshots.get(eventId));
     return () => { subscription.active = false; };
   },
   rematchSeriesEndIsIndicated: () => false,
@@ -142,6 +144,11 @@ export const closeEventModal = (reason = 'dismiss') => {
   setRoute({ ...environment.route, eventId: null });
   emit();
 };
+export const openEventModalPendingCreate = () => {
+  closeEventModal();
+  environment.eventModalState = { isOpen: true, eventId: null, lastCloseReason: null, isPendingCreate: true, pendingCreateError: null };
+  emit();
+};
 `;
 const sessionSource = `
 import { environment } from 'bottom-environment';
@@ -163,9 +170,10 @@ export const registerBottomControlsTransientUiHandler = (close, clear) => {
 `;
 const navigationSource = `
 import React from 'react';
-export default function NavigationPicker({ topGames, onSelectGame, onSelectProblem }) {
+export default function NavigationPicker({ topGames, selectedNavigationItemId, onSelectGame, onSelectProblem }) {
   return React.createElement('div', {
     'data-testid': 'navigation-picker', style: { position: 'fixed', top: 150, right: 10 },
+    'data-selected-navigation-item-id': selectedNavigationItemId,
   },
     React.createElement('button', null, 'Navigation contents'),
     React.createElement('button', { onClick: () => onSelectProblem('test-puzzle') }, 'Open test puzzle'),
@@ -183,10 +191,11 @@ import * as port from '/src/ui/controls/bottomControlsPort.ts';
 import * as controlsStore from '/src/game/gameControlsStore.ts';
 import { triggerMoveHistoryPopupReload, subscribeMoveHistoryPopupSelectionReset } from '/src/ui/controls/moveHistoryPopupStore.ts';
 import { getLifecycleCounters } from '/src/lifecycle/lifecycleDiagnostics.ts';
+import { resolveNavigationGamesCacheScope, writeNavigationGamesRuntimeCache } from '/src/services/navigationGamesCache.ts';
 import { environment, pendingGame } from 'bottom-environment';
 import { setOnlineGame } from 'bottom-controller';
 import { setRoute } from 'bottom-app-navigation';
-import { openEventModal, closeEventModal } from 'bottom-event-modal';
+import { openEventModal, closeEventModal, openEventModalPendingCreate } from 'bottom-event-modal';
 let root = createRoot(document.getElementById('root'));
 subscribeMoveHistoryPopupSelectionReset(() => environment.historySelectionResets++);
 const run = callback => flushSync(callback);
@@ -224,6 +233,15 @@ window.harness = {
   },
   publishNavigation(items) {
     run(() => environment.subscriptions.findLast(subscription => subscription.active).update(items));
+  },
+  seedEventPreview(profileId, eventId, emojiIds) {
+    writeNavigationGamesRuntimeCache(resolveNavigationGamesCacheScope(profileId), [{
+      id: 'event_' + eventId, entityType: 'event', eventId, status: 'active',
+      sortBucket: 10, listSortAtMs: 1, participantCount: emojiIds.length,
+      participantPreview: emojiIds.map((emojiId, index) => ({
+        profileId: profileId + '-' + index, displayName: 'Player ' + index, emojiId, aura: null,
+      })),
+    }], []);
   },
   publishRematches(items) {
     run(() => {
@@ -272,6 +290,7 @@ window.harness = {
   },
   navigate(route) { run(() => setRoute(route)); },
   openEvent(eventId) { run(() => openEventModal(eventId)); },
+  openPendingEvent() { run(() => openEventModalPendingCreate()); },
   dismissEvent() { run(() => closeEventModal()); },
   launchEventGame(inviteId) {
     run(() => {
@@ -283,6 +302,13 @@ window.harness = {
     run(() => environment.eventSubscriptions.findLast(subscription => subscription.active && subscription.eventId === eventId).update({
       participants: Object.fromEntries(emojiIds.map((emojiId, index) => [index, {
         profileId: 'participant-' + index, displayName: 'Player ' + index, emojiId, joinedAtMs: index,
+      }])),
+    }));
+  },
+  publishEventParticipants(eventId, participants) {
+    run(() => environment.eventSubscriptions.findLast(subscription => subscription.active && subscription.eventId === eventId).update({
+      participants: Object.fromEntries(participants.map((participant, index) => [index, {
+        profileId: 'participant-' + index, displayName: 'Player ' + index, ...participant,
       }])),
     }));
   },
@@ -518,6 +544,7 @@ export const teardownProfileScope = () => {};
           }
           const isControlsHook =
             importer?.endsWith("/useAutomatchControls.ts") ||
+            importer?.endsWith("/useEventNavigationControls.ts") ||
             importer?.endsWith("/useRematchSeries.ts") ||
             importer?.endsWith("/useReactionActions.ts");
           const replacementId =
@@ -525,7 +552,9 @@ export const teardownProfileScope = () => {};
               ? id.slice(3)
               : isControlsHook && id === "./boardReactionPort"
                 ? "./controls/boardReactionPort"
-                : id;
+                : isControlsHook && id === "../eventModalController"
+                  ? "./eventModalController"
+                  : id;
           if (
             (importer?.endsWith("/BottomControls.tsx") || isControlsHook) &&
             replacements.has(replacementId)
@@ -651,6 +680,12 @@ const activeEventSubscriptions = (page) =>
     window.harness.environment.eventSubscriptions
       .filter((subscription) => subscription.active)
       .map((subscription) => subscription.eventId),
+  );
+const eventAvatarSlots = (page) =>
+  button(page, "Event").evaluate((element) =>
+    [...element.children]
+      .filter((child) => child.tagName.toLowerCase() !== "svg")
+      .map((child) => child.getAttribute("src")),
   );
 const rememberEventButton = (page) =>
   button(page, "Event").evaluate((element) => {
@@ -1254,6 +1289,299 @@ test(
       assert.equal(await count(page, "yo"), 0);
       assert.equal(await count(page, "Resign"), 2);
       assert.equal(await page.getByTestId("history-popup").count(), 1);
+    });
+  },
+);
+
+test(
+  "event navigation selection follows overlays and routes while pending creation permits dismissal",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      const selectedItem = () =>
+        page
+          .getByTestId("navigation-picker")
+          .getAttribute("data-selected-navigation-item-id");
+      await page.evaluate(() => {
+        window.harness.navigate({
+          mode: "invite",
+          inviteId: "selected-game",
+          path: "selected-game",
+        });
+        window.harness.render();
+      });
+      await click(page, "Navigation");
+      assert.equal(await selectedItem(), "selected-game");
+      await page.evaluate(() => {
+        window.harness.openEvent("overlay-event");
+        window.harness.navigate({
+          mode: "event",
+          eventId: "route-event",
+          path: "event/route-event",
+        });
+        window.harness.render();
+      });
+      assert.equal(await selectedItem(), "event_overlay-event");
+      await page.evaluate(() => {
+        window.harness.dismissEvent();
+        window.harness.navigate({
+          mode: "event",
+          eventId: "route-event",
+          path: "event/route-event",
+        });
+        window.harness.render();
+      });
+      assert.equal(await selectedItem(), "event_route-event");
+      await page.evaluate(() => {
+        window.harness.navigate({ mode: "home", path: "" });
+        window.harness.render();
+      });
+      assert.equal(await selectedItem(), null);
+      await page.evaluate(() => {
+        window.harness.navigate({
+          mode: "invite",
+          inviteId: "selected-game",
+          path: "selected-game",
+        });
+        window.harness.openPendingEvent();
+        window.harness.render();
+      });
+      assert.equal(await selectedItem(), "selected-game");
+      assert.deepEqual(
+        await page.evaluate(() => window.harness.environment.eventModalState),
+        {
+          isOpen: true,
+          eventId: null,
+          lastCloseReason: null,
+          isPendingCreate: true,
+          pendingCreateError: null,
+        },
+      );
+      await page.locator("#monsboard").click({ force: true });
+      assert.equal((await popupState(page)).navigation, false);
+      await click(page, "Navigation");
+      await page.evaluate(() =>
+        window.harness.run(() =>
+          window.harness.port.setNavigationListButtonVisible(false),
+        ),
+      );
+      assert.equal((await popupState(page)).navigation, false);
+    });
+  },
+);
+
+test(
+  "event navigation avatars grow from cached previews in join order and freeze at four slots",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await page.evaluate(() => {
+        window.harness.seedEventPreview("a", "event-1", [9]);
+        window.harness.navigate({
+          mode: "invite",
+          inviteId: "event-game-1",
+          path: "event-game-1",
+        });
+        window.harness.updateConnection({
+          inviteId: "event-game-1",
+          eventId: "event-1",
+          eventOwned: true,
+          online: true,
+        });
+      });
+      assert.deepEqual(await eventAvatarSlots(page), ["/__emoji/9.svg"]);
+      await page.evaluate(() =>
+        window.harness.publishEventParticipants("event-1", [
+          { emojiId: 3.9, joinedAtMs: 30 },
+          { emojiId: 1, joinedAtMs: 10 },
+          { emojiId: 0, joinedAtMs: 20 },
+        ]),
+      );
+      const threeSlots = ["/__emoji/1.svg", null, "/__emoji/3.svg"];
+      assert.deepEqual(await eventAvatarSlots(page), threeSlots);
+      await page.evaluate(() =>
+        window.harness.publishEvent("event-1", [8, 7, 6]),
+      );
+      assert.deepEqual(await eventAvatarSlots(page), threeSlots);
+      await page.evaluate(() => window.harness.publishEvent("event-1", [8]));
+      assert.deepEqual(await eventAvatarSlots(page), threeSlots);
+      await page.evaluate(() =>
+        window.harness.publishEventParticipants("event-1", [
+          { emojiId: 5, joinedAtMs: 50 },
+          { emojiId: 4, joinedAtMs: 40 },
+          { joinedAtMs: 20 },
+          { emojiId: 3, joinedAtMs: 30 },
+          { emojiId: 1, joinedAtMs: 10 },
+        ]),
+      );
+      const fourSlots = [...threeSlots, "/__emoji/4.svg"];
+      assert.deepEqual(await eventAvatarSlots(page), fourSlots);
+      await page.evaluate(() =>
+        window.harness.publishEvent("event-1", [9, 8, 7, 6, 5]),
+      );
+      assert.deepEqual(await eventAvatarSlots(page), fourSlots);
+    });
+  },
+);
+
+test(
+  "event navigation synchronous snapshots can fill cached avatar previews",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await page.evaluate(() => {
+        window.harness.seedEventPreview("a", "event-1", [9]);
+        window.harness.environment.eventSnapshots.set("event-1", {
+          participants: {
+            second: { profileId: "second", emojiId: 2, joinedAtMs: 2 },
+            first: { profileId: "first", emojiId: 1, joinedAtMs: 1 },
+          },
+        });
+        window.harness.navigate({
+          mode: "invite",
+          inviteId: "event-game-1",
+          path: "event-game-1",
+        });
+        window.harness.updateConnection({
+          inviteId: "event-game-1",
+          eventId: "event-1",
+          eventOwned: true,
+          online: true,
+        });
+      });
+      assert.deepEqual(await eventAvatarSlots(page), [
+        "/__emoji/1.svg",
+        "/__emoji/2.svg",
+      ]);
+      assert.deepEqual(await activeEventSubscriptions(page), ["event-1"]);
+    });
+  },
+);
+
+test(
+  "event navigation discards event callbacks after switching events and unmounting",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await enterEventGame(page);
+      await page.evaluate(() => {
+        window.oldEventSubscription =
+          window.harness.environment.eventSubscriptions.findLast(
+            (subscription) => subscription.active,
+          );
+        window.harness.updateConnection({
+          inviteId: "event-game-1",
+          eventId: "event-2",
+          eventOwned: true,
+          online: true,
+        });
+        window.harness.publishEvent("event-2", [7]);
+        window.harness.run(() =>
+          window.oldEventSubscription.update({
+            participants: {
+              old: { profileId: "old", emojiId: 9, joinedAtMs: 1 },
+              older: { profileId: "older", emojiId: 8, joinedAtMs: 2 },
+            },
+          }),
+        );
+      });
+      assert.equal(
+        await page.evaluate(() => window.oldEventSubscription.active),
+        false,
+      );
+      assert.deepEqual(await eventAvatarSlots(page), ["/__emoji/7.svg"]);
+      assert.deepEqual(await activeEventSubscriptions(page), ["event-2"]);
+      await page.evaluate(() => {
+        window.oldEventSubscription =
+          window.harness.environment.eventSubscriptions.findLast(
+            (subscription) => subscription.active,
+          );
+        window.harness.remount();
+        window.harness.publishEvent("event-2", [6]);
+        window.harness.run(() =>
+          window.oldEventSubscription.update({
+            participants: {
+              old: { profileId: "old", emojiId: 9, joinedAtMs: 1 },
+              older: { profileId: "older", emojiId: 8, joinedAtMs: 2 },
+            },
+          }),
+        );
+      });
+      assert.equal(
+        await page.evaluate(() => window.oldEventSubscription.active),
+        false,
+      );
+      assert.deepEqual(await eventAvatarSlots(page), ["/__emoji/6.svg"]);
+      assert.deepEqual(await activeEventSubscriptions(page), ["event-2"]);
+    });
+  },
+);
+
+test(
+  "event navigation resets cached avatars when profiles change within the same event",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await page.evaluate(() => {
+        window.harness.seedEventPreview("a", "event-1", [1, 2]);
+        window.harness.seedEventPreview("b", "event-1", [7]);
+        window.harness.navigate({
+          mode: "invite",
+          inviteId: "event-game-1",
+          path: "event-game-1",
+        });
+        window.harness.updateConnection({
+          inviteId: "event-game-1",
+          eventId: "event-1",
+          eventOwned: true,
+          online: true,
+        });
+      });
+      assert.deepEqual(await eventAvatarSlots(page), [
+        "/__emoji/1.svg",
+        "/__emoji/2.svg",
+      ]);
+      await page.evaluate(() => {
+        window.profileEventSubscription =
+          window.harness.environment.eventSubscriptions.findLast(
+            (subscription) => subscription.active,
+          );
+        window.profileEventSubscriptionCount =
+          window.harness.environment.eventSubscriptions.length;
+        window.harness.publishEvent("event-1", [3, 4, 5]);
+      });
+      assert.deepEqual(await eventAvatarSlots(page), [
+        "/__emoji/3.svg",
+        "/__emoji/4.svg",
+        "/__emoji/5.svg",
+      ]);
+      await page.evaluate(() => window.harness.render("b"));
+      assert.deepEqual(await eventAvatarSlots(page), ["/__emoji/7.svg"]);
+      await page.evaluate(() => window.harness.render("a"));
+      assert.deepEqual(await eventAvatarSlots(page), []);
+      await page.evaluate(() => window.harness.publishEvent("event-1", [1, 2]));
+      assert.deepEqual(await eventAvatarSlots(page), [
+        "/__emoji/1.svg",
+        "/__emoji/2.svg",
+      ]);
+      assert.deepEqual(await activeEventSubscriptions(page), ["event-1"]);
+      assert.deepEqual(
+        await page.evaluate(() => ({
+          sameSubscription:
+            window.harness.environment.eventSubscriptions.findLast(
+              (subscription) => subscription.active,
+            ) === window.profileEventSubscription,
+          originalStillActive: window.profileEventSubscription.active,
+          subscriptionCountUnchanged:
+            window.harness.environment.eventSubscriptions.length ===
+            window.profileEventSubscriptionCount,
+        })),
+        {
+          sameSubscription: true,
+          originalStillActive: true,
+          subscriptionCountUnchanged: true,
+        },
+      );
     });
   },
 );

@@ -4,7 +4,6 @@ import React, {
   useLayoutEffect,
   useState,
   useCallback,
-  useMemo,
   useSyncExternalStore,
 } from "react";
 import { FIXED_STICKER_IDS } from "@mons/shared/reactions";
@@ -54,6 +53,10 @@ import {
 } from "./controls/boardReactionPort";
 import NavigationPicker from "./NavigationPicker";
 import { useNavigationGames } from "./controls/useNavigationGames";
+import {
+  EVENT_CLOUD_MAX_AVATARS,
+  useEventNavigationControls,
+} from "./controls/useEventNavigationControls";
 import { useReactionActions } from "./controls/useReactionActions";
 import { useAutomatchControls } from "./controls/useAutomatchControls";
 import { useRematchSeries } from "./controls/useRematchSeries";
@@ -88,8 +91,6 @@ import BoardStylePickerComponent from "./BoardStylePicker";
 import MoveHistoryPopup from "./MoveHistoryPopup";
 import { MATERIALS, MaterialName } from "../services/rocksMiningService";
 import {
-  EventNavigationPreviewParticipant,
-  EventRecord,
   MatchWagerState,
   NavigationGameStatus,
   NavigationItem,
@@ -101,11 +102,9 @@ import {
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import {
   getCurrentTarget,
-  isTransitionInProgress,
   transitionToHome,
 } from "../session/AppSessionManager";
 import { getCurrentRouteState } from "../navigation/routeState";
-import { subscribeToNavigationState } from "../navigation/appNavigation";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import {
   decrementLifecycleCounter,
@@ -113,11 +112,7 @@ import {
 } from "../lifecycle/lifecycleDiagnostics";
 import { problems } from "../content/problems";
 import { emojis } from "../content/emojis";
-import {
-  getEventModalState,
-  openEventModal,
-  subscribeToEventModalState,
-} from "./eventModalController";
+import { openEventModal } from "./eventModalController";
 import {
   PrimaryActionType,
   bindBottomControlsApi,
@@ -131,10 +126,7 @@ import {
 import type { GameControlsAction } from "./controls/bottomControlsState";
 import { hasBottomControlsPopups } from "./controls/bottomControlsUiState";
 import { useBottomControlsUi } from "./controls/useBottomControlsUi";
-import {
-  deriveGameControlsView,
-  type GameControlsViewContext,
-} from "../game/gameControlsModel";
+import { deriveGameControlsView } from "../game/gameControlsModel";
 import {
   getGameControlsSnapshot,
   subscribeGameControls,
@@ -186,7 +178,6 @@ export {
   setWagerPanelVisibilityChecker,
 } from "./controls/bottomControlsPort";
 
-const EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS = 10000;
 const LeftCornerInlineControls = styled.div`
   flex: 1 1 0;
   min-width: 0;
@@ -255,7 +246,6 @@ type CloudAvatarSlot = { x: number; y: number; r: number };
 
 const CLOUD_VISUAL_SIZE = 48;
 const CLOUD_INSET = (36 - CLOUD_VISUAL_SIZE) / 2;
-const EVENT_CLOUD_MAX_AVATARS = 4;
 const CLOUD_AVATAR_LAYOUT_BASE_SIZE = 38;
 const CLOUD_AVATAR_LAYOUT_CENTER_OFFSET =
   CLOUD_VISUAL_SIZE / 2 - CLOUD_AVATAR_LAYOUT_BASE_SIZE / 2;
@@ -327,29 +317,6 @@ function buildEventCloudPath(): string {
 }
 
 const EVENT_CLOUD_PATH = buildEventCloudPath();
-
-const mapEventRecordToNavigationPreview = (
-  eventRecord: EventRecord | null,
-): EventNavigationPreviewParticipant[] => {
-  if (!eventRecord) {
-    return [];
-  }
-  return Object.values(eventRecord.participants)
-    .sort((left, right) => left.joinedAtMs - right.joinedAtMs)
-    .map((participant) => {
-      const displayName = participant.displayName?.trim();
-      const username = participant.username?.trim();
-      const emojiId = Number.isFinite(participant.emojiId)
-        ? Math.trunc(participant.emojiId)
-        : NaN;
-      return {
-        profileId: participant.profileId?.trim() || null,
-        displayName: displayName || username || null,
-        emojiId: Number.isFinite(emojiId) && emojiId > 0 ? emojiId : null,
-        aura: participant.aura?.trim() || null,
-      };
-    });
-};
 
 interface BottomControlsProps {
   authState: AuthState;
@@ -455,25 +422,22 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
   const isAutomatchWaiting = automatchControls.waiting;
   const isCancelAutomatchVisible = automatchControls.cancelVisible;
   const isCancelAutomatchDisabled = automatchControls.cancelDisabled;
-  const [liveEventCloudAvatars, setLiveEventCloudAvatars] = useState<
-    EventNavigationPreviewParticipant[]
-  >([]);
-  const initialEventModalState = getEventModalState();
-  const pendingNavigationOpenedEventModalRequestedAtMsRef = useRef(0);
-  const pendingNavigationOpenedEventModalRequestSeqRef = useRef(0);
-  const wasEventModalVisibleRef = useRef(
-    initialEventModalState.isOpen && !!initialEventModalState.eventId,
-  );
-  const activeEventModalEventIdRef = useRef<string | null>(
-    initialEventModalState.isOpen ? initialEventModalState.eventId : null,
-  );
-  const [selectedEventModalId, setSelectedEventModalId] = useState<
-    string | null
-  >(initialEventModalState.isOpen ? initialEventModalState.eventId : null);
-  const [retainedEventGame, setRetainedEventGame] = useState<{
-    eventId: string;
-    inviteId: string;
-  } | null>(null);
+  const routeState = getCurrentRouteState();
+  const {
+    selectedNavigationItemId,
+    effectiveInviteEventId,
+    isEventGameButtonVisible,
+    eventCloudAvatars,
+    isEventModalVisible,
+    shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal,
+    openEventFromNavigation,
+    clearPendingEventNavigation,
+  } = useEventNavigationControls({
+    profileId,
+    routeState,
+    isOnlineGame: context.isOnlineGame,
+    getEventParticipantPreview,
+  });
 
   const [isEndMatchTemporarilyDisabled, setIsEndMatchTemporarilyDisabled] =
     useState(false);
@@ -504,7 +468,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     frozenMaterialsStatus,
     hasConfirmedSnapshot: hasFrozenSnapshot,
   } = useAvailableMaterials();
-  const eventCloudSubscriptionEventIdRef = useRef<string | null>(null);
   const navigationSelectionEpochRef = useRef(0);
   const beginInviteFlowRef = useRef<
     (options?: { skipSoundInit?: boolean }) => void
@@ -557,29 +520,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     },
     [],
   );
-
-  const isEventModalVisible = useCallback(() => {
-    const modalState = getEventModalState();
-    return modalState.isOpen && !!modalState.eventId;
-  }, []);
-
-  const shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal =
-    useCallback(() => {
-      if (isEventModalVisible()) {
-        return true;
-      }
-      const requestedAtMs =
-        pendingNavigationOpenedEventModalRequestedAtMsRef.current;
-      if (requestedAtMs <= 0) {
-        return false;
-      }
-      if (Date.now() - requestedAtMs > EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS) {
-        return false;
-      }
-      return (
-        isTransitionInProgress() || getCurrentRouteState().mode === "event"
-      );
-    }, [isEventModalVisible]);
 
   const setMatchScopedTimeout = useCallback(
     (callback: () => void, delay: number, guard?: () => boolean): number => {
@@ -806,59 +746,7 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
   }, []);
 
   useEffect(() => {
-    return subscribeToEventModalState((state) => {
-      const isVisible = state.isOpen && !!state.eventId;
-      const wasVisible = wasEventModalVisibleRef.current;
-      if (isVisible && state.eventId) {
-        activeEventModalEventIdRef.current = state.eventId;
-      }
-
-      if (wasVisible && !isVisible) {
-        pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
-        const closingEventId = activeEventModalEventIdRef.current;
-        activeEventModalEventIdRef.current = null;
-        if (
-          state.lastCloseReason === "dismiss" &&
-          getCurrentRouteState().mode === "event"
-        ) {
-          pendingNavigationOpenedEventModalRequestedAtMsRef.current =
-            Date.now();
-        } else {
-          pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
-        }
-        if (state.lastCloseReason === "launch_game" && closingEventId) {
-          const route = getCurrentRouteState();
-          setRetainedEventGame(
-            route.mode === "invite" && route.inviteId
-              ? { eventId: closingEventId, inviteId: route.inviteId }
-              : null,
-          );
-        }
-      } else if (isVisible) {
-        pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
-      } else {
-        activeEventModalEventIdRef.current = null;
-      }
-
-      wasEventModalVisibleRef.current = isVisible;
-      setSelectedEventModalId(isVisible ? state.eventId : null);
-    });
-  }, []);
-
-  useEffect(() => {
-    return subscribeToNavigationState((route) => {
-      setRetainedEventGame((current) =>
-        route.mode === "invite" && current?.inviteId === route.inviteId
-          ? current
-          : null,
-      );
-    });
-  }, []);
-
-  useEffect(() => {
     navigationSelectionEpochRef.current += 1;
-    eventCloudSubscriptionEventIdRef.current = null;
-    setLiveEventCloudAvatars([]);
   }, [profileId]);
 
   useEffect(() => clearAllMatchScopedTimeouts, [clearAllMatchScopedTimeouts]);
@@ -1355,21 +1243,10 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
       kind: item.entityType === "event" ? "event" : "game",
     });
     if (item.entityType === "event") {
-      const requestSeq =
-        pendingNavigationOpenedEventModalRequestSeqRef.current + 1;
-      pendingNavigationOpenedEventModalRequestSeqRef.current = requestSeq;
-      pendingNavigationOpenedEventModalRequestedAtMsRef.current = Date.now();
-      openEventModal(item.eventId);
-      if (
-        pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq
-      ) {
-        pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
-        pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
-      }
+      openEventFromNavigation(item.eventId);
       return;
     }
-    pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
-    pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
+    clearPendingEventNavigation();
     const inviteId = item.inviteId;
     selectAutomatchNavigationGame(inviteId, options?.status === "pending");
     connection.connectToInvite(inviteId);
@@ -1408,127 +1285,10 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     } catch (_) {}
   };
 
-  const routeState = getCurrentRouteState();
   const selectedProblemId =
     routeState.mode === "home" || routeState.mode === "event"
       ? context.selectedPuzzleId
       : null;
-  const selectedNavigationItemId = selectedEventModalId
-    ? `event_${selectedEventModalId}`
-    : routeState.mode === "event" && routeState.eventId
-      ? `event_${routeState.eventId}`
-      : routeState.mode === "invite"
-        ? routeState.inviteId
-        : null;
-  const routeInviteId =
-    routeState.mode === "invite" ? routeState.inviteId : null;
-  const hasCurrentInviteContext =
-    !!routeInviteId &&
-    connection.getActiveContextSnapshot()?.inviteId === routeInviteId;
-  const currentInviteEventId =
-    hasCurrentInviteContext && connection.isCurrentInviteEventOwned()
-      ? connection.getCurrentInviteEventId()
-      : null;
-  const eventControlsContext: GameControlsViewContext = {
-    ...context,
-    currentInviteEventId,
-  };
-  const shouldRetainEventGameButton =
-    !!retainedEventGame &&
-    retainedEventGame.inviteId === routeInviteId &&
-    (!hasCurrentInviteContext ||
-      currentInviteEventId === retainedEventGame.eventId);
-  const effectiveInviteEventId =
-    currentInviteEventId ??
-    (shouldRetainEventGameButton ? retainedEventGame.eventId : null);
-  const isEventGameButtonVisible =
-    (eventControlsContext.isOnlineGame &&
-      !!eventControlsContext.currentInviteEventId) ||
-    shouldRetainEventGameButton;
-
-  useEffect(() => {
-    if (retainedEventGame && !shouldRetainEventGameButton) {
-      setRetainedEventGame((current) =>
-        current === retainedEventGame ? null : current,
-      );
-    }
-  }, [retainedEventGame, shouldRetainEventGameButton]);
-
-  useEffect(() => {
-    if (!effectiveInviteEventId) {
-      eventCloudSubscriptionEventIdRef.current = null;
-      setLiveEventCloudAvatars([]);
-      return;
-    }
-    if (eventCloudSubscriptionEventIdRef.current === effectiveInviteEventId) {
-      return;
-    }
-    eventCloudSubscriptionEventIdRef.current = effectiveInviteEventId;
-    setLiveEventCloudAvatars(
-      getEventParticipantPreview(effectiveInviteEventId).slice(
-        0,
-        EVENT_CLOUD_MAX_AVATARS,
-      ),
-    );
-  }, [effectiveInviteEventId, getEventParticipantPreview]);
-
-  useEffect(() => {
-    if (!effectiveInviteEventId || !isEventGameButtonVisible) {
-      return;
-    }
-    let disposed = false;
-
-    const unsubscribe = connection.subscribeToEvent(
-      effectiveInviteEventId,
-      (eventRecord) => {
-        if (disposed) {
-          return;
-        }
-        const nextAvatars = mapEventRecordToNavigationPreview(
-          eventRecord,
-        ).slice(0, EVENT_CLOUD_MAX_AVATARS);
-        setLiveEventCloudAvatars((previousAvatars) => {
-          if (previousAvatars.length >= EVENT_CLOUD_MAX_AVATARS) {
-            return previousAvatars;
-          }
-          if (previousAvatars.length === 0) {
-            return nextAvatars.length > 0 ? nextAvatars : previousAvatars;
-          }
-          if (nextAvatars.length > previousAvatars.length) {
-            return nextAvatars;
-          }
-          return previousAvatars;
-        });
-      },
-    );
-
-    return () => {
-      disposed = true;
-      unsubscribe();
-    };
-  }, [effectiveInviteEventId, isEventGameButtonVisible]);
-
-  const eventCloudAvatars = useMemo(() => {
-    if (!effectiveInviteEventId) {
-      return [];
-    }
-    const liveFallback = liveEventCloudAvatars.slice(
-      0,
-      EVENT_CLOUD_MAX_AVATARS,
-    );
-    if (liveFallback.length > 0) {
-      return liveFallback;
-    }
-    return getEventParticipantPreview(effectiveInviteEventId).slice(
-      0,
-      EVENT_CLOUD_MAX_AVATARS,
-    );
-  }, [
-    effectiveInviteEventId,
-    getEventParticipantPreview,
-    liveEventCloudAvatars,
-  ]);
-
   useLayoutEffect(() => {
     const boundApi = bindBottomControlsApi({
       closeNavigationAndAppearancePopupIfAny:
