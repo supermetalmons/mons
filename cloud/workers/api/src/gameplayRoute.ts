@@ -1,21 +1,13 @@
-import { WAGER_FROZEN_READ_PATH } from "@mons/shared/wagers";
 import { AuthApiFailure, authErrorResponse } from "./authErrors.ts";
 import { authJsonResponse, getAuthCorsHeaders } from "./authHttp.ts";
 import { authenticatedPost } from "./authenticatedPost.ts";
-import {
-  measureAutomatchPhase,
-  withAutomatchTelemetry,
-} from "./automatchTelemetry.ts";
-import { withD1OperationTelemetry } from "./d1Telemetry.ts";
+import { measureAutomatchPhase } from "./automatchTelemetry.ts";
 import {
   GameSessionMutationLockFailure,
   MatchTimerStartStoreFailure,
 } from "./gameplayCoordinationD1.ts";
 import { createGameplayRepository } from "./gameplayRepository.ts";
-import {
-  automatchRoutes,
-  readAutomatchOperationId,
-} from "./gameplayRoutes/automatch.ts";
+import { automatchRoutes } from "./gameplayRoutes/automatch.ts";
 import {
   prepareGameplayRoute,
   type GameplayRoute,
@@ -30,12 +22,7 @@ import { requireActiveDurableMatchState } from "./matchStateAuthority.ts";
 import { MatchStateD1Failure } from "./matchStateD1.ts";
 import { assertProfileMutationAllowed } from "./profileCanonicalActivation.ts";
 import type { WorkerExecutionContext } from "./sessionAuth.ts";
-import { enforceWagerOutcomeRateLimit } from "./wagerOutcome.ts";
-import {
-  assertWagerClientVersion,
-  createWagerReservationRuntime,
-  WagerClientUpdateRequired,
-} from "./wagerReservationRuntime.ts";
+import { WagerClientUpdateRequired } from "./wagerReservationRuntime.ts";
 
 export { cancelAutomatch } from "./gameplayRoutes/automatch.ts";
 export {
@@ -64,18 +51,9 @@ export async function handleGameplayRoute(
   ctx: WorkerExecutionContext,
   dependencies: GameplayRouteDependencies = {},
 ): Promise<Response> {
-  if (
-    request.method === "POST" &&
-    new URL(request.url).pathname === "/automatch/start"
-  )
-    return withAutomatchTelemetry(env, (measuredEnv) =>
-      handleGameplayRouteInternal(request, measuredEnv, ctx, dependencies),
-    );
-  if (
-    request.method === "POST" &&
-    new URL(request.url).pathname === "/ratings/update"
-  )
-    return withD1OperationTelemetry("ratings.update", env, (measuredEnv) =>
+  const route = gameplayRoutes.get(new URL(request.url).pathname);
+  if (request.method === "POST" && route?.observePost)
+    return route.observePost(env, (measuredEnv) =>
       handleGameplayRouteInternal(request, measuredEnv, ctx, dependencies),
     );
   return handleGameplayRouteInternal(request, env, ctx, dependencies);
@@ -181,26 +159,7 @@ async function handleGameplayRequest(
       const identity = await measureAutomatchPhase("auth", authenticate);
       const repository =
         dependencies.repository || createGameplayRepository(env);
-      const isWagerMutation =
-        pathname.startsWith("/wagers/") && pathname !== WAGER_FROZEN_READ_PATH;
-      const reservations =
-        isWagerMutation || pathname === WAGER_FROZEN_READ_PATH
-          ? dependencies.wagerReservations ||
-            createWagerReservationRuntime(env, repository)
-          : null;
-      if (isWagerMutation) assertWagerClientVersion(request);
-      const automatchOperationId =
-        pathname === "/automatch/start"
-          ? readAutomatchOperationId(request)
-          : null;
-      if (!route.readOnly) {
-        await assertProfileMutationAllowed(env);
-      }
-      if (pathname === "/wagers/outcomes/resolve") {
-        await enforceWagerOutcomeRateLimit(env.AUTH_RATE_LIMITER, identity.uid);
-      }
-      const prepared = await prepareGameplayRoute(request, route);
-      const response = await prepared.execute({
+      const boundRoute = route.bindRequest({
         request,
         env,
         ctx,
@@ -208,10 +167,14 @@ async function handleGameplayRequest(
         pathname,
         identity,
         repository,
-        reservations,
-        automatchOperationId,
         admittedMatchEpoch,
       });
+      if (!route.readOnly) {
+        await assertProfileMutationAllowed(env);
+      }
+      await boundRoute.beforeBody?.();
+      const prepared = await prepareGameplayRoute(request, boundRoute);
+      const response = await prepared.execute();
       return authJsonResponse(response, 200, corsHeaders);
     },
   );

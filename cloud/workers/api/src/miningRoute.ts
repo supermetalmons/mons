@@ -18,10 +18,7 @@ import {
 } from "./miningRepository.ts";
 import { readBoundedJson } from "./http.ts";
 import { assertProfileMutationAllowed } from "./profileCanonicalActivation.ts";
-import {
-  getLoginProfileId,
-  requireProfileOwnershipSnapshot,
-} from "./profileOwnership.ts";
+import { profileOwnershipUnavailable } from "./profileOwnership.ts";
 
 const MAX_WRITE_ATTEMPTS = 3;
 
@@ -107,16 +104,12 @@ async function mineRock(
   if (!dateIsInRange(request.date, nowMs)) {
     return { ok: false, reason: "date-out-of-range" };
   }
-  const ownership = await requireProfileOwnershipSnapshot(repository, {
-    loginUids: [identity.uid],
-    profileIds: [],
-  });
-  const profileId = getLoginProfileId(ownership, identity.uid);
-  if (!profileId) {
-    return { ok: false, reason: "profile-not-found" };
-  }
   for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt++) {
-    const profile = await repository.getProfileSnapshot(profileId);
+    const profile = await repository
+      .getOwnedProfileSnapshot(identity.uid)
+      .catch(() => {
+        throw profileOwnershipUnavailable();
+      });
     if (!profile) {
       return { ok: false, reason: "profile-not-found" };
     }

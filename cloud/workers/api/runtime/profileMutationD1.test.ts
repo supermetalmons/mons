@@ -91,9 +91,7 @@ function observeDatabase(
   options: {
     beforeFirstBatch?: () => Promise<void>;
     afterFirstBatch?: () => Promise<void>;
-    afterFirstAll?: () => Promise<void>;
-    allFailure?: Error;
-    mapAllRow?: (row: Record<string, unknown>) => Record<string, unknown>;
+    batchFailure?: Error;
     forbidStandaloneReads?: boolean;
     mapBatchResults?: (
       results: D1Result<Record<string, unknown>>[],
@@ -141,15 +139,7 @@ function observeDatabase(
         if (property === "all") {
           return async () => {
             allQueries.push(query);
-            if (options.allFailure) throw options.allFailure;
-            const result = await target.all<Record<string, unknown>>();
-            if (allQueries.length === 1) await options.afterFirstAll?.();
-            return {
-              ...result,
-              results: options.mapAllRow
-                ? result.results.map(options.mapAllRow)
-                : result.results,
-            };
+            return target.all<Record<string, unknown>>();
           };
         }
         const member = Reflect.get(target, property, target);
@@ -178,6 +168,7 @@ function observeDatabase(
               (statement) => statementBindings.get(statement) || [],
             ),
           );
+          if (options.batchFailure) throw options.batchFailure;
           if (batchQueries.length === 1) await options.beforeFirstBatch?.();
           const results = await target.batch<Record<string, unknown>>(
             statements.map(
@@ -707,11 +698,11 @@ describe("canonical profile mutation reads", () => {
     const snapshot = await createMiningRepository(testEnv, {
       d1: observed.database,
       now: () => 4_000,
-    }).getProfileSnapshot(initial.profile.profileId);
+    }).getOwnedProfileSnapshot(initial.owner.loginUid);
     expect(snapshot).not.toBeNull();
     await expect(snapshot!.commitMining(mining)).resolves.toBe("updated");
-    expect(observed.allQueries).toHaveLength(1);
-    expect(observed.firstQueries).toHaveLength(0);
+    expect(observed.allQueries).toHaveLength(0);
+    expect(observed.firstQueries).toHaveLength(1);
     expect(observed.batchQueries).toHaveLength(1);
     await expect(
       readCanonicalProfile(db, initial.profile.profileId),
@@ -772,18 +763,16 @@ describe("canonical profile mutation reads", () => {
         const snapshot = await createMiningRepository(
           testEnv,
           dependencies,
-        ).getProfileSnapshot(initial.profile.profileId);
+        ).getOwnedProfileSnapshot(initial.owner.loginUid);
         expect(snapshot).not.toBeNull();
         await expect(snapshot!.commitMining(snapshot!.mining)).resolves.toBe(
           "updated",
         );
       }
-      expect(observed.firstQueries).toHaveLength(
-        operation === "customization" ? 1 : 0,
-      );
-      expect(observed.allQueries).toHaveLength(operation === "mining" ? 1 : 0);
+      expect(observed.firstQueries).toHaveLength(1);
+      expect(observed.allQueries).toHaveLength(0);
       expect(observed.batchQueries.map((queries) => queries.length)).toEqual([
-        operation === "customization" ? 6 : 5,
+        6,
       ]);
       await expectProfileUpdate(observed, original, { revision: 2 });
     },
@@ -805,7 +794,7 @@ describe("canonical profile mutation reads", () => {
     const snapshot = await createMiningRepository(testEnv, {
       d1: observed.database,
       now: () => 4_000,
-    }).getProfileSnapshot(initial.profile.profileId);
+    }).getOwnedProfileSnapshot(initial.owner.loginUid);
     expect(snapshot).not.toBeNull();
     await expect(
       snapshot!.commitMining({
@@ -821,16 +810,85 @@ describe("canonical profile mutation reads", () => {
       revision: 2,
       updatedAtMs: 3_000,
     });
-    expect(observed.allQueries).toHaveLength(1);
-    expect(observed.firstQueries).toHaveLength(0);
+    expect(observed.allQueries).toHaveLength(0);
+    expect(observed.firstQueries).toHaveLength(1);
     expect(observed.batchQueries).toHaveLength(1);
   });
+
+  it.each(["move", "revision"] as const)(
+    "rejects a mining write after an owner %s without a profile revision change",
+    async (change) => {
+      const source = await createProfile();
+      const target = await createProfile();
+      const nextProfileId =
+        change === "move" ? target.profile.profileId : source.profile.profileId;
+      const observed = observeDatabase({
+        beforeFirstBatch: () =>
+          commitCanonicalPlan(db, {
+            expectations: [{ kind: "login-owner-revision", ...source.owner }],
+            mutations: [
+              {
+                kind: "update-login-owner",
+                value: {
+                  ...source.owner,
+                  profileId: nextProfileId,
+                  updatedAtMs: 3_000,
+                },
+              },
+            ],
+          }),
+      });
+      const repository = createMiningRepository(testEnv, {
+        d1: observed.database,
+        now: () => 4_000,
+      });
+      const stale = await repository.getOwnedProfileSnapshot(
+        source.owner.loginUid,
+      );
+      expect(stale).not.toBeNull();
+      const mining = {
+        lastRockDate: "2026-09-11",
+        materials: { dust: 9, slime: 3, gum: 4, metal: 5, ice: 6 },
+      };
+      await expect(stale!.commitMining(mining)).resolves.toBe("conflict");
+      await expect(
+        readCanonicalProfile(db, source.profile.profileId),
+      ).resolves.toEqual(source.profile);
+      await expect(
+        readCanonicalProfile(db, target.profile.profileId),
+      ).resolves.toEqual(target.profile);
+      const current = await repository.getOwnedProfileSnapshot(
+        source.owner.loginUid,
+      );
+      expect(current?.profileId).toBe(nextProfileId);
+      await expect(current!.commitMining(mining)).resolves.toBe("updated");
+      await expect(
+        readCanonicalProfile(db, nextProfileId),
+      ).resolves.toMatchObject({
+        profile: { mining },
+        revision: 2,
+      });
+      expect(observed.firstQueries).toHaveLength(2);
+      expect(observed.allQueries).toHaveLength(0);
+      expect(observed.batchQueries.map((queries) => queries.length)).toEqual([
+        6, 6,
+      ]);
+      expect(observed.batchQueries[0][2]).toContain(
+        "login_uid = ? AND profile_id = ? AND revision = ?",
+      );
+      expect(observed.batchBindings[0][2]).toEqual([
+        source.owner.loginUid,
+        source.owner.profileId,
+        source.owner.revision,
+      ]);
+    },
+  );
 
   it("rejects a mining commit when writes freeze after reading its snapshot", async () => {
     const initial = await createProfile();
     const snapshot = await createMiningRepository(testEnv, {
       now: () => 4_000,
-    }).getProfileSnapshot(initial.profile.profileId);
+    }).getOwnedProfileSnapshot(initial.owner.loginUid);
     expect(snapshot).not.toBeNull();
     await db
       .prepare(
@@ -1039,7 +1097,7 @@ describe("canonical profile mutation reads", () => {
     });
     const normalizedValue = crypto.randomUUID();
     const observed = observeDatabase({
-      afterFirstAll: async () => {
+      afterFirstBatch: async () => {
         await commitCanonicalPlan(db, {
           expectations: [
             { kind: "profile-revision", ...initial.profile },
@@ -1080,8 +1138,10 @@ describe("canonical profile mutation reads", () => {
       }).editUsername(initial.owner.loginUid, ""),
     ).resolves.toBe("cannot-clear");
     expect(observed.firstQueries).toHaveLength(0);
-    expect(observed.allQueries).toHaveLength(2);
-    expect(observed.batchQueries).toHaveLength(1);
+    expect(observed.allQueries).toHaveLength(0);
+    expect(observed.batchQueries.map((queries) => queries.length)).toEqual([
+      2, 6, 2,
+    ]);
     await expect(
       readCanonicalProfile(db, initial.profile.profileId),
     ).resolves.toMatchObject({
@@ -1098,7 +1158,7 @@ describe("canonical profile mutation reads", () => {
       username: `ClearTarget${crypto.randomUUID()}`,
     });
     const observed = observeDatabase({
-      afterFirstAll: () => mergeOwner(source, target),
+      afterFirstBatch: () => mergeOwner(source, target),
     });
     await expect(
       createUsernameRepository(testEnv, {
@@ -1106,8 +1166,10 @@ describe("canonical profile mutation reads", () => {
         now: () => 4_000,
       }).editUsername(source.owner.loginUid, ""),
     ).resolves.toBe("updated");
-    expect(observed.allQueries).toHaveLength(2);
-    expect(observed.batchQueries).toHaveLength(2);
+    expect(observed.allQueries).toHaveLength(0);
+    expect(observed.batchQueries.map((queries) => queries.length)).toEqual([
+      2, 6, 2, 6,
+    ]);
     await expect(
       readCanonicalProfile(db, target.profile.profileId),
     ).resolves.toMatchObject({ profile: { username: null }, revision: 2 });
@@ -1131,9 +1193,11 @@ describe("canonical profile mutation reads", () => {
           d1: observed.database,
         }).editUsername(loginUid, ""),
       ).resolves.toBe(outcome);
-      expect(observed.allQueries).toHaveLength(1);
+      expect(observed.allQueries).toHaveLength(0);
       expect(observed.firstQueries).toHaveLength(0);
-      expect(observed.batchQueries).toHaveLength(0);
+      expect(observed.batchQueries.map((queries) => queries.length)).toEqual([
+        2,
+      ]);
     }
     await expect(
       readCanonicalProfile(db, initial.profile.profileId),
@@ -1146,21 +1210,31 @@ describe("canonical profile mutation reads", () => {
     ["owner mismatch", { canonical_owner_profile_id: "another-profile" }],
     ["profile payload", { payload_json: "{}" }],
     ["active redirect", { canonical_merge_source_profile_id: "source" }],
-    ["partial auth method", { auth_method_method: "x" }],
+    ["partial auth method", { method: "x" }],
   ])("rejects corrupt %s during username clearing", async (_name, changes) => {
     const initial = await createProfile({
       username: `CorruptClear${crypto.randomUUID()}`,
     });
     const observed = observeDatabase({
-      mapAllRow: (row) => ({ ...row, ...changes }),
+      mapBatchResults: (results) =>
+        results.map((result, index) => ({
+          ...result,
+          results: Object.hasOwn(changes, "method")
+            ? index === 1
+              ? [changes]
+              : result.results
+            : index === 0
+              ? result.results.map((row) => ({ ...row, ...changes }))
+              : result.results,
+        })),
     });
     await expect(
       createUsernameRepository(testEnv, {
         d1: observed.database,
       }).editUsername(initial.owner.loginUid, ""),
     ).rejects.toBeInstanceOf(UsernameRepositoryFailure);
-    expect(observed.allQueries).toHaveLength(1);
-    expect(observed.batchQueries).toHaveLength(0);
+    expect(observed.allQueries).toHaveLength(0);
+    expect(observed.batchQueries.map((queries) => queries.length)).toEqual([2]);
     await expect(
       readCanonicalProfile(db, initial.profile.profileId),
     ).resolves.toEqual(initial.profile);
@@ -1171,15 +1245,15 @@ describe("canonical profile mutation reads", () => {
       username: `UnavailableClear${crypto.randomUUID()}`,
     });
     const observed = observeDatabase({
-      allFailure: new Error("d1-unavailable"),
+      batchFailure: new Error("d1-unavailable"),
     });
     await expect(
       createUsernameRepository(testEnv, {
         d1: observed.database,
       }).editUsername(initial.owner.loginUid, ""),
     ).rejects.toBeInstanceOf(UsernameRepositoryFailure);
-    expect(observed.allQueries).toHaveLength(1);
-    expect(observed.batchQueries).toHaveLength(0);
+    expect(observed.allQueries).toHaveLength(0);
+    expect(observed.batchQueries.map((queries) => queries.length)).toEqual([2]);
     await expect(
       readCanonicalProfile(db, initial.profile.profileId),
     ).resolves.toEqual(initial.profile);
@@ -1235,12 +1309,16 @@ describe("canonical profile mutation reads", () => {
         }).editUsername(initial.owner.loginUid, ""),
       ).resolves.toBe(outcome);
       expect(observed.firstQueries).toHaveLength(0);
-      expect(observed.allQueries).toHaveLength(1);
-      expect(observed.allQueries[0]).toContain("JOIN profile_auth_methods");
-      expect(observed.allQueries[0]).not.toMatch(
+      expect(observed.allQueries).toHaveLength(0);
+      expect(observed.batchQueries[0][1]).toContain(
+        "FROM profile_auth_methods",
+      );
+      expect(observed.batchQueries[0].join("\n")).not.toMatch(
         /profile_auth_recovery_jobs|profile_february_opponents/,
       );
-      expect(observed.batchQueries).toHaveLength(outcome === "updated" ? 1 : 0);
+      expect(observed.batchQueries.map((queries) => queries.length)).toEqual(
+        outcome === "updated" ? [2, 6] : [2],
+      );
       await expect(
         readCanonicalProfile(db, initial.profile.profileId),
       ).resolves.toMatchObject({

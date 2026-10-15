@@ -19,6 +19,7 @@ import {
   canonicalRatingProjectionFields,
   buildCanonicalRatingProjectionMutation,
   readCanonicalRatingProjectionSnapshot,
+  readCanonicalRatingUpdates,
 } from "./profileCanonical/accounting.ts";
 import type {
   CanonicalRatingProjectionKind,
@@ -446,6 +447,12 @@ export function createCanonicalRatingRepository(
     readProfileOwnershipSnapshot: gameplay.readProfileOwnershipSnapshot,
 
     readRatingUpdate: readOperation,
+    async readRatingUpdates(operationIds) {
+      const snapshots = await readCanonicalRatingUpdates(db, operationIds);
+      return snapshots.map((snapshot) =>
+        snapshot ? ratingData(snapshot) : null,
+      );
+    },
     hasCompletedRatingUpdate: (inviteId, matchId) =>
       readRatingCompletion(db, inviteId, matchId),
 

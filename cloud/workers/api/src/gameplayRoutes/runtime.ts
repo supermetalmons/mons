@@ -61,8 +61,6 @@ export type GameplayRequestContext = {
   pathname: string;
   identity: RequestIdentity;
   repository: GameplayRepository;
-  reservations: WagerReservationRuntime | null;
-  automatchOperationId: string | null;
   admittedMatchEpoch?: number;
 };
 

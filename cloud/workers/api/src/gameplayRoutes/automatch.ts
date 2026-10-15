@@ -18,7 +18,10 @@ import type { GameplayRepository } from "../gameplayRepository.ts";
 import type { AutomatchRepository } from "../gameplayContracts.ts";
 import type { RequestIdentity } from "../requestIdentity.ts";
 import { readAuthenticatedGameBootstrap } from "../gameBootstrap.ts";
-import { measureAutomatchPhase } from "../automatchTelemetry.ts";
+import {
+  measureAutomatchPhase,
+  withAutomatchTelemetry,
+} from "../automatchTelemetry.ts";
 import {
   defineGameplayRoute,
   invalidRequest,
@@ -160,7 +163,16 @@ export const automatchRoutes = [
   defineGameplayRoute({
     path: "/automatch/start",
     readOnly: false,
-    runtime: createAutomatchRuntime,
+    observePost: withAutomatchTelemetry,
+    prepareRequest(context) {
+      const automatchOperationId = readAutomatchOperationId(context.request);
+      return {
+        runtime: () => ({
+          ...createAutomatchRuntime(context),
+          automatchOperationId,
+        }),
+      };
+    },
     parse: (body) => validateBody(body, isStartAutomatchRequest),
     async handle(
       body,
@@ -173,7 +185,6 @@ export const automatchRoutes = [
         automatchOperationId,
       },
     ) {
-      if (!automatchOperationId) throw invalidRequest();
       await enforceGameSessionMutationRateLimit(
         env.AUTH_RATE_LIMITER,
         identity.uid,

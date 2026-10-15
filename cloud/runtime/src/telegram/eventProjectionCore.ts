@@ -261,14 +261,22 @@ const collectActiveMatchEntries = (rawEventData: unknown): MatchEntry[] => {
 
 const loadEndedMatchResults: (
   eventData: unknown,
-  dependencies: { readRatingUpdate(operationId: string): Promise<unknown> },
+  dependencies: {
+    readRatingUpdates(
+      operationIds: readonly string[],
+    ): Promise<readonly unknown[]>;
+  },
 ) => Promise<Record<string, unknown>> = async (
   eventData,
   {
-    readRatingUpdate,
-  }: { readRatingUpdate?(operationId: string): Promise<unknown> } = {},
+    readRatingUpdates,
+  }: {
+    readRatingUpdates?(
+      operationIds: readonly string[],
+    ): Promise<readonly unknown[]>;
+  } = {},
 ) => {
-  if (typeof readRatingUpdate !== "function") {
+  if (typeof readRatingUpdates !== "function") {
     throw new TypeError("event Telegram score loading requires rating reads");
   }
   const resultsByKey: Record<string, unknown> = {};
@@ -290,10 +298,8 @@ const loadEndedMatchResults: (
   if (scoreRequests.length === 0) {
     return resultsByKey;
   }
-  const snapshots = await Promise.all(
-    scoreRequests.map(({ inviteId }) =>
-      readRatingUpdate(`${inviteId}__${inviteId}`),
-    ),
+  const snapshots = await readRatingUpdates(
+    scoreRequests.map(({ inviteId }) => `${inviteId}__${inviteId}`),
   );
   for (let index = 0; index < scoreRequests.length; index += 1) {
     const { entry, inviteId, hostLoginUid, guestLoginUid } =

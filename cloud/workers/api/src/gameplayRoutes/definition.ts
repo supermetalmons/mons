@@ -4,37 +4,80 @@ import type { GameplayRequestContext } from "./runtime.ts";
 
 export type PreparedGameplayRoute = {
   body: Record<string, unknown>;
-  execute(context: GameplayRequestContext): Promise<unknown>;
+  execute(): Promise<unknown>;
 };
+
+export type BoundGameplayRoute = {
+  maxBodyBytes?: number;
+  beforeBody?: () => Promise<void>;
+  prepare(body: Record<string, unknown>): PreparedGameplayRoute;
+};
+
+type GameplayPostObserver = (
+  env: Env,
+  next: (env: Env) => Promise<Response>,
+) => Promise<Response>;
 
 export type GameplayRoute = {
   path: string;
   readOnly: boolean;
-  maxBodyBytes?: number;
-  prepare(body: Record<string, unknown>): PreparedGameplayRoute;
+  observePost?: GameplayPostObserver;
+  bindRequest(context: GameplayRequestContext): BoundGameplayRoute;
 };
+
+type GameplayRequestRuntime<Runtime> = {
+  beforeBody?: () => Promise<void>;
+  runtime(): Runtime | Promise<Runtime>;
+};
+
+type GameplayRuntimeDefinition<Runtime> =
+  | {
+      runtime(context: GameplayRequestContext): Runtime | Promise<Runtime>;
+      prepareRequest?: never;
+    }
+  | {
+      runtime?: never;
+      prepareRequest(
+        context: GameplayRequestContext,
+      ): GameplayRequestRuntime<Runtime>;
+    };
 
 export function defineGameplayRoute<
   Body extends Record<string, unknown>,
   Runtime,
->(definition: {
-  path: string;
-  readOnly: boolean;
-  maxBodyBytes?: number;
-  runtime(context: GameplayRequestContext): Runtime | Promise<Runtime>;
-  parse(body: Record<string, unknown>): Body;
-  handle(body: Body, runtime: Runtime): Promise<unknown>;
-}): GameplayRoute {
+>(
+  definition: {
+    path: string;
+    readOnly: boolean;
+    maxBodyBytes?: number;
+    observePost?: GameplayPostObserver;
+    parse(body: Record<string, unknown>): Body;
+    handle(body: Body, runtime: Runtime): Promise<unknown>;
+  } & GameplayRuntimeDefinition<Runtime>,
+): GameplayRoute {
   return {
     path: definition.path,
     readOnly: definition.readOnly,
-    maxBodyBytes: definition.maxBodyBytes,
-    prepare(value) {
-      const body = definition.parse(value);
+    observePost: definition.observePost,
+    bindRequest(context) {
+      let preparedRequest: GameplayRequestRuntime<Runtime>;
+      if (definition.prepareRequest) {
+        preparedRequest = definition.prepareRequest(context);
+      } else {
+        const runtime = definition.runtime;
+        preparedRequest = { runtime: () => runtime(context) };
+      }
       return {
-        body,
-        async execute(context) {
-          return definition.handle(body, await definition.runtime(context));
+        maxBodyBytes: definition.maxBodyBytes,
+        beforeBody: preparedRequest.beforeBody,
+        prepare(value) {
+          const body = definition.parse(value);
+          return {
+            body,
+            async execute() {
+              return definition.handle(body, await preparedRequest.runtime());
+            },
+          };
         },
       };
     },
@@ -65,7 +108,7 @@ export function normalizeString(value: unknown): string {
 
 export async function prepareGameplayRoute(
   request: Request,
-  route: GameplayRoute,
+  route: BoundGameplayRoute,
 ): Promise<PreparedGameplayRoute> {
   let body: Record<string, unknown> | null;
   try {

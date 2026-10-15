@@ -70,10 +70,11 @@ async function readMergeSourceArchive(
     : null;
 }
 
-function beforeMatchingBatch(
+function aroundMatchingBatch(
   database: D1Database,
   matches: (queries: readonly string[]) => boolean,
   action: () => Promise<void>,
+  timing: "before" | "after" = "before",
 ): D1Database {
   const nativeStatements = new WeakMap<object, D1PreparedStatement>();
   const statementQueries = new WeakMap<object, string>();
@@ -102,15 +103,16 @@ function beforeMatchingBatch(
     const queries = statements.map(
       (statement) => statementQueries.get(statement) || "",
     );
-    if (!fired && matches(queries)) {
-      fired = true;
-      await action();
-    }
-    return target.batch<T>(
+    const interleave = !fired && matches(queries);
+    if (interleave) fired = true;
+    if (interleave && timing === "before") await action();
+    const results = await target.batch<T>(
       statements.map(
         (statement) => nativeStatements.get(statement) || statement,
       ),
     );
+    if (interleave && timing === "after") await action();
+    return results;
   };
   return {
     prepare: (query) => wrap(database.prepare(query), query),
@@ -122,58 +124,6 @@ function beforeMatchingBatch(
       return {
         prepare: (query) => wrap(session.prepare(query), query),
         batch: (statements) => batch(session, statements),
-        getBookmark: () => session.getBookmark(),
-      };
-    },
-  };
-}
-
-function aroundMatchingAll(
-  database: D1Database,
-  matches: (query: string) => boolean,
-  timing: "before" | "after",
-  action: () => Promise<void>,
-): D1Database {
-  const nativeStatements = new WeakMap<object, D1PreparedStatement>();
-  let fired = false;
-  const wrap = (
-    statement: D1PreparedStatement,
-    query: string,
-  ): D1PreparedStatement => {
-    const wrapped = new Proxy(statement, {
-      get(target, property) {
-        if (property === "bind") {
-          return (...values: unknown[]) => wrap(target.bind(...values), query);
-        }
-        if (property === "all") {
-          return async <T = unknown>(): Promise<D1Result<T>> => {
-            if (fired || !matches(query)) return target.all<T>();
-            fired = true;
-            if (timing === "before") await action();
-            const result = await target.all<T>();
-            if (timing === "after") await action();
-            return result;
-          };
-        }
-        const value = Reflect.get(target, property, target);
-        return typeof value === "function" ? value.bind(target) : value;
-      },
-    });
-    nativeStatements.set(wrapped, statement);
-    return wrapped;
-  };
-  const unwrap = (statements: D1PreparedStatement[]) =>
-    statements.map((statement) => nativeStatements.get(statement) || statement);
-  return {
-    prepare: (query) => wrap(database.prepare(query), query),
-    batch: (statements) => database.batch(unwrap(statements)),
-    dump: () => database.dump(),
-    exec: (query) => database.exec(query),
-    withSession: (constraintOrBookmark) => {
-      const session = database.withSession(constraintOrBookmark);
-      return {
-        prepare: (query) => wrap(session.prepare(query), query),
-        batch: (statements) => session.batch(unwrap(statements)),
         getBookmark: () => session.getBookmark(),
       };
     },
@@ -1005,7 +955,7 @@ describe("canonical auth and profile runtime", () => {
         profileChanged = true;
         await setCanonicalUsername(linked.profileId, null, 3_003);
       };
-      const replayDb = beforeMatchingBatch(
+      const replayDb = aroundMatchingBatch(
         testBindings.PROFILE_DB,
         (queries) =>
           queries.some((query) =>
@@ -1241,7 +1191,7 @@ describe("canonical auth and profile runtime", () => {
       opId: "auth-revision-operation",
     });
     let interleavings = 0;
-    const racedDb = beforeMatchingBatch(
+    const racedDb = aroundMatchingBatch(
       testBindings.PROFILE_DB,
       (queries) =>
         queries.some((query) => query.includes("FROM profile_auth_methods")),
@@ -1304,7 +1254,7 @@ describe("canonical auth and profile runtime", () => {
   });
 
   it.each(["before", "after"] as const)(
-    "reads a coherent auth snapshot when the login owner merges %s the query",
+    "reads a coherent auth snapshot when the login owner merges %s the batch",
     async (timing) => {
       const fixtureId = `auth-move-${timing}`;
       const addressCharacter = timing === "before" ? "5" : "6";
@@ -1343,10 +1293,10 @@ describe("canonical auth and profile runtime", () => {
       await recovery.recoverProfile(source.profileId);
       await recovery.recoverProfile(target.profileId);
       let merges = 0;
-      const racedDb = aroundMatchingAll(
+      const racedDb = aroundMatchingBatch(
         testBindings.PROFILE_DB,
-        (query) => query.includes("profile_auth_methods"),
-        timing,
+        (queries) =>
+          queries.some((query) => query.includes("profile_auth_methods")),
         async () => {
           merges++;
           await service.linkVerifiedMethod({
@@ -1360,6 +1310,7 @@ describe("canonical auth and profile runtime", () => {
             opId: `${fixtureId}-merge-operation`,
           });
         },
+        timing,
       );
       const repository = createAuthProfileRepository(d1Env, { d1: racedDb });
       await expect(
@@ -1418,13 +1369,7 @@ describe("canonical auth and profile runtime", () => {
     expect(authorizations).toBe(2);
 
     const mining = createMiningRepository(d1Env);
-    const miningOwnership = await mining.readProfileOwnershipSnapshot({
-      loginUids: ["profile-login"],
-      profileIds: [],
-    });
-    const miningProfileId =
-      miningOwnership.loginOwnerByUid.get("profile-login")?.profileId || "";
-    const miningProfile = await mining.getProfileSnapshot(miningProfileId);
+    const miningProfile = await mining.getOwnedProfileSnapshot("profile-login");
     expect(miningProfile).not.toBeNull();
     expect(
       await miningProfile!.commitMining({

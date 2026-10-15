@@ -551,7 +551,8 @@ describe("canonical gameplay repositories", () => {
 
       it("ignores malformed write-only metadata while mutation snapshots still reject it", async () => {
         const profileId = "mining-read-metadata";
-        await insertProfile(profileId, null);
+        const loginUid = "mining-read-metadata-login";
+        await insertProfile(profileId, loginUid);
         await testEnv.PROFILE_DB.prepare(
           "UPDATE profile_records SET merged_at_ms = 1.5 WHERE profile_id = ?",
         )
@@ -568,7 +569,7 @@ describe("canonical gameplay repositories", () => {
           readCanonicalProfile(testEnv.PROFILE_DB, profileId),
         ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
         await expect(
-          createMiningRepository(testEnv).getProfileSnapshot(profileId),
+          createMiningRepository(testEnv).getOwnedProfileSnapshot(loginUid),
         ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
         expect(await readRawProfileRow(profileId)).toEqual(before);
       });
@@ -1486,13 +1487,6 @@ describe("canonical gameplay repositories", () => {
       emoji: "",
       rating: 0,
     });
-    const miningOwnership = await createMiningRepository(
-      testEnv,
-    ).readProfileOwnershipSnapshot({
-      loginUids: [loginUid],
-      profileIds: [],
-    });
-    expect(miningOwnership).toEqual(gameplayOwnership);
     expect(ratingOwnership).toEqual(gameplayOwnership);
   });
 
@@ -1549,10 +1543,14 @@ describe("canonical gameplay repositories", () => {
       const gameplay = createGameplayRepository(testEnv, {
         stateClient: matchTestPort(state),
       });
-      const mining = createMiningRepository(testEnv);
+      const rating = createRatingRepository(
+        testEnv.PROFILE_DB,
+        gameplay,
+        createEventProgressOutboxWriter(testEnv.EVENT_DB),
+      );
       const snapshots = await Promise.all([
         gameplay.readProfileOwnershipSnapshot(query),
-        mining.readProfileOwnershipSnapshot(query),
+        rating.readProfileOwnershipSnapshot(query),
       ]);
       expect(snapshots[0]).toEqual(snapshots[1]);
       for (const snapshot of snapshots) {
@@ -2272,6 +2270,114 @@ describe("canonical gameplay repositories", () => {
     });
   });
 
+  describe("batched rating reads", () => {
+    it("does not query for an empty request", async () => {
+      const observed = observeProfileReads(testEnv.PROFILE_DB);
+      await expect(
+        projectionRatingRepository(observed.database).readRatingUpdates([]),
+      ).resolves.toEqual([]);
+      expect(observed.queries).toEqual([]);
+      expect(observed.reads).toEqual([]);
+    });
+
+    it("preserves input order, duplicates, exact IDs and missing records without writes", async () => {
+      const firstId = "rating-batch-first";
+      const secondId = "rating-batch-second";
+      await insertProjectionRating(firstId);
+      await insertProjectionRating(secondId);
+      const scalar = projectionRatingRepository();
+      const first = await scalar.readRatingUpdate(firstId);
+      const second = await scalar.readRatingUpdate(secondId);
+      const observed = observeProfileReads(
+        testEnv.PROFILE_DB,
+        undefined,
+        (rows) =>
+          rows.sort((left, right) =>
+            String(right.operation_id).localeCompare(String(left.operation_id)),
+          ),
+      );
+      const ids = [firstId, "missing", secondId, firstId, ` ${firstId} `];
+      await expect(
+        projectionRatingRepository(observed.database).readRatingUpdates(ids),
+      ).resolves.toEqual([first, null, second, first, null]);
+      expect(observed.reads).toHaveLength(1);
+      expect(observed.reads[0].bindings).toEqual([
+        firstId,
+        "missing",
+        secondId,
+        ` ${firstId} `,
+      ]);
+      expect(observed.reads[0].rowsWritten).toBe(0);
+      expect(observed.reads[0].query).not.toContain(firstId);
+    });
+
+    it.each([100, 101])(
+      "chunks %i unique IDs while retaining duplicate positions",
+      async (count) => {
+        const ids = Array.from(
+          { length: count },
+          (_, index) => `batch-${index}`,
+        );
+        const lastId = ids[ids.length - 1];
+        await insertProjectionRating(ids[0]);
+        await insertProjectionRating(lastId);
+        const scalar = projectionRatingRepository();
+        const first = await scalar.readRatingUpdate(ids[0]);
+        const last = await scalar.readRatingUpdate(lastId);
+        const observed = observeProfileReads(testEnv.PROFILE_DB);
+        await expect(
+          projectionRatingRepository(observed.database).readRatingUpdates([
+            ...ids,
+            ids[0],
+          ]),
+        ).resolves.toEqual([
+          first,
+          ...Array.from({ length: count - 2 }, () => null),
+          last,
+          first,
+        ]);
+        expect(observed.reads).toHaveLength(Math.ceil(count / 100));
+        expect(observed.reads.flatMap((read) => read.bindings)).toEqual(ids);
+        for (const read of observed.reads) {
+          expect(read.bindings.length).toBeLessThanOrEqual(100);
+          expect(read.rowsWritten).toBe(0);
+        }
+      },
+    );
+
+    it("propagates query failures instead of reporting missing ratings", async () => {
+      const failure = new Error("rating-read-unavailable");
+      const observed = observeProfileReads(testEnv.PROFILE_DB, async () => {
+        throw failure;
+      });
+      await expect(
+        projectionRatingRepository(observed.database).readRatingUpdates([
+          "rating-batch-failed",
+        ]),
+      ).rejects.toBe(failure);
+    });
+
+    it("rejects corrupt canonical rows without changing stored ratings", async () => {
+      const operationId = "rating-batch-corrupt";
+      await insertProjectionRating(operationId);
+      const observed = observeProfileReads(
+        testEnv.PROFILE_DB,
+        undefined,
+        (rows) => rows.map((row) => ({ ...row, revision: 0 })),
+      );
+      await expect(
+        projectionRatingRepository(observed.database).readRatingUpdates([
+          operationId,
+        ]),
+      ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
+      expect(observed.reads).toHaveLength(1);
+      expect(observed.reads[0].rowsWritten).toBe(0);
+      await expect(
+        projectionRatingRepository().readRatingUpdate(operationId),
+      ).resolves.not.toBeNull();
+    });
+  });
+
   it.each([
     {
       label: "numeric",
@@ -2394,6 +2500,9 @@ describe("canonical gameplay repositories", () => {
       }
 
       const update = await rating.readRatingUpdate(operationId);
+      await expect(rating.readRatingUpdates([operationId])).resolves.toEqual([
+        update,
+      ]);
       expect(update?.playerManaPoints).toBe(expectedPlayer);
       expect(update?.opponentManaPoints).toBe(expectedOpponent);
       expect(Object.hasOwn(update || {}, "playerManaPoints")).toBe(

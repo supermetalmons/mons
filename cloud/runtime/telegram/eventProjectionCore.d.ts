@@ -75,7 +75,9 @@ declare const formatPtEtUtcLine: (startAtMs: number) => string;
 declare const loadEndedMatchResults: (
   eventData: unknown,
   dependencies: {
-    readRatingUpdate(operationId: string): Promise<unknown>;
+    readRatingUpdates(
+      operationIds: readonly string[],
+    ): Promise<readonly unknown[]>;
   },
 ) => Promise<Record<string, unknown>>;
 declare const isV2TelegramEvent: (

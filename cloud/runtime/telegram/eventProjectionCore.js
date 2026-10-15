@@ -246,8 +246,8 @@ const collectActiveMatchEntries = (rawEventData) => {
     return left.key.localeCompare(right.key);
   });
 };
-const loadEndedMatchResults = async (eventData, { readRatingUpdate } = {}) => {
-  if (typeof readRatingUpdate !== "function") {
+const loadEndedMatchResults = async (eventData, { readRatingUpdates } = {}) => {
+  if (typeof readRatingUpdates !== "function") {
     throw new TypeError("event Telegram score loading requires rating reads");
   }
   const resultsByKey = {};
@@ -269,10 +269,8 @@ const loadEndedMatchResults = async (eventData, { readRatingUpdate } = {}) => {
   if (scoreRequests.length === 0) {
     return resultsByKey;
   }
-  const snapshots = await Promise.all(
-    scoreRequests.map(({ inviteId }) =>
-      readRatingUpdate(`${inviteId}__${inviteId}`),
-    ),
+  const snapshots = await readRatingUpdates(
+    scoreRequests.map(({ inviteId }) => `${inviteId}__${inviteId}`),
   );
   for (let index = 0; index < scoreRequests.length; index += 1) {
     const { entry, inviteId, hostLoginUid, guestLoginUid } =

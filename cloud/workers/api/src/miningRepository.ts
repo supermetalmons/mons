@@ -3,17 +3,12 @@ import {
   normalizeMiningSnapshot,
   type MiningSnapshot,
 } from "@mons/shared/mining";
-import {
-  CanonicalProfileConflict,
-  readCanonicalProfileOwnershipSnapshot,
-  resolveCanonicalProfile,
-} from "./profileCanonicalD1.ts";
+import { CanonicalProfileConflict } from "./profileCanonicalD1.ts";
 import {
   commitCanonicalProfileUpdate,
   materializeCanonicalProfileUpdate,
+  readCanonicalProfileMutationByLogin,
 } from "./profileMutationD1.ts";
-import type { ProfileOwnershipReader } from "./profileOwnership.ts";
-import { mapCanonicalOwnershipSnapshot } from "./profileOwnershipMapping.ts";
 
 export type MiningProfile = {
   readonly mining: MiningSnapshot;
@@ -21,8 +16,8 @@ export type MiningProfile = {
   commitMining: (mining: MiningSnapshot) => Promise<"conflict" | "updated">;
 };
 
-export type MiningRepository = ProfileOwnershipReader & {
-  getProfileSnapshot: (profileId: string) => Promise<MiningProfile | null>;
+export type MiningRepository = {
+  getOwnedProfileSnapshot: (loginUid: string) => Promise<MiningProfile | null>;
 };
 
 type MiningRepositoryDependencies = {
@@ -35,15 +30,10 @@ export function createMiningRepository(
   { d1 = env.PROFILE_DB, now = Date.now }: MiningRepositoryDependencies = {},
 ): MiningRepository {
   return {
-    async readProfileOwnershipSnapshot(query) {
-      return mapCanonicalOwnershipSnapshot(
-        await readCanonicalProfileOwnershipSnapshot(d1, query),
-      );
-    },
-
-    async getProfileSnapshot(profileId) {
-      const profile = await resolveCanonicalProfile(d1, profileId);
-      if (!profile || profile.state !== "active") return null;
+    async getOwnedProfileSnapshot(loginUid) {
+      const snapshot = await readCanonicalProfileMutationByLogin(d1, loginUid);
+      if (!snapshot) return null;
+      const { owner, profile } = snapshot;
       return {
         profileId: profile.profileId,
         mining: normalizeMiningSnapshot(profile.profile.mining),
@@ -59,7 +49,7 @@ export function createMiningRepository(
             },
           );
           try {
-            await commitCanonicalProfileUpdate(d1, profile, value);
+            await commitCanonicalProfileUpdate(d1, profile, value, { owner });
             return "updated";
           } catch (error) {
             if (error instanceof CanonicalProfileConflict) return "conflict";

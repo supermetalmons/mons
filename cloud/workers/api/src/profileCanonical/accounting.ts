@@ -123,6 +123,35 @@ export async function readCanonicalRatingUpdate(
   return row ? parseCanonicalRatingUpdateRow(row) : null;
 }
 
+const RATING_UPDATE_READ_BATCH_SIZE = 100;
+
+export async function readCanonicalRatingUpdates(
+  db: D1Database,
+  operationIds: readonly string[],
+): Promise<Array<CanonicalRatingUpdateSnapshot | null>> {
+  const uniqueIds = [...new Set(operationIds)];
+  const snapshots = new Map<string, CanonicalRatingUpdateSnapshot>();
+  for (
+    let offset = 0;
+    offset < uniqueIds.length;
+    offset += RATING_UPDATE_READ_BATCH_SIZE
+  ) {
+    const ids = uniqueIds.slice(offset, offset + RATING_UPDATE_READ_BATCH_SIZE);
+    const rows = await db
+      .prepare(
+        `SELECT * FROM rating_updates
+         WHERE operation_id IN (${ids.map(() => "?").join(", ")})`,
+      )
+      .bind(...ids)
+      .all<RatingRow>();
+    for (const row of rows.results) {
+      const snapshot = parseCanonicalRatingUpdateRow(row);
+      snapshots.set(snapshot.operationId, snapshot);
+    }
+  }
+  return operationIds.map((operationId) => snapshots.get(operationId) ?? null);
+}
+
 export async function readCanonicalRatingProjectionSnapshot(
   db: D1Database,
   operationId: string,

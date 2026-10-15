@@ -1,4 +1,5 @@
 import { isRatingUpdateRequest } from "@mons/shared/ratings";
+import { withD1OperationTelemetry } from "../d1Telemetry.ts";
 import { isSafeRecordKey } from "../recordKeys.ts";
 import { isSafeOperationId } from "../operationIds.ts";
 import { createRatingRepository } from "../ratingRepository.ts";
@@ -59,6 +60,8 @@ export const ratingRoutes = [
   defineGameplayRoute({
     path: "/ratings/update",
     readOnly: false,
+    observePost: (env, next) =>
+      withD1OperationTelemetry("ratings.update", env, next),
     runtime: createRatingRuntime,
     parse(body) {
       const value = validateBody(body, isRatingUpdateRequest);

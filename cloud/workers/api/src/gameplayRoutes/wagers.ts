@@ -14,6 +14,7 @@ import {
 } from "../profileOwnership.ts";
 import { isSafeRecordKey } from "../recordKeys.ts";
 import {
+  enforceWagerOutcomeRateLimit,
   resolveWagerOutcome,
   WAGER_SETTLEMENT_INITIAL_RETRY_DELAY_SECONDS,
 } from "../wagerOutcome.ts";
@@ -23,6 +24,11 @@ import {
   sendWagerProposal,
   type WagerProposalDependencies,
 } from "../wagerProposal.ts";
+import {
+  assertWagerClientVersion,
+  createWagerReservationRuntime,
+  type WagerReservationRuntime,
+} from "../wagerReservationRuntime.ts";
 import {
   defineGameplayRoute,
   invalidRequest,
@@ -34,14 +40,35 @@ import {
   type GameplayRequestContext,
 } from "./runtime.ts";
 
-function createWagerRuntime(context: GameplayRequestContext) {
+type WagerRequestContext = GameplayRequestContext & {
+  reservations: WagerReservationRuntime;
+};
+
+function prepareWagerRequest(
+  context: GameplayRequestContext,
+): WagerRequestContext {
+  const reservations =
+    context.dependencies.wagerReservations ||
+    createWagerReservationRuntime(context.env, context.repository);
+  return { ...context, reservations };
+}
+
+function prepareWagerMutation(
+  context: GameplayRequestContext,
+): WagerRequestContext {
+  const prepared = prepareWagerRequest(context);
+  assertWagerClientVersion(context.request);
+  return prepared;
+}
+
+function createWagerRuntime(context: WagerRequestContext) {
   return {
     ...context,
     assertMutationAllowed: gameplayMutationGuard(context),
   };
 }
 
-function createWagerProposalRuntime(context: GameplayRequestContext) {
+function createWagerProposalRuntime(context: WagerRequestContext) {
   const runtime = createWagerRuntime(context);
   const wagerDependencies: WagerProposalDependencies = {
     ...context.dependencies.wager,
@@ -49,6 +76,11 @@ function createWagerProposalRuntime(context: GameplayRequestContext) {
     mutationLocks: createGameplayMutationLocks(context),
   };
   return { ...runtime, wagerDependencies };
+}
+
+function prepareWagerProposalRequest(context: GameplayRequestContext) {
+  const prepared = prepareWagerMutation(context);
+  return { runtime: () => createWagerProposalRuntime(prepared) };
 }
 
 function normalizeWagerIds(value: { inviteId: string; matchId: string }) {
@@ -72,7 +104,6 @@ function runWager<T>(
   ) => Promise<T>,
 ): Promise<T> {
   const { reservations } = runtime;
-  if (!reservations) throw new Error("wager-reservation-unavailable");
   return reservations.run(
     runtime.pathname,
     async (admittedRepository, admissionGuard) => {
@@ -88,11 +119,13 @@ export const wagerRoutes = [
   defineGameplayRoute({
     path: WAGER_FROZEN_READ_PATH,
     readOnly: true,
-    runtime: (context) => context,
+    prepareRequest(context) {
+      const prepared = prepareWagerRequest(context);
+      return { runtime: () => prepared };
+    },
     parse: (body) => validateBody(body, isWagerFrozenReadRequest),
     handle: async (body, runtime) => {
       const { identity, repository, reservations } = runtime;
-      if (!reservations) throw invalidRequest();
       if (body.playerUid !== identity.uid) {
         const ownership = await requireProfileOwnershipSnapshot(repository, {
           loginUids: [identity.uid, body.playerUid],
@@ -125,7 +158,7 @@ export const wagerRoutes = [
   defineGameplayRoute({
     path: "/wagers/proposals/send",
     readOnly: false,
-    runtime: createWagerProposalRuntime,
+    prepareRequest: prepareWagerProposalRequest,
     parse: (body) => {
       const value = validateBody(body, isWagerProposalSendRequest);
       return {
@@ -145,7 +178,7 @@ export const wagerRoutes = [
   defineGameplayRoute({
     path: "/wagers/proposals/accept",
     readOnly: false,
-    runtime: createWagerProposalRuntime,
+    prepareRequest: prepareWagerProposalRequest,
     parse: parseWagerProposalIds,
     handle: (body, runtime) =>
       runWager(runtime, (admittedRepository, guard) =>
@@ -158,7 +191,7 @@ export const wagerRoutes = [
   defineGameplayRoute({
     path: "/wagers/proposals/cancel",
     readOnly: false,
-    runtime: createWagerProposalRuntime,
+    prepareRequest: prepareWagerProposalRequest,
     parse: parseWagerProposalIds,
     handle: (body, runtime) =>
       runWager(runtime, (admittedRepository, guard) =>
@@ -174,7 +207,7 @@ export const wagerRoutes = [
   defineGameplayRoute({
     path: "/wagers/proposals/decline",
     readOnly: false,
-    runtime: createWagerProposalRuntime,
+    prepareRequest: prepareWagerProposalRequest,
     parse: parseWagerProposalIds,
     handle: (body, runtime) =>
       runWager(runtime, (admittedRepository, guard) =>
@@ -190,7 +223,17 @@ export const wagerRoutes = [
   defineGameplayRoute({
     path: "/wagers/outcomes/resolve",
     readOnly: false,
-    runtime: createWagerRuntime,
+    prepareRequest(context) {
+      const prepared = prepareWagerMutation(context);
+      return {
+        beforeBody: () =>
+          enforceWagerOutcomeRateLimit(
+            context.env.AUTH_RATE_LIMITER,
+            context.identity.uid,
+          ),
+        runtime: () => createWagerRuntime(prepared),
+      };
+    },
     parse: (body) =>
       normalizeWagerIds(validateBody(body, isWagerOutcomeResolveRequest)),
     handle: (body, runtime) =>

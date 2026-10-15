@@ -187,7 +187,7 @@ async function commitFencedDesiredUpdate(
 export async function processEventProjectionTask(
   task: EventTelegramProjectionTask,
   state: EventStore,
-  rating: RatingProjectionRepository,
+  rating: Pick<RatingProjectionRepository, "readRatingUpdates">,
   enqueueDelivery: (input: InitialTelegramDelivery) => Promise<unknown>,
   now: () => number,
   telegram: TelegramRepository,
@@ -256,8 +256,8 @@ export async function processEventProjectionTask(
         (typeof projectionState.endedText !== "string" ||
           projectionState.endedText === "")
           ? loadEndedMatchResults(eventData, {
-              readRatingUpdate: (operationId) =>
-                rating.readRatingUpdate(operationId),
+              readRatingUpdates: (operationIds) =>
+                rating.readRatingUpdates(operationIds),
             })
           : {},
       ]);

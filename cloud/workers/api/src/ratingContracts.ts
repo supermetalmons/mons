@@ -209,6 +209,9 @@ export type RatingEventProgressRepository = RatingRepository & {
 };
 
 export type RatingProjectionRepository = RatingRepository & {
+  readRatingUpdates: (
+    operationIds: readonly string[],
+  ) => Promise<Array<RatingUpdateData | null>>;
   claimRatingTelegramProjection: (
     operationId: string,
     expectedRevision: number,

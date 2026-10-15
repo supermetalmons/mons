@@ -118,6 +118,7 @@ function ratingRepository(): RatingProjectionRepository {
       throw new Error("unexpected-profile-ownership-read");
     },
     readRatingUpdate: async (): Promise<RatingUpdateData | null> => null,
+    readRatingUpdates: async (operationIds) => operationIds.map(() => null),
     hasCompletedRatingUpdate: async () => false,
     tryAcquireRatingLease: async () => ({ status: "busy", data: null }),
   };
@@ -923,11 +924,11 @@ test("final score reads follow the results preference independently of the legac
         },
         "eventTelegramProjections/event-1": { endedAnnouncementArmed: true },
       });
-      const reads: string[] = [];
+      const reads: Array<readonly string[]> = [];
       const rating = ratingRepository();
-      rating.readRatingUpdate = async (operationId) => {
-        reads.push(operationId);
-        return null;
+      rating.readRatingUpdates = async (operationIds) => {
+        reads.push(operationIds);
+        return operationIds.map(() => null);
       };
       const deliveries: string[] = [];
       await processEventProjectionTask(
@@ -937,7 +938,7 @@ test("final score reads follow the results preference independently of the legac
         async ({ messageKey }) => void deliveries.push(messageKey),
         () => 200,
       );
-      assert.deepEqual(reads, results ? ["match-1__match-1"] : []);
+      assert.deepEqual(reads, results ? [["match-1__match-1"]] : []);
       assert.deepEqual(deliveries, results ? ["event:event-1:ended"] : []);
     });
   }
@@ -977,15 +978,15 @@ test("rating read failures retain pending event work for a successful retry", as
   const rating = ratingRepository();
   let failRead = true;
   let reads = 0;
-  rating.readRatingUpdate = async () => {
+  rating.readRatingUpdates = async (operationIds) => {
     reads++;
     if (failRead) throw new Error("rating-read-failed");
-    return null;
+    return operationIds.map(() => null);
   };
   const deliveries: string[] = [];
-  const project = () =>
+  const project = (projectionTask = task) =>
     processEventProjectionTask(
-      task,
+      projectionTask,
       state.client,
       rating,
       async ({ messageKey }) => void deliveries.push(messageKey),
@@ -1012,6 +1013,18 @@ test("rating read failures retain pending event work for a successful retry", as
     message.desired.text,
     "event complete\n\nhttps://mons.link/event/event-1\n\nAlice vs. Bob",
   );
+  assert.equal(
+    (state.read(projectionPath) as { endedText: string }).endedText,
+    message.desired.text,
+  );
+
+  failRead = true;
+  const nextTask = { ...task, requestId: "request-2" };
+  state.write(outboxPath, { ...marker, requestId: nextTask.requestId });
+  await project(nextTask);
+  assert.equal(reads, 2);
+  assert.deepEqual(deliveries, [messageKey]);
+  assert.equal(state.read(outboxPath), null);
   assert.equal(
     (state.read(projectionPath) as { endedText: string }).endedText,
     message.desired.text,

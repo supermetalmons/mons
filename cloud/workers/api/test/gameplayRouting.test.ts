@@ -18,7 +18,7 @@ import { handleRequest } from "../src/router.ts";
 import { createAutomatchPersistenceStub } from "./automatchPersistenceTestUtils.ts";
 import { createMemoryGameplayCoordinationStores } from "./gameplayCoordinationTestUtils.ts";
 import { gameplayTestPort } from "./gameSessionTestPorts.ts";
-import { TELEGRAM_TEST_ENV } from "./testEnv.ts";
+import { TELEGRAM_TEST_ENV, withProfileControl } from "./testEnv.ts";
 
 const operationId = "00000000-0000-4000-8000-000000000001";
 const uid = "login-uid";
@@ -525,6 +525,184 @@ test("gameplay routes only construct coordination used by their domain", async (
   }
 });
 
+test("invalid gameplay bodies do not construct domain coordination", async (t) => {
+  for (const path of [
+    "/automatch/start",
+    "/invites/create",
+    "/matches/ensure",
+    "/ratings/update",
+    "/wagers/proposals/send",
+  ]) {
+    await t.test(path, async () => {
+      const f = fixture(routes.find((route) => route.path === path)!);
+      const response = await handleRequest(
+        request(
+          path === "/automatch/start"
+            ? `${path}?operationId=${operationId}`
+            : path,
+          null,
+        ),
+        TELEGRAM_TEST_ENV,
+        {
+          gameplay: {
+            ...f.dependencies,
+            get coordination(): GameplayRouteDependencies["coordination"] {
+              return assert.fail("invalid request constructed coordination");
+            },
+          },
+        },
+        f.context,
+      );
+      assert.equal(response.status, 400);
+      assert.deepEqual(f.effects, []);
+      assert.deepEqual(f.pending, []);
+    });
+  }
+});
+
+test("wager authentication and client version precede profile gates and body parsing", async (t) => {
+  for (const route of routes.filter(
+    ({ path }) =>
+      path.startsWith("/wagers/") && path !== WAGER_FROZEN_READ_PATH,
+  )) {
+    for (const authenticated of [false, true]) {
+      await t.test(
+        `${route.path}: authenticated=${authenticated}`,
+        async () => {
+          const f = fixture(route);
+          let reservationReads = 0;
+          const input = new Request(`https://api.mons.link${route.path}`, {
+            method: "POST",
+            headers: { Origin: "https://mons.link" },
+            body: "invalid-json",
+          });
+          const response = await handleRequest(
+            input,
+            withProfileControl(
+              {
+                ...TELEGRAM_TEST_ENV,
+                AUTH_RATE_LIMITER: {
+                  limit: async () => assert.fail("unexpected rate limit"),
+                },
+              },
+              "frozen",
+            ),
+            {
+              gameplay: {
+                ...f.dependencies,
+                get wagerReservations() {
+                  reservationReads++;
+                  return f.dependencies.wagerReservations;
+                },
+                verifyIdentity: async () => {
+                  if (!authenticated)
+                    throw new AuthApiFailure(
+                      401,
+                      "unauthenticated",
+                      "authentication-required",
+                    );
+                  return { uid };
+                },
+              },
+            },
+            f.context,
+          );
+          assert.equal(response.status, authenticated ? 409 : 401);
+          assert.deepEqual(
+            await response.json(),
+            authenticated
+              ? {
+                  ok: false,
+                  error: "client-update-required",
+                  message: "Reload this page to continue wagering.",
+                }
+              : {
+                  ok: false,
+                  error: "unauthenticated",
+                  message: "authentication-required",
+                },
+          );
+          assert.equal(reservationReads, authenticated ? 1 : 0);
+          assert.equal(input.bodyUsed, false);
+          assert.deepEqual(f.effects, []);
+        },
+      );
+    }
+  }
+});
+
+test("wager outcome limiting stays between profile admission and body parsing", async (t) => {
+  for (const entry of [
+    {
+      path: "/wagers/outcomes/resolve",
+      state: "frozen" as const,
+      status: 503,
+      error: "unavailable",
+      message: "profile-writes-disabled",
+      rateCalls: 0,
+      bodyUsed: false,
+    },
+    {
+      path: "/wagers/outcomes/resolve",
+      state: "active" as const,
+      status: 429,
+      error: "resource-exhausted",
+      message: "Too many wager resolution attempts.",
+      rateCalls: 1,
+      bodyUsed: false,
+    },
+    {
+      path: "/wagers/proposals/send",
+      state: "active" as const,
+      status: 400,
+      error: "invalid-argument",
+      message: "invalid-request",
+      rateCalls: 0,
+      bodyUsed: true,
+    },
+  ]) {
+    await t.test(`${entry.path}: ${entry.state}`, async () => {
+      const f = fixture(routes.find((route) => route.path === entry.path)!);
+      const rateKeys: string[] = [];
+      const input = new Request(`https://api.mons.link${entry.path}`, {
+        method: "POST",
+        headers: {
+          Origin: "https://mons.link",
+          [WAGER_STORAGE_VERSION_HEADER]: WAGER_STORAGE_VERSION,
+        },
+        body: "invalid-json",
+      });
+      const response = await handleRequest(
+        input,
+        withProfileControl(
+          {
+            ...TELEGRAM_TEST_ENV,
+            AUTH_RATE_LIMITER: {
+              limit: async ({ key }) => {
+                rateKeys.push(key);
+                return { success: false };
+              },
+            },
+          },
+          entry.state,
+        ),
+        { gameplay: f.dependencies },
+        f.context,
+      );
+      assert.equal(response.status, entry.status);
+      assert.deepEqual(await response.json(), {
+        ok: false,
+        error: entry.error,
+        message: entry.message,
+      });
+      assert.equal(rateKeys.length, entry.rateCalls);
+      if (entry.rateCalls) assert.deepEqual(rateKeys, [`wager-resolve:${uid}`]);
+      assert.equal(input.bodyUsed, entry.bodyUsed);
+      assert.deepEqual(f.effects, []);
+    });
+  }
+});
+
 test("default gameplay repository construction does not access the event database", async () => {
   let rateLimited = false;
   const env: Env = {
@@ -884,6 +1062,98 @@ test("reads, preflights, other methods, and nearby unknown paths bypass match mu
   }
 });
 
+test("frozen wager balance reads need neither mutation authority nor a client version", async () => {
+  const route = routes.find(({ path }) => path === WAGER_FROZEN_READ_PATH)!;
+  const f = fixture(route);
+  const control = withMatchControl("unreadable");
+  const response = await handleRequest(
+    request(route.path, route.body),
+    withProfileControl(control.env, "frozen"),
+    { gameplay: f.dependencies },
+    f.context,
+  );
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), route.response);
+  assert.deepEqual(f.effects, ["frozen-balance"]);
+  assert.equal(control.reads(), 0);
+});
+
+test("gameplay telemetry wraps only the declared POST routes, including early failures", async (t) => {
+  t.mock.method(Math, "random", () => 0);
+  const logs: Array<Record<string, unknown>> = [];
+  t.mock.method(console, "info", (value: string) => {
+    logs.push(JSON.parse(value));
+  });
+  const cases = [
+    ...["/automatch/start", "/ratings/update"].flatMap((path) => [
+      { path, method: "OPTIONS", state: "active" as const, status: 204 },
+      { path, method: "GET", state: "active" as const, status: 405 },
+      { path, method: "POST", state: "active" as const, status: 401 },
+      { path, method: "POST", state: "frozen" as const, status: 503 },
+      {
+        path: `${path}/extra`,
+        method: "POST",
+        state: "active" as const,
+        status: 404,
+      },
+    ]),
+    {
+      path: "/automatch/cancel",
+      method: "POST",
+      state: "active" as const,
+      status: 401,
+    },
+  ];
+  for (const entry of cases) {
+    await t.test(`${entry.method} ${entry.path}: ${entry.state}`, async () => {
+      logs.length = 0;
+      const control = withMatchControl(entry.state);
+      let authentications = 0;
+      const input = new Request(`https://api.mons.link${entry.path}`, {
+        method: entry.method,
+        headers: { Origin: "https://mons.link" },
+        ...(entry.method === "POST" ? { body: "invalid-json" } : {}),
+      });
+      const response = await handleRequest(
+        input,
+        control.env,
+        {
+          gameplay: {
+            verifyIdentity: async () => {
+              authentications++;
+              throw new AuthApiFailure(401, "unauthenticated", "test-auth");
+            },
+          },
+        },
+        { waitUntil: () => assert.fail("unexpected background work") },
+      );
+      assert.equal(response.status, entry.status);
+      assert.equal(authentications, entry.status === 401 ? 1 : 0);
+      assert.equal(input.bodyUsed, false);
+      const measured =
+        entry.method === "POST" &&
+        ["/automatch/start", "/ratings/update"].includes(entry.path);
+      assert.equal(logs.length, measured ? 1 : 0);
+      const automatch = measured && entry.path === "/automatch/start";
+      if (measured) {
+        assert.equal(logs[0].status, entry.status);
+        assert.equal(
+          logs[0].event,
+          automatch ? "automatch_timing" : "d1_timing",
+        );
+        if (!automatch) assert.equal(logs[0].operation, "ratings.update");
+      }
+      assert.equal(response.headers.has("Server-Timing"), automatch);
+      assert.equal(response.headers.has("Timing-Allow-Origin"), automatch);
+      if (automatch)
+        assert.equal(
+          response.headers.get("Access-Control-Expose-Headers"),
+          "Retry-After, Server-Timing",
+        );
+    });
+  }
+});
+
 test("gameplay request normalization preserves trimmed identifiers and domain payloads", async (t) => {
   const cases = [
     ...["/matches/timer/start", "/matches/timer/claim", "/ratings/update"].map(
@@ -909,20 +1179,32 @@ test("gameplay request normalization preserves trimmed identifiers and domain pa
           key.endsWith("Id") ? ` ${value} ` : value,
         ]),
       );
+      const f = fixture(routes.find((route) => route.path === entry.path)!);
+      const input = request(entry.path, padded);
+      const route = [
+        ...matchRoutes,
+        ...ratingRoutes,
+        ...navigationRoutes,
+        ...wagerRoutes,
+      ].find((route) => route.path === entry.path)!;
       assert.deepEqual(
         (
           await prepareGameplayRoute(
-            request(entry.path, padded),
-            [
-              ...matchRoutes,
-              ...ratingRoutes,
-              ...navigationRoutes,
-              ...wagerRoutes,
-            ].find((route) => route.path === entry.path)!,
+            input,
+            route.bindRequest({
+              request: input,
+              env: TELEGRAM_TEST_ENV,
+              ctx: f.context,
+              dependencies: f.dependencies,
+              pathname: entry.path,
+              identity: { uid },
+              repository: f.dependencies.repository!,
+            }),
           )
         ).body,
         entry.body,
       );
+      assert.deepEqual(f.effects, []);
     });
   }
 });

@@ -164,6 +164,7 @@ function ratingRepository(
       throw new Error("unexpected-profile-ownership-read");
     },
     readRatingUpdate: async () => data,
+    readRatingUpdates: async (operationIds) => operationIds.map(() => data),
     hasCompletedRatingUpdate: async () => data?.status === "done",
     tryAcquireRatingLease: async () => ({ status: "busy", data: null }),
   };

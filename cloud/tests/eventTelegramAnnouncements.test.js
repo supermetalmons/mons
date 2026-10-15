@@ -201,7 +201,8 @@ const createEventTelegramProjector = (dependencies = {}) => {
         rawState?.endedAnnouncementArmed === true &&
         !rawState?.endedText
           ? await resolveEndedMatchResults(eventData, {
-              readRatingUpdate: async () => null,
+              readRatingUpdates: async (operationIds) =>
+                operationIds.map(() => null),
             })
           : {};
       const projection = buildEventTelegramProjection({
@@ -1501,15 +1502,15 @@ test("loads and renders valid completed scores or matchup-only fallbacks", async
 
   for (const [name, ratingResult, scores] of cases) {
     await t.test(name, async () => {
-      const paths = [];
+      const reads = [];
       const result = await loadEndedMatchResults(eventData, {
-        readRatingUpdate: async (id) => {
-          paths.push(id);
-          return ratingResult;
+        readRatingUpdates: async (ids) => {
+          reads.push(ids);
+          return ids.map(() => ratingResult);
         },
       });
 
-      assert.deepEqual(paths, ["auto_1__auto_1"]);
+      assert.deepEqual(reads, [["auto_1__auto_1"]]);
       assert.deepEqual(result, {
         "round:0:0_0": scores
           ? { status: "scored", hostScore: scores[0], guestScore: scores[1] }
@@ -1521,6 +1522,62 @@ test("loads and renders valid completed scores or matchup-only fallbacks", async
       );
     });
   }
+});
+
+test("loads all eligible round and third-place scores in one batch", async () => {
+  const eventData = buildEndedEvent();
+  eventData.rounds[0].matches["0_3"] = {
+    inviteId: "auto_dq",
+    winnerDisqualified: true,
+  };
+  eventData.rounds[0].matches["0_4"] = {
+    inviteId: "auto_incomplete",
+    hostLoginUid: "alice-login",
+  };
+  const ratings = new Map(
+    [
+      ["auto_1", "alice-login", "dan-login", 12, 5],
+      ["auto_2", "carol-login", "bob-login", 8, 3],
+      ["auto_3", "alice-login", "carol-login", 9, 7],
+      ["auto_4", "dan-login", "bob-login", 4, 6],
+    ].map(
+      ([
+        inviteId,
+        playerId,
+        opponentId,
+        playerManaPoints,
+        opponentManaPoints,
+      ]) => [
+        `${inviteId}__${inviteId}`,
+        {
+          status: "done",
+          inviteId,
+          matchId: inviteId,
+          playerId,
+          opponentId,
+          playerManaPoints,
+          opponentManaPoints,
+        },
+      ],
+    ),
+  );
+  const reads = [];
+  const results = await loadEndedMatchResults(eventData, {
+    readRatingUpdates: async (operationIds) => {
+      reads.push(operationIds);
+      return operationIds.map(
+        (operationId) => ratings.get(operationId) ?? null,
+      );
+    },
+  });
+  assert.deepEqual(reads, [
+    ["auto_1__auto_1", "auto_2__auto_2", "auto_3__auto_3", "auto_4__auto_4"],
+  ]);
+  assert.deepEqual(results, {
+    ...ENDED_MATCH_RESULTS,
+    "round:0:0_3": { status: "disqualified" },
+    "round:0:0_4": { status: "unavailable" },
+  });
 });
 
 test("does not load rating results for disqualified matches", async () => {
@@ -1540,7 +1597,7 @@ test("does not load rating results for disqualified matches", async () => {
       },
     }),
     {
-      readRatingUpdate() {
+      readRatingUpdates() {
         throw new Error("DQ matches must not load rating results");
       },
     },

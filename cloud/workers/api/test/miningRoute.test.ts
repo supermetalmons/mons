@@ -12,7 +12,6 @@ import type {
   MiningProfile,
   MiningRepository,
 } from "../src/miningRepository.ts";
-import type { ProfileOwnershipSnapshot } from "../src/profileOwnership.ts";
 import { TELEGRAM_TEST_ENV, withProfileControl } from "./testEnv.ts";
 
 const NOW_MS = Date.UTC(2026, 7, 18, 12);
@@ -65,47 +64,11 @@ function profile(
   return { profileId: "profile-1", mining, commitMining };
 }
 
-function ownershipSnapshot(
-  profileId: string | null = "profile-1",
-): ProfileOwnershipSnapshot {
-  return {
-    canonicalProfileIdByProfileId: new Map(),
-    loginOwnerByUid: new Map([
-      [identity.uid, profileId ? { profileId, revision: 1 } : null],
-    ]),
-    loginUidsByProfileId: new Map(
-      profileId ? [[profileId, [identity.uid]]] : [],
-    ),
-    profileById: new Map(
-      profileId
-        ? [
-            [
-              profileId,
-              {
-                profile: {
-                  aura: "",
-                  emoji: "",
-                  eth: "",
-                  profileId,
-                  rating: 1500,
-                  sol: "",
-                  username: "",
-                },
-                revision: 1,
-              },
-            ],
-          ]
-        : [],
-    ),
-  };
-}
-
 function repository(
   overrides: Partial<MiningRepository> = {},
 ): MiningRepository {
   return {
-    getProfileSnapshot: async () => profile(),
-    readProfileOwnershipSnapshot: async () => ownershipSnapshot(),
+    getOwnedProfileSnapshot: async () => profile(),
     ...overrides,
   };
 }
@@ -233,7 +196,7 @@ test("freezes mining before rate limiting or repository work", async () => {
   const mine = request(mineRequest());
   const response = await handleMiningRoute(mine, frozenEnv, ctx, {
     repository: repository({
-      getProfileSnapshot: async () => {
+      getOwnedProfileSnapshot: async () => {
         repositoryCalls++;
         return profile();
       },
@@ -255,7 +218,7 @@ test("freezes mining before rate limiting or repository work", async () => {
 test("validates bounded request bodies before repository access", async () => {
   let repositoryCalls = 0;
   const testRepository = repository({
-    getProfileSnapshot: async () => {
+    getOwnedProfileSnapshot: async () => {
       repositoryCalls++;
       return profile();
     },
@@ -298,7 +261,7 @@ test("preserves numeric material normalization", async () => {
     {
       now: () => NOW_MS,
       repository: repository({
-        getProfileSnapshot: async () =>
+        getOwnedProfileSnapshot: async () =>
           profile(undefined, async (mining) => {
             written = mining;
             return "updated";
@@ -323,7 +286,7 @@ test("preserves every business failure response", async () => {
     {
       now: () => NOW_MS,
       repository: repository({
-        getProfileSnapshot: async () => {
+        getOwnedProfileSnapshot: async () => {
           profileReads++;
           return profile();
         },
@@ -344,27 +307,12 @@ test("preserves every business failure response", async () => {
     {
       now: () => NOW_MS,
       repository: repository({
-        readProfileOwnershipSnapshot: async () => ownershipSnapshot(null),
+        getOwnedProfileSnapshot: async () => null,
       }),
       verifyIdentity,
     },
   );
   assert.deepEqual(await responseJson(missing), {
-    ok: false,
-    reason: "profile-not-found",
-  });
-
-  const missingSnapshot = await handleMiningRoute(
-    request(mineRequest()),
-    envWithRateLimit(),
-    ctx,
-    {
-      now: () => NOW_MS,
-      repository: repository({ getProfileSnapshot: async () => null }),
-      verifyIdentity,
-    },
-  );
-  assert.deepEqual(await responseJson(missingSnapshot), {
     ok: false,
     reason: "profile-not-found",
   });
@@ -380,7 +328,7 @@ test("preserves every business failure response", async () => {
     {
       now: () => NOW_MS,
       repository: repository({
-        getProfileSnapshot: async () => profile(alreadyMinedState),
+        getOwnedProfileSnapshot: async () => profile(alreadyMinedState),
       }),
       verifyIdentity,
     },
@@ -421,8 +369,8 @@ test("writes exact first and subsequent mining snapshots", async () => {
       {
         now: () => NOW_MS,
         repository: repository({
-          getProfileSnapshot: async (profileId) => {
-            assert.equal(profileId, "profile-1");
+          getOwnedProfileSnapshot: async (loginUid) => {
+            assert.equal(loginUid, identity.uid);
             return profile(state, async (mining) => {
               updates.push(mining);
               return "updated";
@@ -457,7 +405,6 @@ test("re-reads after conflicts and bounds optimistic retries", async () => {
     materials: materials(1, 1, 1, 1, 1),
   };
   const input = mineRequest(state);
-  let ownershipReads = 0;
   let reads = 0;
   let writes = 0;
   const recovered = await handleMiningRoute(
@@ -467,7 +414,8 @@ test("re-reads after conflicts and bounds optimistic retries", async () => {
     {
       now: () => NOW_MS,
       repository: repository({
-        getProfileSnapshot: async () => {
+        getOwnedProfileSnapshot: async (loginUid) => {
+          assert.equal(loginUid, identity.uid);
           reads++;
           return profile(
             {
@@ -483,16 +431,11 @@ test("re-reads after conflicts and bounds optimistic retries", async () => {
             },
           );
         },
-        readProfileOwnershipSnapshot: async () => {
-          ownershipReads++;
-          return ownershipSnapshot();
-        },
       }),
       verifyIdentity,
     },
   );
   assert.equal(recovered.status, 200);
-  assert.equal(ownershipReads, 1);
   assert.equal(reads, 3);
   assert.equal(writes, 3);
   assert.equal(
@@ -510,7 +453,8 @@ test("re-reads after conflicts and bounds optimistic retries", async () => {
       logFailure: (kind) => logged.push(kind),
       now: () => NOW_MS,
       repository: repository({
-        getProfileSnapshot: async () => profile(state, async () => "conflict"),
+        getOwnedProfileSnapshot: async () =>
+          profile(state, async () => "conflict"),
       }),
       verifyIdentity,
     },
@@ -533,7 +477,7 @@ test("fails closed when canonical profile ownership is unavailable", async () =>
       logFailure: (kind) => logged.push(kind),
       now: () => NOW_MS,
       repository: repository({
-        readProfileOwnershipSnapshot: async () => {
+        getOwnedProfileSnapshot: async () => {
           throw new Error("profile-repository-unavailable");
         },
       }),
@@ -547,4 +491,54 @@ test("fails closed when canonical profile ownership is unavailable", async () =>
     message: "profile-ownership-unavailable",
   });
   assert.deepEqual(logged, ["profile-ownership-unavailable"]);
+});
+
+test("rechecks current ownership after a mining conflict", async () => {
+  for (const nextOwner of [null, "profile-2"]) {
+    const loginUids: string[] = [];
+    const writes: string[] = [];
+    const response = await handleMiningRoute(
+      request(mineRequest()),
+      envWithRateLimit(),
+      ctx,
+      {
+        now: () => NOW_MS,
+        verifyIdentity,
+        repository: repository({
+          getOwnedProfileSnapshot: async (loginUid) => {
+            loginUids.push(loginUid);
+            if (loginUids.length === 1) {
+              return profile(undefined, async () => {
+                writes.push("profile-1");
+                return "conflict";
+              });
+            }
+            if (nextOwner === null) return null;
+            return {
+              ...profile(undefined, async () => {
+                writes.push(nextOwner);
+                return "updated";
+              }),
+              profileId: nextOwner,
+            };
+          },
+        }),
+      },
+    );
+    assert.equal(response.status, 200);
+    assert.deepEqual(loginUids, [identity.uid, identity.uid]);
+    assert.deepEqual(
+      writes,
+      nextOwner ? ["profile-1", nextOwner] : ["profile-1"],
+    );
+    assert.deepEqual(
+      await responseJson(response),
+      nextOwner
+        ? {
+            ok: true,
+            mining: { lastRockDate: "2026-08-18", materials: materials(1) },
+          }
+        : { ok: false, reason: "profile-not-found" },
+    );
+  }
 });
