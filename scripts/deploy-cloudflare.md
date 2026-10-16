@@ -64,6 +64,14 @@ npm run test:api:runtime -- automatchQueriesD1.test.ts recoveryOutboxOrderingMig
 
 The Telegram plan searches its due index without a temporary ordering B-tree. The profile plan searches its due index in all four branches without branch-level ordering B-trees; the final union sort is intentional and bounded to four times the query limit. For incident diagnosis, use the exact expanded queries captured by `observeReads()` in the runtime tests rather than a simplified `ORDER BY record_key`. Retain these compatible indexes on rollback and never clear outboxes to verify them.
 
+## Prize-selection index removal
+
+`event-migrations/0007_drop_unused_prize_selection_profile_index.sql` removes only the unused nonunique `idx_event_prize_selections_profile` index. Supported selection queries continue using the `(event_id, profile_id)` primary key. The migration preserves records, constraints, admissions, leases, and compatibility with older Workers; it does not require a write freeze, Queue pause, or drain.
+
+Validate `eventPrizeSelectionIndexMigration.test.ts` and the affected event suites before release. Inspect the remote migration list and index definition, and apply only when this is the sole reviewed pending event migration. Prepare any accompanying Worker candidate first, apply the migration, verify index absence, primary-key presence, and `PRAGMA foreign_key_check`, then promote the candidate and run the standard smoke plus authenticated `--require-events` checks.
+
+Worker rollback can retain the index's absence. If an external query requires it, restore it with a new forward migration creating `idx_event_prize_selections_profile ON event_prize_selections(profile_id, event_id)`. Do not edit applied migrations or restore the event database independently.
+
 ## Canonical operators
 
 Status and inspection commands are read-only and use Cloudflare credentials. Completed migration executors have been removed; the inspection command accepts only one explicit domain.

@@ -28,6 +28,7 @@ test("recovery failure logs allowlisted identity and bounded cause details", () 
     operationId: "invite__match",
     profileId: "profile-1",
     loginUid: "login-1",
+    outboxId: "ep_outbox-1",
     record: { secret: "private" },
   };
   reportRecoveryFailure({ error: (value) => logs.push(value) }, entry, error);
@@ -36,6 +37,7 @@ test("recovery failure logs allowlisted identity and bounded cause details", () 
     operationId: "invite__match",
     profileId: "profile-1",
     loginUid: "login-1",
+    outboxId: "ep_outbox-1",
     code: "claim-failed",
     error: {
       name: "Error",
@@ -72,6 +74,7 @@ test("recovery failure logs omit malformed IDs and raw non-Error payloads", () =
         inviteId: value,
         operationId: value,
         loginUid: value,
+        outboxId: value,
       },
       { token: "private" },
     );

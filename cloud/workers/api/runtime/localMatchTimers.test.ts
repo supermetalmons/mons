@@ -361,7 +361,7 @@ describe("local timer cohorts", () => {
       const request = { ...input, eventId: "local-timer-event" };
       expect(await store.claimTimer(request)).toEqual({ ok: true });
       const committed = store.readPair(input);
-      const effects = store.listDueEffects();
+      const effects = store.effects.listDueEffects();
       const alarm = await ctx.storage.getAlarm();
       expect(committed.playerMatch?.timer).toBe(MATCH_TIMER_TERMINAL);
       expect(committed.claim).toMatchObject({
@@ -374,7 +374,7 @@ describe("local timer cohorts", () => {
       clock += 1_000;
       expect(await store.claimTimer(request)).toEqual({ ok: true });
       expect(store.readPair(input)).toEqual(committed);
-      expect(store.listDueEffects()).toEqual(effects);
+      expect(store.effects.listDueEffects()).toEqual(effects);
       expect(await ctx.storage.getAlarm()).toBe(alarm);
       expect(markers(ctx.storage)).toEqual(saved);
       expectNoD1(settings);

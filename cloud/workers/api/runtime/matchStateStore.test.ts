@@ -520,7 +520,7 @@ describe("canonical match state storage", () => {
         "something is wrong with the game state.",
       );
       expect(deleted).toBe(2);
-      expect(store.nextEffectAt()).toBeNull();
+      expect(store.effects.nextEffectAt()).toBeNull();
     });
   });
 
@@ -542,7 +542,7 @@ describe("canonical match state storage", () => {
         playerId: input.playerId,
       });
       expect(await ctx.storage.getAlarm()).toBe(future);
-      expect(store.listDueEffects()).toMatchObject([
+      expect(store.effects.listDueEffects()).toMatchObject([
         {
           eventId: "event-one",
           sourceKey: `timer:${input.inviteId}:${input.matchId}`,
@@ -561,16 +561,16 @@ describe("canonical match state storage", () => {
         await store.claimTimer({ ...input, eventId: "event-one" }),
       ).toEqual({ ok: true });
       expect(store.readPair(input).revision).toBe(pair.revision);
-      const effect = store.listDueEffects()[0];
-      await store.retryEffect(effect.effectId, future + 60_000);
-      expect(store.listDueEffects()).toEqual([]);
-      expect(store.listDueEffects(future + 60_000)[0].attempts).toBe(1);
-      store.completeEffect(effect.effectId);
-      expect(store.nextEffectAt()).toBeNull();
+      const effect = store.effects.listDueEffects()[0];
+      await store.effects.retryEffect(effect.effectId, future + 60_000);
+      expect(store.effects.listDueEffects()).toEqual([]);
+      expect(store.effects.listDueEffects(future + 60_000)[0].attempts).toBe(1);
+      store.effects.completeEffect(effect.effectId);
+      expect(store.effects.nextEffectAt()).toBeNull();
       expect(
         await store.claimTimer({ ...input, eventId: "event-one" }),
       ).toEqual({ ok: true });
-      expect(store.listDueEffects(future + 60_000)).toEqual([]);
+      expect(store.effects.listDueEffects(future + 60_000)).toEqual([]);
     });
   });
 
@@ -595,8 +595,59 @@ describe("canonical match state storage", () => {
         "injected-alarm-failure",
       );
       expect(store.readPair(input)).toEqual(before);
-      expect(store.nextEffectAt()).toBeNull();
+      expect(store.effects.nextEffectAt()).toBeNull();
       expect(await ctx.storage.getAlarm()).toBe(originalAlarm);
+    });
+  });
+
+  it("rolls back an effect retry and alarm together if alarm persistence fails", async () => {
+    const { room, input, records } = fixture();
+    await runInDurableObject(room, async (_instance, ctx) => {
+      let failAlarm = false;
+      const store = new MatchStateStore(
+        ctx.storage,
+        options({
+          async scheduleAlarm(atMs, transaction) {
+            await transaction.setAlarm(atMs);
+            if (failAlarm) throw new Error("injected-alarm-failure");
+          },
+        }),
+      );
+      records[0].value.timer = formatMatchTimer(game.turnNumber, future - 1);
+      store.createRecords({ ...input, records });
+      await store.claimTimer(input);
+      const before = store.effects.listDueEffects();
+      const originalAlarm = await ctx.storage.getAlarm();
+      failAlarm = true;
+      await expect(
+        store.effects.retryEffect(before[0].effectId, future + 60_000),
+      ).rejects.toThrow("injected-alarm-failure");
+      expect(store.effects.listDueEffects()).toEqual(before);
+      expect(store.effects.nextEffectAt()).toBe(future);
+      expect(await ctx.storage.getAlarm()).toBe(originalAlarm);
+    });
+  });
+
+  it("rejects a conflicting effect replay without changing the claim, outbox or alarm", async () => {
+    const { room, input, records } = fixture();
+    await runInDurableObject(room, async (_instance, ctx) => {
+      const store = new MatchStateStore(ctx.storage, options());
+      records[0].value.timer = formatMatchTimer(game.turnNumber, future - 1);
+      store.createRecords({ ...input, records });
+      await store.claimTimer({ ...input, eventId: "event-one" });
+      const pair = store.readPair(input);
+      const effects = store.effects.listDueEffects();
+      const alarm = await ctx.storage.getAlarm();
+      await expect(
+        store.claimTimer({ ...input, eventId: "event-two" }),
+      ).rejects.toMatchObject({
+        status: 409,
+        code: "failed-precondition",
+        message: "match-state-effect-conflict",
+      });
+      expect(store.readPair(input)).toEqual(pair);
+      expect(store.effects.listDueEffects()).toEqual(effects);
+      expect(await ctx.storage.getAlarm()).toBe(alarm);
     });
   });
 
@@ -650,7 +701,7 @@ describe("canonical match state storage", () => {
         const request = { ...input, eventId: "event-one" };
         expect(await store.claimTimer(request)).toEqual({ ok: true });
         const committed = store.readPair(input);
-        const effects = store.listDueEffects();
+        const effects = store.effects.listDueEffects();
         const alarm = await ctx.storage.getAlarm();
         expect(committed.playerMatch?.timer).toBe(MATCH_TIMER_TERMINAL);
 
@@ -658,11 +709,11 @@ describe("canonical match state storage", () => {
           "marker-cleanup-failed",
         );
         expect(store.readPair(input)).toEqual(committed);
-        expect(store.listDueEffects()).toEqual(effects);
+        expect(store.effects.listDueEffects()).toEqual(effects);
         expect(await store.claimTimer(request)).toEqual({ ok: true });
         expect(cleanupAttempts).toBe(2);
         expect(store.readPair(input)).toEqual(committed);
-        expect(store.listDueEffects()).toEqual(effects);
+        expect(store.effects.listDueEffects()).toEqual(effects);
         expect(await ctx.storage.getAlarm()).toBe(alarm);
         for (const [playerId, opponentId] of [
           [input.playerId, input.opponentId],
@@ -734,8 +785,8 @@ describe("canonical match state storage", () => {
           } else {
             expect(deletePair).not.toHaveBeenCalled();
           }
-          expect(store.nextEffectAt()).toBeNull();
-          expect(store.listDueEffects()).toEqual([]);
+          expect(store.effects.nextEffectAt()).toBeNull();
+          expect(store.effects.listDueEffects()).toEqual([]);
           expect(await ctx.storage.getAlarm()).toBe(alarm);
         });
       });
@@ -806,7 +857,7 @@ describe("canonical match state storage", () => {
       await expect(store.claimTimer(input)).rejects.toThrow(
         "game is already over.",
       );
-      expect(store.nextEffectAt()).toBeNull();
+      expect(store.effects.nextEffectAt()).toBeNull();
     });
   });
 

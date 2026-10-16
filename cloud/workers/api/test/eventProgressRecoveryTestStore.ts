@@ -69,5 +69,24 @@ export function createEventProgressRecoveryTestStore(
       checkpoints.delete(observed.outboxId);
       return true;
     },
+    async deadLetter(observed, deadAtMs) {
+      const current = await read(observed.outboxId);
+      if (current?.recordJson !== observed.recordJson) return false;
+      await repository.commitEventPlan([
+        {
+          kind: "progress-dead",
+          outboxId: observed.outboxId,
+          value: {
+            deadAtMs,
+            originalRecord:
+              observed.record === undefined ? null : observed.record,
+            reason: "invalid-event-progress-outbox",
+          },
+        },
+        { kind: "progress-outbox", outboxId: observed.outboxId, value: null },
+      ]);
+      checkpoints.delete(observed.outboxId);
+      return true;
+    },
   };
 }

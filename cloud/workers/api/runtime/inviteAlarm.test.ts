@@ -15,7 +15,7 @@ type AlarmComponents = {
     alarm: () => Promise<void>;
     nextAlarm: () => number | null;
   };
-  matchState: { nextEffectAt: () => number | null };
+  matchState: { effects: { nextEffectAt: () => number | null } };
   matchEffects: { dispatch: () => Promise<void> };
 };
 
@@ -72,7 +72,7 @@ it("refreshes sockets and expiry before awaiting effects, then schedules the ear
       phases.push("match");
     };
     target.matchSync.nextAlarm = () => now + 4_000;
-    target.matchState.nextEffectAt = () => now + 60_000;
+    target.matchState.effects.nextEffectAt = () => now + 60_000;
     target.matchEffects.dispatch = async () => {
       phases.push("effects");
       started();
@@ -131,7 +131,7 @@ it("finishes metadata before refreshing matches without awaiting blocked wagers"
       matchStarted.resolve();
     };
     target.matchSync.nextAlarm = () => null;
-    target.matchState.nextEffectAt = () => null;
+    target.matchState.effects.nextEffectAt = () => null;
     target.matchEffects.dispatch = async () => {
       phases.push("effects");
     };
@@ -191,7 +191,7 @@ for (const failed of [
       target.inviteChannels.nextAlarm = () => deadline;
       target.matchSync.alarm = () => run("match");
       target.matchSync.nextAlarm = () => deadline + 1_000;
-      target.matchState.nextEffectAt = () => deadline + 60_000;
+      target.matchState.effects.nextEffectAt = () => deadline + 60_000;
       target.matchEffects.dispatch = () => run("effects");
       await expect(instance.alarm()).rejects.toBe(error);
       expect(phases).toEqual([
@@ -220,7 +220,7 @@ it("schedules surviving deadlines when another component cannot read its deadlin
     };
     target.matchSync.alarm = async () => {};
     target.matchSync.nextAlarm = () => deadline + 5_000;
-    target.matchState.nextEffectAt = () => deadline + 60_000;
+    target.matchState.effects.nextEffectAt = () => deadline + 60_000;
     target.matchEffects.dispatch = async () => {};
     await expect(instance.alarm()).rejects.toBe(error);
     expect(await state.storage.getAlarm()).toBe(deadline);

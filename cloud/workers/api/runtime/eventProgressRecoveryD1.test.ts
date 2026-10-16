@@ -13,6 +13,7 @@ import {
   type EventProgressRecoveryStore,
 } from "../src/eventProgressRecoveryD1.ts";
 import { applyEventTestMigrations } from "./eventTestMigrations.ts";
+import { observeD1FailureDatabase } from "./d1FailureTestUtils.ts";
 
 const testEnv = env as Env & { TEST_EVENT_D1_MIGRATIONS: D1Migration[] };
 const eventId = "recovery-deadline-event";
@@ -83,6 +84,34 @@ async function withStore(
   } finally {
     await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
   }
+}
+
+async function seedMalformedOutbox(record: Record<string, unknown>) {
+  const plan = await seedOutbox();
+  await testEnv.EVENT_DB.prepare(
+    "UPDATE event_progress_outboxes SET record_json = ? WHERE status = 'pending' AND outbox_id = ?",
+  )
+    .bind(JSON.stringify(record, null, 2), plan.outboxId)
+    .run();
+  return plan;
+}
+
+async function storedOutboxes() {
+  return (
+    await testEnv.EVENT_DB.prepare(
+      "SELECT * FROM event_progress_outboxes ORDER BY status, outbox_id",
+    ).all<Record<string, unknown>>()
+  ).results;
+}
+
+async function seedDeadOutbox(outboxId: string) {
+  await testEnv.EVENT_DB.prepare(
+    `INSERT INTO event_progress_outboxes (
+       status, outbox_id, event_id, run_at_ms, last_queued_at_ms, record_json
+     ) VALUES ('dead', ?, NULL, NULL, 50, ?)`,
+  )
+    .bind(outboxId, '{ "originalRecord": {"previous":true}, "deadAtMs":50 }')
+    .run();
 }
 
 describe("event progress recovery checkpoints", () => {
@@ -223,6 +252,171 @@ describe("event progress recovery checkpoints", () => {
   });
 
   it.each([
+    "valid",
+    "malformed",
+    "reformatted",
+    "reordered",
+    "deleted",
+  ] as const)(
+    "does not quarantine a snapshot concurrently %s or overwrite its archive",
+    async (replacement) => {
+      const malformed = { schemaVersion: 2, eventId };
+      const plan = await seedMalformedOutbox(malformed);
+      await seedDeadOutbox(plan.outboxId);
+      const previousDead = (await storedOutboxes())[0];
+      const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB);
+      const recordJson =
+        replacement === "valid"
+          ? JSON.stringify(plan.outbox)
+          : replacement === "malformed"
+            ? JSON.stringify({ ...malformed, replaced: true })
+            : replacement === "reordered"
+              ? JSON.stringify({ eventId, schemaVersion: 2 })
+              : JSON.stringify(malformed);
+      try {
+        const observed = observeD1FailureDatabase(testEnv.EVENT_DB, {
+          async beforeWriteBatch() {
+            await testEnv.EVENT_DB.prepare(
+              replacement === "deleted"
+                ? "DELETE FROM event_progress_outboxes WHERE status = 'pending' AND outbox_id = ?"
+                : "UPDATE event_progress_outboxes SET record_json = ? WHERE status = 'pending' AND outbox_id = ?",
+            )
+              .bind(
+                ...(replacement === "deleted"
+                  ? [plan.outboxId]
+                  : [recordJson, plan.outboxId]),
+              )
+              .run();
+          },
+        });
+        const store = createEventProgressRecoveryStore(
+          observed.database,
+          admission,
+        );
+        const snapshot = (await store.read(plan.outboxId))!;
+        expect(snapshot.recordJson).toBe(JSON.stringify(malformed, null, 2));
+        expect(await store.deadLetter(snapshot, 500)).toBe(false);
+        expect(observed.writeBatches).toHaveLength(1);
+        const rows = await storedOutboxes();
+        expect(rows[0]).toEqual(previousDead);
+        if (replacement === "deleted") {
+          expect(rows).toHaveLength(1);
+        } else {
+          expect(rows).toHaveLength(2);
+          expect(rows[1].record_json).toBe(recordJson);
+        }
+      } finally {
+        await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
+      }
+    },
+  );
+
+  it.each([false, true])(
+    "quarantines an exact snapshot atomically with an existing archive: %s",
+    async (existingArchive) => {
+      const originalRecord = { schemaVersion: 2, eventId, retained: "value" };
+      const plan = await seedMalformedOutbox(originalRecord);
+      if (existingArchive) {
+        await seedDeadOutbox(plan.outboxId);
+        await testEnv.EVENT_DB.prepare(
+          "UPDATE event_progress_outboxes SET next_reconcile_at_ms = 3_600_000 WHERE status = 'dead' AND outbox_id = ?",
+        )
+          .bind(plan.outboxId)
+          .run();
+      }
+      await withStore(async (store) => {
+        const snapshot = (await store.read(plan.outboxId))!;
+        expect(await store.deadLetter(snapshot, 500)).toBe(true);
+        expect(await store.read(plan.outboxId)).toBeNull();
+        const [archived] = await storedOutboxes();
+        expect(archived).toEqual({
+          outbox_id: plan.outboxId,
+          event_id: eventId,
+          status: "dead",
+          run_at_ms: null,
+          last_queued_at_ms: 500,
+          record_json: JSON.stringify({
+            deadAtMs: 500,
+            originalRecord,
+            reason: "invalid-event-progress-outbox",
+          }),
+          next_reconcile_at_ms: 0,
+        });
+        expect(await store.deadLetter(snapshot, 600)).toBe(false);
+        expect(await storedOutboxes()).toEqual([archived]);
+      });
+    },
+  );
+
+  it.each([
+    { eventId: "other-event", expectedEventId: "other-event" },
+    { eventId: "missing-event", expectedEventId: null },
+    { eventId: " bad-event ", expectedEventId: null },
+    { eventId: undefined, expectedEventId: null },
+  ])(
+    "retains the legacy archive association for payload event $eventId",
+    async ({ eventId: originalEventId, expectedEventId }) => {
+      await seedEvent("other-event");
+      const originalRecord = {
+        schemaVersion: 2,
+        ...(originalEventId === undefined ? {} : { eventId: originalEventId }),
+      };
+      const plan = await seedMalformedOutbox(originalRecord);
+      await withStore(async (store) => {
+        expect(
+          await store.deadLetter((await store.read(plan.outboxId))!, 500),
+        ).toBe(true);
+      });
+      expect((await storedOutboxes())[0].event_id).toBe(expectedEventId);
+    },
+  );
+
+  it.each([" padded-id ", "bad#key", "bad\nkey"])(
+    "rejects malformed outbox ID %j without changing or normalizing it",
+    async (outboxId) => {
+      const plan = await seedMalformedOutbox({ schemaVersion: 2 });
+      await testEnv.EVENT_DB.prepare(
+        "UPDATE event_progress_outboxes SET outbox_id = ? WHERE outbox_id = ?",
+      )
+        .bind(outboxId, plan.outboxId)
+        .run();
+      const before = await storedOutboxes();
+      await withStore(async (store) => {
+        const [snapshot] = await store.listDue(0, 1);
+        expect(snapshot.outboxId).toBe(outboxId);
+        await expect(store.deadLetter(snapshot, 500)).rejects.toThrow(
+          "invalid-event-path",
+        );
+      });
+      expect(await storedOutboxes()).toEqual(before);
+    },
+  );
+
+  it("rolls back archive replacement when pending deletion fails", async () => {
+    const plan = await seedMalformedOutbox({ schemaVersion: 2 });
+    await seedDeadOutbox(plan.outboxId);
+    const before = await storedOutboxes();
+    await testEnv.EVENT_DB.prepare(
+      `CREATE TRIGGER reject_progress_quarantine_delete
+       BEFORE DELETE ON event_progress_outboxes
+       WHEN OLD.status = 'pending'
+       BEGIN SELECT RAISE(ABORT, 'test-quarantine-delete-failed'); END`,
+    ).run();
+    try {
+      await withStore(async (store) => {
+        await expect(
+          store.deadLetter((await store.read(plan.outboxId))!, 500),
+        ).rejects.toThrow("test-quarantine-delete-failed");
+      });
+      expect(await storedOutboxes()).toEqual(before);
+    } finally {
+      await testEnv.EVENT_DB.prepare(
+        "DROP TRIGGER reject_progress_quarantine_delete",
+      ).run();
+    }
+  });
+
+  it.each([
     ["event_id", "another-event"],
     ["status", "dead"],
     ["run_at_ms", 30_000_000],
@@ -283,7 +477,7 @@ describe("event progress recovery checkpoints", () => {
     });
   });
 
-  it("rejects checkpoint and removal writes after the admission expires", async () => {
+  it("rejects recovery writes after the admission is released", async () => {
     const plan = await seedOutbox();
     const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB);
     const store = createEventProgressRecoveryStore(testEnv.EVENT_DB, admission);
@@ -291,10 +485,11 @@ describe("event progress recovery checkpoints", () => {
     await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
     await expect(store.checkpoint(observed, 3_600_000)).rejects.toThrow();
     await expect(store.remove(observed)).rejects.toThrow();
+    await expect(store.deadLetter(observed, 500)).rejects.toThrow();
     expect(await store.read(plan.outboxId)).toEqual(observed);
   });
 
-  it("rejects stale checkpoint and removal writes after the event store freezes", async () => {
+  it("rejects stale recovery writes after the event store freezes", async () => {
     const plan = await seedOutbox();
     const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB);
     const store = createEventProgressRecoveryStore(testEnv.EVENT_DB, admission);
@@ -307,6 +502,24 @@ describe("event progress recovery checkpoints", () => {
     ).run();
     await expect(store.checkpoint(observed, 3_600_000)).rejects.toThrow();
     await expect(store.remove(observed)).rejects.toThrow();
+    await expect(store.deadLetter(observed, 500)).rejects.toThrow();
     expect(await store.read(plan.outboxId)).toEqual(observed);
+  });
+
+  it("rejects quarantine after its admission expires", async () => {
+    const plan = await seedMalformedOutbox({ schemaVersion: 2 });
+    const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB, {
+      nowMs: 0,
+      ttlMs: 1,
+    });
+    const store = createEventProgressRecoveryStore(testEnv.EVENT_DB, admission);
+    const snapshot = (await store.read(plan.outboxId))!;
+    const before = await storedOutboxes();
+    try {
+      await expect(store.deadLetter(snapshot, 500)).rejects.toThrow();
+      expect(await storedOutboxes()).toEqual(before);
+    } finally {
+      await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
+    }
   });
 });

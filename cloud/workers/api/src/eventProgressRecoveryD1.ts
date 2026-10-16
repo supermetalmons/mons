@@ -4,7 +4,13 @@ import {
   type EventWriteAdmission,
 } from "./eventD1.ts";
 import { eventWriteAdmissionGuard } from "./eventD1/guards.ts";
-import { decodeJson, exactKey, safeInteger } from "./eventD1/validation.ts";
+import {
+  decodeJson,
+  encodeJson,
+  exactKey,
+  isRecord,
+  safeInteger,
+} from "./eventD1/validation.ts";
 
 export type EventProgressRecoverySnapshot = {
   outboxId: string;
@@ -24,6 +30,10 @@ export type EventProgressRecoveryStore = {
     nextReconcileAtMs: number,
   ): Promise<boolean>;
   remove(snapshot: EventProgressRecoverySnapshot): Promise<boolean>;
+  deadLetter(
+    snapshot: EventProgressRecoverySnapshot,
+    deadAtMs: number,
+  ): Promise<boolean>;
 };
 
 type RecoveryRow = {
@@ -107,6 +117,59 @@ export function createEventProgressRecoveryStore(
           )
           .bind(exactKey(current.outboxId), current.recordJson),
       );
+    },
+    async deadLetter(current, deadAtMs) {
+      const outboxId = exactKey(current.outboxId);
+      if (!outboxId) throw new EventD1Failure("invalid-event-path");
+      const timestamp = safeInteger(deadAtMs);
+      const eventId = isRecord(current.record)
+        ? exactKey(current.record.eventId)
+        : "";
+      const deadRecord = encodeJson({
+        deadAtMs: timestamp,
+        originalRecord: current.record === undefined ? null : current.record,
+        reason: "invalid-event-progress-outbox",
+      });
+      const results = await db.batch([
+        eventWriteAdmissionGuard(db, admission),
+        db
+          .prepare(
+            `INSERT INTO event_progress_outboxes (
+               outbox_id, event_id, status, run_at_ms, last_queued_at_ms,
+               record_json
+             )
+             SELECT outbox_id, (
+               SELECT event_id FROM event_records WHERE event_id = ?
+             ), 'dead', NULL, ?, ?
+             FROM event_progress_outboxes
+             WHERE status = 'pending' AND outbox_id = ? AND record_json = ?
+             ON CONFLICT (status, outbox_id) DO UPDATE SET
+               event_id = excluded.event_id,
+               run_at_ms = NULL,
+               last_queued_at_ms = excluded.last_queued_at_ms,
+               record_json = excluded.record_json
+             RETURNING outbox_id`,
+          )
+          .bind(
+            eventId || null,
+            timestamp,
+            deadRecord,
+            outboxId,
+            current.recordJson,
+          ),
+        db
+          .prepare(
+            `DELETE FROM event_progress_outboxes
+             WHERE status = 'pending' AND outbox_id = ? AND record_json = ?
+             RETURNING outbox_id`,
+          )
+          .bind(outboxId, current.recordJson),
+      ]);
+      const archived = results[1]?.results.length;
+      const removed = results[2]?.results.length;
+      if (archived === 0 && removed === 0) return false;
+      if (archived === 1 && removed === 1) return true;
+      throw new EventD1Failure();
     },
   };
 }

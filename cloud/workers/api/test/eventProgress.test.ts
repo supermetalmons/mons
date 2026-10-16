@@ -382,6 +382,7 @@ test(
 );
 
 test("failed records cannot exhaust outbox or rating runners before the rest of the page", async () => {
+  const logs: Record<string, unknown>[] = [];
   const outboxes = await Promise.all(
     Array.from({ length: 10 }, async (_, index) => {
       if (index < 5) return [`bad-${index}`, { schemaVersion: 2 }] as const;
@@ -413,6 +414,7 @@ test("failed records cannot exhaust outbox or rating runners before the rest of 
   await assert.rejects(
     sweepEventProgress(workflowEnvironment({ onCreate: () => dispatched++ }), {
       now: () => 1_000,
+      logger: { error: (entry) => logs.push(JSON.parse(entry)) },
       repository: repository.value,
       scheduledRecovery: scheduledRecovery({}),
       ratingRepository: {
@@ -432,6 +434,16 @@ test("failed records cannot exhaust outbox or rating runners before the rest of 
   assert.equal(dispatched, 10);
   assert.equal(claimed.length, 10);
   assert.equal(done.length, 5);
+  assert.equal(logs.length, 10);
+  for (const source of ["rating", "outbox"]) {
+    assert.deepEqual(
+      logs
+        .filter((entry) => entry.source === source)
+        .map((entry) => entry.itemIndex)
+        .sort(),
+      [0, 1, 2, 3, 4],
+    );
+  }
 });
 
 for (const kind of ["start", "reminder"] as const) {
@@ -606,6 +618,43 @@ test(
     assert.deepEqual(current, plan.outbox);
   },
 );
+
+test("an outbox repaired after reread survives quarantine without a failure log", async () => {
+  const outbox = await validOutbox();
+  const malformed = { schemaVersion: 2 };
+  let current: Record<string, unknown> = malformed;
+  let reads = 0;
+  const logs: string[] = [];
+  const repository: EventProgressSweepRepository = {
+    readEvent: async () => null,
+    listDueEventProgressOutboxes: async () => [
+      { outboxId: outbox.plan.outboxId, record: malformed },
+    ],
+    readEventProgressOutbox: async () => {
+      reads++;
+      return current;
+    },
+    commitEventPlan: async () => assert.fail("must not archive repaired work"),
+  };
+  const recovery = createEventProgressRecoveryTestStore(repository);
+  const deadLetter = recovery.deadLetter;
+  recovery.deadLetter = async (snapshot, nowMs) => {
+    assert.equal(reads, 1);
+    assert.deepEqual(snapshot.record, malformed);
+    current = outbox.plan.outbox;
+    return deadLetter(snapshot, nowMs);
+  };
+  await sweepEventProgress(workflowEnvironment(), {
+    now: () => 2_000,
+    repository,
+    outboxRecovery: recovery,
+    ratingRepository: null,
+    scheduledRecovery: scheduledRecovery({}),
+    logger: { error: (entry) => logs.push(entry) },
+  });
+  assert.deepEqual(current, outbox.plan.outbox);
+  assert.deepEqual(logs, []);
+});
 
 test("scheduled-event sweep discovers both announcements and retains their first scheduling time", async () => {
   const eventId = "z3oj52Iiime";
@@ -1361,6 +1410,184 @@ test("recovers a finalized event rating when its outbox write was lost", async (
       sourceKey: "rating:invite-1:match-1",
     },
   );
+});
+
+for (const phase of ["claim", "quarantine", "enqueue", "cleanup"] as const) {
+  for (const loggerThrows of [false, true]) {
+    test(`rating ${phase} failures retain identity and context with throwing logger: ${loggerThrows}`, async () => {
+      const logs: Record<string, unknown>[] = [];
+      const failure = new Error(`rating-${phase}-failed`, {
+        cause: new Error("provider-failed"),
+      });
+      const record = ratingRecoveryRecords()[0];
+      if (phase === "quarantine") record.version = 2;
+      const repository = sweepRepository({}, () => {
+        if (phase === "enqueue") throw failure;
+      });
+      await assert.rejects(
+        sweepEventProgress(workflowEnvironment(), {
+          now: () => 2_000,
+          repository: repository.value,
+          scheduledRecovery: scheduledRecovery({}),
+          logger: {
+            error(entry) {
+              logs.push(JSON.parse(entry));
+              if (loggerThrows) throw new Error("logger-failed");
+            },
+          },
+          ratingRepository: {
+            listDueRatingEventProgress: async () => [record],
+            claimRatingEventProgress: async () => {
+              if (phase === "claim") throw failure;
+              return true;
+            },
+            markRatingEventProgress: async (_operationId, status) => {
+              if (
+                (phase === "quarantine" && status === "dead") ||
+                (phase === "cleanup" && status === "done")
+              )
+                throw failure;
+            },
+          },
+        }),
+        (error) => error === failure,
+      );
+      assert.deepEqual(logs, [
+        {
+          event: "event_progress_recovery_record_failed",
+          scope: "event-progress",
+          phase,
+          code: failure.message,
+          error: {
+            name: "Error",
+            message: failure.message,
+            cause: { name: "Error", message: "provider-failed" },
+          },
+          source: "rating",
+          itemIndex: 0,
+          eventId: record.eventId,
+          operationId: record.operationId,
+        },
+      ]);
+    });
+  }
+}
+
+for (const phase of ["inspect", "enqueue", "quarantine"] as const) {
+  for (const loggerThrows of [false, true]) {
+    test(`outbox ${phase} failures retain identity and context with throwing logger: ${loggerThrows}`, async () => {
+      const logs: Record<string, unknown>[] = [];
+      const failure = new Error(`outbox-${phase}-failed`, {
+        cause: new Error("x".repeat(300)),
+      });
+      const { plan } = await validOutbox();
+      const repository = sweepRepository({
+        [plan.outboxId]:
+          phase === "enqueue" ? plan.outbox : { schemaVersion: 2 },
+      });
+      const recovery = createEventProgressRecoveryTestStore(repository.value);
+      if (phase === "quarantine") {
+        recovery.deadLetter = async () => {
+          throw failure;
+        };
+      } else {
+        recovery.read = async () => {
+          throw failure;
+        };
+      }
+      await assert.rejects(
+        sweepEventProgress(workflowEnvironment(), {
+          now: () => 2_000,
+          repository: repository.value,
+          outboxRecovery: recovery,
+          ratingRepository: null,
+          scheduledRecovery: scheduledRecovery({}),
+          logger: {
+            error(entry) {
+              logs.push(JSON.parse(entry));
+              if (loggerThrows) throw new Error("logger-failed");
+            },
+          },
+        }),
+        (error) => error === failure,
+      );
+      assert.deepEqual(logs, [
+        {
+          event: "event_progress_recovery_record_failed",
+          scope: "event-progress",
+          phase,
+          code: failure.message,
+          error: {
+            name: "Error",
+            message: failure.message,
+            cause: {
+              name: "Error",
+              message: "x".repeat(256),
+              truncated: true,
+            },
+          },
+          source: "outbox",
+          itemIndex: 0,
+          outboxId: plan.outboxId,
+        },
+      ]);
+    });
+  }
+}
+
+test("malformed recovery identities and payloads are omitted from record failure logs", async () => {
+  const logs: Record<string, unknown>[] = [];
+  const failure = { privatePayload: "private" };
+  const repository = sweepRepository({
+    " bad#outbox ": { privatePayload: "private" },
+  });
+  const recovery = createEventProgressRecoveryTestStore(repository.value);
+  recovery.deadLetter = async () => {
+    throw failure;
+  };
+  const record = {
+    ...ratingRecoveryRecords()[0],
+    eventId: " bad#event ",
+    operationId: "bad#operation",
+  };
+  await assert.rejects(
+    sweepEventProgress(workflowEnvironment(), {
+      now: () => 2_000,
+      repository: repository.value,
+      outboxRecovery: recovery,
+      scheduledRecovery: scheduledRecovery({}),
+      logger: {
+        error(entry) {
+          logs.push(JSON.parse(entry));
+          throw new Error("logger-failed");
+        },
+      },
+      ratingRepository: {
+        listDueRatingEventProgress: async () => [record],
+        claimRatingEventProgress: async () => true,
+        markRatingEventProgress: async () => {
+          throw failure;
+        },
+      },
+    }),
+    (error) =>
+      error instanceof AggregateError &&
+      error.errors.length === 2 &&
+      error.errors.every((cause) => cause === failure),
+  );
+  assert.equal(logs.length, 2);
+  for (const entry of logs) {
+    assert.deepEqual(entry, {
+      event: "event_progress_recovery_record_failed",
+      scope: "event-progress",
+      phase: "quarantine",
+      code: "unknown",
+      error: { type: "object" },
+      source: entry.source,
+      itemIndex: 0,
+    });
+  }
+  assert.equal(JSON.stringify(logs).includes("private"), false);
 });
 
 type StepCall = { config: unknown; name: string };

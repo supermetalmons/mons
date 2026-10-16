@@ -110,7 +110,7 @@ export class InviteReactions
       dispatchEffects: () => this.matchEffects.dispatch(),
       inviteDeadline: () => this.inviteChannels.nextAlarm(),
       matchDeadline: () => this.matchSync.nextAlarm(),
-      effectDeadline: () => this.matchState.nextEffectAt(),
+      effectDeadline: () => this.matchState.effects.nextEffectAt(),
     });
     this.inviteReader = createInviteSourceReader(env);
     this.wagerReader = createWagerStateD1Store(env.PROFILE_DB).readInvite;
@@ -148,7 +148,7 @@ export class InviteReactions
       scheduleAlarm: (atMs, transaction) =>
         this.alarmCoordinator.schedule(atMs, transaction),
     });
-    this.matchEffects = new MatchEffectsDispatcher(this.matchState, {
+    this.matchEffects = new MatchEffectsDispatcher(this.matchState.effects, {
       deliver: createMatchEffectDelivery(env, (effect) =>
         this.matchState.cleanupLegacyTimerStarts(effect),
       ),

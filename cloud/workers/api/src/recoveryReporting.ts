@@ -3,7 +3,7 @@ import { isCanonicalLoginUid, isSafeRecordKey } from "./recordKeys.ts";
 
 export type RecoveryFailureContext = {
   event: string;
-  scope: "auth" | "profile-game" | "telegram";
+  scope: "auth" | "profile-game" | "telegram" | "event-progress";
   phase:
     | "inspect"
     | "repair"
@@ -12,12 +12,13 @@ export type RecoveryFailureContext = {
     | "quarantine"
     | "cleanup"
     | "sweep";
-  source?: "automatch" | "event" | "profile-link" | "rating";
+  source?: "automatch" | "event" | "profile-link" | "rating" | "outbox";
   itemIndex?: number;
   profileId?: string;
   inviteId?: string;
   eventId?: string;
   operationId?: string;
+  outboxId?: string;
   loginUid?: string;
   lockScope?: "cleanup";
 };
@@ -66,6 +67,7 @@ export function reportRecoveryFailure(
       "inviteId",
       "eventId",
       "operationId",
+      "outboxId",
     ] as const) {
       const value = context[key];
       if (

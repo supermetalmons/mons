@@ -346,7 +346,7 @@ it.each(["event", null])(
           ctx.storage,
           eventId,
         );
-        const pending = store.listDueEffects(now);
+        const pending = store.effects.listDueEffects(now);
         expect(pending).toHaveLength(1);
         const markers = localMarkers(ctx.storage);
         expect(markers).toHaveLength(1);
@@ -354,14 +354,14 @@ it.each(["event", null])(
           async () => {},
           store.cleanupLegacyTimerStarts.bind(store),
         );
-        await new MatchEffectsDispatcher(store, {
+        await new MatchEffectsDispatcher(store.effects, {
           deliver: f.deliver,
           scheduleAlarm: async () => {},
           now: () => now,
         }).dispatch();
 
-        expect(store.listDueEffects(now)).toEqual([]);
-        expect(store.nextEffectAt()).toBeNull();
+        expect(store.effects.listDueEffects(now)).toEqual([]);
+        expect(store.effects.nextEffectAt()).toBeNull();
         expect(localMarkers(ctx.storage)).toEqual(markers);
         expect(timerStarts.getOrAdvance).not.toHaveBeenCalled();
         expect(timerStarts.deletePair).not.toHaveBeenCalled();
@@ -388,7 +388,7 @@ it("rejects an inconsistent local cohort before cleanup or event dispatch", asyn
         ctx.storage,
         "event",
       );
-      const pending = store.listDueEffects(now);
+      const pending = store.effects.listDueEffects(now);
       expect(pending).toHaveLength(1);
       const markers = localMarkers(ctx.storage);
       ctx.storage.sql.exec("DELETE FROM match_state_timer_cohorts");
@@ -400,7 +400,7 @@ it("rejects an inconsistent local cohort before cleanup or event dispatch", asyn
       await expect(f.deliver(pending[0])).rejects.toThrow(
         "match-timer-storage-invalid",
       );
-      expect(store.listDueEffects(now)).toEqual(pending);
+      expect(store.effects.listDueEffects(now)).toEqual(pending);
       expect(localMarkers(ctx.storage)).toEqual(markers);
       expect(timerStarts.deletePair).not.toHaveBeenCalled();
       expect(await timerCount()).toBe(2);

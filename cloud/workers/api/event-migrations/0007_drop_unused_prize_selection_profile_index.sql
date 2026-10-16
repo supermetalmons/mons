@@ -1,0 +1,1 @@
+DROP INDEX idx_event_prize_selections_profile;

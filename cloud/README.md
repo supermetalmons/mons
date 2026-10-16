@@ -70,6 +70,8 @@ Scheduled-task entries include their nested phases' D1 work. Task and nested-pha
 
 Recovery failure logs retain their existing event names and include the recovery scope, phase, validated record identifiers, and bounded error summaries. Malformed identifiers are omitted in favor of the item index; auth quarantine reporting retains its existing hexadecimal identifiers. Reports never include record payloads or stacks, and logging failures do not interrupt recovery. Each failed repair or claim is reported before dispatch, so a later Queue failure cannot hide it. Successful work still dispatches before accumulated record failures are raised, with enqueue failures retaining precedence. Telegram sweep failures retain all failed lanes as aggregate causes.
 
+Event rating and persisted-outbox recovery emit `event_progress_recovery_record_failed` with scope `event-progress`, source `rating` or `outbox`, the failing phase, and validated identifiers. Failed items retain their original errors while other items continue; stale outbox snapshots are benign no-ops and are not logged as failures.
+
 ## Canonical profile maintenance
 
 ```sh
@@ -123,6 +125,8 @@ Scheduled-event recovery, persisted progress outboxes, and rating recovery run i
 Progress-outbox recovery uses `event_progress_outboxes.next_reconcile_at_ms`, independently of the stored outbox JSON and Workflow parameters. A confirmed waiting Workflow more than ten minutes before execution is checked again at the earlier of one hour later or ten minutes before execution. Other nonterminal states, unconfirmed or recreated instances, and provider failures remain eligible at the next five-minute Cron boundary. Initial producer dispatch remains immediate after durable persistence.
 
 Scheduled starts, announcements, and persisted-outbox recovery share this eligibility check. Checkpoints compare the exact observed payload and permit a concurrent urgent result to shorten a later check. Completion only removes the observed outbox; a checkpoint cannot recreate an acknowledged row. Changed outbox writes reset eligibility, including writes from older Worker versions, while identical upserts preserve it. Admission and snapshot guards remain enforced. Do not manually postpone checkpoints to hide failed work.
+
+Malformed progress-outbox quarantine archives and removes only the exact observed ID and stored JSON in one admitted D1 batch. A concurrent replacement remains pending and leaves any existing archive untouched. Archive fields and event associations retain their existing format. Non-text outbox IDs remain untouched without blocking healthy recovery; other unsupported malformed storage still fails closed.
 
 `PROFILE_DB.invite_wager_states` owns proposals, agreements, settlement state, and resolution markers. Reserved balances, consumed operation tombstones, pending settlements, and replay records are current application data. Current wager incidents use `manage:wager-reservations` and canonical-profile maintenance. Reconcile uncertain effects before settling an expired admission.
 

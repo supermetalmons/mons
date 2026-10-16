@@ -272,6 +272,13 @@ describe("event-progress Workflow dispatch admissions", () => {
       ],
     });
     expect(await admissionCount()).toBe(0);
+    expect(
+      (
+        await testEnv.EVENT_DB.prepare(
+          "SELECT outbox_id FROM event_progress_outboxes WHERE status = 'dead'",
+        ).all()
+      ).results,
+    ).toEqual([]);
   });
 
   it.each(
@@ -362,6 +369,15 @@ describe("event-progress Workflow dispatch admissions", () => {
               if (order === "publication-first") await published.promise;
               return rows.filter((row) => row.outboxId === plan.outboxId);
             },
+            async deadLetter(snapshot, deadAtMs) {
+              const removed = await outboxRecovery.deadLetter(
+                snapshot,
+                deadAtMs,
+              );
+              if (removed && snapshot.outboxId === plan.outboxId)
+                cleaned.resolve();
+              return removed;
+            },
           },
           ratingRepository:
             lane === "rating"
@@ -396,8 +412,7 @@ describe("event-progress Workflow dispatch admissions", () => {
                   command.outboxId !== plan.outboxId
                 )
                   continue;
-                if (command.value === null) cleaned.resolve();
-                else published.resolve();
+                if (command.value !== null) published.resolve();
               }
             },
           },

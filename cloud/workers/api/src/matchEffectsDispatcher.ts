@@ -1,4 +1,5 @@
 import type { MatchStateStore } from "./matchStateStore.ts";
+import type { MatchEffectsOutbox } from "./matchEffectsOutbox.ts";
 import type { MatchStateEffect } from "./matchStateTypes.ts";
 import { commitEventMutations } from "./eventD1.ts";
 import { withEventWriteAdmission } from "./eventWriteAdmission.ts";
@@ -7,7 +8,7 @@ import { ensureEventProgressWorkflow } from "./eventProgressDispatch.ts";
 import { assertProfileBackgroundMutationsEnabled } from "./profileCanonicalActivation.ts";
 
 type MatchEffectsStore = Pick<
-  MatchStateStore,
+  MatchEffectsOutbox,
   "listDueEffects" | "completeEffect" | "retryEffect" | "nextEffectAt"
 >;
 

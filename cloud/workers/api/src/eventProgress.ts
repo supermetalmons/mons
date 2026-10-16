@@ -16,6 +16,10 @@ import { createRatingRepository } from "./ratingRepository.ts";
 import type { RatingEventProgressRepository } from "./ratingContracts.ts";
 import { PROFILE_BACKGROUND_SWEEP_LIMIT } from "./profileBackgroundLimits.ts";
 import { runRecoveryItems } from "./recoveryRunner.ts";
+import {
+  reportRecoveryFailure,
+  type RecoveryFailureContext,
+} from "./recoveryReporting.ts";
 import { summarizeError } from "./errorSummary.ts";
 import { createWorkerEventRuntime } from "./workerEventRuntime.ts";
 import {
@@ -101,6 +105,7 @@ export type EventProgressRatingRepository = Pick<
 
 export type EventProgressSweepDependencies = {
   now?: () => number;
+  logger?: Pick<Console, "error">;
   ratingRepository?: EventProgressRatingRepository | null;
   repository?: EventProgressSweepRepository;
   scheduledRecovery?: EventScheduledRecoveryStore;
@@ -116,26 +121,6 @@ export class EventProgressRetryableError extends Error {
     super(code);
     this.code = code;
   }
-}
-
-async function deadLetterOutbox(
-  repository: Pick<EventGameplayRepository, "commitEventPlan">,
-  outboxId: string,
-  originalRecord: unknown,
-  nowMs: number,
-): Promise<void> {
-  await repository.commitEventPlan([
-    {
-      kind: "progress-dead",
-      outboxId,
-      value: {
-        deadAtMs: nowMs,
-        originalRecord: originalRecord === undefined ? null : originalRecord,
-        reason: "invalid-event-progress-outbox",
-      },
-    },
-    { kind: "progress-outbox", outboxId, value: null },
-  ]);
 }
 
 async function reconcileScheduledEvents(
@@ -273,61 +258,85 @@ async function recoverRatingEventProgress(
   outboxRecovery: EventProgressRecoveryStore,
   now: () => number,
   execute: EventProgressWorkExecutor,
+  logger: Pick<Console, "error">,
 ): Promise<void> {
   const nowMs = now();
   const records = await ratingRepository.listDueRatingEventProgress(
     nowMs,
     EVENT_PROGRESS_SWEEP_LIMIT,
   );
+  let index = 0;
   await runRecoveryItems(
     records,
     async (record) => {
-      const claimed = await ratingRepository.claimRatingEventProgress(
-        record.operationId,
-        record.revision,
-        nowMs,
-      );
-      if (!claimed) {
-        return;
-      }
-      if (
-        record.version !== RATING_EVENT_PROGRESS_SCHEMA_VERSION ||
-        !isSafeRecordKey(record.eventId) ||
-        !isSafeRecordKey(record.inviteId) ||
-        !isSafeRecordKey(record.matchId) ||
-        record.operationId !== `${record.inviteId}__${record.matchId}`
-      ) {
-        await ratingRepository.markRatingEventProgress(
+      const itemIndex = index++;
+      let phase: RecoveryFailureContext["phase"] = "claim";
+      try {
+        const claimed = await ratingRepository.claimRatingEventProgress(
           record.operationId,
-          "dead",
-          now(),
-          "invalid-event-progress-marker",
+          record.revision,
+          nowMs,
         );
-        return;
-      }
-      const plan = await buildEventProgressPlan(
-        {
-          eventId: record.eventId,
-          sourceKey: `rating:${record.inviteId}:${record.matchId}`,
-          reason: "match-rating-updated",
-        },
-        nowMs,
-      );
-      await execute(plan.workflowId, async () => {
-        await repository.commitEventPlan([
+        if (!claimed) {
+          return;
+        }
+        if (
+          record.version !== RATING_EVENT_PROGRESS_SCHEMA_VERSION ||
+          !isSafeRecordKey(record.eventId) ||
+          !isSafeRecordKey(record.inviteId) ||
+          !isSafeRecordKey(record.matchId) ||
+          record.operationId !== `${record.inviteId}__${record.matchId}`
+        ) {
+          phase = "quarantine";
+          await ratingRepository.markRatingEventProgress(
+            record.operationId,
+            "dead",
+            now(),
+            "invalid-event-progress-marker",
+          );
+          return;
+        }
+        phase = "enqueue";
+        const plan = await buildEventProgressPlan(
           {
-            kind: "progress-outbox",
-            outboxId: plan.outboxId,
-            value: plan.outbox,
+            eventId: record.eventId,
+            sourceKey: `rating:${record.inviteId}:${record.matchId}`,
+            reason: "match-rating-updated",
           },
-        ]);
-        await dispatchOutboxPlan(env, outboxRecovery, plan.outboxId, now);
-        await ratingRepository.markRatingEventProgress(
-          record.operationId,
-          "done",
-          now(),
+          nowMs,
         );
-      });
+        await execute(plan.workflowId, async () => {
+          await repository.commitEventPlan([
+            {
+              kind: "progress-outbox",
+              outboxId: plan.outboxId,
+              value: plan.outbox,
+            },
+          ]);
+          await dispatchOutboxPlan(env, outboxRecovery, plan.outboxId, now);
+          phase = "cleanup";
+          await ratingRepository.markRatingEventProgress(
+            record.operationId,
+            "done",
+            now(),
+          );
+        });
+      } catch (error) {
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "event_progress_recovery_record_failed",
+            scope: "event-progress",
+            source: "rating",
+            phase,
+            itemIndex,
+            eventId: record.eventId,
+            operationId: record.operationId,
+          },
+          error,
+        );
+        throw error;
+      }
     },
     {
       concurrency: EVENT_PROGRESS_RATING_CONCURRENCY,
@@ -354,36 +363,59 @@ export async function sweepEventProgress(
 
 async function sweepPersistedEventProgressOutboxes(
   env: Env,
-  repository: EventProgressSweepRepository,
   recovery: EventProgressRecoveryStore,
   now: () => number,
   execute: EventProgressWorkExecutor,
+  logger: Pick<Console, "error">,
 ): Promise<void> {
   const records = await recovery.listDue(now(), EVENT_PROGRESS_SWEEP_LIMIT);
+  let index = 0;
   await runRecoveryItems(
     records,
-    async ({ outboxId: rawOutboxId, record }) => {
-      const outboxId = String(rawOutboxId);
-      const plan = await parseEventProgressOutbox(outboxId, record);
-      if (plan) {
-        await execute(plan.workflowId, () =>
-          dispatchOutboxPlan(env, recovery, plan.outboxId, now),
-        );
-      } else {
-        const workflowId = workflowIdFromOutboxId(outboxId);
-        if (workflowId) {
-          await execute(workflowId, async () => {
-            const current = await repository.readEventProgressOutbox(outboxId);
-            if (
-              current === null ||
-              (await parseEventProgressOutbox(outboxId, current))
-            )
-              return;
-            await deadLetterOutbox(repository, outboxId, current, now());
-          });
+    async (snapshot) => {
+      const itemIndex = index++;
+      const { outboxId, record } = snapshot;
+      if (typeof outboxId !== "string") return;
+      let phase: RecoveryFailureContext["phase"] = "inspect";
+      try {
+        const plan = await parseEventProgressOutbox(outboxId, record);
+        if (plan) {
+          phase = "enqueue";
+          await execute(plan.workflowId, () =>
+            dispatchOutboxPlan(env, recovery, plan.outboxId, now),
+          );
         } else {
-          await deadLetterOutbox(repository, outboxId, record, now());
+          const workflowId = workflowIdFromOutboxId(outboxId);
+          if (workflowId) {
+            await execute(workflowId, async () => {
+              const current = await recovery.read(outboxId);
+              if (
+                current === null ||
+                (await parseEventProgressOutbox(outboxId, current.record))
+              )
+                return;
+              phase = "quarantine";
+              await recovery.deadLetter(current, now());
+            });
+          } else {
+            phase = "quarantine";
+            await recovery.deadLetter(snapshot, now());
+          }
         }
+      } catch (error) {
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "event_progress_recovery_record_failed",
+            scope: "event-progress",
+            source: "outbox",
+            phase,
+            itemIndex,
+            outboxId,
+          },
+          error,
+        );
+        throw error;
       }
     },
     {
@@ -403,6 +435,7 @@ async function sweepAdmittedEventProgress(
     (defaultRepository ||= createEventGameplayRepository(env));
   const repository = dependencies.repository || getDefaultRepository();
   const now = dependencies.now || Date.now;
+  const logger = dependencies.logger || console;
   const ratingRepository =
     dependencies.ratingRepository === null
       ? null
@@ -419,10 +452,10 @@ async function sweepAdmittedEventProgress(
   const results = await Promise.allSettled([
     sweepPersistedEventProgressOutboxes(
       env,
-      repository,
       outboxRecovery,
       now,
       execute,
+      logger,
     ),
     reconcileScheduledEvents(
       env,
@@ -442,6 +475,7 @@ async function sweepAdmittedEventProgress(
             outboxRecovery,
             now,
             execute,
+            logger,
           ),
         ]
       : []),

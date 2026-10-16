@@ -13,6 +13,7 @@ import {
   type StartMatchTimerResponse,
 } from "@mons/shared/timers";
 import { AuthApiFailure } from "./authErrors.ts";
+import { MatchEffectsOutbox } from "./matchEffectsOutbox.ts";
 import { isCanonicalLoginUid, isSafeRecordKey } from "./recordKeys.ts";
 import type {
   MatchTimerStartCandidate,
@@ -51,7 +52,6 @@ import type {
   MatchStateClaimTimerRequest,
   MatchStateCreateRequest,
   MatchStateCreateResult,
-  MatchStateEffect,
   MatchStateEventEffectsRequest,
   MatchStateMoveRequest,
   MatchStatePair,
@@ -119,6 +119,7 @@ function validTimestamp(value: unknown): asserts value is number {
 }
 
 export class MatchStateStore {
+  readonly effects: MatchEffectsOutbox;
   private readonly now: () => number;
   private readonly localTimers: LocalMatchTimerStore;
   private readonly newMatchTimerStorage: MatchTimerStorageMode;
@@ -136,6 +137,10 @@ export class MatchStateStore {
     );
     this.resolveGame = options.resolveGame || resolveMatchTimerGame;
     this.localTimers = new LocalMatchTimerStore(storage.sql);
+    this.effects = new MatchEffectsOutbox(storage, {
+      now: this.now,
+      scheduleAlarm: (atMs, transaction) => this.ensureAlarm(atMs, transaction),
+    });
   }
 
   readSource(): MatchStateSource {
@@ -622,52 +627,6 @@ export class MatchStateStore {
     if (alarm === null || alarm > atMs) await transaction.setAlarm(atMs);
   }
 
-  private insertEffect(
-    input: MatchStateClaimTimerRequest,
-    claimedAtMs: number,
-  ): number | null {
-    const effectId = `timer:${input.inviteId}:${input.matchId}`;
-    const sourceKey = effectId;
-    const effect = {
-      effectId,
-      inviteId: input.inviteId,
-      matchId: input.matchId,
-      playerId: input.playerId,
-      opponentId: input.opponentId,
-      epoch: input.epoch,
-      claimedAtMs,
-      eventId: input.eventId ?? null,
-      sourceKey,
-      reason: "timer-claimed" as const,
-    };
-    const [existing] = this.storage.sql
-      .exec<{ payload_json: string; next_at_ms: number | null }>(
-        "SELECT payload_json, next_at_ms FROM match_state_effects WHERE effect_id = ?",
-        effectId,
-      )
-      .toArray();
-    if (existing) {
-      const previous = JSON.parse(existing.payload_json) as MatchStateEffect;
-      if (
-        previous.playerId !== input.playerId ||
-        previous.opponentId !== input.opponentId ||
-        previous.epoch !== input.epoch ||
-        previous.eventId !== (input.eventId ?? null)
-      )
-        fail("match-state-effect-conflict");
-      return existing.next_at_ms;
-    }
-    const nowMs = this.now();
-    validTimestamp(nowMs);
-    this.storage.sql.exec(
-      "INSERT INTO match_state_effects(effect_id, payload_json, next_at_ms) VALUES (?, ?, ?)",
-      effectId,
-      canonicalMatchStateJson(effect),
-      nowMs,
-    );
-    return nowMs;
-  }
-
   async cleanupLegacyTimerStarts(
     input: Pick<
       MatchStateStartTimerRequest,
@@ -706,7 +665,7 @@ export class MatchStateStore {
         this.putClaim(input.matchId, decision.claim);
         this.bump(input.matchId);
       }
-      const due = this.insertEffect(input, decision.claimedAtMs);
+      const due = this.effects.insertTimerClaim(input, decision.claimedAtMs);
       if (due !== null) await this.ensureAlarm(due, transaction);
       return { ok: true };
     });
@@ -783,55 +742,6 @@ export class MatchStateStore {
         payloadJson,
       );
       return { records: created.records, changedMatchIds: [...changed] };
-    });
-  }
-
-  listDueEffects(nowMs = this.now(), limit = 20): MatchStateEffect[] {
-    validTimestamp(nowMs);
-    if (!Number.isInteger(limit) || limit < 1 || limit > 100)
-      throw new TypeError("match-state-invalid-effect-limit");
-    return this.storage.sql
-      .exec<{ payload_json: string; next_at_ms: number; attempts: number }>(
-        "SELECT payload_json, next_at_ms, attempts FROM match_state_effects WHERE next_at_ms <= ? ORDER BY next_at_ms, effect_id LIMIT ?",
-        nowMs,
-        limit,
-      )
-      .toArray()
-      .map((row) => ({
-        ...JSON.parse(row.payload_json),
-        nextAtMs: row.next_at_ms,
-        attempts: row.attempts,
-      }));
-  }
-
-  nextEffectAt(): number | null {
-    return this.storage.sql
-      .exec<{ next_at_ms: number | null }>(
-        "SELECT MIN(next_at_ms) AS next_at_ms FROM match_state_effects",
-      )
-      .one().next_at_ms;
-  }
-
-  completeEffect(effectId: string): void {
-    const nowMs = this.now();
-    validTimestamp(nowMs);
-    this.storage.sql.exec(
-      "UPDATE match_state_effects SET next_at_ms = NULL, completed_at_ms = ? WHERE effect_id = ? AND completed_at_ms IS NULL",
-      nowMs,
-      effectId,
-    );
-  }
-
-  async retryEffect(effectId: string, atMs: number): Promise<void> {
-    validTimestamp(atMs);
-    await this.storage.transaction(async (transaction) => {
-      this.storage.sql.exec(
-        "UPDATE match_state_effects SET next_at_ms = ?, attempts = attempts + 1 WHERE effect_id = ? AND completed_at_ms IS NULL",
-        atMs,
-        effectId,
-      );
-      const due = this.nextEffectAt();
-      if (due !== null) await this.ensureAlarm(due, transaction);
     });
   }
 }
