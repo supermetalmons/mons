@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
 const {
+  MAX_STARTS_IN_DAYS,
   MAX_STARTS_IN_MINUTES,
   MIN_STARTS_IN_MINUTES,
   isCreateEventRequest,
@@ -150,6 +151,31 @@ test("detects explicit date-time requests and enforces the scheduling window", (
         nowMs + (MAX_STARTS_IN_MINUTES + 1) * 60 * 1000,
         nowMs,
       ),
-    /within/,
+    /within 50 days/,
+  );
+});
+
+test("accepts event requests through 50 days and rejects minutes beyond the limit", () => {
+  assert.equal(MAX_STARTS_IN_DAYS, 50);
+  assert.equal(MAX_STARTS_IN_MINUTES, 72000);
+  for (const startsInMinutes of [1, 15 * 24 * 60, 72000]) {
+    assert.equal(isCreateEventRequest({ startsInMinutes }), true);
+  }
+  for (const startsInMinutes of [0, 72001]) {
+    assert.equal(isCreateEventRequest({ startsInMinutes }), false);
+  }
+});
+
+test("accepts scheduled starts through exactly 50 elapsed days", () => {
+  const nowMs = Date.UTC(2026, 0, 1);
+  for (const days of [15, 50]) {
+    assert.doesNotThrow(() =>
+      assertScheduledStartWindow(nowMs + days * 24 * 60 * 60 * 1000, nowMs),
+    );
+  }
+  assert.throws(
+    () =>
+      assertScheduledStartWindow(nowMs + 50 * 24 * 60 * 60 * 1000 + 1, nowMs),
+    /Event must start within 50 days from now\./,
   );
 });

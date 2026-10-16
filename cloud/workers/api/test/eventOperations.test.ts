@@ -406,6 +406,60 @@ test("creates a scheduled event only after its Workflow exists", async () => {
   );
 });
 
+test("creates events 15 and 50 days ahead using relative and calendar schedules", async () => {
+  const nowMs = Date.UTC(2026, 0, 1);
+  const cases: Array<{ request: CreateEventRequest; startAtMs: number }> = [
+    {
+      request: { startsInMinutes: 21_600 },
+      startAtMs: Date.UTC(2026, 0, 16),
+    },
+    {
+      request: { startsInMinutes: 72_000 },
+      startAtMs: Date.UTC(2026, 1, 20),
+    },
+    ...["2026-01-16", "2026-02-20"].map((scheduledDate) => ({
+      request: {
+        scheduledDate,
+        scheduledTime: "00:00",
+        scheduledTimezone: "local" as const,
+        localTimezoneIana: "UTC",
+      },
+      startAtMs: Date.parse(`${scheduledDate}T00:00:00Z`),
+    })),
+  ];
+  for (const { request, startAtMs } of cases) {
+    const state = createRepository();
+    let workflowCreates = 0;
+    const response = await createEvent(
+      workflowEnvironment(() => workflowCreates++),
+      identity,
+      request,
+      { repository: state.repository, now: () => nowMs, random: () => 0 },
+    );
+    assert.equal(workflowCreates, 1);
+    assert.equal(response.event.startAtMs, startAtMs);
+    assert.equal(
+      getPath(state.values, `events/${response.eventId}/startAtMs`),
+      startAtMs,
+    );
+  }
+});
+
+test("direct relative event creation clamps to 50 days", async () => {
+  const state = createRepository();
+  const response = await createEvent(
+    workflowEnvironment(() => undefined),
+    identity,
+    { startsInMinutes: 72_001 },
+    {
+      repository: state.repository,
+      now: () => Date.UTC(2026, 0, 1),
+      random: () => 0,
+    },
+  );
+  assert.equal(response.event.startAtMs, Date.UTC(2026, 1, 20));
+});
+
 test("creation and fresh joining persist identical participant snapshots", async () => {
   for (const emoji of [7.9, "7.9", "Infinity"]) {
     const creator = createRepository();
@@ -730,6 +784,68 @@ test("postpones through a new Workflow and persists its outbox atomically", asyn
     Object.keys(update).some((path) => path.startsWith("eventProgressOutbox/")),
     true,
   );
+});
+
+test("postpones events to exactly 50 days ahead", async () => {
+  const startAtMs = Date.UTC(2026, 1, 20);
+  const state = createRepository({
+    "events/event-1": {
+      eventId: "event-1",
+      status: "scheduled",
+      startAtMs: startAtMs - 5 * 60_000,
+      createdByLoginUid: identity.uid,
+      createdByProfileId: profileId,
+    },
+  });
+  let workflowCreates = 0;
+  const response = await postponeEventStart(
+    workflowEnvironment(() => workflowCreates++),
+    identity,
+    { eventId: "event-1", postponeByMinutes: 5 },
+    {
+      repository: state.repository,
+      now: () => Date.UTC(2026, 0, 1),
+      random: () => 0,
+      sleep: async () => undefined,
+    },
+  );
+  assert.equal(workflowCreates, 1);
+  assert.equal(response.startAtMs, startAtMs);
+  assert.equal(getPath(state.values, "events/event-1/startAtMs"), startAtMs);
+});
+
+test("rejects postponement beyond 50 days before scheduling or persisting", async () => {
+  const startAtMs = Date.UTC(2026, 1, 20);
+  const state = createRepository({
+    "events/event-1": {
+      eventId: "event-1",
+      status: "scheduled",
+      startAtMs,
+      createdByLoginUid: identity.uid,
+      createdByProfileId: profileId,
+    },
+  });
+  let workflowCreates = 0;
+  await assert.rejects(
+    postponeEventStart(
+      workflowEnvironment(() => workflowCreates++),
+      identity,
+      { eventId: "event-1", postponeByMinutes: 5 },
+      {
+        repository: state.repository,
+        now: () => Date.UTC(2026, 0, 1),
+        random: () => 0,
+        sleep: async () => undefined,
+      },
+    ),
+    (error) =>
+      error instanceof AuthApiFailure &&
+      error.status === 400 &&
+      error.message === "Event must start within 50 days from now.",
+  );
+  assert.equal(workflowCreates, 0);
+  assert.deepEqual(state.patches, []);
+  assert.equal(getPath(state.values, "events/event-1/startAtMs"), startAtMs);
 });
 
 test("overdue postpone migrates prize selections in its transition update", async () => {

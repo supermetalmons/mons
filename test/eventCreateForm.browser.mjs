@@ -70,6 +70,10 @@ test(
         await page.locator('input[type="number"]').inputValue(),
         "5",
       );
+      assert.equal(
+        await page.locator('input[type="number"]').getAttribute("max"),
+        "72000",
+      );
       await page.locator('input[type="number"]').fill("17");
       await page
         .getByRole("button", { name: "Date & time", exact: true })

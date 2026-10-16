@@ -145,8 +145,8 @@ declare function isEventOwnedInvite(value: unknown): boolean;
 declare const EVENT_SCHEMA_VERSION = 2;
 declare const THIRD_PLACE_MATCH_KEY = "third_place";
 declare const MIN_STARTS_IN_MINUTES = 1;
-declare const MAX_STARTS_IN_DAYS = 14;
-declare const MAX_STARTS_IN_MINUTES: 20160;
+declare const MAX_STARTS_IN_DAYS = 50;
+declare const MAX_STARTS_IN_MINUTES: 72000;
 declare const MAX_EVENT_PARTICIPANTS = 32;
 declare const SCHEDULED_TIMEZONE_LOCAL = "local";
 declare const EVENT_SCHEDULE_TIMEZONE_OPTIONS: readonly [

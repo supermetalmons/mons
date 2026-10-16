@@ -174,8 +174,8 @@ function isEventOwnedInvite(value: unknown): boolean {
 const EVENT_SCHEMA_VERSION = 2;
 const THIRD_PLACE_MATCH_KEY = "third_place";
 const MIN_STARTS_IN_MINUTES = 1;
-const MAX_STARTS_IN_DAYS = 14;
-const MAX_STARTS_IN_MINUTES: 20160 = (MAX_STARTS_IN_DAYS * 24 * 60) as 20160;
+const MAX_STARTS_IN_DAYS = 50;
+const MAX_STARTS_IN_MINUTES: 72000 = (MAX_STARTS_IN_DAYS * 24 * 60) as 72000;
 const MAX_EVENT_PARTICIPANTS = 32;
 const SCHEDULED_TIMEZONE_LOCAL = "local";
 const EVENT_SCHEDULE_TIMEZONE_OPTIONS = Object.freeze([
