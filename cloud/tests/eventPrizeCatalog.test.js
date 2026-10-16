@@ -4,13 +4,20 @@ const assert = require("node:assert/strict");
 const test = require("node:test");
 const bs58 = require("bs58");
 const {
+  AAHNGEEZ_PRIZES_EVENT_ID,
   ARTIFACT_MAGAZINE_3_PRIZES_EVENT_2_ID,
   ARTIFACT_MAGAZINE_3_PRIZES_EVENT_ID,
+  CAKES_PRIZES_EVENT_ID,
+  CARD_NFT_2_PRIZES_EVENT_ID,
   COMPRESSED_PRIZES_EVENT_ID,
   EVENT_PRIZE_REVEAL_WINDOW_MS,
+  FLOPAWRETTES_PRIZES_EVENT_ID,
   LEGACY_CORE_PRIZES_EVENT_ID,
   MI_NOTE_CARDS_PRIZES_EVENT_ID,
+  PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+  PICKME_PORTS_PRIZES_EVENT_ID,
   PLANET_PEPPA_PRIZES_EVENT_ID,
+  PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID,
   RARE_WEITSMANS_PRIZES_EVENT_ID,
   SHELVES_PRIZES_EVENT_ID,
   VEHICLE_WAMMIN_PRIZES_EVENT_ID,
@@ -485,6 +492,7 @@ for (const {
   imageWidth,
   imageHeight,
   collectionAddress,
+  standard = "compressed",
   prizes,
   otherEventId,
   otherPrizeId,
@@ -543,8 +551,209 @@ for (const {
     otherEventId: SHELVES_PRIZES_EVENT_ID,
     otherPrizeId: "865",
   },
+  {
+    eventId: FLOPAWRETTES_PRIZES_EVENT_ID,
+    expectedEventId: "5ng5odunECw",
+    collectionName: "Flopawrettes",
+    imageWidth: 1320,
+    imageHeight: 1320,
+    collectionAddress: "GVQ4Zsd7jLZbVCxq9QsmQySuKekwT1XbMSjGbwt8UtcB",
+    standard: "compressed",
+    prizes: [
+      {
+        id: "3749",
+        imageUrl: "https://cdn.lil.org/player/flopawrettes/mid/3749.webp",
+        assetAddress: "75afTvStdxeBH9fu6yCqCA4KjCGBaTEBwrsBkDjw3XUp",
+      },
+      {
+        id: "4174",
+        imageUrl: "https://cdn.lil.org/player/flopawrettes/mid/4174.webp",
+        assetAddress: "ANti2h6Kev9e7rwb5P4Ri6gzPQzLoYbn54u2H6j52G18",
+      },
+      {
+        id: "1173",
+        imageUrl: "https://cdn.lil.org/player/flopawrettes/mid/1173.webp",
+        assetAddress: "E1p7AXeJuUhiifU8YzkXnG3XAc8HTJFUhozypgH3dNUx",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
+  {
+    eventId: PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+    expectedEventId: "qIU70H3CbPK",
+    collectionName: "peer study 3: afella 2",
+    imageWidth: 1280,
+    imageHeight: 1350,
+    collectionAddress: "Aa3Y3VDvEyLWqmy8DtBdWYp3oE9obkp3L1KjmAvpjCPs",
+    standard: "core",
+    prizes: [
+      {
+        id: "228",
+        imageUrl:
+          "https://cdn.lil.org/player/peer_study_3_afella_2/mid/228.webp",
+        assetAddress: "3KE4xCWLFBgojg4cjS4W38RZ8qibcBhw8ZDVJoagxc5F",
+      },
+      {
+        id: "184",
+        imageUrl:
+          "https://cdn.lil.org/player/peer_study_3_afella_2/mid/184.webp",
+        assetAddress: "AZzKBZfWMZeEDkQ6RgsDCvcez6AZ3dXHURTNFx3t7E94",
+      },
+      {
+        id: "339",
+        imageUrl:
+          "https://cdn.lil.org/player/peer_study_3_afella_2/mid/339.webp",
+        assetAddress: "B78KRQDzFHC94d15Kb8SufGHU9yVLTNfamg4mDpRrv1q",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
+  {
+    eventId: CAKES_PRIZES_EVENT_ID,
+    expectedEventId: "2nsvrAIktOL",
+    collectionName: "Cakes",
+    imageWidth: 1254,
+    imageHeight: 1254,
+    collectionAddress: "FeMQ2kvc9m8F9QYY1xHjaAP1kbuqhjkUexEiV1GrXpdy",
+    standard: "core",
+    prizes: [
+      {
+        id: "17",
+        imageUrl: "https://cdn.lil.org/player/cakes/mid/16.webp",
+        assetAddress: "2DAqsy664vHq2iWu1P81tru1y7v5sBHmn5RmFwoZAihi",
+      },
+      {
+        id: "13",
+        imageUrl: "https://cdn.lil.org/player/cakes/mid/12.webp",
+        assetAddress: "5mnW3aUjUv2suFxxW81uTB4xdvxp9d2P9ELH6m4obQG5",
+      },
+      {
+        id: "15",
+        imageUrl: "https://cdn.lil.org/player/cakes/mid/14.webp",
+        assetAddress: "JDom93J7sekaYZJa5XGSZwC88pJzD1b8mtMSai7whtTP",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
+  {
+    eventId: PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID,
+    expectedEventId: "UwPzJ260AZK",
+    collectionName: "Plastic Fools Pocket",
+    imageWidth: 1024,
+    imageHeight: 1024,
+    collectionAddress: "3cWeEpg9FV1MKe7m13L75FWpo3Xppeegk8EpQDMcgRoB",
+    standard: "core",
+    prizes: [
+      {
+        id: "100",
+        imageUrl: "https://cdn.lil.org/player/plastic_fools_pocket/mid/99.webp",
+        assetAddress: "4EhpxbpmNsBoMn7nxPZmRg7jrNoN2Y16hw1PtBBGYpvx",
+      },
+      {
+        id: "914",
+        imageUrl:
+          "https://cdn.lil.org/player/plastic_fools_pocket/mid/913.webp",
+        assetAddress: "4Pp8BRXsLmdM2iHd6Fw2A2Ri7Yft4DUWd2vfmJV6qXad",
+      },
+      {
+        id: "1015",
+        imageUrl:
+          "https://cdn.lil.org/player/plastic_fools_pocket/mid/1014.webp",
+        assetAddress: "GLMB1sZQMGnRhcxAA6Qk9FaNzUVEyr3Np3Yd7FmGbhLp",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
+  {
+    eventId: CARD_NFT_2_PRIZES_EVENT_ID,
+    expectedEventId: "CkPMtNHthaT",
+    collectionName: "Card NFT 2",
+    imageWidth: 2000,
+    imageHeight: 2800,
+    collectionAddress: "EAzEpagtyeRAx9npnpVMpygoA8ouX7DRpLTghhPvYTiu",
+    standard: "core",
+    prizes: [
+      {
+        id: "2046",
+        imageUrl: "https://cdn.lil.org/nft/card_nft_2/fronts/2046.webp",
+        assetAddress: "5mZxuSmp2EEeG7KLn9RdabnqkQyg1NWGYFNReQKkSG4",
+      },
+      {
+        id: "5121",
+        imageUrl: "https://cdn.lil.org/nft/card_nft_2/fronts/5121.webp",
+        assetAddress: "7HYrooRJxz9sKr1ocoFEnq6xbxgupn4Y2HQoewZsgogM",
+      },
+      {
+        id: "462",
+        imageUrl: "https://cdn.lil.org/nft/card_nft_2/fronts/0462.webp",
+        assetAddress: "8jgKBxfUY8wjTYVryFgqTomwb8aMzCwCysf8QCDKnhcT",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
+  {
+    eventId: PICKME_PORTS_PRIZES_EVENT_ID,
+    expectedEventId: "3m2w0beABCy",
+    collectionName: "pick-me ports",
+    imageWidth: 512,
+    imageHeight: 512,
+    collectionAddress: "8fV6BUnbh8cQ8EduumqG61SQqSepNeB5RFiZWJhYfi2L",
+    standard: "compressed",
+    prizes: [
+      {
+        id: "298",
+        imageUrl: "https://cdn.lil.org/player/pickme_ports/mid/298.webp",
+        assetAddress: "3yPKbXsVhcEuYSPXzPFisfwegv8QPDBCF9ArRLZnCxPn",
+      },
+      {
+        id: "894",
+        imageUrl: "https://cdn.lil.org/player/pickme_ports/mid/894.webp",
+        assetAddress: "AYbsi5AuoRforjFUSBvnZCHyrPMV3m96GnZrUVTwwrJX",
+      },
+      {
+        id: "1031",
+        imageUrl: "https://cdn.lil.org/player/pickme_ports/mid/1031.webp",
+        assetAddress: "C4ChjETrbuRUmh7Y9Nwbe9DF3PqVwUHuFsoAA3ncYUMm",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
+  {
+    eventId: AAHNGEEZ_PRIZES_EVENT_ID,
+    expectedEventId: "rNup5dmTakA",
+    collectionName: "aahngeez!",
+    imageWidth: 1024,
+    imageHeight: 1024,
+    collectionAddress: "CBNqKUciGnsJRhpDgfUbqu8XitKR2r5J3sUbXXSE7xwQ",
+    standard: "core",
+    prizes: [
+      {
+        id: "172",
+        imageUrl: "https://cdn.lil.org/player/aahngeez/mid/171.webp",
+        assetAddress: "Ba5ef8LsDe9RMUHN7NUM2nT2bKL7tGWUYzghPZYXqTTz",
+      },
+      {
+        id: "104",
+        imageUrl: "https://cdn.lil.org/player/aahngeez/mid/103.webp",
+        assetAddress: "FpuTgMQmE7CgfydccVJUeqPSJ8FiWFV9fd7ZUHyAijVd",
+      },
+      {
+        id: "149",
+        imageUrl: "https://cdn.lil.org/player/aahngeez/mid/148.webp",
+        assetAddress: "Gobt7FbyxbhnUNzQxT85sGrifJe9pqCNe1TZ8bePTgkB",
+      },
+    ],
+    otherEventId: LEGACY_CORE_PRIZES_EVENT_ID,
+    otherPrizeId: "1092",
+  },
 ]) {
-  test(`maps the ${collectionName} event to the supplied claimable compressed prizes`, () => {
+  test(`maps the ${collectionName} event to the supplied claimable ${standard} prizes`, () => {
     const config = getEventPrizeConfig(eventId);
     assert.equal(eventId, expectedEventId);
     assert.equal(config.eventId, eventId);
@@ -565,7 +774,7 @@ for (const {
         imageWidth,
         imageHeight,
         collectionAddress,
-        standard: "compressed",
+        standard,
         claimAvailable: true,
       })),
     );
@@ -592,6 +801,14 @@ for (const {
       assert.equal(isEventPrizeId(eventId, prizeId), false);
       assert.equal(
         isToggleEventPrizeSelectionRequest({ eventId, prizeId }),
+        false,
+      );
+      assert.equal(
+        isEventPrizeWithdrawalRequest({
+          eventId,
+          prizeId,
+          solanaAddress: "11111111111111111111111111111111",
+        }),
         false,
       );
     }

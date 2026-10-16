@@ -123,10 +123,21 @@ test("uses approved catalog names in lowercase and trims event IDs", () => {
     [EVENT_ID, "planet peppa"],
     [prizeCatalog.SHELVES_PRIZES_EVENT_ID, "shelves"],
     [prizeCatalog.VEHICLE_WAMMIN_PRIZES_EVENT_ID, "vehicle wammin"],
+    [prizeCatalog.FLOPAWRETTES_PRIZES_EVENT_ID, "flopawrettes"],
+    [
+      prizeCatalog.PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+      "peer study 3: afella 2",
+    ],
+    [prizeCatalog.CAKES_PRIZES_EVENT_ID, "cakes"],
+    [prizeCatalog.PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID, "plastic fools pocket"],
+    [prizeCatalog.CARD_NFT_2_PRIZES_EVENT_ID, "card nft 2"],
+    [prizeCatalog.PICKME_PORTS_PRIZES_EVENT_ID, "pick-me ports"],
+    [prizeCatalog.AAHNGEEZ_PRIZES_EVENT_ID, "aahngeez!"],
   ]) {
     const result = buildEventPrizeAnnouncement({ eventId: ` ${eventId} ` });
     assert.equal(result.collectionName, collectionName);
     assert.equal(result.eventId, eventId);
+    assert.equal(isEventPrizeAnnouncementEvent(eventId, SCHEDULED_EVENT), true);
     assert.deepEqual(
       result.imageUrls,
       prizeCatalog

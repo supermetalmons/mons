@@ -10,7 +10,14 @@ export type EventPrizeEventId =
   | typeof VEHICLE_WAMMIN_PRIZES_EVENT_ID
   | typeof SWAG_PACK_PRIZES_EVENT_ID
   | typeof REVERIE_BANNERS_PRIZES_EVENT_ID
-  | typeof MI_NOTE_CARDS_PRIZES_EVENT_ID;
+  | typeof MI_NOTE_CARDS_PRIZES_EVENT_ID
+  | typeof FLOPAWRETTES_PRIZES_EVENT_ID
+  | typeof PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID
+  | typeof CAKES_PRIZES_EVENT_ID
+  | typeof PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID
+  | typeof CARD_NFT_2_PRIZES_EVENT_ID
+  | typeof PICKME_PORTS_PRIZES_EVENT_ID
+  | typeof AAHNGEEZ_PRIZES_EVENT_ID;
 export type EventPrizeId =
   | "1092"
   | "1111"
@@ -43,7 +50,28 @@ export type EventPrizeId =
   | "318"
   | "561"
   | "1025"
-  | "1195";
+  | "1195"
+  | "3749"
+  | "4174"
+  | "1173"
+  | "228"
+  | "184"
+  | "339"
+  | "17"
+  | "13"
+  | "15"
+  | "100"
+  | "914"
+  | "1015"
+  | "2046"
+  | "5121"
+  | "462"
+  | "298"
+  | "894"
+  | "1031"
+  | "172"
+  | "104"
+  | "149";
 export type EventPrizeStandard = "core" | "compressed";
 export type EventPrizeDefinition = Readonly<{
   id: EventPrizeId;
@@ -130,6 +158,13 @@ declare const VEHICLE_WAMMIN_PRIZES_EVENT_ID = "wjFa2d03Ciu";
 declare const SWAG_PACK_PRIZES_EVENT_ID = "d9RtIQY8ONs";
 declare const REVERIE_BANNERS_PRIZES_EVENT_ID = "PCTotuzfUPu";
 declare const MI_NOTE_CARDS_PRIZES_EVENT_ID = "vMBZ6dI1dQ5";
+declare const FLOPAWRETTES_PRIZES_EVENT_ID = "5ng5odunECw";
+declare const PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID = "qIU70H3CbPK";
+declare const CAKES_PRIZES_EVENT_ID = "2nsvrAIktOL";
+declare const PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID = "UwPzJ260AZK";
+declare const CARD_NFT_2_PRIZES_EVENT_ID = "CkPMtNHthaT";
+declare const PICKME_PORTS_PRIZES_EVENT_ID = "3m2w0beABCy";
+declare const AAHNGEEZ_PRIZES_EVENT_ID = "rNup5dmTakA";
 declare const EVENT_PRIZE_CONFIGS: Readonly<
   Record<EventPrizeEventId, EventPrizeConfig>
 >;
@@ -189,14 +224,21 @@ declare const isEventPrizeWithdrawalCompletedResponse: (
   value: unknown,
 ) => value is EventPrizeWithdrawalCompletedResponse;
 export {
+  AAHNGEEZ_PRIZES_EVENT_ID,
   ARTIFACT_MAGAZINE_3_PRIZES_EVENT_2_ID,
   ARTIFACT_MAGAZINE_3_PRIZES_EVENT_ID,
+  CAKES_PRIZES_EVENT_ID,
+  CARD_NFT_2_PRIZES_EVENT_ID,
   COMPRESSED_PRIZES_EVENT_ID,
   EVENT_PRIZE_CONFIGS,
   EVENT_PRIZE_REVEAL_WINDOW_MS,
+  FLOPAWRETTES_PRIZES_EVENT_ID,
   LEGACY_CORE_PRIZES_EVENT_ID,
   MI_NOTE_CARDS_PRIZES_EVENT_ID,
+  PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+  PICKME_PORTS_PRIZES_EVENT_ID,
   PLANET_PEPPA_PRIZES_EVENT_ID,
+  PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID,
   RARE_WEITSMANS_PRIZES_EVENT_ID,
   REVERIE_BANNERS_PRIZES_EVENT_ID,
   SHELVES_PRIZES_EVENT_ID,

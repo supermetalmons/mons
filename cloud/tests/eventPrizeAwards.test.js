@@ -3,7 +3,14 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
 const {
+  AAHNGEEZ_PRIZES_EVENT_ID,
+  CAKES_PRIZES_EVENT_ID,
+  CARD_NFT_2_PRIZES_EVENT_ID,
+  FLOPAWRETTES_PRIZES_EVENT_ID,
   MI_NOTE_CARDS_PRIZES_EVENT_ID,
+  PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+  PICKME_PORTS_PRIZES_EVENT_ID,
+  PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID,
   SHELVES_PRIZES_EVENT_ID,
   VEHICLE_WAMMIN_PRIZES_EVENT_ID,
 } = require("@mons/shared/event-prizes");
@@ -215,6 +222,21 @@ for (const [collectionName, eventId, prizeIds] of [
   ["Shelves", SHELVES_PRIZES_EVENT_ID, ["865", "1643", "1213"]],
   ["Vehicle Wammin", VEHICLE_WAMMIN_PRIZES_EVENT_ID, ["1241", "443", "1274"]],
   ["MI Note Cards", MI_NOTE_CARDS_PRIZES_EVENT_ID, ["561", "1025", "1195"]],
+  ["Flopawrettes", FLOPAWRETTES_PRIZES_EVENT_ID, ["3749", "4174", "1173"]],
+  [
+    "peer study 3: afella 2",
+    PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+    ["228", "184", "339"],
+  ],
+  ["Cakes", CAKES_PRIZES_EVENT_ID, ["17", "13", "15"]],
+  [
+    "Plastic Fools Pocket",
+    PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID,
+    ["100", "914", "1015"],
+  ],
+  ["Card NFT 2", CARD_NFT_2_PRIZES_EVENT_ID, ["2046", "5121", "462"]],
+  ["pick-me ports", PICKME_PORTS_PRIZES_EVENT_ID, ["298", "894", "1031"]],
+  ["aahngeez!", AAHNGEEZ_PRIZES_EVENT_ID, ["172", "104", "149"]],
 ]) {
   test(`assigns ${collectionName} prizes by preference with the supplied fallback order`, () => {
     const [firstPrizeId, secondPrizeId, thirdPrizeId] = prizeIds;

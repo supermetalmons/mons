@@ -23,14 +23,21 @@ exports.isToggleEventPrizeSelectionResponse =
   exports.SHELVES_PRIZES_EVENT_ID =
   exports.REVERIE_BANNERS_PRIZES_EVENT_ID =
   exports.RARE_WEITSMANS_PRIZES_EVENT_ID =
+  exports.PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID =
   exports.PLANET_PEPPA_PRIZES_EVENT_ID =
+  exports.PICKME_PORTS_PRIZES_EVENT_ID =
+  exports.PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID =
   exports.MI_NOTE_CARDS_PRIZES_EVENT_ID =
   exports.LEGACY_CORE_PRIZES_EVENT_ID =
+  exports.FLOPAWRETTES_PRIZES_EVENT_ID =
   exports.EVENT_PRIZE_REVEAL_WINDOW_MS =
   exports.EVENT_PRIZE_CONFIGS =
   exports.COMPRESSED_PRIZES_EVENT_ID =
+  exports.CARD_NFT_2_PRIZES_EVENT_ID =
+  exports.CAKES_PRIZES_EVENT_ID =
   exports.ARTIFACT_MAGAZINE_3_PRIZES_EVENT_ID =
   exports.ARTIFACT_MAGAZINE_3_PRIZES_EVENT_2_ID =
+  exports.AAHNGEEZ_PRIZES_EVENT_ID =
     void 0;
 const ids_js_1 = require("./ids.js");
 const solana_js_1 = require("./solana.js");
@@ -60,6 +67,22 @@ const REVERIE_BANNERS_PRIZES_EVENT_ID = "PCTotuzfUPu";
 exports.REVERIE_BANNERS_PRIZES_EVENT_ID = REVERIE_BANNERS_PRIZES_EVENT_ID;
 const MI_NOTE_CARDS_PRIZES_EVENT_ID = "vMBZ6dI1dQ5";
 exports.MI_NOTE_CARDS_PRIZES_EVENT_ID = MI_NOTE_CARDS_PRIZES_EVENT_ID;
+const FLOPAWRETTES_PRIZES_EVENT_ID = "5ng5odunECw";
+exports.FLOPAWRETTES_PRIZES_EVENT_ID = FLOPAWRETTES_PRIZES_EVENT_ID;
+const PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID = "qIU70H3CbPK";
+exports.PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID =
+  PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID;
+const CAKES_PRIZES_EVENT_ID = "2nsvrAIktOL";
+exports.CAKES_PRIZES_EVENT_ID = CAKES_PRIZES_EVENT_ID;
+const PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID = "UwPzJ260AZK";
+exports.PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID =
+  PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID;
+const CARD_NFT_2_PRIZES_EVENT_ID = "CkPMtNHthaT";
+exports.CARD_NFT_2_PRIZES_EVENT_ID = CARD_NFT_2_PRIZES_EVENT_ID;
+const PICKME_PORTS_PRIZES_EVENT_ID = "3m2w0beABCy";
+exports.PICKME_PORTS_PRIZES_EVENT_ID = PICKME_PORTS_PRIZES_EVENT_ID;
+const AAHNGEEZ_PRIZES_EVENT_ID = "rNup5dmTakA";
+exports.AAHNGEEZ_PRIZES_EVENT_ID = AAHNGEEZ_PRIZES_EVENT_ID;
 const CORE_PRIZE_COLLECTION_ADDRESS =
   "2xF7dq3maFLud8FQUYAyLiWucdF7RePyzHJs7NkurkoD";
 const COMPRESSED_PRIZE_COLLECTION_ADDRESS =
@@ -80,6 +103,19 @@ const REVERIE_BANNERS_COLLECTION_ADDRESS =
   "E8k3YeCQeJ3oWT25Jc7EPg6wGtN2vDfHa1SzNqVY765L";
 const MI_NOTE_CARDS_COLLECTION_ADDRESS =
   "BtEknBg1b9ZLJHLTGJcadxeQhQwtdVsoPGDrc9cXwczG";
+const FLOPAWRETTES_COLLECTION_ADDRESS =
+  "GVQ4Zsd7jLZbVCxq9QsmQySuKekwT1XbMSjGbwt8UtcB";
+const PEER_STUDY_3_AFELLA_2_COLLECTION_ADDRESS =
+  "Aa3Y3VDvEyLWqmy8DtBdWYp3oE9obkp3L1KjmAvpjCPs";
+const CAKES_COLLECTION_ADDRESS = "FeMQ2kvc9m8F9QYY1xHjaAP1kbuqhjkUexEiV1GrXpdy";
+const PLASTIC_FOOLS_POCKET_COLLECTION_ADDRESS =
+  "3cWeEpg9FV1MKe7m13L75FWpo3Xppeegk8EpQDMcgRoB";
+const CARD_NFT_2_COLLECTION_ADDRESS =
+  "EAzEpagtyeRAx9npnpVMpygoA8ouX7DRpLTghhPvYTiu";
+const PICKME_PORTS_COLLECTION_ADDRESS =
+  "8fV6BUnbh8cQ8EduumqG61SQqSepNeB5RFiZWJhYfi2L";
+const AAHNGEEZ_COLLECTION_ADDRESS =
+  "CBNqKUciGnsJRhpDgfUbqu8XitKR2r5J3sUbXXSE7xwQ";
 const SCARECROW_PRIZE_IMAGE_SIZE = Object.freeze({
   imageWidth: 420,
   imageHeight: 525,
@@ -119,6 +155,34 @@ const REVERIE_BANNERS_IMAGE_SIZE = Object.freeze({
 const MI_NOTE_CARDS_IMAGE_SIZE = Object.freeze({
   imageWidth: 1000,
   imageHeight: 1400,
+});
+const FLOPAWRETTES_IMAGE_SIZE = Object.freeze({
+  imageWidth: 1320,
+  imageHeight: 1320,
+});
+const PEER_STUDY_3_AFELLA_2_IMAGE_SIZE = Object.freeze({
+  imageWidth: 1280,
+  imageHeight: 1350,
+});
+const CAKES_IMAGE_SIZE = Object.freeze({
+  imageWidth: 1254,
+  imageHeight: 1254,
+});
+const PLASTIC_FOOLS_POCKET_IMAGE_SIZE = Object.freeze({
+  imageWidth: 1024,
+  imageHeight: 1024,
+});
+const CARD_NFT_2_IMAGE_SIZE = Object.freeze({
+  imageWidth: 2000,
+  imageHeight: 2800,
+});
+const PICKME_PORTS_IMAGE_SIZE = Object.freeze({
+  imageWidth: 512,
+  imageHeight: 512,
+});
+const AAHNGEEZ_IMAGE_SIZE = Object.freeze({
+  imageWidth: 1024,
+  imageHeight: 1024,
 });
 const createPrize = ({
   id,
@@ -508,6 +572,242 @@ const EVENT_PRIZE_CONFIGS = Object.freeze({
           "https://cdn.lil.org/nft/mi_note_cards/square/1195.jpg",
         assetAddress: "GTqiGjNpMKaNJuTdzbyCMh7pC5SW6CGNyRJpjiBA3Xvv",
         collectionAddress: MI_NOTE_CARDS_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [FLOPAWRETTES_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: FLOPAWRETTES_PRIZES_EVENT_ID,
+    collectionName: "Flopawrettes",
+    prizes: Object.freeze([
+      createPrize({
+        ...FLOPAWRETTES_IMAGE_SIZE,
+        id: "3749",
+        imageUrl: "https://cdn.lil.org/player/flopawrettes/mid/3749.webp",
+        assetAddress: "75afTvStdxeBH9fu6yCqCA4KjCGBaTEBwrsBkDjw3XUp",
+        collectionAddress: FLOPAWRETTES_COLLECTION_ADDRESS,
+        standard: "compressed",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...FLOPAWRETTES_IMAGE_SIZE,
+        id: "4174",
+        imageUrl: "https://cdn.lil.org/player/flopawrettes/mid/4174.webp",
+        assetAddress: "ANti2h6Kev9e7rwb5P4Ri6gzPQzLoYbn54u2H6j52G18",
+        collectionAddress: FLOPAWRETTES_COLLECTION_ADDRESS,
+        standard: "compressed",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...FLOPAWRETTES_IMAGE_SIZE,
+        id: "1173",
+        imageUrl: "https://cdn.lil.org/player/flopawrettes/mid/1173.webp",
+        assetAddress: "E1p7AXeJuUhiifU8YzkXnG3XAc8HTJFUhozypgH3dNUx",
+        collectionAddress: FLOPAWRETTES_COLLECTION_ADDRESS,
+        standard: "compressed",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: PEER_STUDY_3_AFELLA_2_PRIZES_EVENT_ID,
+    collectionName: "peer study 3: afella 2",
+    prizes: Object.freeze([
+      createPrize({
+        ...PEER_STUDY_3_AFELLA_2_IMAGE_SIZE,
+        id: "228",
+        imageUrl:
+          "https://cdn.lil.org/player/peer_study_3_afella_2/mid/228.webp",
+        assetAddress: "3KE4xCWLFBgojg4cjS4W38RZ8qibcBhw8ZDVJoagxc5F",
+        collectionAddress: PEER_STUDY_3_AFELLA_2_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...PEER_STUDY_3_AFELLA_2_IMAGE_SIZE,
+        id: "184",
+        imageUrl:
+          "https://cdn.lil.org/player/peer_study_3_afella_2/mid/184.webp",
+        assetAddress: "AZzKBZfWMZeEDkQ6RgsDCvcez6AZ3dXHURTNFx3t7E94",
+        collectionAddress: PEER_STUDY_3_AFELLA_2_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...PEER_STUDY_3_AFELLA_2_IMAGE_SIZE,
+        id: "339",
+        imageUrl:
+          "https://cdn.lil.org/player/peer_study_3_afella_2/mid/339.webp",
+        assetAddress: "B78KRQDzFHC94d15Kb8SufGHU9yVLTNfamg4mDpRrv1q",
+        collectionAddress: PEER_STUDY_3_AFELLA_2_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [CAKES_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: CAKES_PRIZES_EVENT_ID,
+    collectionName: "Cakes",
+    prizes: Object.freeze([
+      createPrize({
+        ...CAKES_IMAGE_SIZE,
+        id: "17",
+        imageUrl: "https://cdn.lil.org/player/cakes/mid/16.webp",
+        assetAddress: "2DAqsy664vHq2iWu1P81tru1y7v5sBHmn5RmFwoZAihi",
+        collectionAddress: CAKES_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...CAKES_IMAGE_SIZE,
+        id: "13",
+        imageUrl: "https://cdn.lil.org/player/cakes/mid/12.webp",
+        assetAddress: "5mnW3aUjUv2suFxxW81uTB4xdvxp9d2P9ELH6m4obQG5",
+        collectionAddress: CAKES_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...CAKES_IMAGE_SIZE,
+        id: "15",
+        imageUrl: "https://cdn.lil.org/player/cakes/mid/14.webp",
+        assetAddress: "JDom93J7sekaYZJa5XGSZwC88pJzD1b8mtMSai7whtTP",
+        collectionAddress: CAKES_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: PLASTIC_FOOLS_POCKET_PRIZES_EVENT_ID,
+    collectionName: "Plastic Fools Pocket",
+    prizes: Object.freeze([
+      createPrize({
+        ...PLASTIC_FOOLS_POCKET_IMAGE_SIZE,
+        id: "100",
+        imageUrl: "https://cdn.lil.org/player/plastic_fools_pocket/mid/99.webp",
+        assetAddress: "4EhpxbpmNsBoMn7nxPZmRg7jrNoN2Y16hw1PtBBGYpvx",
+        collectionAddress: PLASTIC_FOOLS_POCKET_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...PLASTIC_FOOLS_POCKET_IMAGE_SIZE,
+        id: "914",
+        imageUrl:
+          "https://cdn.lil.org/player/plastic_fools_pocket/mid/913.webp",
+        assetAddress: "4Pp8BRXsLmdM2iHd6Fw2A2Ri7Yft4DUWd2vfmJV6qXad",
+        collectionAddress: PLASTIC_FOOLS_POCKET_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...PLASTIC_FOOLS_POCKET_IMAGE_SIZE,
+        id: "1015",
+        imageUrl:
+          "https://cdn.lil.org/player/plastic_fools_pocket/mid/1014.webp",
+        assetAddress: "GLMB1sZQMGnRhcxAA6Qk9FaNzUVEyr3Np3Yd7FmGbhLp",
+        collectionAddress: PLASTIC_FOOLS_POCKET_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [CARD_NFT_2_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: CARD_NFT_2_PRIZES_EVENT_ID,
+    collectionName: "Card NFT 2",
+    prizes: Object.freeze([
+      createPrize({
+        ...CARD_NFT_2_IMAGE_SIZE,
+        id: "2046",
+        imageUrl: "https://cdn.lil.org/nft/card_nft_2/fronts/2046.webp",
+        assetAddress: "5mZxuSmp2EEeG7KLn9RdabnqkQyg1NWGYFNReQKkSG4",
+        collectionAddress: CARD_NFT_2_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...CARD_NFT_2_IMAGE_SIZE,
+        id: "5121",
+        imageUrl: "https://cdn.lil.org/nft/card_nft_2/fronts/5121.webp",
+        assetAddress: "7HYrooRJxz9sKr1ocoFEnq6xbxgupn4Y2HQoewZsgogM",
+        collectionAddress: CARD_NFT_2_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...CARD_NFT_2_IMAGE_SIZE,
+        id: "462",
+        imageUrl: "https://cdn.lil.org/nft/card_nft_2/fronts/0462.webp",
+        assetAddress: "8jgKBxfUY8wjTYVryFgqTomwb8aMzCwCysf8QCDKnhcT",
+        collectionAddress: CARD_NFT_2_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [PICKME_PORTS_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: PICKME_PORTS_PRIZES_EVENT_ID,
+    collectionName: "pick-me ports",
+    prizes: Object.freeze([
+      createPrize({
+        ...PICKME_PORTS_IMAGE_SIZE,
+        id: "298",
+        imageUrl: "https://cdn.lil.org/player/pickme_ports/mid/298.webp",
+        assetAddress: "3yPKbXsVhcEuYSPXzPFisfwegv8QPDBCF9ArRLZnCxPn",
+        collectionAddress: PICKME_PORTS_COLLECTION_ADDRESS,
+        standard: "compressed",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...PICKME_PORTS_IMAGE_SIZE,
+        id: "894",
+        imageUrl: "https://cdn.lil.org/player/pickme_ports/mid/894.webp",
+        assetAddress: "AYbsi5AuoRforjFUSBvnZCHyrPMV3m96GnZrUVTwwrJX",
+        collectionAddress: PICKME_PORTS_COLLECTION_ADDRESS,
+        standard: "compressed",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...PICKME_PORTS_IMAGE_SIZE,
+        id: "1031",
+        imageUrl: "https://cdn.lil.org/player/pickme_ports/mid/1031.webp",
+        assetAddress: "C4ChjETrbuRUmh7Y9Nwbe9DF3PqVwUHuFsoAA3ncYUMm",
+        collectionAddress: PICKME_PORTS_COLLECTION_ADDRESS,
+        standard: "compressed",
+        claimAvailable: true,
+      }),
+    ]),
+  }),
+  [AAHNGEEZ_PRIZES_EVENT_ID]: Object.freeze({
+    eventId: AAHNGEEZ_PRIZES_EVENT_ID,
+    collectionName: "aahngeez!",
+    prizes: Object.freeze([
+      createPrize({
+        ...AAHNGEEZ_IMAGE_SIZE,
+        id: "172",
+        imageUrl: "https://cdn.lil.org/player/aahngeez/mid/171.webp",
+        assetAddress: "Ba5ef8LsDe9RMUHN7NUM2nT2bKL7tGWUYzghPZYXqTTz",
+        collectionAddress: AAHNGEEZ_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...AAHNGEEZ_IMAGE_SIZE,
+        id: "104",
+        imageUrl: "https://cdn.lil.org/player/aahngeez/mid/103.webp",
+        assetAddress: "FpuTgMQmE7CgfydccVJUeqPSJ8FiWFV9fd7ZUHyAijVd",
+        collectionAddress: AAHNGEEZ_COLLECTION_ADDRESS,
+        standard: "core",
+        claimAvailable: true,
+      }),
+      createPrize({
+        ...AAHNGEEZ_IMAGE_SIZE,
+        id: "149",
+        imageUrl: "https://cdn.lil.org/player/aahngeez/mid/148.webp",
+        assetAddress: "Gobt7FbyxbhnUNzQxT85sGrifJe9pqCNe1TZ8bePTgkB",
+        collectionAddress: AAHNGEEZ_COLLECTION_ADDRESS,
         standard: "core",
         claimAvailable: true,
       }),
