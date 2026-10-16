@@ -585,6 +585,69 @@ test("event prize recovery preserves assignments removed from the current catalo
   assert.equal(profile.mutationBatches(), 1);
 });
 
+test("event prize recovery leaves equivalent reordered metadata unwritten", async () => {
+  const profile = recoveryProfileDb();
+  const assignment = {
+    ...prizeAssignment("1092", 200),
+    delivery: { z: [2, 1], a: { channel: "wallet", revision: 2 } },
+  };
+  const targetAssignment = {
+    delivery: { a: { revision: 2, channel: "wallet" }, z: [2, 1] },
+    ...prizeAssignment("1092", 200),
+    profileId: "target-profile",
+  };
+  const prizeStore = recoveryPrizeStore({
+    liveAssignment: assignment,
+    targetAssignment,
+  });
+  const service = prizeRecoveryService(profile.db, prizeStore.client);
+
+  assert.equal(await service.recoverProfile("target-profile"), "continued");
+  assert.strictEqual(prizeStore.value(prizeStore.targetPath), targetAssignment);
+  assert.deepEqual(prizeStore.guardedPaths, [prizeStore.targetPath]);
+});
+
+test("event prize recovery replaces metadata only for the same assignment", async () => {
+  for (const sameAssignment of [true, false]) {
+    const profile = recoveryProfileDb();
+    const assignment = {
+      ...prizeAssignment("1092", 200),
+      delivery: { revision: 2 },
+    };
+    const targetAssignment = {
+      ...prizeAssignment(sameAssignment ? "1092" : "1111", 200),
+      profileId: "target-profile",
+      delivery: { revision: 1 },
+    };
+    const prizeStore = recoveryPrizeStore({
+      liveAssignment: assignment,
+      targetAssignment,
+    });
+    const service = prizeRecoveryService(profile.db, prizeStore.client);
+
+    assert.equal(
+      await service.recoverProfile("target-profile"),
+      sameAssignment ? "continued" : "deferred",
+    );
+    if (sameAssignment) {
+      assert.notStrictEqual(
+        prizeStore.value(prizeStore.targetPath),
+        targetAssignment,
+      );
+      assert.deepEqual(prizeStore.value(prizeStore.targetPath), {
+        ...assignment,
+        profileId: "target-profile",
+      });
+    } else {
+      assert.strictEqual(
+        prizeStore.value(prizeStore.targetPath),
+        targetAssignment,
+      );
+      assert.equal(profile.mutationBatches(), 0);
+    }
+  }
+});
+
 test("event prize recovery rescans late assignments before finalizing", async () => {
   const profile = recoveryProfileDb({ source_phase: "finalize" });
   const prizeStore = recoveryPrizeStore({

@@ -1,8 +1,9 @@
 import { isCanonicalLoginUid } from "./recordKeys.ts";
 import { readSocketSession, type SocketSession } from "./socketSession.ts";
+import type { SocketRole } from "./socketTags.ts";
 
 type SocketAdmission = {
-  role: "host" | "guest" | "spectator";
+  role: SocketRole;
   ip: string;
   revision: number;
   passwordProtected: boolean;

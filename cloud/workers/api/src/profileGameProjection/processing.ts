@@ -19,9 +19,10 @@ import {
   type EventProfileGameProjectionTask,
   type ProfileLinkProfileGameProjectionTask,
 } from "../profileGameProjectionTasks.ts";
-import type {
-  ProfileGameProjectionLock,
-  ProfileGameProjectionLockStore,
+import {
+  withProfileGameProjectionLock,
+  type ProfileGameProjectionLock,
+  type ProfileGameProjectionLockStore,
 } from "../profileGameProjectionLocksD1.ts";
 import {
   archiveHistoricalDescriptor,
@@ -86,76 +87,79 @@ export async function processAutomatchProfileGameProjection(
     resourceId: task.inviteId,
     requestId: task.requestId,
   };
-  await locks.acquire(lock, ownerId, now());
-  try {
-    const outbox = parseAutomatchProfileGameProjectionOutbox(
-      await state.readAutomatchProfileOutbox(task.inviteId),
-    );
-    if (!outbox || outbox.requestId !== task.requestId) return "stale";
-    if (archiveRetryIsPending(outbox, now())) return "deferred";
-    await runtime.recomputeInviteProjection(task.inviteId, outbox.reason, {
-      eventTimestampMs: outbox.sourceUpdatedAtMs,
-    });
-    const batchNowMs = now();
-    const descriptors = (outbox.historicalMatches || [])
-      .filter(({ retryNotBeforeMs }) => (retryNotBeforeMs || 0) <= batchNowMs)
-      .slice(0, HISTORICAL_MATCH_ARCHIVE_BATCH_SIZE);
-    let firstArchiveFailure: unknown;
-    let archiveFailed = false;
-    for (const descriptor of descriptors) {
-      try {
-        const status = await archiveHistoricalDescriptor(
-          descriptor,
-          task.inviteId,
-          state,
-          runtime,
-        );
-        const retryNotBeforeMs =
-          status === "archived"
-            ? undefined
-            : now() + PROFILE_GAME_PROJECTION_RECOVERY_DELAY_MS;
-        if (
-          !(await settleHistoricalDescriptor(
-            task,
+  return withProfileGameProjectionLock(
+    locks,
+    lock,
+    ownerId,
+    now(),
+    async () => {
+      const outbox = parseAutomatchProfileGameProjectionOutbox(
+        await state.readAutomatchProfileOutbox(task.inviteId),
+      );
+      if (!outbox || outbox.requestId !== task.requestId) return "stale";
+      if (archiveRetryIsPending(outbox, now())) return "deferred";
+      await runtime.recomputeInviteProjection(task.inviteId, outbox.reason, {
+        eventTimestampMs: outbox.sourceUpdatedAtMs,
+      });
+      const batchNowMs = now();
+      const descriptors = (outbox.historicalMatches || [])
+        .filter(({ retryNotBeforeMs }) => (retryNotBeforeMs || 0) <= batchNowMs)
+        .slice(0, HISTORICAL_MATCH_ARCHIVE_BATCH_SIZE);
+      let firstArchiveFailure: unknown;
+      let archiveFailed = false;
+      for (const descriptor of descriptors) {
+        try {
+          const status = await archiveHistoricalDescriptor(
             descriptor,
+            task.inviteId,
             state,
-            retryNotBeforeMs,
-          ))
-        ) {
-          return "superseded";
-        }
-        if (status !== "archived")
-          logger.info(
+            runtime,
+          );
+          const retryNotBeforeMs =
+            status === "archived"
+              ? undefined
+              : now() + PROFILE_GAME_PROJECTION_RECOVERY_DELAY_MS;
+          if (
+            !(await settleHistoricalDescriptor(
+              task,
+              descriptor,
+              state,
+              retryNotBeforeMs,
+            ))
+          ) {
+            return "superseded";
+          }
+          if (status !== "archived")
+            logger.info(
+              JSON.stringify({
+                event: "historical_match_archive_descriptor_deferred",
+                inviteId: task.inviteId,
+                matchId: descriptor.matchId,
+                requestId: task.requestId,
+                reason: status,
+                retryNotBeforeMs,
+              }),
+            );
+        } catch (error) {
+          logger.error(
             JSON.stringify({
-              event: "historical_match_archive_descriptor_deferred",
+              event: "historical_match_archive_descriptor_failed",
               inviteId: task.inviteId,
               matchId: descriptor.matchId,
               requestId: task.requestId,
-              reason: status,
-              retryNotBeforeMs,
+              code: error instanceof Error ? error.message : "unknown",
             }),
           );
-      } catch (error) {
-        logger.error(
-          JSON.stringify({
-            event: "historical_match_archive_descriptor_failed",
-            inviteId: task.inviteId,
-            matchId: descriptor.matchId,
-            requestId: task.requestId,
-            code: error instanceof Error ? error.message : "unknown",
-          }),
-        );
-        if (!archiveFailed) {
-          archiveFailed = true;
-          firstArchiveFailure = error;
+          if (!archiveFailed) {
+            archiveFailed = true;
+            firstArchiveFailure = error;
+          }
         }
       }
-    }
-    if (archiveFailed) throw firstArchiveFailure;
-    return await finishAutomatchProjectionBatch(task, state, now());
-  } finally {
-    await locks.release(lock, ownerId);
-  }
+      if (archiveFailed) throw firstArchiveFailure;
+      return await finishAutomatchProjectionBatch(task, state, now());
+    },
+  );
 }
 
 export async function settleEventProfileGameProjectionOutbox(
@@ -241,60 +245,64 @@ export async function processProfileLinkProfileGameProjection(
     resourceId: task.loginUid,
     requestId: task.requestId,
   };
-  await locks.acquire(lock, ownerId, now());
-  try {
-    const job = await jobs.read(task.loginUid);
-    if (!job || job.requestId !== task.requestId) {
-      return "stale";
-    }
-    const projection = await process({
-      cleanupProfileIds: job.cleanupProfileIds,
-      loginUid: task.loginUid,
-      matchCursor: job.matchCursor,
-      profileId: job.profileId,
-      sourceUpdatedAtMs: job.sourceUpdatedAtMs,
-      withInviteProjectionLock: async (inviteId, work) => {
-        const inviteOwnerId = crypto.randomUUID();
-        const inviteLock: ProfileGameProjectionLock = {
-          scope: "invite",
-          resourceId: inviteId,
-        };
-        await locks.acquire(inviteLock, inviteOwnerId, now());
-        try {
-          return await work();
-        } finally {
-          await locks.release(inviteLock, inviteOwnerId);
-        }
-      },
-    });
-    if (!projection) {
-      return (await jobs.settleMissing(
-        task.loginUid,
-        task.requestId,
-        job.matchCursor,
-      ))
-        ? "missing"
+  return withProfileGameProjectionLock(
+    locks,
+    lock,
+    ownerId,
+    now(),
+    async () => {
+      const job = await jobs.read(task.loginUid);
+      if (!job || job.requestId !== task.requestId) {
+        return "stale";
+      }
+      const projection = await process({
+        cleanupProfileIds: job.cleanupProfileIds,
+        loginUid: task.loginUid,
+        matchCursor: job.matchCursor,
+        profileId: job.profileId,
+        sourceUpdatedAtMs: job.sourceUpdatedAtMs,
+        withInviteProjectionLock: async (inviteId, work) => {
+          const inviteOwnerId = crypto.randomUUID();
+          const inviteLock: ProfileGameProjectionLock = {
+            scope: "invite",
+            resourceId: inviteId,
+          };
+          return withProfileGameProjectionLock(
+            locks,
+            inviteLock,
+            inviteOwnerId,
+            now(),
+            work,
+          );
+        },
+      });
+      if (!projection) {
+        return (await jobs.settleMissing(
+          task.loginUid,
+          task.requestId,
+          job.matchCursor,
+        ))
+          ? "missing"
+          : "superseded";
+      }
+      if (projection.didHitInviteCap && !projection.nextMatchCursor) {
+        throw new Error("profile-link-profile-game-projection-no-progress");
+      }
+      if (projection.nextMatchCursor) {
+        const continued = await jobs.advance(
+          task.loginUid,
+          task.requestId,
+          job.matchCursor,
+          projection.nextMatchCursor,
+          now(),
+        );
+        return continued ? "continued" : "superseded";
+      }
+      return (await jobs.settle(task.loginUid, task.requestId, job.matchCursor))
+        ? "projected"
         : "superseded";
-    }
-    if (projection.didHitInviteCap && !projection.nextMatchCursor) {
-      throw new Error("profile-link-profile-game-projection-no-progress");
-    }
-    if (projection.nextMatchCursor) {
-      const continued = await jobs.advance(
-        task.loginUid,
-        task.requestId,
-        job.matchCursor,
-        projection.nextMatchCursor,
-        now(),
-      );
-      return continued ? "continued" : "superseded";
-    }
-    return (await jobs.settle(task.loginUid, task.requestId, job.matchCursor))
-      ? "projected"
-      : "superseded";
-  } finally {
-    await locks.release(lock, ownerId);
-  }
+    },
+  );
 }
 
 export async function processRatingProfileGameProjection(
@@ -334,8 +342,7 @@ export async function processRatingProfileGameProjection(
     scope: "invite",
     resourceId: update.inviteId,
   };
-  await locks.acquire(lock, ownerId, now());
-  try {
+  await withProfileGameProjectionLock(locks, lock, ownerId, now(), async () => {
     if (update.status !== "done") {
       throw new Error("profile-game-projection-rating-pending");
     }
@@ -358,9 +365,7 @@ export async function processRatingProfileGameProjection(
         source: "rating",
       });
     }
-  } finally {
-    await locks.release(lock, ownerId);
-  }
+  });
   await rating.markRatingProfileGameProjection(operationId, "done", now());
   return "done";
 }

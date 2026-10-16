@@ -14,6 +14,7 @@ import {
 } from "../eventRepository.ts";
 import { isCanonicalLoginUid } from "../recordKeys.ts";
 import { cleanString } from "../authPolicy.ts";
+import { canonicalAuthRecoveryJson as canonicalJson } from "../canonicalJson.ts";
 import {
   createProfileLinkCatchupStore,
   type ProfileLinkCatchupStore,
@@ -76,20 +77,6 @@ function mergeFreshness(fields: Record<string, unknown>): number {
     timestampMillis(fields.updatedAt),
     timestampMillis(fields.listSortAt),
   );
-}
-
-function canonicalJson(value: unknown): string {
-  if (Array.isArray(value)) {
-    return `[${value.map(canonicalJson).join(",")}]`;
-  }
-  if (value && typeof value === "object") {
-    const fields = value as Record<string, unknown>;
-    return `{${Object.keys(fields)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${canonicalJson(fields[key])}`)
-      .join(",")}}`;
-  }
-  return JSON.stringify(value) ?? "";
 }
 
 function isSamePrizeAssignment(value: unknown, expected: unknown): boolean {

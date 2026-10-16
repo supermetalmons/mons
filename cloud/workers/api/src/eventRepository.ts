@@ -1,6 +1,9 @@
 import * as eventD1 from "./eventD1.ts";
 import { normalizeRecordKey } from "@mons/shared/ids";
-import { sha256Hex } from "./canonicalJson.ts";
+import {
+  canonicalEventRepositoryJson as canonicalJson,
+  sha256Hex,
+} from "./canonicalJson.ts";
 import { isEventMutation } from "../../../runtime/eventCommands.js";
 import type { EventCommand } from "../../../runtime/eventCommands.js";
 import type { EventLeaseKey } from "../../../runtime/eventLeases.js";
@@ -95,19 +98,6 @@ export function createEventProgressOutboxWriter(
         },
       ),
   };
-}
-
-function canonicalJson(value: unknown): string {
-  if (Array.isArray(value)) {
-    return `[${value.map(canonicalJson).join(",")}]`;
-  }
-  if (isRecord(value)) {
-    return `{${Object.keys(value)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
-      .join(",")}}`;
-  }
-  return JSON.stringify(value);
 }
 
 async function transitionId(

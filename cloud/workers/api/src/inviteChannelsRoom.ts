@@ -34,6 +34,13 @@ import {
   type SocketCapacityLimits,
 } from "./socketCapacity.ts";
 import type { InviteAlarmWork } from "./inviteAlarmCoordinator.ts";
+import {
+  admissionSocketTags,
+  channelSocketTag,
+  roleSocketTag,
+  spectatorIpSocketTag,
+  type SocketRole,
+} from "./socketTags.ts";
 
 type InviteChannel = "metadata" | "wagers";
 
@@ -66,7 +73,7 @@ type InviteSocketAttachment = {
   channel: InviteChannel;
   schemaVersion: 1;
   inviteId: string;
-  role: "host" | "guest" | "spectator";
+  role: SocketRole;
   actorUid: string | null;
 } & SocketSession;
 
@@ -107,7 +114,7 @@ type InviteChannelsDependencies = {
   readInvite: (inviteId: string) => Promise<unknown>;
   readWagerStates: (inviteId: string) => Promise<WagerStateSnapshot[]>;
   scheduleAlarm: (atMs: number) => Promise<void>;
-  capacityFull: (role: string) => boolean;
+  capacityFull: (role: SocketRole) => boolean;
   socketSessions: SocketSessions;
   limits: SocketCapacityLimits;
 };
@@ -192,7 +199,7 @@ export class InviteChannelsRoom {
     activeOnly = false,
   ): WebSocket[] {
     return this.ctx
-      .getWebSockets(channel ? `channel:${channel}` : undefined)
+      .getWebSockets(channel ? channelSocketTag(channel) : undefined)
       .filter((socket) => {
         const attachment = socket.deserializeAttachment();
         return (
@@ -613,12 +620,12 @@ export class InviteChannelsRoom {
 
   private inviteRoomFull(
     channel: InviteChannel,
-    role: string,
+    role: SocketRole,
     ip: string,
   ): boolean {
     const sockets = this.inviteSockets(channel);
-    const roleCount = (value: string) =>
-      this.ctx.getWebSockets(`${channel}-role:${value}`).length;
+    const roleCount = (value: SocketRole) =>
+      this.ctx.getWebSockets(roleSocketTag(channel, value)).length;
     return (
       this.dependencies.capacityFull(role) ||
       socketCapacityFull(
@@ -626,7 +633,9 @@ export class InviteChannelsRoom {
         {
           sockets: sockets.length,
           spectators: roleCount("spectator"),
-          spectatorsPerIp: this.ctx.getWebSockets(`${channel}-ip:${ip}`).length,
+          spectatorsPerIp: this.ctx.getWebSockets(
+            spectatorIpSocketTag(channel, ip),
+          ).length,
           socketsForRole: roleCount(role),
         },
         this.dependencies.limits,
@@ -717,11 +726,11 @@ export class InviteChannelsRoom {
             headers: { "Retry-After": "60" },
           });
         }
-        const pair = acceptRoomSocket(this.ctx, attachment, [
-          `channel:${channel}`,
-          `${channel}-role:${role}`,
-          ...(role === "spectator" ? [`${channel}-ip:${ip}`] : []),
-        ]);
+        const pair = acceptRoomSocket(
+          this.ctx,
+          attachment,
+          admissionSocketTags(channel, role, ip),
+        );
         const message = {
           schemaVersion: 1,
           type: "snapshot",

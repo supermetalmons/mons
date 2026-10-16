@@ -1,5 +1,6 @@
 import { isSessionId } from "@mons/shared/session-auth";
 import type { SessionIdentity } from "./sessionAuth.ts";
+import { isParticipantSocketTag } from "./socketTags.ts";
 
 export type SocketSession =
   | { authenticated: false }
@@ -7,8 +8,6 @@ export type SocketSession =
 
 const SESSION_ID_HEADER = "X-Mons-Session-Id";
 const SESSION_EXPIRY_HEADER = "X-Mons-Session-Expires-At";
-const PARTICIPANT_TAG =
-  /^(?:role|metadata-role|wagers-role|match-role):(host|guest)$/;
 
 export function socketSessionHeaders(
   identity: SessionIdentity | null,
@@ -70,7 +69,7 @@ export class SocketSessions {
     }
     const authenticated =
       attachment?.authenticated === true ||
-      this.ctx.getTags(socket).some((tag) => PARTICIPANT_TAG.test(tag));
+      this.ctx.getTags(socket).some(isParticipantSocketTag);
     if (!authenticated) return true;
     if (
       attachment?.authenticated === true &&

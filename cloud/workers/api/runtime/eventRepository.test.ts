@@ -805,6 +805,60 @@ describe("typed event repository", () => {
     expect(f.patches).toEqual([{ [timerPath]: "gg" }]);
   });
 
+  it.each([
+    {
+      reverse: false,
+      matchId: "event-match",
+      expectedId:
+        "et_f667a523a2bec7bdf8661451294d4fbb859d822f9175f4938536d5bd0e6dc29c",
+    },
+    {
+      reverse: true,
+      matchId: "event-match",
+      expectedId:
+        "et_f667a523a2bec7bdf8661451294d4fbb859d822f9175f4938536d5bd0e6dc29c",
+    },
+    {
+      reverse: false,
+      matchId: "other-match",
+      expectedId:
+        "et_4427c6da685f3fcdb67f0c65b5d4c979acaea856d2961841a7ffa016bb2253de",
+    },
+  ])(
+    "preserves generated transition identity for $matchId, reversed=$reverse",
+    async ({ reverse, matchId, expectedId }) => {
+      const f = eventTransitionFixture(testEnv);
+      await captureLoginMatchDiscovery(
+        testEnv.PROFILE_GAMES_DB,
+        [{ loginUid: "login-two", matchId, inviteId: matchId }],
+        100,
+      );
+      await f.client.commitEventPlan(
+        decodeEventUpdates({ [`events/${eventId}`]: eventRecord() }),
+      );
+      f.hooks.beforePatch = async () => {
+        throw new Error("state-offline");
+      };
+      const effects = [
+        ["players/login-one/matches/event-match/timer", "gg"],
+        [`players/login-two/matches/${matchId}/timer`, "gg"],
+      ];
+      await expect(
+        f.client.commitEventPlan(
+          decodeEventUpdates({
+            [`events/${eventId}/status`]: "active",
+            ...Object.fromEntries(reverse ? effects.reverse() : effects),
+          }),
+        ),
+      ).rejects.toThrow("state-offline");
+      const [pending] = await listPendingEventTransitionIntents(
+        testEnv.EVENT_DB,
+      );
+      expect(pending.transitionId).toBe(expectedId);
+      expect(pending.expectedRevision).toBe(1);
+    },
+  );
+
   it("recovers a failed match effect before publishing the D1 revision", async () => {
     const f = eventTransitionFixture(testEnv);
     const timerPath = "players/login-one/matches/event-match/timer";

@@ -4,6 +4,7 @@ import type { EventProgressOutboxRecord } from "../../../runtime/events.js";
 import type { EventProgressOutboxWriter } from "../src/eventStoreContracts.ts";
 import type { RatingGameplayReader } from "../src/ratingContracts.ts";
 import { createRatingRepository } from "../src/ratingRepository.ts";
+import * as canonicalRating from "../src/ratingCanonicalRepository.ts";
 
 const outbox: EventProgressOutboxRecord = {
   schemaVersion: 1,
@@ -33,6 +34,57 @@ const gameplayReads: RatingGameplayReader = {
     profileById: new Map(),
   }),
 };
+
+test("canonical ratings preserve their exact facade without eager work", () => {
+  assert.deepEqual(Object.keys(canonicalRating), [
+    "createCanonicalRatingRepository",
+  ]);
+  const db = new Proxy({} as D1Database, {
+    get() {
+      assert.fail("constructing ratings must not access profile D1");
+    },
+  });
+  const rating = canonicalRating.createCanonicalRatingRepository(
+    db,
+    gameplayReads,
+    {
+      createFailure() {
+        assert.fail("constructing ratings must not create failures");
+      },
+      maxAttempts: 2,
+      now() {
+        assert.fail("constructing ratings must not read the clock");
+      },
+    },
+  );
+
+  assert.deepEqual(Object.keys(rating), [
+    "readInviteMetadata",
+    "readMatchRecord",
+    "readMatchPair",
+    "readProfileOwnershipSnapshot",
+    "readRatingUpdate",
+    "readRatingUpdates",
+    "hasCompletedRatingUpdate",
+    "tryAcquireRatingLease",
+    "finalizeRatingUpdate",
+    "applyFebruaryChallengeReplay",
+    "claimRatingEventProgress",
+    "claimRatingProfileGameProjection",
+    "claimRatingTelegramProjection",
+    "listDueRatingEventProgress",
+    "listDueRatingProfileGameProjections",
+    "listDueRatingTelegramProjections",
+    "markRatingEventProgress",
+    "markRatingProfileGameProjection",
+    "markRatingTelegramProjection",
+  ]);
+  for (const method of Object.keys(gameplayReads) as Array<
+    keyof RatingGameplayReader
+  >) {
+    assert.strictEqual(rating[method], gameplayReads[method], method);
+  }
+});
 
 test("ratings accept only gameplay reads and an explicit event outbox writer", async () => {
   const db = new Proxy({} as D1Database, {

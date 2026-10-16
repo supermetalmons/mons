@@ -23,6 +23,12 @@ import {
   type SocketSessions,
 } from "./socketSession.ts";
 import { acceptRoomSocket, sendSocketSnapshot } from "./socketUpgrade.ts";
+import {
+  admissionSocketTags,
+  roleSocketTag,
+  spectatorIpSocketTag,
+  type SocketRole,
+} from "./socketTags.ts";
 
 type ReactionChannelDependencies = {
   presentations: Pick<
@@ -35,7 +41,7 @@ type ReactionChannelDependencies = {
     matchId: string,
   ) => Promise<MatchPresentationRegistration[]>;
   scheduleAlarm: (atMs: number) => Promise<void>;
-  capacityFull: (role: string) => boolean;
+  capacityFull: (role: SocketRole) => boolean;
   socketSessions: Pick<SocketSessions, "send">;
   limits: SocketCapacityLimits;
 };
@@ -96,7 +102,10 @@ export class ReactionChannel {
     } catch {
       return new Response("Invalid presentation actors", { status: 400 });
     }
-    if (!["host", "guest", "spectator"].includes(role) || ip.length > 64) {
+    if (
+      (role !== "host" && role !== "guest" && role !== "spectator") ||
+      ip.length > 64
+    ) {
       return new Response("Invalid reaction admission", { status: 400 });
     }
     const session = readSocketSession(request, role !== "spectator");
@@ -139,11 +148,13 @@ export class ReactionChannel {
       return new Response("Session expired", { status: 401 });
     const allSockets = this.ctx.getWebSockets();
     const reactionSockets = allSockets.filter(isReactionSocket);
-    const roleCount = (value: string) =>
-      this.ctx.getWebSockets(`role:${value}`).length;
+    const roleCount = (value: SocketRole) =>
+      this.ctx.getWebSockets(roleSocketTag("reaction", value)).length;
     const spectatorCount =
       reactionSockets.length - roleCount("host") - roleCount("guest");
-    const ipCount = this.ctx.getWebSockets(`spectator-ip:${ip}`).length;
+    const ipCount = this.ctx.getWebSockets(
+      spectatorIpSocketTag("reaction", ip),
+    ).length;
     if (
       this.dependencies.capacityFull(role) ||
       socketCapacityFull(
@@ -188,7 +199,7 @@ export class ReactionChannel {
         matchId,
         ...session,
       },
-      [`role:${role}`, ...(role === "spectator" ? [`spectator-ip:${ip}`] : [])],
+      admissionSocketTags("reaction", role, ip),
     );
     return sendSocketSnapshot(
       this.dependencies.socketSessions,

@@ -1406,6 +1406,88 @@ test("profile-link projection uses nested invite locks and exact-clears", async 
   assert.equal(values.get(loginUid), undefined);
 });
 
+test("profile-link projection preserves nested lock owners and cleanup ordering", async () => {
+  for (const failWork of [false, true]) {
+    const job = profileLinkJob("profile-request-1", 200, "match-previous");
+    const values = new Map([["login-1", job]]);
+    const jobs = profileLinkJobs(values);
+    const events: string[] = [];
+    const inviteOwners: string[] = [];
+    const failure = new Error("nested-work-failed");
+    const projection = processProfileLinkProfileGameProjection(
+      profileLinkTask(),
+      {
+        ...jobs,
+        async settle(...args) {
+          events.push("settle");
+          return jobs.settle(...args);
+        },
+      },
+      async (input) => {
+        for (let index = 0; index < 2; index++) {
+          await input.withInviteProjectionLock("invite-1", async () => {
+            events.push("work");
+            assert.equal(
+              lockValues.get("profile-link:login-1")?.ownerId,
+              "profile-owner",
+            );
+            assert.equal(
+              lockValues.get("invite:invite-1")?.ownerId,
+              inviteOwners.at(-1),
+            );
+            if (failWork) throw failure;
+          });
+        }
+        return { didHitInviteCap: false, nextMatchCursor: null };
+      },
+      {
+        ...locks,
+        async acquire(lock, ownerId, nowMs) {
+          events.push(`acquire:${lock.scope}`);
+          assert.equal(nowMs, 300);
+          if (lock.scope === "invite") {
+            assert.equal(lock.requestId, undefined);
+            assert.notEqual(ownerId, "profile-owner");
+            assert.ok(!inviteOwners.includes(ownerId));
+            inviteOwners.push(ownerId);
+          } else {
+            assert.equal(lock.requestId, job.requestId);
+          }
+          await locks.acquire(lock, ownerId, nowMs);
+        },
+        async release(lock, ownerId) {
+          events.push(`release:${lock.scope}`);
+          assert.equal(
+            lockValues.get(`${lock.scope}:${lock.resourceId}`)?.ownerId,
+            ownerId,
+          );
+          await locks.release(lock, ownerId);
+        },
+      },
+      "profile-owner",
+      () => 300,
+    );
+    if (failWork) {
+      await assert.rejects(projection, (error) => error === failure);
+      assert.deepEqual(values.get("login-1"), job);
+    } else {
+      assert.equal(await projection, "projected");
+      assert.equal(values.has("login-1"), false);
+    }
+    assert.deepEqual(events, [
+      "acquire:profile-link",
+      "acquire:invite",
+      "work",
+      "release:invite",
+      ...(failWork
+        ? []
+        : ["acquire:invite", "work", "release:invite", "settle"]),
+      "release:profile-link",
+    ]);
+    assert.equal(lockValues.size, 0);
+  }
+});
+
 test("profile-link projection advances capped work before clearing", async () => {
   const loginUid = "login-1";
   const values = new Map<string, ProfileLinkCatchupJob>([
@@ -1740,6 +1822,68 @@ test("rating projection keeps completion pending when lock release fails", async
   assert.deepEqual(state.marks, []);
   assert.equal(lockValues.get("invite:auto_aaaaaaaaaaa")?.ownerId, "owner-a");
   locks.release = release;
+});
+
+test("rating projection waits for release before marking completion", async () => {
+  const state = { marks: [], patches: [] } as {
+    marks: Array<{ state: string; reason?: string }>;
+    patches: Array<Record<string, unknown>>;
+  };
+  const releasing = Promise.withResolvers<void>();
+  const finishRelease = Promise.withResolvers<void>();
+  const projection = processRatingProfileGameProjection(
+    operationId,
+    ratingRepository(ratingUpdate(), state),
+    runtime([]),
+    () => 100,
+    {
+      ...locks,
+      async release(lock, ownerId) {
+        releasing.resolve();
+        await finishRelease.promise;
+        await locks.release(lock, ownerId);
+      },
+    },
+    "owner-a",
+  );
+  await releasing.promise;
+  assert.deepEqual(state.marks, []);
+  assert.equal(lockValues.get("invite:auto_aaaaaaaaaaa")?.ownerId, "owner-a");
+  finishRelease.resolve();
+  assert.equal(await projection, "done");
+  assert.deepEqual(state.marks, [{ state: "done" }]);
+  assert.equal(lockValues.size, 0);
+});
+
+test("rating projection release failure takes precedence over work failure", async () => {
+  const state = { marks: [], patches: [] };
+  const workFailure = new Error("projection-failed");
+  const releaseFailure = new ProfileGameProjectionLockFailure(
+    "release",
+    "invite",
+  );
+  await assert.rejects(
+    processRatingProfileGameProjection(
+      operationId,
+      ratingRepository(ratingUpdate(), state),
+      {
+        recomputeInviteProjection: async () => {
+          throw workFailure;
+        },
+      },
+      () => 100,
+      {
+        ...locks,
+        async release() {
+          throw releaseFailure;
+        },
+      },
+      "owner-a",
+    ),
+    (error) => error === releaseFailure,
+  );
+  assert.deepEqual(state.marks, []);
+  assert.equal(lockValues.get("invite:auto_aaaaaaaaaaa")?.ownerId, "owner-a");
 });
 
 test("rating projection dead-letters invalid records and retries uncommitted ratings", async () => {
@@ -3131,6 +3275,33 @@ test("projection sweep cleans locks once and preserves enqueue work on cleanup f
         "profile_game_projection_lock_cleanup_failed",
     ),
   );
+});
+
+test("automatch projection rereads a replaced outbox after acquiring its lock", async () => {
+  const outboxPath = "profileGameProjectionOutbox/automatch/auto_aaaaaaaaaaa";
+  const values = new Map<string, unknown>([[outboxPath, automatchOutbox()]]);
+  const replacement = automatchOutbox("replacement-request", 400, 400);
+  const status = await processAutomatchProfileGameProjection(
+    automatchTask(),
+    projectionLockState(values),
+    {
+      recomputeInviteProjection: async () => {
+        throw new Error("unexpected-projection");
+      },
+    },
+    {
+      ...locks,
+      async acquire(lock, ownerId, nowMs) {
+        await locks.acquire(lock, ownerId, nowMs);
+        values.set(outboxPath, replacement);
+      },
+    },
+    "owner",
+    () => 300,
+  );
+  assert.equal(status, "stale");
+  assert.deepEqual(values.get(outboxPath), replacement);
+  assert.equal(lockValues.has("invite:auto_aaaaaaaaaaa"), false);
 });
 
 test("profile-link projection rereads a replaced job after acquiring its lock", async () => {

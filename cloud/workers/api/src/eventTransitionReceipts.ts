@@ -1,4 +1,5 @@
 import { isSafeRecordKey } from "./recordKeys.ts";
+import { canonicalReceiptJson } from "./canonicalJson.ts";
 
 type ReceiptIdentity = {
   transitionId: string;
@@ -28,30 +29,7 @@ function fail(message = "invalid-event-transition-receipt"): never {
 }
 
 function canonicalJson(value: unknown): string {
-  if (
-    value === null ||
-    typeof value === "boolean" ||
-    typeof value === "string"
-  ) {
-    return JSON.stringify(value);
-  }
-  if (typeof value === "number") {
-    if (!Number.isFinite(value)) return fail();
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) {
-    return `[${Array.from(value, canonicalJson).join(",")}]`;
-  }
-  if (value && typeof value === "object") {
-    const prototype: unknown = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) return fail();
-    const record = value as Record<string, unknown>;
-    return `{${Object.keys(record)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${canonicalJson(record[key])}`)
-      .join(",")}}`;
-  }
-  return fail();
+  return canonicalReceiptJson(value, fail);
 }
 
 function safeInteger(value: unknown, minimum = 0): value is number {

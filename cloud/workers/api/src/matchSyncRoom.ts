@@ -19,6 +19,11 @@ import {
 } from "./socketSession.ts";
 import { readSocketAdmission } from "./socketAdmission.ts";
 import { acceptRoomSocket, sendSocketSnapshot } from "./socketUpgrade.ts";
+import {
+  admissionSocketTags,
+  channelSocketTag,
+  type SocketRole,
+} from "./socketTags.ts";
 import { GameSessionTransitionFailure } from "./gameSessionCodec.ts";
 import type {
   MatchStateSyncReadRequest,
@@ -33,7 +38,7 @@ type MatchSocketAttachment = {
   schemaVersion: 1;
   inviteId: string;
   matchId: string;
-  role: "host" | "guest" | "spectator";
+  role: SocketRole;
   actorUid: string | null;
 } & SocketSession;
 
@@ -68,7 +73,7 @@ type MatchRoomDependencies = {
     input: MatchStateSyncReadRequest,
   ) => MatchStateSyncReadResult | Promise<MatchStateSyncReadResult>;
   scheduleAlarm: (atMs: number) => Promise<void>;
-  capacityFull: (role: string, ip: string) => boolean;
+  capacityFull: (role: SocketRole, ip: string) => boolean;
   canReceive: (
     attachment: MatchSocketAttachment,
     metadata: MatchSyncMetadata,
@@ -89,15 +94,17 @@ export class MatchSyncRoom {
   }
 
   private sockets(matchId?: string): WebSocket[] {
-    return this.ctx.getWebSockets("channel:matches").filter((socket) => {
-      const attachment =
-        socket.deserializeAttachment() as MatchSocketAttachment;
-      return (
-        this.dependencies.socketSessions.active(socket) &&
-        attachment?.channel === "matches" &&
-        (matchId === undefined || attachment.matchId === matchId)
-      );
-    });
+    return this.ctx
+      .getWebSockets(channelSocketTag("matches"))
+      .filter((socket) => {
+        const attachment =
+          socket.deserializeAttachment() as MatchSocketAttachment;
+        return (
+          this.dependencies.socketSessions.active(socket) &&
+          attachment?.channel === "matches" &&
+          (matchId === undefined || attachment.matchId === matchId)
+        );
+      });
   }
 
   private state(matchId: string): MatchReadState {
@@ -504,11 +511,11 @@ export class MatchSyncRoom {
           status: 429,
           headers: { "Retry-After": "60" },
         });
-      const pair = acceptRoomSocket(this.ctx, attachment, [
-        "channel:matches",
-        `match-role:${role}`,
-        ...(role === "spectator" ? [`match-ip:${ip}`] : []),
-      ]);
+      const pair = acceptRoomSocket(
+        this.ctx,
+        attachment,
+        admissionSocketTags("matches", role, ip),
+      );
       acceptedSocket = pair[1];
       return sendSocketSnapshot(
         this.dependencies.socketSessions,

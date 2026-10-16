@@ -18,6 +18,21 @@ export type ProfileGameProjectionLockStore = {
   deleteExpired: (nowMs: number) => Promise<number>;
 };
 
+export async function withProfileGameProjectionLock<T>(
+  locks: Pick<ProfileGameProjectionLockStore, "acquire" | "release">,
+  lock: ProfileGameProjectionLock,
+  ownerId: string,
+  nowMs: number,
+  work: () => Promise<T>,
+): Promise<T> {
+  await locks.acquire(lock, ownerId, nowMs);
+  try {
+    return await work();
+  } finally {
+    await locks.release(lock, ownerId);
+  }
+}
+
 export class ProfileGameProjectionLockFailure extends Error {
   readonly scope: ProfileGameProjectionLock["scope"] | "cleanup";
 

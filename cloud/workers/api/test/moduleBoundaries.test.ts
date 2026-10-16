@@ -206,10 +206,15 @@ for (const module of [
   "profileGameProjection",
   "authRecovery",
   "telegramProjection",
+  "ratingCanonicalRepository",
 ]) {
   test(`${module} internals have no facade dependencies or runtime cycles`, () => {
     const facade = resolve(import.meta.dirname, `../src/${module}.ts`);
-    const internalRoot = resolve(import.meta.dirname, `../src/${module}`);
+    const internalRoot = resolve(
+      import.meta.dirname,
+      "../src",
+      module === "ratingCanonicalRepository" ? "ratingCanonical" : module,
+    );
     const internals = reachableRuntimeFiles(facade).filter((path) =>
       path.startsWith(`${internalRoot}/`),
     );

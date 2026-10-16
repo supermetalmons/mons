@@ -54,6 +54,13 @@ import {
 import { socketCapacityFull } from "./socketCapacity.ts";
 import { SocketSessions } from "./socketSession.ts";
 import {
+  PARTICIPANT_SOCKET_TAGS,
+  channelSocketTag,
+  roleSocketTag,
+  spectatorIpSocketTag,
+  type SocketRole,
+} from "./socketTags.ts";
+import {
   createWagerStateD1Store,
   type WagerStateSnapshot,
 } from "./wagerStateD1.ts";
@@ -73,16 +80,6 @@ const INVITE_CHANNEL_SOCKET_LIMITS = {
   spectatorsPerIp: MAX_INVITE_REACTION_SPECTATORS_PER_IP,
   socketsPerParticipant: MAX_INVITE_REACTION_SOCKETS_PER_PARTICIPANT,
 };
-const PARTICIPANT_SOCKET_TAGS = [
-  "role:host",
-  "role:guest",
-  "metadata-role:host",
-  "metadata-role:guest",
-  "wagers-role:host",
-  "wagers-role:guest",
-  "match-role:host",
-  "match-role:guest",
-];
 const MAX_INVITE_ROOM_SPECTATOR_SOCKETS =
   MAX_INVITE_ROOM_SOCKETS -
   PARTICIPANT_SOCKET_TAGS.length * MAX_INVITE_REACTION_SOCKETS_PER_PARTICIPANT;
@@ -349,16 +346,21 @@ export class InviteReactions
     return this.alarmCoordinator.run();
   }
 
-  private matchRoomFull(role: string, ip: string): boolean {
+  private matchRoomFull(role: SocketRole, ip: string): boolean {
     return (
       this.roomCapacityFull(role) ||
       socketCapacityFull(
         role,
         {
-          sockets: this.ctx.getWebSockets("channel:matches").length,
-          spectators: this.ctx.getWebSockets("match-role:spectator").length,
-          spectatorsPerIp: this.ctx.getWebSockets(`match-ip:${ip}`).length,
-          socketsForRole: this.ctx.getWebSockets(`match-role:${role}`).length,
+          sockets: this.ctx.getWebSockets(channelSocketTag("matches")).length,
+          spectators: this.ctx.getWebSockets(
+            roleSocketTag("matches", "spectator"),
+          ).length,
+          spectatorsPerIp: this.ctx.getWebSockets(
+            spectatorIpSocketTag("matches", ip),
+          ).length,
+          socketsForRole: this.ctx.getWebSockets(roleSocketTag("matches", role))
+            .length,
         },
         INVITE_CHANNEL_SOCKET_LIMITS,
       )

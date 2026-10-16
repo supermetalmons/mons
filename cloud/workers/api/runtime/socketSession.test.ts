@@ -141,6 +141,24 @@ function request(
   return new Request(`https://room.internal${path}`, { headers });
 }
 
+function participantRoleHeaders(
+  channel: Channel,
+  role: "host" | "guest",
+): Record<string, string> {
+  if (channel === "reactions" || channel === "presentation")
+    return { "X-Mons-Reaction-Role": role };
+  const name =
+    channel === "metadata"
+      ? "Metadata"
+      : channel === "wagers"
+        ? "Wagers"
+        : "Match";
+  return {
+    [`X-Mons-${name}-Role`]: role,
+    [`X-Mons-${name}-Actor`]: `${role}-login`,
+  };
+}
+
 async function connect(
   room: Room,
   channel: Channel,
@@ -272,8 +290,15 @@ describe("socket session lifetime", () => {
         wagers: INVITE_WAGERS_SOCKET_PROTOCOL,
         matches: MATCH_SYNC_SOCKET_PROTOCOL,
       };
-      for (const expiry of [Date.now() + 300_000, null]) {
-        const client = await connect(room, channel, inviteId, expiry);
+      for (const role of ["host", "guest", "spectator"] as const) {
+        const expiry = role === "spectator" ? null : Date.now() + 300_000;
+        const client = await connect(
+          room,
+          channel,
+          inviteId,
+          expiry,
+          role === "spectator" ? {} : participantRoleHeaders(channel, role),
+        );
         expect(client.response.headers.get("Sec-WebSocket-Protocol")).toBe(
           protocols[channel],
         );
@@ -283,7 +308,6 @@ describe("socket session lifetime", () => {
           type: "snapshot",
         });
         const authenticated = expiry !== null;
-        const role = authenticated ? "host" : "spectator";
         const session = authenticated
           ? {
               authenticated: true,
@@ -293,14 +317,12 @@ describe("socket session lifetime", () => {
           : { authenticated: false };
         const reaction = channel === "reactions" || channel === "presentation";
         const prefix = channel === "matches" ? "match" : channel;
+        const roleTag = reaction ? `role:${role}` : `${prefix}-role:${role}`;
         expect(
           await runInDurableObject(room, (_instance, state) => {
             const socket = state
               .getWebSockets()
-              .find(
-                (value) =>
-                  value.deserializeAttachment().authenticated === authenticated,
-              )!;
+              .find((value) => state.getTags(value).includes(roleTag))!;
             return {
               attachment: socket.deserializeAttachment(),
               tags: state.getTags(socket).sort(),
@@ -321,7 +343,7 @@ describe("socket session lifetime", () => {
                 inviteId,
                 ...(channel === "matches" ? { matchId: inviteId } : {}),
                 role,
-                actorUid: authenticated ? "host-login" : null,
+                actorUid: authenticated ? `${role}-login` : null,
                 ...session,
               },
           tags: (reaction
@@ -409,6 +431,38 @@ describe("socket session lifetime", () => {
       expect(await participant.closed).toBe(4001);
       expect(participant.messages).toEqual([]);
     });
+
+    it.each(["host", "guest"] as const)(
+      `${channel} recognizes a legacy %s by its persisted tag after hibernation`,
+      async (role) => {
+        const { room, inviteId } = await fixture();
+        const participant = await connect(
+          room,
+          channel,
+          inviteId,
+          Date.now() + 300_000,
+          participantRoleHeaders(channel, role),
+        );
+        const spectator = await connect(room, channel, inviteId, null);
+        const reaction = channel === "reactions" || channel === "presentation";
+        const prefix = channel === "matches" ? "match" : channel;
+        const roleTag = reaction ? `role:${role}` : `${prefix}-role:${role}`;
+        await runInDurableObject(room, (_instance, state) => {
+          const socket = state.getWebSockets(roleTag)[0];
+          const attachment = socket.deserializeAttachment();
+          delete attachment.authenticated;
+          delete attachment.sid;
+          delete attachment.authExpiresAtMs;
+          if (reaction) delete attachment.channel;
+          socket.serializeAttachment(attachment);
+        });
+        await evictDurableObject(room);
+        spectator.socket.send(REACTION_HEARTBEAT_REQUEST);
+        expect(await spectator.read()).toBe(REACTION_HEARTBEAT_RESPONSE);
+        expect(await participant.closed).toBe(4001);
+        expect(participant.messages).toEqual([]);
+      },
+    );
   }
 
   it.each([null, "mons-reactions-v1", "another-protocol"])(
