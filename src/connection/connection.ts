@@ -36,9 +36,6 @@ import {
   PlayerMiningMaterials,
   MINING_MATERIAL_NAMES,
   MiningMaterialName,
-  MatchWagerState,
-  WagerProposal,
-  WagerAgreement,
   RematchSeriesDescriptor,
   HistoricalMatchPair,
   NavigationGameItem,
@@ -211,7 +208,6 @@ import {
 import { ObserverRegistry } from "./observerRegistry";
 import { InviteReactionChannel } from "./inviteReactionChannel";
 import { InviteMetadataChannel } from "./inviteMetadataChannel";
-import { InviteWagersChannel } from "./inviteWagersChannel";
 import { MatchSyncChannel } from "./matchSyncChannel";
 import type { MatchSyncSnapshot } from "@mons/shared/match-sync";
 import type { ReadGameBootstrapResponse } from "@mons/shared/game-bootstrap";
@@ -227,11 +223,7 @@ import {
   createMatchSyncSocketProtocols,
   readMatchSyncViaApi,
 } from "../services/matchSyncApi";
-import type { InviteWagersSnapshot } from "@mons/shared/invite-wagers";
-import {
-  createInviteWagersSocketProtocols,
-  readInviteWagersViaApi,
-} from "../services/inviteWagersApi";
+import { readInviteWagersViaApi } from "../services/inviteWagersApi";
 import { InviteMetadataState } from "./inviteMetadataState";
 import type {
   InviteMetadataSnapshot,
@@ -254,8 +246,8 @@ import {
 import { transition, transitionToHome } from "../session/sessionTransitionPort";
 import { startNavigationGamesPolling } from "./navigationGamesPoller";
 import { EventClient, type EventSyncResponse } from "./eventClient";
-import { FrozenMaterialsPoller } from "./frozenMaterialsPoller";
-import { isWagerClientUpdateRequired, retryWagerApi } from "./wagerApiRetry";
+import { WagerClient, type WagerOwner } from "./wagerClient";
+import type { MatchRuntimeContext, InviteRole } from "./matchRuntimeContext";
 import { showNotificationBanner } from "../ui/identity/profileUiPort";
 import { createPollingAuthTokenProvider } from "./pollingAuthTokenProvider";
 
@@ -270,7 +262,6 @@ const getStoredAuthPresentation = (): {
 };
 
 const LEADERBOARD_ENTRY_LIMIT = 99;
-const wagerDebugLogsEnabled = import.meta.env.DEV;
 const PROFILE_LOOKUP_RETRY_DELAY_MS = 1_000;
 const NAVIGATION_GAMES_POLL_INTERVAL_MS = 5_000;
 const NAVIGATION_GAMES_MAX_CONSECUTIVE_FAILURES = 3;
@@ -287,58 +278,12 @@ interface NavigationGamesPageResult {
   hasMore: boolean;
 }
 
-type WagerApiResponse =
-  | WagerOutcomeResolveResponse
-  | WagerProposalAcceptResponse
-  | WagerProposalRemovalResponse
-  | WagerProposalSendResponse;
-
-type InviteRole = "host" | "guest" | "watch";
-
-type MatchRuntimeContext = {
-  contextId: number;
-  sessionEpoch: number;
-  inviteId: string;
-  matchId: string;
-  loginUid: string;
-  actorUid: string | null;
-  role: InviteRole;
-  canWrite: boolean;
-  createdAtMs: number;
-};
-
 const getRouteStateSnapshot = () => getCurrentRouteState();
-const summarizeWagerState = (state: MatchWagerState | null) => {
-  const proposalKeys = Object.keys(state?.proposals || {});
-  const agreed = state?.agreed
-    ? {
-        material: state.agreed.material,
-        count: state.agreed.count,
-        total: state.agreed.total,
-        proposerId: state.agreed.proposerId,
-        accepterId: state.agreed.accepterId,
-      }
-    : null;
-  const resolved = state?.resolved
-    ? {
-        material: state.resolved.material,
-        count: state.resolved.count,
-        total: state.resolved.total,
-        winnerId: state.resolved.winnerId,
-        loserId: state.resolved.loserId,
-      }
-    : null;
-  return {
-    hasState: !!state,
-    proposalKeys,
-    agreed,
-    resolved,
-  };
-};
 
 class Connection {
   private auth = sessionAuth;
   private readonly eventClient: EventClient;
+  private readonly wagerClient: WagerClient;
 
   private inviteMetadataState: InviteMetadataState | null = null;
   private inviteMetadataViewer: InviteMetadataViewer | null = null;
@@ -350,16 +295,6 @@ class Connection {
     channel: InviteMetadataChannel;
     stop: () => void;
   } | null = null;
-  private inviteWagersSnapshot: InviteWagersSnapshot | null = null;
-  private wagerSnapshotGeneration = 0;
-  private wagerSnapshotRevisionFloor = -1;
-  private wagerSnapshotNeedsReconciliation = false;
-  private pendingWagerMutations = new Set<object>();
-  private inviteWagersSubscription: {
-    contextId: number;
-    channel: InviteWagersChannel;
-    stop: () => void;
-  } | null = null;
   private inviteReactionSubscription: {
     contextId: number;
     channel: InviteReactionChannel;
@@ -367,8 +302,6 @@ class Connection {
     stop: () => void;
   } | null = null;
   private matchPresentations = new Map<string, MatchPresentation>();
-  private miningFrozenPoller: FrozenMaterialsPoller | null = null;
-  private miningFrozenLoginUid: string | null = null;
   private matchSyncSubscription: {
     contextId: number;
     channel: MatchSyncChannel;
@@ -387,14 +320,12 @@ class Connection {
     sessionEpoch: number;
     refreshRequested: boolean;
   } | null = null;
-  private optimisticResolvedMatchIds = new Set<string>();
 
-  private latestInvite: Invite | null = null;
+  private latestInvite: InviteMetadataSnapshot | null = null;
   private myMatch: Match | null = null;
   private observedMatchSnapshots: Map<string, Match> = new Map();
   private inviteId: string | null = null;
   private matchId: string | null = null;
-  private wagerViewMatchId: string | null = null;
   private activeContext: MatchRuntimeContext | null = null;
   private nextContextId = 1;
   private connectAttemptId = 0;
@@ -601,6 +532,7 @@ class Connection {
     this.activeContext = nextContext;
     this.inviteId = nextContext.inviteId;
     this.matchId = nextContext.matchId;
+    this.wagerClient.bindContext(nextContext);
     const writableActorUid = nextContext.canWrite ? nextContext.actorUid : null;
     this.setSameProfilePlayerUid(writableActorUid, reuseInitialIdentity);
     this.logContextEvent("ctx.activate", {
@@ -753,21 +685,143 @@ class Connection {
     };
   }
 
-  private logWagerDebug(
-    event: string,
-    payload: Record<string, unknown> = {},
-  ): void {
-    if (!wagerDebugLogsEnabled) {
-      return;
-    }
-    console.log("wager-debug", {
-      source: "connection",
-      event,
-      inviteId: this.inviteId,
-      activeMatchId: this.matchId,
-      wagerViewMatchId: this.wagerViewMatchId,
-      ...payload,
+  private async delay(ms: number): Promise<void> {
+    await new Promise<void>((resolve) => setTimeout(resolve, ms));
+  }
+
+  private createWagerClient(): WagerClient {
+    return new WagerClient({
+      auth: this.auth,
+      getActiveContext: () => this.activeContext,
+      getSessionEpoch: () => this.sessionEpoch,
+      getSameProfilePlayerUid: () => this.sameProfilePlayerUid,
+      getProfileId: () => storage.getProfileId(""),
+      requireWritableContext: (expectedMatchId, reason) =>
+        this.requireWritableContext(expectedMatchId, reason),
+      ensureAuthenticated: () => this.ensureAuthenticated(),
+      getUserBoundAuthTokenProvider: (uid) =>
+        this.getUserBoundAuthTokenProvider(uid),
+      createSessionGuard: () => this.createSessionGuard(),
+      createMatchContextGuard: (inviteId, matchId) =>
+        this.createMatchContextGuard(inviteId, matchId),
+      isContextActive: (contextId, epoch) =>
+        this.isContextActive(contextId, epoch),
+      isCurrentAuthUser: (uid) => this.isCurrentAuthUser(uid),
+      isSessionEpochActive: (epoch) => this.isSessionEpochActive(epoch),
+      getOpponentId: (actorUid) => this.getOpponentId(actorUid),
+      flushPendingMoves: (context, options) =>
+        this.flushPendingMoves(context, options),
+      registerObserverCleanup: (contextId, key, cleanup) =>
+        this.registerObserverCleanup(contextId, key, cleanup),
+      unregisterObserverCleanup: (contextId, key) =>
+        this.unregisterObserverCleanup(contextId, key),
+      changeObserverCount: (delta) => {
+        if (delta === 1) incrementLifecycleCounter("connectionObservers");
+        else decrementLifecycleCounter("connectionObservers");
+      },
+      wagerStore: {
+        getWagerState,
+        setCurrentWagerMatch,
+        setWagerState,
+        syncCurrentWagerMatchState,
+      },
+      materialStore: {
+        applyFrozenMaterialsDelta,
+        computeAvailableMaterials,
+        getFrozenMaterials,
+        getFrozenMaterialsStatus,
+        setFrozenMaterials,
+        setFrozenMaterialsStatus,
+      },
+      mining: rocksMiningService,
+      api: {
+        resolveWagerOutcomeViaApi,
+        sendWagerProposalViaApi,
+        cancelWagerProposalViaApi,
+        declineWagerProposalViaApi,
+        acceptWagerProposalViaApi,
+        readInviteWagersViaApi,
+        readWagerFrozenViaApi,
+      },
+      onInitialWagers: didReceiveInitialWagers,
+      onReloadRequired: () =>
+        showNotificationBanner(
+          "Reload to continue wagering",
+          "Tap here to reload this page.",
+          storage.getPlayerEmojiId("1"),
+          () => window.location.reload(),
+        ),
+      now: () => Date.now(),
+      setTimer: (callback, delayMs) => setTimeout(callback, delayMs),
+      clearTimer: (timer) => clearTimeout(timer),
+      createSocket: (url, protocols) => new WebSocket(url, protocols),
+      isOnline: () => typeof navigator === "undefined" || navigator.onLine,
+      isVisible: () =>
+        typeof document === "undefined" ||
+        document.visibilityState !== "hidden",
+      addWakeListener: (listener) => {
+        if (typeof window === "undefined") return () => {};
+        window.addEventListener("online", listener);
+        window.addEventListener("offline", listener);
+        window.addEventListener("pageshow", listener);
+        document.addEventListener("visibilitychange", listener);
+        return () => {
+          window.removeEventListener("online", listener);
+          window.removeEventListener("offline", listener);
+          window.removeEventListener("pageshow", listener);
+          document.removeEventListener("visibilitychange", listener);
+        };
+      },
+      addVisibilityListener: (listener) => {
+        if (typeof document === "undefined") return () => {};
+        document.addEventListener("visibilitychange", listener);
+        return () => document.removeEventListener("visibilitychange", listener);
+      },
+      addOnlineListener: (listener) => {
+        if (typeof window === "undefined") return () => {};
+        window.addEventListener("online", listener);
+        return () => window.removeEventListener("online", listener);
+      },
+      random: Math.random,
+      log: (...values) => console.log(...values),
+      logError: (...values) => console.error(...values),
+      debug: import.meta.env.DEV,
     });
+  }
+
+  public resolveWagerOutcome(
+    isWin?: boolean,
+  ): Promise<WagerOutcomeResolveResponse | { ok: false }> {
+    return this.wagerClient.resolveWagerOutcome(isWin);
+  }
+
+  public sendWagerProposal(
+    material: MiningMaterialName,
+    count: number,
+  ): Promise<WagerProposalSendResponse | { ok: false }> {
+    return this.wagerClient.sendWagerProposal(material, count);
+  }
+
+  public cancelWagerProposal(): Promise<
+    WagerProposalRemovalResponse | { ok: false }
+  > {
+    return this.wagerClient.cancelWagerProposal();
+  }
+
+  public declineWagerProposal(): Promise<
+    WagerProposalRemovalResponse | { ok: false }
+  > {
+    return this.wagerClient.declineWagerProposal();
+  }
+
+  public acceptWagerProposal(): Promise<
+    WagerProposalAcceptResponse | { ok: false }
+  > {
+    return this.wagerClient.acceptWagerProposal();
+  }
+
+  public setWagerViewMatchId(matchId: string | null): void {
+    this.wagerClient.setWagerViewMatchId(matchId);
   }
 
   constructor() {
@@ -785,6 +839,7 @@ class Connection {
           this.refreshRematchEndDeliveries();
       });
     }
+    this.wagerClient = this.createWagerClient();
     this.eventClient = new EventClient({
       getCurrentUser: () => this.auth.currentUser,
       onAuthStateChanged: (listener) => this.auth.onAuthStateChanged(listener),
@@ -821,173 +876,6 @@ class Connection {
       setTimer: (callback, delayMs) => setTimeout(callback, delayMs),
       notifyNavigationGamesChanged: () => this.notifyNavigationGamesChanged(),
     });
-  }
-
-  private cloneWagerState(
-    state: MatchWagerState | null,
-  ): MatchWagerState | null {
-    if (!state) {
-      return null;
-    }
-    const proposals = state.proposals
-      ? Object.keys(state.proposals).reduce(
-          (acc, key) => {
-            const proposal = state.proposals ? state.proposals[key] : null;
-            if (proposal) {
-              acc[key] = {
-                material: proposal.material,
-                count: proposal.count,
-                createdAt: proposal.createdAt,
-              };
-            }
-            return acc;
-          },
-          {} as Record<string, WagerProposal>,
-        )
-      : undefined;
-    const proposedBy = state.proposedBy ? { ...state.proposedBy } : undefined;
-    const agreed = state.agreed ? { ...state.agreed } : undefined;
-    const resolved = state.resolved ? { ...state.resolved } : undefined;
-    return {
-      proposals,
-      proposedBy,
-      agreed,
-      resolved,
-    };
-  }
-
-  private setLocalWagerState(state: MatchWagerState | null): void {
-    if (!this.matchId) {
-      return;
-    }
-    this.logWagerDebug("set-local-state", {
-      targetMatchId: this.matchId,
-      state: summarizeWagerState(state),
-    });
-    if (this.latestInvite) {
-      if (!this.latestInvite.wagers) {
-        this.latestInvite.wagers = {};
-      }
-      if (state) {
-        this.latestInvite.wagers[this.matchId] = state;
-      } else if (this.latestInvite.wagers) {
-        delete this.latestInvite.wagers[this.matchId];
-      }
-    }
-    setWagerState(this.matchId, state);
-  }
-
-  private async delay(ms: number): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  private async callWagerApiWithRetry<T extends WagerApiResponse>(
-    label: string,
-    call: () => Promise<T>,
-    maxAttempts = 3,
-  ): Promise<T> {
-    return retryWagerApi(call, {
-      delay: (milliseconds) => this.delay(milliseconds),
-      maxAttempts,
-      onRetry: (attempt, error) =>
-        console.log(`${label}:retry`, { attempt, error }),
-    });
-  }
-
-  private async runWagerMutation<T>(
-    action: (tokenProvider: AuthTokenProvider) => Promise<T>,
-    requiresSnapshot: boolean,
-  ): Promise<T | { ok: false }> {
-    const requestedContext = this.activeContext;
-    await this.ensureAuthenticated();
-    if (requestedContext !== this.activeContext) return { ok: false };
-    const context = this.requireWritableContext(undefined, "wager-mutation");
-    const poller = this.miningFrozenPoller;
-    if (
-      !context ||
-      !poller ||
-      this.inviteWagersSnapshot?.inviteId !== context.inviteId ||
-      this.wagerSnapshotNeedsReconciliation
-    )
-      return { ok: false };
-    const boundTokenProvider = this.getUserBoundAuthTokenProvider(
-      context.loginUid,
-    );
-    const isCurrent = this.createWagerContextGuard(context);
-    const assertCurrentUser = () => {
-      boundTokenProvider.assertCurrentUser();
-      if (!isCurrent()) throw new Error("wager-session-changed");
-    };
-    const tokenProvider = Object.assign(
-      async (forceRefresh: boolean) => {
-        assertCurrentUser();
-        return boundTokenProvider(forceRefresh);
-      },
-      { assertCurrentUser },
-    );
-    try {
-      return await poller.runMutation(
-        async () => {
-          tokenProvider.assertCurrentUser();
-          if (
-            this.inviteWagersSnapshot?.inviteId !== context.inviteId ||
-            this.wagerSnapshotNeedsReconciliation
-          )
-            return { ok: false as const };
-          const finish = this.beginWagerSnapshotMutation(context);
-          try {
-            return await action(tokenProvider);
-          } finally {
-            finish();
-          }
-        },
-        { requiresSnapshot, isCurrent },
-      );
-    } catch (error) {
-      if (!isCurrent()) return { ok: false };
-      if (isWagerClientUpdateRequired(error)) {
-        showNotificationBanner(
-          "Reload to continue wagering",
-          "Tap here to reload this page.",
-          storage.getPlayerEmojiId("1"),
-          () => window.location.reload(),
-        );
-      }
-      throw error;
-    }
-  }
-
-  private beginWagerSnapshotMutation(context: MatchRuntimeContext): () => void {
-    const mutation = {};
-    this.pendingWagerMutations.add(mutation);
-    this.wagerSnapshotGeneration += 1;
-    this.wagerSnapshotNeedsReconciliation = true;
-    this.updateWagerStateForCurrentMatch();
-    return () => {
-      if (!this.pendingWagerMutations.delete(mutation)) return;
-      this.wagerSnapshotGeneration += 1;
-      if (
-        this.activeContext?.inviteId === context.inviteId &&
-        this.activeContext.loginUid === context.loginUid &&
-        this.auth.currentUser?.uid === context.loginUid
-      ) {
-        this.inviteWagersSubscription?.channel.requestRefresh();
-      }
-    };
-  }
-
-  private createWagerContextGuard(
-    context: MatchRuntimeContext | null,
-  ): () => boolean {
-    if (!context) return () => false;
-    const matchGuard = this.createMatchContextGuard(
-      context.inviteId,
-      context.matchId,
-    );
-    return () =>
-      matchGuard() &&
-      this.auth.currentUser?.uid === context.loginUid &&
-      this.sameProfilePlayerUid === context.actorUid;
   }
 
   public setupConnection(
@@ -1267,7 +1155,7 @@ class Connection {
     this.pendingRematchProposal = null;
     this.loginUid = null;
     this.setSameProfilePlayerUid(null);
-    this.cleanupWagerObserver();
+    this.wagerClient.cleanupWagerObserver();
     rocksMiningService.resetProfileMiningState();
     const ensResolver = await import("../utils/ensResolver");
     resetNftCache();
@@ -1282,39 +1170,36 @@ class Connection {
   }
 
   public detachFromMatchSession(): void {
+    this.detachMatchSession();
+  }
+
+  private detachMatchSession(preserveInvite?: WagerOwner): void {
     this.pendingRematchProposal = null;
     this.bumpSessionEpoch();
     this.beginConnectAttempt();
     this.clearActiveContext("detach-match-session");
     this.clearAllObserverContexts("detach-match-session");
     this.cleanupInviteMetadataObserver();
-    this.cleanupWagerObserver();
+    this.wagerClient.cleanupWagerObserver();
     this.cleanupInviteReactionObserver();
     this.stopObservingAllMatches();
     this.matchPresentations.clear();
     this.latestInvite = null;
     this.inviteMetadataState = null;
     this.inviteMetadataViewer = null;
-    this.inviteWagersSnapshot = null;
-    this.wagerSnapshotGeneration += 1;
-    this.wagerSnapshotRevisionFloor = -1;
-    this.wagerSnapshotNeedsReconciliation = false;
-    this.pendingWagerMutations.clear();
     this.myMatch = null;
     this.inviteId = null;
     this.matchId = null;
-    this.wagerViewMatchId = null;
     this.didCreateNewGameInvite = false;
     this.newInviteId = "";
-    this.optimisticResolvedMatchIds.clear();
     this.eventClient.reset({ preserveSnapshots: true });
-    setCurrentWagerMatch(null);
+    this.wagerClient.resetMatch({ preserveInvite });
   }
 
   public detachFromProfileSession(): void {
     this.loginUid = null;
     this.setSameProfilePlayerUid(null);
-    this.observeMiningFrozen(null);
+    this.wagerClient.resetProfile();
     this.materialLeaderboardCache.clear();
     this.materialLeaderboardCacheTime = 0;
     this.eventClient.reset();
@@ -1677,14 +1562,13 @@ class Connection {
         }
         if (this.activeContext && newUid !== this.activeContext.loginUid) {
           this.cleanupInviteMetadataObserver();
-          this.cleanupWagerObserver();
+          this.wagerClient.cleanupWagerObserver();
           this.cleanupInviteReactionObserver();
           this.stopObservingAllMatches();
-          this.pendingWagerMutations.clear();
-          this.wagerSnapshotGeneration += 1;
         }
+        const shouldClearWagerActor = this.wagerClient.handleAuthChange(newUid);
         if (newUid !== this.currentUid) {
-          if (this.miningFrozenPoller && newUid !== this.miningFrozenLoginUid) {
+          if (shouldClearWagerActor) {
             this.setSameProfilePlayerUid(null);
           }
           this.currentUid = newUid;
@@ -1728,79 +1612,6 @@ class Connection {
       if (!uid) {
         throw new Error("Failed to authenticate user");
       }
-    }
-  }
-
-  private applyOptimisticWagerResolution(isWin?: boolean): boolean {
-    const writableContext = this.requireWritableContext(
-      undefined,
-      "applyOptimisticWagerResolution",
-    );
-    if (!writableContext) {
-      return false;
-    }
-    const matchId = writableContext.matchId;
-    if (this.optimisticResolvedMatchIds.has(matchId)) {
-      return false;
-    }
-    const state = getWagerState();
-    if (!state) {
-      return false;
-    }
-    const agreed = state.agreed ?? null;
-    if (state.resolved || !agreed?.material || typeof isWin !== "boolean") {
-      return false;
-    }
-    const rawCount =
-      agreed.count ??
-      (agreed.total ? Math.max(0, Math.round(agreed.total / 2)) : 0);
-    const count = Math.max(0, Math.round(rawCount));
-    const opponentId = this.getOpponentId(writableContext.actorUid);
-    if (!count || !opponentId) {
-      return false;
-    }
-    const winnerId = isWin ? writableContext.actorUid : opponentId;
-    const loserId = isWin ? opponentId : writableContext.actorUid;
-    this.setLocalWagerState({
-      ...state,
-      proposals: undefined,
-      resolved: {
-        winnerId,
-        loserId,
-        material: agreed.material,
-        count,
-        total: count * 2,
-        resolvedAt: Date.now(),
-        optimistic: true,
-      },
-    });
-    this.optimisticResolvedMatchIds.add(matchId);
-    return true;
-  }
-
-  private restoreOptimisticWagerResolution(
-    matchId: string,
-    previousState: MatchWagerState | null,
-    isActive: () => boolean,
-    isInviteActive: () => boolean,
-  ): void {
-    if (!isInviteActive()) return;
-    let restored = false;
-    const wagers = this.latestInvite?.wagers;
-    if (wagers?.[matchId]?.resolved?.optimistic) {
-      if (previousState) {
-        wagers[matchId] = previousState;
-      } else {
-        delete wagers[matchId];
-      }
-      restored = true;
-    }
-    if (isActive() && getWagerState()?.resolved?.optimistic) {
-      setWagerState(matchId, previousState);
-      restored = true;
-    }
-    if (restored) {
-      this.optimisticResolvedMatchIds.delete(matchId);
     }
   }
 
@@ -2083,7 +1894,7 @@ class Connection {
       this.stopObservingAllMatches();
       this.cleanupInviteMetadataObserver();
       this.cleanupInviteReactionObserver();
-      this.cleanupWagerObserver();
+      this.wagerClient.cleanupWagerObserver();
       const nextMatch = response.match as Match;
       this.myMatch = nextMatch;
       this.inviteMetadataState?.confirmRematches(
@@ -2093,7 +1904,6 @@ class Connection {
       if (this.latestInvite && this.inviteMetadataState) {
         this.latestInvite = {
           ...this.inviteMetadataState.snapshot,
-          wagers: this.latestInvite.wagers,
         };
       }
       const rematchContext = this.buildRuntimeContext(
@@ -2106,10 +1916,10 @@ class Connection {
         this.sessionEpoch,
       );
       this.activateContext(rematchContext, "rematch-proposed");
-      this.updateWagerStateForCurrentMatch();
+      this.wagerClient.updateWagerStateForCurrentMatch();
       this.observeInviteReactions(rematchContext);
       this.observeInviteMetadata(rematchContext);
-      this.observeWagers(rematchContext);
+      this.wagerClient.observeWagers(rematchContext);
       console.log("Successfully updated match and rematches");
       didJustCreateRematchProposalSuccessfully(
         inviteId,
@@ -2825,650 +2635,6 @@ class Connection {
     }
   }
 
-  public async resolveWagerOutcome(isWin?: boolean): Promise<any> {
-    const writableContext = this.requireWritableContext(
-      undefined,
-      "wagerOutcomeResolve",
-    );
-    if (!writableContext) return { ok: false };
-    const opponentId = this.getOpponentId(writableContext.actorUid);
-    if (!opponentId) return { ok: false };
-    const { inviteId, matchId, loginUid } = writableContext;
-    const isCurrentSession = this.createSessionGuard();
-    const profileIdAtRequest = storage.getProfileId("");
-    const isCurrentProfile = () =>
-      this.auth.currentUser?.uid === loginUid &&
-      storage.getProfileId("") === profileIdAtRequest;
-    const isCurrentInvite = () =>
-      isCurrentSession() &&
-      isCurrentProfile() &&
-      this.activeContext?.inviteId === inviteId;
-    const matchGuard = this.createWagerContextGuard(writableContext);
-    let finishSnapshotMutation = () => {};
-    let restoreOptimisticState = (_state?: MatchWagerState | null) => {};
-    try {
-      await this.ensureAuthenticated();
-      if (!isCurrentProfile()) return { ok: false };
-      if (isCurrentInvite()) {
-        finishSnapshotMutation =
-          this.beginWagerSnapshotMutation(writableContext);
-      }
-      const tokenProvider = this.getUserBoundAuthTokenProvider(loginUid);
-      await this.flushPendingMoves(writableContext, {
-        requireCurrentContext: false,
-      });
-      tokenProvider.assertCurrentUser();
-      const previousWagerState = matchGuard()
-        ? this.cloneWagerState(getWagerState())
-        : null;
-      const optimisticApplied =
-        matchGuard() && this.applyOptimisticWagerResolution(isWin);
-      restoreOptimisticState = (state = previousWagerState) => {
-        if (!optimisticApplied) {
-          return;
-        }
-        this.restoreOptimisticWagerResolution(
-          matchId,
-          state,
-          matchGuard,
-          isCurrentInvite,
-        );
-      };
-      console.log("wager:resolve:start", {
-        inviteId,
-        matchId,
-        opponentId,
-      });
-      const data = await this.callWagerApiWithRetry("wager:resolve", () =>
-        resolveWagerOutcomeViaApi(
-          {
-            inviteId,
-            matchId,
-          },
-          tokenProvider,
-        ),
-      );
-      const responseData = data as WagerOutcomeResolveResponse | null;
-      console.log("wager:resolve:done", responseData);
-      if (responseData?.ok === false) {
-        restoreOptimisticState();
-      } else if (
-        responseData &&
-        "reason" in responseData &&
-        responseData.reason === "no-wager"
-      ) {
-        restoreOptimisticState(null);
-      }
-      if (
-        responseData?.ok === true &&
-        responseData.mining &&
-        isCurrentInvite()
-      ) {
-        rocksMiningService.setFromServer(responseData.mining, {
-          persist: true,
-        });
-      }
-      return responseData;
-    } catch (error) {
-      if (!isCurrentProfile()) return { ok: false };
-      restoreOptimisticState();
-      if (isWagerClientUpdateRequired(error)) {
-        showNotificationBanner(
-          "Reload to continue wagering",
-          "Tap here to reload this page.",
-          storage.getPlayerEmojiId("1"),
-          () => window.location.reload(),
-        );
-      }
-      console.error("Error resolving wager outcome:", error);
-      throw error;
-    } finally {
-      finishSnapshotMutation();
-      if (isCurrentProfile()) this.miningFrozenPoller?.refresh();
-    }
-  }
-
-  public async sendWagerProposal(
-    material: MiningMaterialName,
-    count: number,
-  ): Promise<any> {
-    return this.runWagerMutation(
-      (tokenProvider) =>
-        this.performSendWagerProposal(material, count, tokenProvider),
-      true,
-    );
-  }
-
-  private async performSendWagerProposal(
-    material: MiningMaterialName,
-    count: number,
-    tokenProvider: AuthTokenProvider,
-  ): Promise<any> {
-    let prevState: MatchWagerState | null = null;
-    let prevFrozen: Record<MiningMaterialName, number> | null = null;
-    let optimisticCount = 0;
-    let optimisticApplied = false;
-    let sessionGuard: (() => boolean) | null = null;
-    let playerUid: string | null = null;
-    try {
-      const writableContext = this.requireWritableContext(
-        undefined,
-        "sendWagerProposal",
-      );
-      if (!writableContext) {
-        return { ok: false };
-      }
-      const inviteId = writableContext.inviteId;
-      const matchId = writableContext.matchId;
-      playerUid = writableContext.actorUid;
-      if (!playerUid) {
-        console.log("wager:send:skipped", { inviteId, matchId });
-        return { ok: false };
-      }
-      sessionGuard = this.createWagerContextGuard(writableContext);
-      const currentState = getWagerState();
-      if (!currentState?.agreed && !currentState?.resolved) {
-        const totalMaterials = rocksMiningService.getSnapshot().materials;
-        const frozenMaterials = getFrozenMaterials();
-        const available = computeAvailableMaterials(
-          totalMaterials,
-          frozenMaterials,
-        );
-        const availableCount = available[material] ?? 0;
-        optimisticCount = Math.max(
-          0,
-          Math.min(Math.round(count), availableCount),
-        );
-        if (optimisticCount > 0) {
-          prevState = this.cloneWagerState(currentState);
-          prevFrozen = frozenMaterials;
-          const proposals = { ...(currentState?.proposals ?? {}) };
-          proposals[playerUid] = {
-            material,
-            count: optimisticCount,
-            createdAt: Date.now(),
-          };
-          const proposedBy = { ...(currentState?.proposedBy ?? {}) };
-          proposedBy[playerUid] = true;
-          const nextState: MatchWagerState = {
-            ...(currentState ?? {}),
-            proposals,
-            proposedBy,
-          };
-          this.setLocalWagerState(nextState);
-          applyFrozenMaterialsDelta({ [material]: optimisticCount });
-          optimisticApplied = true;
-        }
-      }
-      console.log("wager:send:start", { inviteId, matchId, material, count });
-      const data = await this.callWagerApiWithRetry("wager:send", () =>
-        sendWagerProposalViaApi(
-          { inviteId, matchId, material, count },
-          tokenProvider,
-        ),
-      );
-      if (!sessionGuard()) {
-        return { ok: false };
-      }
-      console.log("wager:send:done", data);
-      if (optimisticApplied) {
-        if (data && data.ok === false) {
-          const latestState = getWagerState();
-          const proposal = latestState?.proposals
-            ? latestState.proposals[playerUid]
-            : null;
-          const shouldRollback =
-            !!proposal &&
-            proposal.material === material &&
-            proposal.count === optimisticCount &&
-            !latestState?.agreed &&
-            !latestState?.resolved;
-          if (shouldRollback) {
-            this.setLocalWagerState(prevState);
-            if (prevFrozen) {
-              setFrozenMaterials(prevFrozen);
-            }
-          }
-        } else if (data && data.agreed) {
-          const agreed: WagerAgreement = data.agreed;
-          const latestState = getWagerState();
-          if (!latestState?.resolved) {
-            const nextState: MatchWagerState = {
-              ...(latestState ?? {}),
-              proposals: undefined,
-              agreed,
-            };
-            this.setLocalWagerState(nextState);
-            const delta = agreed.count - optimisticCount;
-            if (delta !== 0) {
-              applyFrozenMaterialsDelta({ [material]: delta });
-            }
-          }
-        } else if (data && typeof data.count === "number") {
-          const serverCount = Math.max(0, Math.round(data.count));
-          if (serverCount !== optimisticCount) {
-            const latestState = getWagerState();
-            const proposal = latestState?.proposals
-              ? latestState.proposals[playerUid]
-              : null;
-            if (
-              proposal &&
-              proposal.material === material &&
-              proposal.count === optimisticCount &&
-              !latestState?.agreed &&
-              !latestState?.resolved
-            ) {
-              const proposals = { ...(latestState?.proposals ?? {}) };
-              proposals[playerUid] = { ...proposal, count: serverCount };
-              const nextState: MatchWagerState = {
-                ...(latestState ?? {}),
-                proposals,
-              };
-              this.setLocalWagerState(nextState);
-              const delta = serverCount - optimisticCount;
-              if (delta !== 0) {
-                applyFrozenMaterialsDelta({ [material]: delta });
-              }
-            }
-          }
-        }
-      }
-      return data;
-    } catch (error) {
-      console.error("wager:send:error", error);
-      if (sessionGuard && !sessionGuard()) {
-        return { ok: false };
-      }
-      if (optimisticApplied) {
-        const latestState = getWagerState();
-        const proposal =
-          latestState?.proposals && playerUid
-            ? latestState.proposals[playerUid]
-            : null;
-        const shouldRollback =
-          !!proposal &&
-          proposal.material === material &&
-          proposal.count === optimisticCount &&
-          !latestState?.agreed &&
-          !latestState?.resolved;
-        if (shouldRollback) {
-          this.setLocalWagerState(prevState);
-          if (prevFrozen) {
-            setFrozenMaterials(prevFrozen);
-          }
-        }
-      }
-      throw error;
-    }
-  }
-
-  public async cancelWagerProposal(): Promise<any> {
-    return this.runWagerMutation(
-      (tokenProvider) => this.performCancelWagerProposal(tokenProvider),
-      false,
-    );
-  }
-
-  private async performCancelWagerProposal(
-    tokenProvider: AuthTokenProvider,
-  ): Promise<any> {
-    let prevState: MatchWagerState | null = null;
-    let prevFrozen: Record<MiningMaterialName, number> | null = null;
-    let optimisticApplied = false;
-    let proposal: WagerProposal | null = null;
-    let sessionGuard: (() => boolean) | null = null;
-    let playerUid: string | null = null;
-    try {
-      const writableContext = this.requireWritableContext(
-        undefined,
-        "cancelWagerProposal",
-      );
-      if (!writableContext) {
-        return { ok: false };
-      }
-      const inviteId = writableContext.inviteId;
-      const matchId = writableContext.matchId;
-      playerUid = writableContext.actorUid;
-      if (!playerUid) {
-        console.log("wager:cancel:skipped", { inviteId, matchId });
-        return { ok: false };
-      }
-      sessionGuard = this.createWagerContextGuard(writableContext);
-      const currentState = getWagerState();
-      const existingProposal = currentState?.proposals
-        ? currentState.proposals[playerUid]
-        : null;
-      if (
-        existingProposal &&
-        !currentState?.agreed &&
-        !currentState?.resolved
-      ) {
-        prevState = this.cloneWagerState(currentState);
-        prevFrozen = getFrozenMaterials();
-        proposal = existingProposal;
-        const proposals = { ...(currentState?.proposals ?? {}) };
-        delete proposals[playerUid];
-        const nextState: MatchWagerState = {
-          ...(currentState ?? {}),
-          proposals: Object.keys(proposals).length > 0 ? proposals : undefined,
-          proposedBy: currentState?.proposedBy,
-        };
-        this.setLocalWagerState(nextState);
-        applyFrozenMaterialsDelta({ [proposal.material]: -proposal.count });
-        optimisticApplied = true;
-      }
-      console.log("wager:cancel:start", { inviteId, matchId });
-      const data = await this.callWagerApiWithRetry("wager:cancel", () =>
-        cancelWagerProposalViaApi({ inviteId, matchId }, tokenProvider),
-      );
-      if (!sessionGuard()) {
-        return { ok: false };
-      }
-      console.log("wager:cancel:done", data);
-      if (optimisticApplied && data && data.ok === false) {
-        const latestState = getWagerState();
-        const hasAgreedOrResolved =
-          !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing =
-          !latestState?.proposals || !latestState.proposals[playerUid];
-        if (!hasAgreedOrResolved && stillMissing) {
-          this.setLocalWagerState(prevState);
-          if (prevFrozen) {
-            setFrozenMaterials(prevFrozen);
-          }
-        }
-      }
-      return data;
-    } catch (error) {
-      console.error("wager:cancel:error", error);
-      if (sessionGuard && !sessionGuard()) {
-        return { ok: false };
-      }
-      if (optimisticApplied) {
-        const latestState = getWagerState();
-        const hasAgreedOrResolved =
-          !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing =
-          !latestState?.proposals ||
-          (playerUid ? !latestState.proposals[playerUid] : true);
-        if (!hasAgreedOrResolved && stillMissing) {
-          this.setLocalWagerState(prevState);
-          if (prevFrozen) {
-            setFrozenMaterials(prevFrozen);
-          }
-        }
-      }
-      throw error;
-    }
-  }
-
-  public async declineWagerProposal(): Promise<any> {
-    return this.runWagerMutation(
-      (tokenProvider) => this.performDeclineWagerProposal(tokenProvider),
-      false,
-    );
-  }
-
-  private async performDeclineWagerProposal(
-    tokenProvider: AuthTokenProvider,
-  ): Promise<any> {
-    let prevState: MatchWagerState | null = null;
-    let optimisticApplied = false;
-    let opponentUid: string | null = null;
-    let sessionGuard: (() => boolean) | null = null;
-    let playerUid: string | null = null;
-    try {
-      const writableContext = this.requireWritableContext(
-        undefined,
-        "declineWagerProposal",
-      );
-      if (!writableContext) {
-        return { ok: false };
-      }
-      const inviteId = writableContext.inviteId;
-      const matchId = writableContext.matchId;
-      playerUid = writableContext.actorUid;
-      if (!playerUid) {
-        console.log("wager:decline:skipped", { inviteId, matchId });
-        return { ok: false };
-      }
-      sessionGuard = this.createWagerContextGuard(writableContext);
-      opponentUid = this.getOpponentId(playerUid);
-      const currentState = getWagerState();
-      const existingProposal =
-        opponentUid && currentState?.proposals
-          ? currentState.proposals[opponentUid]
-          : null;
-      if (
-        existingProposal &&
-        !currentState?.agreed &&
-        !currentState?.resolved
-      ) {
-        prevState = this.cloneWagerState(currentState);
-        const proposals = { ...(currentState?.proposals ?? {}) };
-        delete proposals[opponentUid];
-        const nextState: MatchWagerState = {
-          ...(currentState ?? {}),
-          proposals: Object.keys(proposals).length > 0 ? proposals : undefined,
-          proposedBy: currentState?.proposedBy,
-        };
-        this.setLocalWagerState(nextState);
-        optimisticApplied = true;
-      }
-      console.log("wager:decline:start", { inviteId, matchId });
-      const data = await this.callWagerApiWithRetry("wager:decline", () =>
-        declineWagerProposalViaApi({ inviteId, matchId }, tokenProvider),
-      );
-      if (!sessionGuard()) {
-        return { ok: false };
-      }
-      console.log("wager:decline:done", data);
-      if (optimisticApplied && data && data.ok === false) {
-        const latestState = getWagerState();
-        const hasAgreedOrResolved =
-          !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing =
-          !latestState?.proposals ||
-          (opponentUid && !latestState.proposals[opponentUid]);
-        if (!hasAgreedOrResolved && stillMissing) {
-          this.setLocalWagerState(prevState);
-        }
-      }
-      return data;
-    } catch (error) {
-      console.error("wager:decline:error", error);
-      if (sessionGuard && !sessionGuard()) {
-        return { ok: false };
-      }
-      if (optimisticApplied) {
-        const latestState = getWagerState();
-        const hasAgreedOrResolved =
-          !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing =
-          !latestState?.proposals ||
-          (opponentUid && !latestState.proposals[opponentUid]);
-        if (!hasAgreedOrResolved && stillMissing) {
-          this.setLocalWagerState(prevState);
-        }
-      }
-      throw error;
-    }
-  }
-
-  public async acceptWagerProposal(): Promise<any> {
-    return this.runWagerMutation(
-      (tokenProvider) => this.performAcceptWagerProposal(tokenProvider),
-      true,
-    );
-  }
-
-  private async performAcceptWagerProposal(
-    tokenProvider: AuthTokenProvider,
-  ): Promise<any> {
-    let prevState: MatchWagerState | null = null;
-    let prevFrozen: Record<MiningMaterialName, number> | null = null;
-    let optimisticApplied = false;
-    let optimisticAgreement: WagerAgreement | null = null;
-    let opponentUid: string | null = null;
-    let sessionGuard: (() => boolean) | null = null;
-    try {
-      const writableContext = this.requireWritableContext(
-        undefined,
-        "acceptWagerProposal",
-      );
-      if (!writableContext) {
-        return { ok: false };
-      }
-      const inviteId = writableContext.inviteId;
-      const matchId = writableContext.matchId;
-      if (!writableContext.actorUid) {
-        console.log("wager:accept:skipped", { inviteId, matchId });
-        return { ok: false };
-      }
-      sessionGuard = this.createWagerContextGuard(writableContext);
-      const playerUid = writableContext.actorUid;
-      opponentUid = this.getOpponentId(playerUid);
-      const currentState = getWagerState();
-      const proposals = currentState?.proposals ?? null;
-      const opponentProposal =
-        opponentUid && proposals ? proposals[opponentUid] : null;
-      const ownProposal = playerUid && proposals ? proposals[playerUid] : null;
-      if (
-        opponentProposal &&
-        !currentState?.agreed &&
-        !currentState?.resolved
-      ) {
-        const totalMaterials = rocksMiningService.getSnapshot().materials;
-        const frozenMaterials = getFrozenMaterials();
-        const available = computeAvailableMaterials(
-          totalMaterials,
-          frozenMaterials,
-        );
-        const opponentCount = Math.max(0, Math.round(opponentProposal.count));
-        const extraAvailable =
-          ownProposal && ownProposal.material === opponentProposal.material
-            ? Math.max(0, Math.round(ownProposal.count))
-            : 0;
-        const acceptedCount = Math.min(
-          opponentCount,
-          (available[opponentProposal.material] ?? 0) + extraAvailable,
-        );
-        if (acceptedCount > 0) {
-          prevState = this.cloneWagerState(currentState);
-          prevFrozen = frozenMaterials;
-          optimisticAgreement = {
-            material: opponentProposal.material,
-            count: acceptedCount,
-            total: acceptedCount * 2,
-            proposerId: opponentUid,
-            accepterId: playerUid,
-            acceptedAt: Date.now(),
-          };
-          const nextState: MatchWagerState = {
-            ...(currentState ?? {}),
-            proposals: undefined,
-            proposedBy: currentState?.proposedBy,
-            agreed: optimisticAgreement,
-          };
-          this.setLocalWagerState(nextState);
-          const deltas: Partial<Record<MiningMaterialName, number>> = {};
-          if (ownProposal) {
-            const ownCount = Math.max(0, Math.round(ownProposal.count));
-            if (ownCount > 0) {
-              deltas[ownProposal.material] =
-                (deltas[ownProposal.material] ?? 0) - ownCount;
-            }
-          }
-          deltas[opponentProposal.material] =
-            (deltas[opponentProposal.material] ?? 0) + acceptedCount;
-          applyFrozenMaterialsDelta(deltas);
-          optimisticApplied = true;
-        }
-      }
-      console.log("wager:accept:start", { inviteId, matchId });
-      const data = await this.callWagerApiWithRetry("wager:accept", () =>
-        acceptWagerProposalViaApi({ inviteId, matchId }, tokenProvider),
-      );
-      if (!sessionGuard()) {
-        return { ok: false };
-      }
-      console.log("wager:accept:done", data);
-      if (optimisticApplied && optimisticAgreement) {
-        if (data && data.ok === false) {
-          const latestState = getWagerState();
-          const agreed = latestState?.agreed;
-          const shouldRollback =
-            !!agreed &&
-            !latestState?.resolved &&
-            agreed.material === optimisticAgreement.material &&
-            agreed.count === optimisticAgreement.count &&
-            agreed.proposerId === optimisticAgreement.proposerId &&
-            agreed.accepterId === optimisticAgreement.accepterId;
-          if (shouldRollback) {
-            this.setLocalWagerState(prevState);
-            if (prevFrozen) {
-              setFrozenMaterials(prevFrozen);
-            }
-          }
-        } else if (data && typeof data.count === "number") {
-          const serverCount = Math.max(0, Math.round(data.count));
-          if (serverCount !== optimisticAgreement.count) {
-            const latestState = getWagerState();
-            const agreed = latestState?.agreed;
-            if (
-              agreed &&
-              !latestState?.resolved &&
-              agreed.material === optimisticAgreement.material &&
-              agreed.proposerId === optimisticAgreement.proposerId &&
-              agreed.accepterId === optimisticAgreement.accepterId
-            ) {
-              const nextAgreed = {
-                ...agreed,
-                count: serverCount,
-                total: serverCount * 2,
-              };
-              const nextState: MatchWagerState = {
-                ...(latestState ?? {}),
-                agreed: nextAgreed,
-              };
-              this.setLocalWagerState(nextState);
-              const delta = serverCount - optimisticAgreement.count;
-              if (delta !== 0) {
-                applyFrozenMaterialsDelta({
-                  [optimisticAgreement.material]: delta,
-                });
-              }
-            }
-          }
-        }
-      }
-      return data;
-    } catch (error) {
-      console.error("wager:accept:error", error);
-      if (sessionGuard && !sessionGuard()) {
-        return { ok: false };
-      }
-      if (optimisticApplied && optimisticAgreement) {
-        const latestState = getWagerState();
-        const agreed = latestState?.agreed;
-        const shouldRollback =
-          !!agreed &&
-          !latestState?.resolved &&
-          agreed.material === optimisticAgreement.material &&
-          agreed.count === optimisticAgreement.count &&
-          agreed.proposerId === optimisticAgreement.proposerId &&
-          agreed.accepterId === optimisticAgreement.accepterId;
-        if (shouldRollback) {
-          this.setLocalWagerState(prevState);
-          if (prevFrozen) {
-            setFrozenMaterials(prevFrozen);
-          }
-        }
-      }
-      throw error;
-    }
-  }
-
   public updateEmoji(
     newId: number,
     matchOnly: boolean,
@@ -3649,7 +2815,7 @@ class Connection {
     }
     this.sameProfileHydrationRequest = null;
     this.sameProfilePlayerUid = uid;
-    this.observeMiningFrozen(uid);
+    this.wagerClient.observeMiningFrozen(uid);
     if (uid) {
       this.hydrateSameProfilePlayer(uid, reuseInitialIdentity);
     }
@@ -3657,12 +2823,6 @@ class Connection {
 
   public getActiveMatchId(): string | null {
     return this.activeContext?.matchId ?? null;
-  }
-
-  public setWagerViewMatchId(matchId: string | null): void {
-    this.wagerViewMatchId = matchId;
-    this.logWagerDebug("set-view-match", { nextViewMatchId: matchId });
-    this.updateWagerStateForCurrentMatch();
   }
 
   public updateStoredEmoji(
@@ -4175,12 +3335,6 @@ class Connection {
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
     const isPendingLocalInviteCreation =
       this.pendingInviteCreation?.inviteId === inviteId;
-    const cachedInvite =
-      this.inviteId === inviteId &&
-      this.activeContext?.loginUid === uid &&
-      this.latestInvite
-        ? { ...this.latestInvite }
-        : null;
     const cachedMetadataState =
       this.inviteMetadataState?.snapshot.inviteId === inviteId
         ? this.inviteMetadataState
@@ -4332,11 +3486,9 @@ class Connection {
           cachedMetadataState ?? new InviteMetadataState(bootstrap.metadata);
         metadataState.accept(bootstrap.metadata);
         let viewer = bootstrap.viewer;
-        let workingInvite: Invite = {
+        let workingInvite: InviteMetadataSnapshot = {
           ...metadataState.snapshot,
-          wagers: cachedInvite?.wagers ?? null,
         };
-        let wagersSnapshot: InviteWagersSnapshot | null = null;
         this.reconcilePendingAutomatchRequest(
           uid,
           inviteId,
@@ -4385,7 +3537,6 @@ class Connection {
           viewer = bootstrap.viewer;
           workingInvite = {
             ...metadataState.snapshot,
-            wagers: workingInvite.wagers,
           };
           this.reconcilePendingAutomatchRequest(
             uid,
@@ -4428,7 +3579,6 @@ class Connection {
           viewer = bootstrap.viewer;
           workingInvite = {
             ...metadataState.snapshot,
-            wagers: workingInvite.wagers,
           };
           selection = this.getLatestMatchIdForActor(
             inviteId,
@@ -4477,7 +3627,7 @@ class Connection {
               metadataState.accept(bootstrap.metadata);
               const nextSelection = this.getLatestMatchIdForActor(
                 inviteId,
-                { ...metadataState.snapshot, wagers: workingInvite.wagers },
+                metadataState.snapshot,
                 bootstrap.viewer.actorUid,
               );
               if (
@@ -4495,7 +3645,6 @@ class Connection {
               }
               workingInvite = {
                 ...metadataState.snapshot,
-                wagers: workingInvite.wagers,
               };
               myMatch = (
                 actorUid === bootstrap.match.hostPlayerId
@@ -4545,26 +3694,11 @@ class Connection {
         if (!isConnectActive()) {
           return;
         }
-        const reusingWagers =
-          this.inviteId === inviteId &&
-          this.activeContext?.loginUid === uid &&
-          !!this.latestInvite;
-        const needsWagerReconciliation =
-          reusingWagers && this.wagerSnapshotNeedsReconciliation;
-        const pendingWagerMutations = reusingWagers
-          ? [...this.pendingWagerMutations]
-          : [];
-        if (reusingWagers) {
-          workingInvite.wagers = this.latestInvite!.wagers;
-          wagersSnapshot = this.inviteWagersSnapshot;
-        }
-        const wagerRevisionFloor = reusingWagers
-          ? this.wagerSnapshotRevisionFloor
-          : (wagersSnapshot?.revision ?? -1);
+        const preserveWagerInvite = { inviteId, loginUid: uid };
         this.connectAttemptCleanup = null;
         this.inviteMetadataBootstrapController = null;
         this.inviteBootstrapLoginUid = null;
-        this.detachFromMatchSession();
+        this.detachMatchSession(preserveWagerInvite);
         this.loginUid = uid;
         connectEpoch = this.sessionEpoch;
         connectAttemptId = this.connectAttemptId;
@@ -4573,11 +3707,6 @@ class Connection {
         this.latestInvite = workingInvite;
         this.inviteMetadataState = metadataState;
         this.inviteMetadataViewer = viewer;
-        this.inviteWagersSnapshot = wagersSnapshot;
-        this.wagerSnapshotRevisionFloor = wagerRevisionFloor;
-        this.wagerSnapshotNeedsReconciliation = needsWagerReconciliation;
-        for (const mutation of pendingWagerMutations)
-          this.pendingWagerMutations.add(mutation);
         this.myMatch = myMatch;
 
         const nextContext = this.buildRuntimeContext(
@@ -4597,12 +3726,9 @@ class Connection {
         if (!isConnectActive()) return;
         const startObservers = () => {
           if (!isConnectActive()) return;
-          this.updateWagerStateForCurrentMatch();
+          this.wagerClient.updateWagerStateForCurrentMatch();
           if (!isConnectActive()) return;
-          if (
-            this.inviteWagersSnapshot &&
-            !this.wagerSnapshotNeedsReconciliation
-          )
+          if (this.wagerClient.hasConfirmedSnapshot())
             didReceiveInitialWagers();
           if (!isConnectActive()) return;
           this.applyInviteMetadata(
@@ -4614,7 +3740,7 @@ class Connection {
           if (!isConnectActive()) return;
           this.observeInviteMetadata(nextContext, metadataState.snapshot);
           if (!isConnectActive()) return;
-          this.observeWagers(nextContext);
+          this.wagerClient.observeWagers(nextContext);
           if (!isConnectActive()) return;
           this.observeInviteReactions(nextContext);
         };
@@ -4731,8 +3857,8 @@ class Connection {
     this.activateContext(nextWatchContext, "watch-only-rematch-nav");
     this.observeInviteReactions(nextWatchContext);
     this.observeInviteMetadata(nextWatchContext);
-    this.observeWagers(nextWatchContext);
-    this.updateWagerStateForCurrentMatch();
+    this.wagerClient.observeWagers(nextWatchContext);
+    this.wagerClient.updateWagerStateForCurrentMatch();
     this.stopObservingAllMatches();
     const hostId = this.latestInvite.hostId;
     const guestId = this.latestInvite.guestId;
@@ -4788,7 +3914,7 @@ class Connection {
       this.confirmRematchEndFromMetadata(context.loginUid, context.inviteId);
     }
     const next = state.snapshot;
-    this.latestInvite = { ...next, wagers: previous.wagers };
+    this.latestInvite = { ...next };
     this.reconcilePendingAutomatchRequest(
       context.loginUid,
       context.inviteId,
@@ -4917,135 +4043,6 @@ class Connection {
       return;
     }
     this.inviteMetadataSubscription = {
-      contextId: context.contextId,
-      channel,
-      stop,
-    };
-    incrementLifecycleCounter("connectionObservers");
-  }
-
-  private updateWagerStateForCurrentMatch() {
-    const targetMatchId = this.wagerViewMatchId ?? this.matchId;
-    if (!targetMatchId) {
-      syncCurrentWagerMatchState(null, null);
-      this.logWagerDebug("publish-state:clear-no-target");
-      return;
-    }
-    const wagers = this.latestInvite?.wagers ?? null;
-    const matchWagerState =
-      wagers && wagers[targetMatchId] ? wagers[targetMatchId] : null;
-    this.logWagerDebug("publish-state", {
-      targetMatchId,
-      availableMatchIds: wagers ? Object.keys(wagers) : [],
-      state: summarizeWagerState(matchWagerState),
-    });
-    syncCurrentWagerMatchState(
-      targetMatchId,
-      matchWagerState,
-      this.inviteWagersSnapshot?.inviteId === this.inviteId &&
-        !this.wagerSnapshotNeedsReconciliation,
-    );
-  }
-
-  private observeWagers(
-    context: MatchRuntimeContext | null = this.activeContext,
-  ): void {
-    if (!context) return;
-    if (this.inviteWagersSubscription?.contextId === context.contextId) return;
-    this.cleanupWagerObserver();
-    const key = `invite-wagers:${context.inviteId}`;
-    const isActive = () =>
-      this.isContextActive(context.contextId, context.sessionEpoch) &&
-      this.isCurrentAuthUser(context.loginUid);
-    const channel = new InviteWagersChannel({
-      inviteId: context.inviteId,
-      createSocket: (url, protocols) => new WebSocket(url, protocols),
-      getTokenRemainingMs: (token) => this.auth.getTokenRemainingMs(token),
-      getProtocols: async (forceRefresh) => {
-        const tokenProvider = this.getUserBoundAuthTokenProvider(
-          context.loginUid,
-        );
-        const token = await tokenProvider(forceRefresh);
-        tokenProvider.assertCurrentUser();
-        return createInviteWagersSocketProtocols(token);
-      },
-      readWagers: (signal) =>
-        readInviteWagersViaApi(
-          context.inviteId,
-          this.getUserBoundAuthTokenProvider(context.loginUid),
-          { signal },
-        ),
-      captureGeneration: () => this.wagerSnapshotGeneration,
-      needsHttpRefresh: () => this.wagerSnapshotNeedsReconciliation,
-      isActive,
-      isOnline: () => typeof navigator === "undefined" || navigator.onLine,
-      isVisible: () =>
-        typeof document === "undefined" ||
-        document.visibilityState === "visible",
-      addWakeListener: (listener) => {
-        if (typeof window === "undefined") return () => undefined;
-        window.addEventListener("online", listener);
-        window.addEventListener("offline", listener);
-        window.addEventListener("pageshow", listener);
-        document.addEventListener("visibilitychange", listener);
-        return () => {
-          window.removeEventListener("online", listener);
-          window.removeEventListener("offline", listener);
-          window.removeEventListener("pageshow", listener);
-          document.removeEventListener("visibilitychange", listener);
-        };
-      },
-      onSnapshot: (snapshot, delivery) => {
-        if (!isActive() || snapshot.inviteId !== context.inviteId) return;
-        this.wagerSnapshotRevisionFloor = Math.max(
-          this.wagerSnapshotRevisionFloor,
-          snapshot.revision,
-        );
-        if (
-          !this.latestInvite ||
-          this.pendingWagerMutations.size > 0 ||
-          delivery.requestGeneration !== this.wagerSnapshotGeneration ||
-          snapshot.revision < this.wagerSnapshotRevisionFloor ||
-          (this.wagerSnapshotNeedsReconciliation &&
-            delivery.source !== "http") ||
-          (!this.wagerSnapshotNeedsReconciliation &&
-            snapshot.revision === this.inviteWagersSnapshot?.revision)
-        ) {
-          return;
-        }
-        this.inviteWagersSnapshot = snapshot;
-        this.wagerSnapshotNeedsReconciliation = false;
-        this.latestInvite.wagers = { ...snapshot.wagers };
-        this.logWagerDebug("observe-wagers:update", {
-          availableMatchIds: Object.keys(snapshot.wagers),
-          revision: snapshot.revision,
-        });
-        this.updateWagerStateForCurrentMatch();
-        didReceiveInitialWagers();
-        this.miningFrozenPoller?.refresh();
-      },
-      onError: (error) =>
-        console.error("Error receiving invite wagers:", error),
-      setTimer: (callback, delayMs) => setTimeout(callback, delayMs),
-      clearTimer: (timer) => clearTimeout(timer),
-      random: Math.random,
-    });
-    let stopped = false;
-    const stop = () => {
-      if (stopped) return;
-      stopped = true;
-      channel.stop();
-      this.unregisterObserverCleanup(context.contextId, key);
-      if (this.inviteWagersSubscription?.channel === channel) {
-        this.inviteWagersSubscription = null;
-      }
-      decrementLifecycleCounter("connectionObservers");
-    };
-    if (!this.registerObserverCleanup(context.contextId, key, stop)) {
-      channel.stop();
-      return;
-    }
-    this.inviteWagersSubscription = {
       contextId: context.contextId,
       channel,
       stop,
@@ -5192,66 +4189,8 @@ class Connection {
     this.inviteMetadataSubscription?.stop();
   }
 
-  private cleanupWagerObserver() {
-    this.inviteWagersSubscription?.stop();
-  }
-
   private cleanupInviteReactionObserver() {
     this.inviteReactionSubscription?.stop();
-  }
-
-  private observeMiningFrozen(uid: string | null) {
-    if (this.miningFrozenPoller) {
-      this.miningFrozenPoller.stop();
-      this.miningFrozenPoller = null;
-      this.miningFrozenLoginUid = null;
-      decrementLifecycleCounter("connectionObservers");
-    }
-    setFrozenMaterials(null, uid ? "loading" : "idle");
-    if (!uid) return;
-    const observeEpoch = this.sessionEpoch;
-    const loginUid = this.auth.currentUser?.uid;
-    if (!loginUid) return;
-    this.miningFrozenLoginUid = loginUid;
-    this.miningFrozenPoller = new FrozenMaterialsPoller({
-      playerUid: uid,
-      addVisibilityListener: (listener) => {
-        if (typeof document === "undefined") return () => {};
-        document.addEventListener("visibilitychange", listener);
-        return () => document.removeEventListener("visibilitychange", listener);
-      },
-      addOnlineListener: (listener) => {
-        if (typeof window === "undefined") return () => {};
-        window.addEventListener("online", listener);
-        return () => window.removeEventListener("online", listener);
-      },
-      clearTimer: (timer) => clearTimeout(timer),
-      isActive: () =>
-        this.isSessionEpochActive(observeEpoch) &&
-        this.sameProfilePlayerUid === uid &&
-        this.auth.currentUser?.uid === loginUid,
-      isVisible: () =>
-        typeof document === "undefined" ||
-        document.visibilityState !== "hidden",
-      load: (signal) =>
-        readWagerFrozenViaApi(
-          { playerUid: uid },
-          this.getUserBoundAuthTokenProvider(loginUid),
-          { signal },
-        ),
-      onPending: () =>
-        setFrozenMaterialsStatus(
-          getFrozenMaterialsStatus() === "loading" ? "loading" : "updating",
-        ),
-      onSnapshot: (snapshot) => setFrozenMaterials(snapshot.frozen, "ready"),
-      onError: (_error, confirmed, refreshRequired) =>
-        setFrozenMaterials(
-          confirmed?.frozen,
-          confirmed && !refreshRequired ? "ready" : "unavailable",
-        ),
-      setTimer: (callback, delayMs) => setTimeout(callback, delayMs),
-    });
-    incrementLifecycleCounter("connectionObservers");
   }
 
   private observeMatch(

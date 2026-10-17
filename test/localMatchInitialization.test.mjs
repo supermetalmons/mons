@@ -4,6 +4,8 @@ import test from "node:test";
 import * as MonsRules from "mons-rules";
 import { createGameVariantHelpers } from "@mons/shared/game-variants";
 import ts from "typescript";
+import { createMatchTimerHarness } from "./fixtures/matchTimerHarness.mjs";
+import { createRematchViewingHarness } from "./fixtures/rematchViewingHarness.mjs";
 
 const variants = createGameVariantHelpers(MonsRules);
 const randomVariant = variants
@@ -31,17 +33,13 @@ const declarations = [
   "prepareLiveBoardView",
   "clearBoardViewInputs",
   "nextBoardRenderSession",
-  "clearViewedRematchState",
   "hasMoveHistoryFlipOverrideForCurrentSession",
   "baseBoardShouldBeFlipped",
   "activeBoardShouldBeFlipped",
   "canTrackLocalRematchSeries",
-  "localRematchMatchIdForIndex",
   "ensureLocalRematchSeriesInitialized",
   "localColorFromMonsColor",
-  "snapshotCurrentLocalMatchForHistory",
   "advanceLocalRematchSeriesToNextMatch",
-  "resetTimerStateForMatch",
   "resetRemoteMoveHistories",
   "resetBotScoreReactionState",
   "setCurrentVariant",
@@ -92,37 +90,41 @@ function harness({ bot = false } = {}) {
     botScoreReactionPlayedTurns: new Set([1]),
     remoteMoveHistories: new Map([["white", { moves: ["old-move"] }]]),
     remoteMoveHistoriesMatchId: "previous-match",
-    timerStashMatchId: "previous-match",
-    whiteTimerStash: "old-white-timer",
-    blackTimerStash: "old-black-timer",
-    pendingTimerResolutionOnRestore: "old-resolution",
     boardViewMode: "historicalView",
     boardRenderSessionId: 4,
-    displayedHistoryViewId: 3,
-    viewedRematchRequestToken: 2,
-    viewedRematchMatchId: "older-match",
-    viewedRematchGame: originalGame,
-    viewedRematchPair: {},
     moveHistoryFlipOverrideEnabled: true,
     moveHistoryFlipOverrideSessionId: 4,
     moveHistoryFlipOverrideBaseBoardFlipped: false,
     playerSideColor: bot ? MonsRules.Color.Black : MonsRules.Color.White,
     botPlayerColor: MonsRules.Color.White,
     lastBotMoveTimestamp: 1234,
-    localRematchSeriesIdSeed: 10,
-    localRematchSeriesInviteId: "local-9",
-    localActiveRematchMatchId: "local-9",
-    localRematchMatchIds: ["local-9"],
-    localRematchSnapshotsByMatchId: new Map(),
   };
   const ui = {};
   const renders = [];
   const automoves = [];
   const seeds = [];
-  const scores = new Map();
+  const rematchViewing = createRematchViewingHarness({
+    selection: { matchId: "older-match", pair: {}, game: originalGame },
+  });
+  rematchViewing.ensureLocalSeries();
   let api;
+  const timerHarness = createMatchTimerHarness({
+    activeMatchId: null,
+    isOnlineGame: false,
+  });
+  timerHarness.controller.setStash(
+    "previous-match",
+    "white",
+    "old-white-timer",
+  );
+  timerHarness.controller.setStash(
+    "previous-match",
+    "black",
+    "old-black-timer",
+  );
   const capture = () => ({
     ...api.state(),
+    timerMatchId: timerHarness.controller.getMatchId(),
     ui: { ...ui },
     renderCount: renders.length,
   });
@@ -145,6 +147,8 @@ function harness({ bot = false } = {}) {
     "showWaitingStateText",
   ];
   const dependencies = {
+    rematchViewing,
+    matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
     updateGameControlsContext: (context) => contexts.push(context),
@@ -172,12 +176,7 @@ function harness({ bot = false } = {}) {
       resetForNewGame: () => (ui.reset = true),
     },
     connection: { setWagerViewMatchId: (value) => (ui.wagerMatch = value) },
-    rematchHistory: {
-      setScore: (id, score) => scores.set(id, score),
-      deleteScore: (id) => scores.delete(id),
-    },
     applyBoardUiForCurrentView: noop,
-    clearTimerActivationCooldownState: () => (ui.timerCooldown = null),
     showResignButton: () => (ui.resign = true),
     setNewBoard: () => renders.push(capture()),
     updateUndoButtonBasedOnGameState: () => (ui.undoSynchronized = true),
@@ -195,6 +194,8 @@ function harness({ bot = false } = {}) {
       ${Object.keys(initial).join(", ")},
       botScoreReactionPlayedTurnCount: botScoreReactionPlayedTurns.size,
       remoteMoveHistoryCount: remoteMoveHistories.size,
+      selection: rematchViewing.getSelection(),
+      localSeries: rematchViewing.getLocalSeriesDescriptor(),
     }; }
     return { state, startBot: didClickStartBotGameButton, rematch: didConfirmRematchProposal };`,
     { compilerOptions: { target: ts.ScriptTarget.ES2022 } },
@@ -204,13 +205,17 @@ function harness({ bot = false } = {}) {
   );
   return {
     ...api,
+    state: () => ({
+      ...api.state(),
+      timerMatchId: timerHarness.controller.getMatchId(),
+    }),
     contexts,
     originalGame,
     ui,
     renders,
     automoves,
     seeds,
-    scores,
+    rematchViewing,
   };
 }
 
@@ -233,13 +238,7 @@ function assertFreshMatch(state, bot) {
     "whiteFlatMovesString",
     "blackFlatMovesString",
     "remoteMoveHistoriesMatchId",
-    "timerStashMatchId",
-    "whiteTimerStash",
-    "blackTimerStash",
-    "pendingTimerResolutionOnRestore",
-    "viewedRematchMatchId",
-    "viewedRematchGame",
-    "viewedRematchPair",
+    "timerMatchId",
   ])
     assert.equal(state[name], null, name);
   assert.equal(state.resignedColor, undefined);
@@ -250,6 +249,7 @@ function assertFreshMatch(state, bot) {
   assert.equal(state.remoteMoveHistoryCount, 0);
   assert.deepEqual(state.currentInputs, []);
   assert.equal(state.didStartLocalGame, true);
+  assert.equal(state.selection, null);
   assert.equal(state.isGameWithBot, bot);
   assert.equal(state.isInviteBotIntoLocalGameUnavailable, bot);
   assert.equal(state.boardViewMode, "activeLive");
@@ -272,15 +272,18 @@ test("local rematch clears historical and terminal state while preserving histor
   assert.equal(h.ui.setEndMatchVisible, false);
   assert.equal(h.ui.setEndMatchConfirmed, false);
   assert.equal(h.ui.showWaitingStateText, "");
-  assert.deepEqual(state.localRematchMatchIds, ["local-9", "local-91"]);
-  assert.equal(state.localRematchSeriesInviteId, "local-9");
-  assert.equal(state.localActiveRematchMatchId, "local-91");
-  const previous = state.localRematchSnapshotsByMatchId.get("local-9");
+  assert.deepEqual(
+    state.localSeries.matches.map((match) => match.matchId),
+    ["local-1", "local-11"],
+  );
+  assert.equal(state.localSeries.inviteId, "local-1");
+  assert.equal(state.localSeries.activeMatchId, "local-11");
+  const previous = h.rematchViewing.getLocalSnapshot("local-1");
   assert.equal(previous.gameModel, h.originalGame);
   assert.equal(previous.fen, h.originalGame.toFen());
   assert.equal(previous.resignedColor, "white");
   assert.equal(previous.boardFlipped, false);
-  assert.ok(h.scores.has("local-9"));
+  assert.ok(h.rematchViewing.getScore("local-1"));
   assert.equal(h.automoves.length, 0);
 });
 
@@ -324,8 +327,11 @@ test("bot rematch preserves the previous game, switches the bot to black and wai
   assert.equal(h.ui.flipped, false);
   assert.deepEqual(h.seeds, ["random"]);
   assert.equal(state.game.variant, randomVariant);
-  assert.deepEqual(state.localRematchMatchIds, ["local-9", "local-91"]);
-  const previous = state.localRematchSnapshotsByMatchId.get("local-9");
+  assert.deepEqual(
+    state.localSeries.matches.map((match) => match.matchId),
+    ["local-1", "local-11"],
+  );
+  const previous = h.rematchViewing.getLocalSnapshot("local-1");
   assert.equal(previous.gameModel, h.originalGame);
   assert.equal(previous.boardFlipped, true);
   assert.equal(h.renders.length, 1);

@@ -1,3 +1,4 @@
+import { createConnectionWagerClientHarness } from "./wagerClientHarness.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { registerHooks } from "node:module";
@@ -156,7 +157,6 @@ function harness({ token, records = new Map(), onTerminal, onReconnect } = {}) {
       getPlayerEmojiId: () => "3",
     },
     getPlayersEmojiId: () => 3,
-    getWagerState: () => null,
     console: { log() {}, warn() {}, error: (...args) => errors.push(args) },
     submitMoveViaApi: async (request, provider, options) => {
       const bearer = await provider(false);
@@ -185,7 +185,6 @@ function harness({ token, records = new Map(), onTerminal, onReconnect } = {}) {
     resolveWagerOutcomeViaApi: terminalCall("wager"),
     endRematchViaApi: terminalCall("end"),
     proposeRematchViaApi: terminalCall("rematch"),
-    isWagerClientUpdateRequired: () => false,
   };
   const Constructor = new Function(
     ...Object.keys(dependencies),
@@ -233,15 +232,14 @@ function harness({ token, records = new Map(), onTerminal, onReconnect } = {}) {
       reconnects.push({ inviteId, guard });
       onReconnect?.(inviteId, guard);
     },
-    createWagerContextGuard: () => () => true,
-    beginWagerSnapshotMutation: () => () => {},
-    cloneWagerState: (value) => value,
-    applyOptimisticWagerResolution: () => false,
-    callWagerApiWithRetry: (_label, work) => work(),
     rematchSeriesEndIsIndicated: () => false,
     getRematchIndexAvailableForNewProposal: () => 1,
     getCachedHistoricalMatchPair: () => null,
   });
+  const wagerHarness = createConnectionWagerClientHarness(instance);
+  wagerHarness.dependencies.api.resolveWagerOutcomeViaApi =
+    dependencies.resolveWagerOutcomeViaApi;
+  instance.wagerClient = wagerHarness.client;
   return {
     instance,
     calls,

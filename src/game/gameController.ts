@@ -5,11 +5,8 @@ import {
   markMainGameWaiting,
   onMainGameLoaded,
 } from "./mainGameLoadState";
-import {
-  MATCH_TIMER_DURATION_SECONDS,
-  MATCH_TIMER_TERMINAL,
-  parseMatchTimer,
-} from "@mons/shared/timers";
+import { MATCH_TIMER_DURATION_SECONDS } from "@mons/shared/timers";
+import { createMatchTimerController } from "./matchTimerController";
 import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
 import type { WorkerAutomoveResult } from "./automoveWorkerProtocol";
 import {
@@ -105,9 +102,10 @@ import {
 import { getCurrentSessionId, getSessionGuard } from "./matchSession";
 import { updateGameControlsContext } from "./gameControlsStore";
 import {
-  createRematchHistory,
-  HISTORICAL_MATCH_RETRY_DELAY_MS as historicalMatchPairRetryDelayMs,
-} from "./rematchHistory";
+  createRematchViewing,
+  type RematchSelectionRequest,
+  type ViewedRematch,
+} from "./rematchViewing";
 import { syncOwnProfileMiningState } from "../services/ownProfileMiningHydration";
 import { sessionAuth } from "../session/sessionAuth";
 import {
@@ -301,8 +299,9 @@ const buildBoardSquareTypeGrid = (
 const getDisplayedBoardVariant = (
   inFlashbackMode: boolean = flashbackMode,
 ): StoredGameVariant => {
-  if (inFlashbackMode && viewedRematchPair) {
-    return getHistoricalPairGameVariant(viewedRematchPair);
+  const selection = rematchViewing.getSelection();
+  if (inFlashbackMode && selection) {
+    return getHistoricalPairGameVariant(selection.pair);
   }
   return currentGameVariant;
 };
@@ -506,22 +505,9 @@ const loadCurrentGameFromFen = (fen: string): boolean => {
 
 var currentInputs: Location[] = [];
 
-let blackTimerStash: string | null = null;
-let whiteTimerStash: string | null = null;
-let timerStashMatchId: string | null = null;
-let pendingTimerResolutionOnRestore: boolean | null = null;
-const timerActivationCooldownSeconds = MATCH_TIMER_DURATION_SECONDS;
-let timerActivationCooldownMatchId: string | null = null;
-let timerActivationCooldownTurnNumber: number | null = null;
-let timerActivationCooldownStartedAtMs: number | null = null;
-let timerVictoryClaimTimeoutId: number | null = null;
 let isInviteBotIntoLocalGameUnavailable = false;
 let didMakeFirstLocalPlayerMoveOnLocalBoard = false;
-let viewedRematchMatchId: string | null = null;
-let viewedRematchGame: MonsRules.Game | null = null;
-let viewedRematchPair: HistoricalMatchPair | null = null;
-let viewedRematchRequestToken = 0;
-let displayedHistoryViewId = 0;
+
 let currentGameVariant: StoredGameVariant = legacyDefaultGameVariant;
 let boardViewMode: BoardViewMode = "activeLive";
 let isMoveHistoryPopupOpen = false;
@@ -529,18 +515,51 @@ let boardRenderSessionId = 0;
 let moveHistoryFlipOverrideSessionId: number | null = null;
 let moveHistoryFlipOverrideEnabled = false;
 let moveHistoryFlipOverrideBaseBoardFlipped: boolean | null = null;
-const rematchHistory = createRematchHistory({
-  loadMatchPair: (matchId) => connection.loadHistoricalMatchPair(matchId),
-  scoreFromPair: getScoreFromHistoricalPair,
+const matchTimers = createMatchTimerController({
+  getContext: () => ({
+    isOnlineGame,
+    isReconnect,
+    didConnect,
+    isWatchOnly,
+    isGameOver,
+    hasWinner: game.winner !== undefined,
+    hasTimerWinner: winnerByTimerColor !== undefined,
+    isPlayerSideTurn: isPlayerSideTurn(),
+    boardViewMode,
+    turnNumber: game.turnNumber,
+    activeColor:
+      game.activeColor === MonsRules.Color.White
+        ? "white"
+        : game.activeColor === MonsRules.Color.Black
+          ? "black"
+          : null,
+    activeMatchId: connection.getActiveMatchId(),
+    fallbackMatchId: wagerMatchId,
+  }),
+  matchBelongsToCurrentInvite: (matchId) =>
+    connection.matchBelongsToCurrentInvite(matchId),
+  now: () => Date.now(),
   createSessionGuard: getSessionGuard,
   setTimeout: setManagedGameTimeout,
   clearTimeout: clearManagedGameTimeout,
+  showCountdown: Board.showTimer,
+  hideCountdown: Board.hideTimerCountdownDigits,
+  hideButtons: hideTimerButtons,
+  showProgress: showTimerButtonProgressing,
+  enableVictoryClaim: enableTimerVictoryClaim,
+  onTerminal: (onConnect, color) =>
+    handleVictoryByTimer(onConnect, color, false),
 });
-let localRematchSeriesIdSeed = 1;
-let localRematchSeriesInviteId: string | null = null;
-let localActiveRematchMatchId: string | null = null;
-const localRematchMatchIds: string[] = [];
-const localRematchSnapshotsByMatchId = new Map<string, LocalRematchSnapshot>();
+const rematchViewing = createRematchViewing({
+  loadMatchPair: (matchId) => connection.loadHistoricalMatchPair(matchId),
+  buildHistoricalGame: buildHistoricalGameModel,
+  countRecordedMoves: countRecordedMovesInHistoricalPair,
+  createSessionGuard: getSessionGuard,
+  setTimeout: setManagedGameTimeout,
+  clearTimeout: clearManagedGameTimeout,
+  wait: (delay) => new Promise((resolve) => window.setTimeout(resolve, delay)),
+});
+
 const boardViewDebugLogsEnabled = import.meta.env.DEV;
 const summarizeWagerState = (state: MatchWagerState | null) => {
   const proposalKeys = Object.keys(state?.proposals || {});
@@ -580,7 +599,7 @@ const logWagerDebug = (
     event,
     boardViewMode,
     activeMatchId: connection.getActiveMatchId(),
-    viewedRematchMatchId,
+    viewedRematchMatchId: rematchViewing.getSelection()?.matchId ?? null,
     wagerMatchId,
     isWatchOnly,
     isGameOver,
@@ -600,137 +619,9 @@ export type RematchSeriesNavigatorItem = {
   playerIsWhite: boolean;
 };
 
-type LocalRematchSnapshot = {
-  matchId: string;
-  index: number;
-  gameVariant: StoredGameVariant;
-  gameModel: MonsRules.Game;
-  fen: string;
-  whiteScore: number;
-  blackScore: number;
-  boardFlipped: boolean;
-  resignedColor: "white" | "black" | null;
-};
-
-const clearAllManagedGameTimeouts = () => {
-  clearManagedGameTimeouts();
-  timerVictoryClaimTimeoutId = null;
-};
-
-function clearTimerActivationCooldownState() {
-  timerActivationCooldownMatchId = null;
-  timerActivationCooldownTurnNumber = null;
-  timerActivationCooldownStartedAtMs = null;
-  clearTimerVictoryClaimTimeout();
-}
-
-function clearTimerVictoryClaimTimeout() {
-  if (timerVictoryClaimTimeoutId !== null) {
-    clearManagedGameTimeout(timerVictoryClaimTimeoutId);
-    timerVictoryClaimTimeoutId = null;
-  }
-}
-
-function startTimerActivationCooldownState(matchId: string) {
-  timerActivationCooldownMatchId = matchId;
-  timerActivationCooldownTurnNumber = game.turnNumber;
-  timerActivationCooldownStartedAtMs = Date.now();
-}
-
-function renderTimerActivationCooldownFromState(matchId: string): boolean {
-  if (
-    timerActivationCooldownMatchId === null ||
-    timerActivationCooldownTurnNumber === null ||
-    timerActivationCooldownStartedAtMs === null
-  ) {
-    return false;
-  }
-  if (timerActivationCooldownMatchId !== matchId) {
-    return false;
-  }
-  if (timerActivationCooldownTurnNumber !== game.turnNumber) {
-    return false;
-  }
-  const elapsedSeconds = Math.max(
-    0,
-    (Date.now() - timerActivationCooldownStartedAtMs) / 1000,
-  );
-  const progress = Math.min(timerActivationCooldownSeconds, elapsedSeconds);
-  showTimerButtonProgressing(progress, timerActivationCooldownSeconds, true);
-  return true;
-}
-
-function restoreOrStartTimerActivationCooldownProgress(matchId: string) {
-  if (renderTimerActivationCooldownFromState(matchId)) {
-    return;
-  }
-  startTimerActivationCooldownState(matchId);
-  showTimerButtonProgressing(0, timerActivationCooldownSeconds, true);
-}
-
-function resetTimerStateForMatch(matchId: string | null) {
-  timerStashMatchId = matchId;
-  blackTimerStash = null;
-  whiteTimerStash = null;
-  pendingTimerResolutionOnRestore = null;
-  clearTimerActivationCooldownState();
-}
-
-function setTimerStashForColor(
-  matchId: string | null,
-  color: "white" | "black",
-  timer: string | null,
-) {
-  if (timerStashMatchId !== matchId) {
-    resetTimerStateForMatch(matchId);
-  }
-  if (color === "white") {
-    whiteTimerStash = timer;
-  } else {
-    blackTimerStash = timer;
-  }
-}
-
-function getTimerMatchIdCandidate(
-  preferredMatchId?: string | null,
-): string | null {
-  if (preferredMatchId) {
-    return preferredMatchId;
-  }
-  const activeMatchId = connection.getActiveMatchId();
-  if (activeMatchId) {
-    return activeMatchId;
-  }
-  if (timerStashMatchId) {
-    if (
-      isOnlineGame &&
-      !connection.matchBelongsToCurrentInvite(timerStashMatchId)
-    ) {
-      return null;
-    }
-    return timerStashMatchId;
-  }
-  if (isOnlineGame) {
-    return null;
-  }
-  if (wagerMatchId) {
-    return wagerMatchId;
-  }
-  return null;
-}
-
 const isFirstLocalRematchSeriesMatchActive = () => {
-  if (!canTrackLocalRematchSeries()) {
-    return true;
-  }
-  ensureLocalRematchSeriesInitialized();
-  if (!localRematchSeriesInviteId || !localActiveRematchMatchId) {
-    return true;
-  }
-  return (
-    localActiveRematchMatchId ===
-    localRematchMatchIdForIndex(localRematchSeriesInviteId, 0)
-  );
+  const descriptor = getLocalRematchSeriesDescriptor();
+  return !descriptor || descriptor.activeMatchId === descriptor.inviteId;
 };
 
 const shouldShowInviteBotIntoLocalGameButton = () => {
@@ -797,14 +688,6 @@ export function didSyncTutorialProgress() {
 }
 
 bindTutorialProgressSyncHandler(didSyncTutorialProgress);
-
-function clearViewedRematchState() {
-  displayedHistoryViewId += 1;
-  viewedRematchRequestToken += 1;
-  viewedRematchMatchId = null;
-  viewedRematchGame = null;
-  viewedRematchPair = null;
-}
 
 function hasMoveHistoryFlipOverrideForCurrentSession(): boolean {
   return (
@@ -896,7 +779,7 @@ function applyBoardUiForCurrentView() {
       !!connection.rematchSeriesEndIsIndicated(),
   });
   if (boardViewMode === "historicalView") {
-    clearTimerVictoryClaimTimeout();
+    matchTimers.cancelVictoryClaim();
     Board.stopMonsBoardAsDisplayAnimations();
     Board.showBoardPlayersInfo();
     showWaitingStateText("");
@@ -916,7 +799,7 @@ function applyBoardUiForCurrentView() {
     return;
   }
   if (boardViewMode === "waitingLive") {
-    clearTimerVictoryClaimTimeout();
+    matchTimers.cancelVictoryClaim();
     Board.runMonsBoardAsDisplayWaitingAnimation();
     Board.hideBoardPlayersInfo();
     if (controls.endMatchVisible !== null) {
@@ -952,7 +835,7 @@ function prepareLiveBoardView(mode: "activeLive" | "waitingLive") {
   nextBoardRenderSession();
   boardViewMode = mode;
   publishGameControlsContext();
-  clearViewedRematchState();
+  rematchViewing.clearSelection();
   connection.setWagerViewMatchId(null);
   flashbackMode = false;
   clearBoardViewInputs();
@@ -976,11 +859,7 @@ function restoreLiveBoardView() {
   refreshDisplayedMatchPresentation();
   if (boardViewMode === "activeLive") {
     setNewBoard(false);
-    const didRestoreTimerState = applyTimerStateFromStashes(
-      pendingTimerResolutionOnRestore ?? isReconnect,
-      getTimerMatchIdCandidate(),
-    );
-    pendingTimerResolutionOnRestore = null;
+    const didRestoreTimerState = matchTimers.restore();
     applyWagerState();
     markKnownWagerInitialStateReceived();
     updateUndoButtonBasedOnGameState();
@@ -989,19 +868,16 @@ function restoreLiveBoardView() {
         showResignButton();
         showMoveHistoryButton(true);
         if (isPlayerSideTurn()) {
-          clearTimerActivationCooldownState();
+          matchTimers.clearCooldown();
           hideTimerButtons();
           setUndoVisible(true);
           setAutomoveActionVisible(true);
-        } else if (
-          !didRestoreTimerState &&
-          !shouldWaitForTimerStashesBeforeFallback()
-        ) {
-          const timerMatchId = getTimerMatchIdCandidate();
+        } else if (!didRestoreTimerState && !matchTimers.waitsForStashes()) {
+          const timerMatchId = matchTimers.getMatchId();
           if (timerMatchId) {
-            restoreOrStartTimerActivationCooldownProgress(timerMatchId);
+            matchTimers.restoreCooldown(timerMatchId);
           } else {
-            showTimerButtonProgressing(0, timerActivationCooldownSeconds, true);
+            showTimerButtonProgressing(0, MATCH_TIMER_DURATION_SECONDS, true);
           }
         }
       } else if (didStartLocalGame) {
@@ -1032,21 +908,19 @@ function prepareForNewLocalLiveMatch() {
 }
 
 function enterHistoricalView(
-  matchId: string,
-  pair: HistoricalMatchPair,
-  historicalGame: MonsRules.Game,
-  sessionId: number,
+  selection: ViewedRematch,
+  request: RematchSelectionRequest,
 ): boolean {
-  if (!isBoardRenderSessionActive(sessionId)) {
+  if (!request.isCurrent()) {
     return false;
   }
-  displayedHistoryViewId += 1;
+  const { matchId, pair, game: historicalGame } = selection;
   boardViewMode = "historicalView";
   publishGameControlsContext();
-  viewedRematchMatchId = matchId;
+  if (!rematchViewing.commitSelection(request, selection)) {
+    return false;
+  }
   connection.setWagerViewMatchId(matchId);
-  viewedRematchGame = historicalGame;
-  viewedRematchPair = pair;
   Board.setBoardFlipped(getViewedMatchBoardFlipped(matchId, pair));
   flashbackMode = true;
   flashbackStateGame = historicalGame;
@@ -1056,7 +930,7 @@ function enterHistoricalView(
   refreshDisplayedMatchPresentation();
   ensureBoardViewInvariants("enterHistoricalView");
   setNewBoard(true);
-  scheduleHistoricalMatchArchiveRefresh(matchId, displayedHistoryViewId);
+  scheduleHistoricalMatchArchiveRefresh();
   if (boardViewDebugLogsEnabled) {
     console.log(`[board-view] entered historicalView for ${matchId}`);
   }
@@ -1079,15 +953,12 @@ function ensureBoardViewInvariants(source: string) {
 }
 
 function shouldPreserveHistoricalViewForCurrentInvite(): boolean {
-  if (boardViewMode !== "historicalView" || !viewedRematchMatchId) {
-    return false;
-  }
-  return connection.matchBelongsToCurrentInvite(viewedRematchMatchId);
-}
-
-function clearRematchHistoryCaches() {
-  rematchHistory.reset();
-  resetLocalRematchSeriesState();
+  const selection = rematchViewing.getSelection();
+  return (
+    boardViewMode === "historicalView" &&
+    selection !== null &&
+    connection.matchBelongsToCurrentInvite(selection.matchId)
+  );
 }
 
 function canTrackLocalRematchSeries(): boolean {
@@ -1097,68 +968,23 @@ function canTrackLocalRematchSeries(): boolean {
   return isCreateInviteRoute() || isGameWithBot;
 }
 
-function localRematchMatchIdForIndex(inviteId: string, index: number): string {
-  return index === 0 ? inviteId : `${inviteId}${index}`;
-}
-
 function ensureLocalRematchSeriesInitialized() {
-  if (!canTrackLocalRematchSeries()) {
-    return;
+  if (canTrackLocalRematchSeries()) {
+    rematchViewing.ensureLocalSeries();
   }
-  if (
-    localRematchSeriesInviteId &&
-    localActiveRematchMatchId &&
-    localRematchMatchIds.length > 0
-  ) {
-    return;
-  }
-  const nextSeriesId = localRematchSeriesIdSeed++;
-  const inviteId = `local-${nextSeriesId}`;
-  const initialMatchId = localRematchMatchIdForIndex(inviteId, 0);
-  localRematchSeriesInviteId = inviteId;
-  localActiveRematchMatchId = initialMatchId;
-  localRematchMatchIds.length = 0;
-  localRematchMatchIds.push(initialMatchId);
 }
 
 function resetLocalRematchSeriesState() {
-  localRematchSeriesInviteId = null;
-  localActiveRematchMatchId = null;
-  localRematchMatchIds.length = 0;
-  localRematchSnapshotsByMatchId.clear();
+  rematchViewing.resetLocalSeries();
   Board.resetLocalHumanSeriesOpponentAvatar();
-}
-
-function getLocalRematchSnapshot(matchId: string): LocalRematchSnapshot | null {
-  return localRematchSnapshotsByMatchId.get(matchId) ?? null;
 }
 
 function getLocalRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
   if (!canTrackLocalRematchSeries()) {
     return null;
   }
-  ensureLocalRematchSeriesInitialized();
-  if (
-    !localRematchSeriesInviteId ||
-    !localActiveRematchMatchId ||
-    localRematchMatchIds.length === 0
-  ) {
-    return null;
-  }
-  const matches: RematchSeriesMatchDescriptor[] = localRematchMatchIds.map(
-    (matchId, index) => ({
-      index,
-      matchId,
-      isActiveMatch: matchId === localActiveRematchMatchId,
-      isPendingResponse: false,
-    }),
-  );
-  return {
-    inviteId: localRematchSeriesInviteId,
-    activeMatchId: localActiveRematchMatchId,
-    hasSeries: matches.length > 1,
-    matches,
-  };
+  rematchViewing.ensureLocalSeries();
+  return rematchViewing.getLocalSeriesDescriptor();
 }
 
 function getActiveRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
@@ -1180,77 +1006,16 @@ function localColorFromMonsColor(
   return null;
 }
 
-function buildLocalHistoricalPair(
-  snapshot: LocalRematchSnapshot,
-): HistoricalMatchPair {
-  const resignedColor = snapshot.resignedColor;
-  const hostMatch: NonNullable<HistoricalMatchPair["hostMatch"]> = {
-    version: 1,
-    color: resignedColor ?? "white",
-    emojiId: 0,
-    aura: "",
-    gameVariant: snapshot.gameVariant,
-    fen: snapshot.fen,
-    status: resignedColor ? "surrendered" : "finished",
-    flatMovesString: "",
-    timer: "",
-  };
-  return {
-    matchId: snapshot.matchId,
-    hostPlayerId: Board.playerSideMetadata.uid || "local",
-    guestPlayerId: null,
-    hostMatch,
-    guestMatch: null,
-  };
-}
-
-function snapshotCurrentLocalMatchForHistory() {
-  if (!canTrackLocalRematchSeries()) {
-    return;
-  }
-  ensureLocalRematchSeriesInitialized();
-  if (!localActiveRematchMatchId) {
-    return;
-  }
-  const matchIndex = localRematchMatchIds.indexOf(localActiveRematchMatchId);
-  if (matchIndex < 0) {
-    return;
-  }
-  const snapshot: LocalRematchSnapshot = {
-    matchId: localActiveRematchMatchId,
-    index: matchIndex,
-    gameVariant: currentGameVariant,
-    gameModel: game,
-    fen: game.toFen(),
-    whiteScore: game.scores[MonsRules.Color.White],
-    blackScore: game.scores[MonsRules.Color.Black],
-    boardFlipped: baseBoardShouldBeFlipped(),
-    resignedColor: localColorFromMonsColor(resignedColor),
-  };
-  localRematchSnapshotsByMatchId.set(snapshot.matchId, snapshot);
-  rematchHistory.setScore(snapshot.matchId, {
-    white: snapshot.whiteScore,
-    black: snapshot.blackScore,
-  });
-}
-
 function advanceLocalRematchSeriesToNextMatch() {
   if (!canTrackLocalRematchSeries()) {
     return;
   }
-  ensureLocalRematchSeriesInitialized();
-  if (!localRematchSeriesInviteId || !localActiveRematchMatchId) {
-    return;
-  }
-  snapshotCurrentLocalMatchForHistory();
-  const nextIndex = localRematchMatchIds.length;
-  const nextMatchId = localRematchMatchIdForIndex(
-    localRematchSeriesInviteId,
-    nextIndex,
-  );
-  localActiveRematchMatchId = nextMatchId;
-  localRematchMatchIds.push(nextMatchId);
-  rematchHistory.deleteScore(nextMatchId);
+  rematchViewing.advanceLocalSeries({
+    gameVariant: currentGameVariant,
+    gameModel: game,
+    boardFlipped: baseBoardShouldBeFlipped(),
+    resignedColor: localColorFromMonsColor(resignedColor),
+  });
 }
 
 function baseBoardShouldBeFlipped(): boolean {
@@ -1291,7 +1056,7 @@ function requestOnlineReconnect(inviteId: string, autojoin: boolean): void {
 }
 
 function getMoveHistorySourceGame(): MonsRules.Game {
-  return viewedRematchGame ?? game;
+  return rematchViewing.getSelection()?.game ?? game;
 }
 
 function getViewedMatchPlayerColor(
@@ -1360,7 +1125,7 @@ function getViewedMatchBoardFlipped(
   matchId: string,
   pair: HistoricalMatchPair,
 ): boolean {
-  const localSnapshot = getLocalRematchSnapshot(matchId);
+  const localSnapshot = rematchViewing.getLocalSnapshot(matchId);
   if (localSnapshot) {
     return localSnapshot.boardFlipped;
   }
@@ -1467,14 +1232,6 @@ function getReconstructedGameFromPair(
   );
 }
 
-function moveHistoryEntitiesCount(gameModel: MonsRules.Game): number {
-  try {
-    return gameModel.trackingEntries.length;
-  } catch {
-    return 0;
-  }
-}
-
 function getBestHistoricalGameModel(
   matchId: string,
   pair: HistoricalMatchPair,
@@ -1497,67 +1254,17 @@ function getBestHistoricalGameModel(
   return null;
 }
 
-function getScoreFromHistoricalPair(
-  matchId: string,
-  pair: HistoricalMatchPair,
-): { white: number; black: number } | null {
-  const historicalGame = getBestHistoricalGameModel(matchId, pair);
-  if (!historicalGame) {
-    return null;
-  }
-  return {
-    white: historicalGame.scores[MonsRules.Color.White],
-    black: historicalGame.scores[MonsRules.Color.Black],
-  };
-}
-
-function mergeHistoricalMatchPresentation(
-  pair: HistoricalMatchPair,
-  archivedPair: HistoricalMatchPair,
-): HistoricalMatchPair {
-  const merged = { ...pair };
-  for (const side of ["hostMatch", "guestMatch"] as const) {
-    const match = pair[side];
-    const actorUid =
-      side === "hostMatch" ? pair.hostPlayerId : pair.guestPlayerId;
-    const appearance =
-      actorUid === archivedPair.hostPlayerId
-        ? archivedPair.hostMatch
-        : actorUid === archivedPair.guestPlayerId
-          ? archivedPair.guestMatch
-          : null;
-    if (match && appearance)
-      merged[side] = {
-        ...match,
-        emojiId: appearance.emojiId,
-        aura: appearance.aura,
-      };
-  }
-  return merged;
-}
-
-function scheduleHistoricalMatchArchiveRefresh(
-  matchId: string,
-  viewId: number,
-): void {
+function scheduleHistoricalMatchArchiveRefresh(): void {
   if (!isOnlineGame) return;
-  rematchHistory.refreshArchive(matchId, {
-    isCurrent: () =>
-      displayedHistoryViewId === viewId &&
-      boardViewMode === "historicalView" &&
-      viewedRematchMatchId === matchId,
-    onRefresh: (pair) => {
-      if (!viewedRematchPair) return;
-      viewedRematchPair = mergeHistoricalMatchPresentation(
-        viewedRematchPair,
-        pair,
-      );
+  rematchViewing.refreshSelectedArchive(
+    () => boardViewMode === "historicalView",
+    () => {
       refreshDisplayedMatchPresentation();
       triggerMoveHistoryPopupReload();
     },
-    onError: (error) =>
+    (error) =>
       console.error("Error refreshing historical match appearance:", error),
-  });
+  );
 }
 
 function getMatchMovesByColor(
@@ -1577,46 +1284,6 @@ function countRecordedMovesInHistoricalPair(
   return resolveRecordedMoveCount(
     pair,
     connection.getHostColorForMatch(matchId),
-  );
-}
-
-function hasSuspiciouslyShortHistoricalMoveHistory(
-  matchId: string,
-  pair: HistoricalMatchPair,
-  historicalGame: MonsRules.Game,
-): boolean {
-  const historyEntitiesCount = moveHistoryEntitiesCount(historicalGame);
-  if (historyEntitiesCount > 1) {
-    return false;
-  }
-  const recordedMovesCount = countRecordedMovesInHistoricalPair(matchId, pair);
-  return recordedMovesCount > historyEntitiesCount;
-}
-
-function shouldPreferRefreshedHistoricalData(
-  matchId: string,
-  currentPair: HistoricalMatchPair,
-  currentHistoricalGame: MonsRules.Game,
-  refreshedPair: HistoricalMatchPair,
-  refreshedHistoricalGame: MonsRules.Game,
-): boolean {
-  const currentHistoryEntitiesCount = moveHistoryEntitiesCount(
-    currentHistoricalGame,
-  );
-  const refreshedHistoryEntitiesCount = moveHistoryEntitiesCount(
-    refreshedHistoricalGame,
-  );
-  if (refreshedHistoryEntitiesCount !== currentHistoryEntitiesCount) {
-    return refreshedHistoryEntitiesCount > currentHistoryEntitiesCount;
-  }
-  const currentTurnNumber = currentHistoricalGame.turnNumber;
-  const refreshedTurnNumber = refreshedHistoricalGame.turnNumber;
-  if (refreshedTurnNumber !== currentTurnNumber) {
-    return refreshedTurnNumber > currentTurnNumber;
-  }
-  return (
-    countRecordedMovesInHistoricalPair(matchId, refreshedPair) >
-    countRecordedMovesInHistoricalPair(matchId, currentPair)
   );
 }
 
@@ -1650,24 +1317,16 @@ function getHistoricalWinnerByTimerColor(
 function getDisplayResignedColor(
   inFlashbackMode: boolean,
 ): MonsRules.Color | undefined {
-  if (
-    boardViewMode === "historicalView" &&
-    inFlashbackMode &&
-    viewedRematchMatchId
-  ) {
-    const localSnapshot = getLocalRematchSnapshot(viewedRematchMatchId);
+  const selection = rematchViewing.getSelection();
+  if (boardViewMode === "historicalView" && inFlashbackMode && selection) {
+    const localSnapshot = rematchViewing.getLocalSnapshot(selection.matchId);
     if (localSnapshot?.resignedColor === "white") {
       return MonsRules.Color.White;
     }
     if (localSnapshot?.resignedColor === "black") {
       return MonsRules.Color.Black;
     }
-    if (viewedRematchPair) {
-      return getHistoricalResignedColor(
-        viewedRematchMatchId,
-        viewedRematchPair,
-      );
-    }
+    return getHistoricalResignedColor(selection.matchId, selection.pair);
   }
   return resignedColor;
 }
@@ -1676,13 +1335,10 @@ function getDisplayWinnerByTimerColor(
   inFlashbackMode: boolean,
 ): MonsRules.Color | undefined {
   if (boardViewMode === "historicalView" && inFlashbackMode) {
-    if (viewedRematchMatchId && viewedRematchPair) {
-      return getHistoricalWinnerByTimerColor(
-        viewedRematchMatchId,
-        viewedRematchPair,
-      );
-    }
-    return undefined;
+    const selection = rematchViewing.getSelection();
+    return selection
+      ? getHistoricalWinnerByTimerColor(selection.matchId, selection.pair)
+      : undefined;
   }
   return winnerByTimerColor;
 }
@@ -1736,7 +1392,8 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
     return [];
   }
   const activeMatchId = descriptor.activeMatchId;
-  const selectedMatchId = viewedRematchMatchId ?? activeMatchId;
+  const selectedMatchId =
+    rematchViewing.getSelection()?.matchId ?? activeMatchId;
   const activeMatchDescriptor = descriptor.matches.find(
     (m: RematchSeriesMatchDescriptor) => m.isActiveMatch,
   );
@@ -1752,12 +1409,14 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
         whiteScore = game.scores[MonsRules.Color.White];
         blackScore = game.scores[MonsRules.Color.Black];
       } else {
-        const localSnapshot = getLocalRematchSnapshot(descriptorItem.matchId);
+        const localSnapshot = rematchViewing.getLocalSnapshot(
+          descriptorItem.matchId,
+        );
         if (localSnapshot) {
           whiteScore = localSnapshot.whiteScore;
           blackScore = localSnapshot.blackScore;
         }
-        const cachedScore = rematchHistory.getScore(descriptorItem.matchId);
+        const cachedScore = rematchViewing.getScore(descriptorItem.matchId);
         if (!localSnapshot && cachedScore) {
           whiteScore = cachedScore.white;
           blackScore = cachedScore.black;
@@ -1793,7 +1452,7 @@ export async function preloadRematchSeriesScores(): Promise<boolean> {
       (descriptorItem) => descriptorItem.matchId !== descriptor.activeMatchId,
     )
     .map((descriptorItem) => descriptorItem.matchId);
-  return rematchHistory.prefetchScores(
+  return rematchViewing.prefetchScores(
     descriptor.activeMatchId,
     targetMatchIds,
     triggerMoveHistoryPopupReload,
@@ -1811,13 +1470,14 @@ export async function didSelectRematchSeriesMatch(
   if (!activeMatchId) {
     return false;
   }
-  if (boardViewMode === "historicalView" && viewedRematchMatchId === matchId) {
+  const selectedMatchId = rematchViewing.getSelection()?.matchId ?? null;
+  if (boardViewMode === "historicalView" && selectedMatchId === matchId) {
     return false;
   }
   if (matchId === activeMatchId) {
     const didHaveHistoricalSelection =
       boardViewMode === "historicalView" ||
-      viewedRematchMatchId !== null ||
+      selectedMatchId !== null ||
       flashbackMode;
     if (!didHaveHistoricalSelection) {
       return false;
@@ -1832,95 +1492,18 @@ export async function didSelectRematchSeriesMatch(
     setNewBoard(startedFromHistoricalView);
     triggerMoveHistoryPopupReload();
   }
-  const requestToken = ++viewedRematchRequestToken;
   const renderSessionId = nextBoardRenderSession();
+  const request = rematchViewing.beginSelection(() =>
+    isBoardRenderSessionActive(renderSessionId),
+  );
   if (!startedFromHistoricalView) {
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
   }
-  if (isOnlineGame) {
-    const hadRecentMissBeforeLookup = rematchHistory.hasRecentMiss(matchId);
-    let pair = await rematchHistory.load(matchId);
-    if (!pair && !hadRecentMissBeforeLookup) {
-      if (
-        requestToken !== viewedRematchRequestToken ||
-        !isBoardRenderSessionActive(renderSessionId)
-      ) {
-        return false;
-      }
-      pair = await rematchHistory.load(matchId, { forceRefresh: true });
-    }
-    if (
-      requestToken !== viewedRematchRequestToken ||
-      !isBoardRenderSessionActive(renderSessionId) ||
-      !pair
-    ) {
-      return false;
-    }
-    let historicalGame = buildHistoricalGameModel(matchId, pair);
-    if (!historicalGame || !isBoardRenderSessionActive(renderSessionId)) {
-      return false;
-    }
-
-    if (
-      hasSuspiciouslyShortHistoricalMoveHistory(matchId, pair, historicalGame)
-    ) {
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, historicalMatchPairRetryDelayMs);
-      });
-      if (
-        requestToken !== viewedRematchRequestToken ||
-        !isBoardRenderSessionActive(renderSessionId)
-      ) {
-        return false;
-      }
-      const refreshedPair = await rematchHistory.load(matchId, {
-        forceRefresh: true,
-      });
-      if (
-        requestToken !== viewedRematchRequestToken ||
-        !isBoardRenderSessionActive(renderSessionId)
-      ) {
-        return false;
-      }
-      if (refreshedPair) {
-        const refreshedHistoricalGame = buildHistoricalGameModel(
-          matchId,
-          refreshedPair,
-        );
-        if (
-          refreshedHistoricalGame &&
-          shouldPreferRefreshedHistoricalData(
-            matchId,
-            pair,
-            historicalGame,
-            refreshedPair,
-            refreshedHistoricalGame,
-          )
-        ) {
-          pair = refreshedPair;
-          historicalGame = refreshedHistoricalGame;
-        } else if (!rematchHistory.isProvisional(matchId)) {
-          pair = mergeHistoricalMatchPresentation(pair, refreshedPair);
-        }
-      }
-    }
-
-    return enterHistoricalView(matchId, pair, historicalGame, renderSessionId);
-  }
-  const localSnapshot = getLocalRematchSnapshot(matchId);
-  if (
-    requestToken !== viewedRematchRequestToken ||
-    !isBoardRenderSessionActive(renderSessionId) ||
-    !localSnapshot
-  ) {
-    return false;
-  }
-  const historicalGame = localSnapshot.gameModel;
-  if (!historicalGame || !isBoardRenderSessionActive(renderSessionId)) {
-    return false;
-  }
-  const pair = buildLocalHistoricalPair(localSnapshot);
-  return enterHistoricalView(matchId, pair, historicalGame, renderSessionId);
+  const selection = await rematchViewing.loadSelection(request, matchId, {
+    online: isOnlineGame,
+    localPlayerUid: Board.playerSideMetadata.uid,
+  });
+  return selection ? enterHistoricalView(selection, request) : false;
 }
 
 export function getVerboseTrackingEntities(): MoveHistoryEntry[] {
@@ -2075,9 +1658,10 @@ export function didOpenMoveHistoryPopup() {
 export function didDismissMoveHistoryPopup() {
   isMoveHistoryPopupOpen = false;
   if (boardViewMode === "historicalView") {
-    if (viewedRematchGame) {
+    const selection = rematchViewing.getSelection();
+    if (selection) {
       flashbackMode = true;
-      flashbackStateGame = viewedRematchGame;
+      flashbackStateGame = selection.game;
       currentInputs = [];
       Board.removeHighlights();
       Board.hideItemSelectionOrConfirmationOverlay();
@@ -2087,7 +1671,7 @@ export function didDismissMoveHistoryPopup() {
     syncInviteBotIntoLocalGameButton();
     return;
   }
-  clearViewedRematchState();
+  rematchViewing.clearSelection();
   if (flashbackMode) {
     flashbackMode = false;
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
@@ -2128,13 +1712,14 @@ function cancelSessionPreload() {
 }
 
 function resetSessionBoardState() {
-  clearAllManagedGameTimeouts();
+  clearManagedGameTimeouts();
+  matchTimers.cancelVictoryClaim();
   resetBotScoreReactionState();
   isGameWithBot = false;
   nextBoardRenderSession();
   boardViewMode = "activeLive";
-  clearViewedRematchState();
-  clearRematchHistoryCaches();
+  rematchViewing.reset();
+  Board.resetLocalHumanSeriesOpponentAvatar();
   Board.resetPlayersMetadataForSession();
   Board.setBoardFlipped(false);
   publishGameControlsContext();
@@ -2215,7 +1800,7 @@ function resetSessionState(
     connection.setWagerViewMatchId(null);
     setWatchOnlyState(false);
   }
-  resetTimerStateForMatch(null);
+  matchTimers.reset(null);
   if (phase === "dispose") {
     setCurrentWagerMatch(null);
     connection.setWagerViewMatchId(null);
@@ -2481,7 +2066,7 @@ function initializeLocalMatch(mode: "local" | "bot") {
   whiteFlatMovesString = null;
   blackFlatMovesString = null;
   currentInputs = [];
-  resetTimerStateForMatch(null);
+  matchTimers.reset(null);
   publishGameControlsContext();
   setHomeVisible(true);
   setIslandButtonDimmed(true);
@@ -2499,9 +2084,10 @@ function initializeLocalMatch(mode: "local" | "bot") {
 
 function startFreshLocalMatch() {
   ensureLocalRematchSeriesInitialized();
-  const activeLocalMatchIndex = localActiveRematchMatchId
-    ? localRematchMatchIds.indexOf(localActiveRematchMatchId)
-    : -1;
+  const activeLocalMatchIndex =
+    rematchViewing
+      .getLocalSeriesDescriptor()
+      ?.matches.find((match) => match.isActiveMatch)?.index ?? -1;
   const playerStartsAsBlackInThisMatch =
     activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
   playerSideColor = playerStartsAsBlackInThisMatch
@@ -2553,16 +2139,16 @@ export function didJustCreateRematchProposalSuccessfully(
   previousMatchPair: HistoricalMatchPair | null,
 ) {
   if (boardViewMode !== "historicalView") {
-    clearViewedRematchState();
+    rematchViewing.clearSelection();
   }
   const hasCompleteHistoricalPair = !!(
     previousMatchPair?.hostMatch && previousMatchPair?.guestMatch
   );
   if (previousMatchId && previousMatchPair && hasCompleteHistoricalPair) {
-    rematchHistory.seedProvisional(previousMatchPair);
+    rematchViewing.seedProvisional(previousMatchPair);
   }
   if (previousMatchId) {
-    rematchHistory.setScore(previousMatchId, {
+    rematchViewing.setScore(previousMatchId, {
       white: game.scores[MonsRules.Color.White],
       black: game.scores[MonsRules.Color.Black],
     });
@@ -2597,7 +2183,7 @@ export function didJustCreateRematchProposalSuccessfully(
 
   lastReactionTime = 0;
   currentInputs = [];
-  resetTimerStateForMatch(null);
+  matchTimers.reset(null);
 
   if (boardViewMode !== "historicalView") {
     enterWaitingLiveView();
@@ -2812,20 +2398,12 @@ function navigateFromWaitingLiveToLastCompletedMatch() {
       : null;
   let didNavigate = false;
   if (lastMatch) {
-    const cachedPair = rematchHistory.getCachedPair(lastMatch.matchId);
-    if (cachedPair) {
-      const historicalGame = buildHistoricalGameModel(
-        lastMatch.matchId,
-        cachedPair,
+    const selection = rematchViewing.getCachedSelection(lastMatch.matchId);
+    if (selection) {
+      const request = rematchViewing.beginSelection(() =>
+        isBoardRenderSessionActive(renderSessionId),
       );
-      if (historicalGame) {
-        didNavigate = enterHistoricalView(
-          lastMatch.matchId,
-          cachedPair,
-          historicalGame,
-          renderSessionId,
-        );
-      }
+      didNavigate = enterHistoricalView(selection, request);
     }
   }
   if (!didNavigate) {
@@ -3294,7 +2872,7 @@ export function didClickStartTimerButton() {
     return;
   }
   if (isOnlineGame && !isWatchOnly && !isPlayerSideTurn()) {
-    const requestedMatchId = getTimerMatchIdCandidate();
+    const requestedMatchId = matchTimers.getMatchId();
     if (!requestedMatchId) {
       return;
     }
@@ -3326,9 +2904,14 @@ export function didClickStartTimerButton() {
           }
           const timerColor =
             playerSideColor === MonsRules.Color.White ? "white" : "black";
-          setTimerStashForColor(requestedMatchId, timerColor, res.timer);
+          matchTimers.setStash(requestedMatchId, timerColor, res.timer);
           if (boardViewMode === "activeLive") {
-            showTimerCountdown(false, res.timer, timerColor, res.duration);
+            matchTimers.showCountdown(
+              false,
+              res.timer,
+              timerColor,
+              res.duration,
+            );
           }
         }
       })
@@ -4007,7 +3590,7 @@ function applyOutput(
               }
               if (isOnlineGame) {
                 if (playerTurn) {
-                  clearTimerActivationCooldownState();
+                  matchTimers.clearCooldown();
                   if (boardViewMode === "activeLive") {
                     hideTimerButtons();
                   }
@@ -4015,14 +3598,14 @@ function applyOutput(
                   setAutomoveActionVisible(true);
                   showMoveHistoryButton(true);
                 } else {
-                  const cooldownMatchId = getTimerMatchIdCandidate();
+                  const cooldownMatchId = matchTimers.getMatchId();
                   if (cooldownMatchId) {
-                    startTimerActivationCooldownState(cooldownMatchId);
+                    matchTimers.startCooldown(cooldownMatchId);
                   }
                   if (boardViewMode === "activeLive") {
                     showTimerButtonProgressing(
                       0,
-                      timerActivationCooldownSeconds,
+                      MATCH_TIMER_DURATION_SECONDS,
                       true,
                     );
                   }
@@ -4053,7 +3636,7 @@ function applyOutput(
               updateRatings(isVictory);
             }
 
-            clearTimerActivationCooldownState();
+            matchTimers.clearCooldown();
             isGameOver = true;
             publishGameControlsContext();
             wagerOutcomeAnimationAllowed = !isWatchOnly;
@@ -4867,22 +4450,6 @@ function setupWatchOnlyPlayersFromMatchPair(pair: HistoricalMatchPair): void {
   }
 }
 
-function seedTimerStashesFromMatchPair(
-  matchId: string,
-  pair: HistoricalMatchPair,
-): void {
-  if (timerStashMatchId !== matchId) {
-    resetTimerStateForMatch(matchId);
-  }
-  for (const pairedMatch of [pair.hostMatch, pair.guestMatch]) {
-    if (pairedMatch?.color === "white" && whiteTimerStash === null) {
-      setTimerStashForColor(matchId, "white", pairedMatch.timer);
-    } else if (pairedMatch?.color === "black" && blackTimerStash === null) {
-      setTimerStashForColor(matchId, "black", pairedMatch.timer);
-    }
-  }
-}
-
 function getSurrenderedMatch(
   currentMatch: Match,
   pair: HistoricalMatchPair | null,
@@ -4909,7 +4476,7 @@ function didConnectTo(
   installInitialGameHydration(matchId, hydration);
   const trustedPair = hydration.kind === "trusted" ? hydration.pair : null;
   if (trustedPair) {
-    seedTimerStashesFromMatchPair(matchId, trustedPair);
+    matchTimers.seed(matchId, [trustedPair.hostMatch, trustedPair.guestMatch]);
   }
   const surrenderedMatch = getSurrenderedMatch(match, trustedPair);
   const shouldRenderLiveBoard = !shouldPreserveHistoricalViewForCurrentInvite();
@@ -4919,7 +4486,7 @@ function didConnectTo(
     matchId,
   );
   if (shouldRenderLiveBoard) {
-    clearViewedRematchState();
+    rematchViewing.clearSelection();
     boardViewMode = "activeLive";
     publishGameControlsContext();
     nextBoardRenderSession();
@@ -4995,13 +4562,13 @@ function didConnectTo(
       showResignButton();
       showMoveHistoryButton(true);
       if (isPlayerSideTurn()) {
-        clearTimerActivationCooldownState();
+        matchTimers.clearCooldown();
         hideTimerButtons();
         setUndoVisible(true);
         setAutomoveActionVisible(true);
       } else {
-        if (!shouldWaitForTimerStashesBeforeFallback()) {
-          restoreOrStartTimerActivationCooldownProgress(matchId);
+        if (!matchTimers.waitsForStashes()) {
+          matchTimers.restoreCooldown(matchId);
         }
       }
     }
@@ -5010,191 +4577,10 @@ function didConnectTo(
     handleResignStatusWithoutRender(true, surrenderedMatch.color);
   }
 
-  updateDisplayedTimerIfNeeded(true, match, matchId);
+  matchTimers.update(true, match, matchId);
   ensureBoardViewInvariants("didConnectTo:after");
   preloadRematchScoresAfterGameLoaded();
   triggerMoveHistoryPopupReload();
-}
-
-function getTimerStateFromStashes(
-  expectedMatchId?: string | null,
-): { timer: string | null; timerColor: string } | null {
-  if (isOnlineGame) {
-    if (!expectedMatchId || timerStashMatchId !== expectedMatchId) {
-      return null;
-    }
-  } else if (expectedMatchId && timerStashMatchId !== expectedMatchId) {
-    return null;
-  }
-  if (isReconnect || isWatchOnly) {
-    if (blackTimerStash === null || whiteTimerStash === null) {
-      return null;
-    }
-  }
-  let timer: string | null = "";
-  let timerColor = "";
-  const activeColor = game.activeColor;
-  if (activeColor === MonsRules.Color.Black) {
-    timer = whiteTimerStash;
-    timerColor = "white";
-  } else if (activeColor === MonsRules.Color.White) {
-    timer = blackTimerStash;
-    timerColor = "black";
-  } else {
-    return null;
-  }
-  return { timer, timerColor };
-}
-
-function applyTimerStateFromStashes(
-  onConnect: boolean,
-  expectedMatchId?: string | null,
-): boolean {
-  if (boardViewMode !== "activeLive") {
-    return false;
-  }
-  const timerState = getTimerStateFromStashes(expectedMatchId);
-  if (!timerState) {
-    return false;
-  }
-  return showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
-}
-
-function shouldWaitForTimerStashesBeforeFallback(): boolean {
-  if (!isWatchOnly && !isReconnect) {
-    return false;
-  }
-  return blackTimerStash === null || whiteTimerStash === null;
-}
-
-function updateDisplayedTimerIfNeeded(
-  onConnect: boolean,
-  match: Match,
-  matchId: string,
-) {
-  const fallbackToCooldownOrClear = () => {
-    if (
-      isGameOver ||
-      game.winner !== undefined ||
-      winnerByTimerColor !== undefined
-    ) {
-      clearTimerActivationCooldownState();
-      hideTimerButtons();
-      Board.hideTimerCountdownDigits();
-      return;
-    }
-    if (!isWatchOnly && !isPlayerSideTurn()) {
-      restoreOrStartTimerActivationCooldownProgress(matchId);
-      return;
-    }
-    clearTimerActivationCooldownState();
-    hideTimerButtons();
-    Board.hideTimerCountdownDigits();
-  };
-
-  if (match.color === "white") {
-    setTimerStashForColor(matchId, "white", match.timer);
-  } else {
-    setTimerStashForColor(matchId, "black", match.timer);
-  }
-  const timerState = getTimerStateFromStashes(matchId);
-  if (!timerState) {
-    if (boardViewMode === "activeLive") {
-      if (shouldWaitForTimerStashesBeforeFallback()) {
-        return;
-      }
-      fallbackToCooldownOrClear();
-    }
-    return;
-  }
-  if (boardViewMode !== "activeLive") {
-    if (timerState.timer === MATCH_TIMER_TERMINAL) {
-      pendingTimerResolutionOnRestore = onConnect;
-    }
-    return;
-  }
-  pendingTimerResolutionOnRestore = null;
-  const didShowTimerCountdown = showTimerCountdown(
-    onConnect,
-    timerState.timer,
-    timerState.timerColor,
-  );
-  if (!didShowTimerCountdown) {
-    const hasExplicitTimerPayload =
-      typeof timerState.timer === "string" &&
-      timerState.timer !== "" &&
-      timerState.timer !== MATCH_TIMER_TERMINAL;
-    if (hasExplicitTimerPayload) {
-      clearTimerActivationCooldownState();
-      hideTimerButtons();
-      Board.hideTimerCountdownDigits();
-      return;
-    }
-    fallbackToCooldownOrClear();
-  }
-}
-
-function showTimerCountdown(
-  onConnect: boolean,
-  timer: unknown,
-  timerColor: string,
-  duration?: number,
-): boolean {
-  if (timer === MATCH_TIMER_TERMINAL) {
-    clearTimerActivationCooldownState();
-    handleVictoryByTimer(onConnect, timerColor, false);
-    return true;
-  } else if (timer && typeof timer === "string" && !isGameOver) {
-    const parsedTimer = parseMatchTimer(timer);
-    if (parsedTimer) {
-      const { turnNumber, targetTimestamp } = parsedTimer;
-      if (game.turnNumber === turnNumber) {
-        clearTimerActivationCooldownState();
-        let delta = Math.max(
-          0,
-          Math.floor((targetTimestamp - Date.now()) / 1000),
-        );
-        if (duration !== undefined && duration !== null) {
-          delta = Math.min(Math.floor(duration / 1000), delta);
-        }
-        Board.showTimer(timerColor, delta);
-        if (!isWatchOnly && !isPlayerSideTurn()) {
-          const target = timerActivationCooldownSeconds;
-          showTimerButtonProgressing(target - delta, target, false);
-          const timerClaimMatchId = getTimerMatchIdCandidate();
-          if (timerClaimMatchId !== null) {
-            const timerClaimGuard = getSessionGuard();
-            timerVictoryClaimTimeoutId = setManagedGameTimeout(
-              () => {
-                timerVictoryClaimTimeoutId = null;
-                if (connection.getActiveMatchId() !== timerClaimMatchId) {
-                  return;
-                }
-                if (isReconnect && !didConnect) {
-                  return;
-                }
-                if (
-                  boardViewMode !== "activeLive" ||
-                  isGameOver ||
-                  isWatchOnly ||
-                  isPlayerSideTurn()
-                ) {
-                  return;
-                }
-                if (game.turnNumber === turnNumber) {
-                  enableTimerVictoryClaim();
-                }
-              },
-              delta * 1000,
-              timerClaimGuard,
-            );
-          }
-        }
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 function updateUndoButtonBasedOnGameState() {
@@ -5306,7 +4692,7 @@ function handleVictoryByTimer(
     return;
   }
 
-  clearTimerActivationCooldownState();
+  matchTimers.clearCooldown();
   isGameOver = true;
   publishGameControlsContext();
   wagerOutcomeAnimationAllowed = !onConnect;
@@ -5348,7 +4734,7 @@ function handleResignStatusWithoutRender(
   if (isGameOver) {
     return;
   }
-  clearTimerActivationCooldownState();
+  matchTimers.clearCooldown();
   if (game.winner !== undefined || winnerByTimerColor !== undefined) {
     isGameOver = true;
     publishGameControlsContext();
@@ -5383,7 +4769,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (isGameOver) {
     return;
   }
-  clearTimerActivationCooldownState();
+  matchTimers.clearCooldown();
   if (game.winner !== undefined || winnerByTimerColor !== undefined) {
     isGameOver = true;
     publishGameControlsContext();
@@ -5536,20 +4922,22 @@ function getDisplayedMatchPresentation(actorUid: string): {
   aura: string;
 } | null {
   if (!actorUid) return null;
+  const selection = rematchViewing.getSelection();
   const matchId =
     boardViewMode === "historicalView"
-      ? viewedRematchMatchId
+      ? selection?.matchId
       : connection.getActiveMatchId();
   if (!matchId) return null;
   if (boardViewMode !== "historicalView") {
     return connection.getMatchPresentation(matchId, actorUid);
   }
-  if (!isOnlineGame || !viewedRematchPair) return null;
+  if (!isOnlineGame || !selection) return null;
+  const { pair } = selection;
   const match =
-    actorUid === viewedRematchPair.hostPlayerId
-      ? viewedRematchPair.hostMatch
-      : actorUid === viewedRematchPair.guestPlayerId
-        ? viewedRematchPair.guestMatch
+    actorUid === pair.hostPlayerId
+      ? pair.hostMatch
+      : actorUid === pair.guestPlayerId
+        ? pair.guestMatch
         : null;
   return match ? { emojiId: match.emojiId, aura: match.aura ?? "" } : null;
 }
@@ -5576,7 +4964,7 @@ export function didReceiveMatchPresentationUpdate(
 ): void {
   const displayedMatchId =
     boardViewMode === "historicalView"
-      ? viewedRematchMatchId
+      ? rematchViewing.getSelection()?.matchId
       : connection.getActiveMatchId();
   if (
     boardViewMode === "historicalView" ||
@@ -5906,7 +5294,7 @@ export function didReceiveMatchUpdate(
   if (didMutateLiveGameWithoutRender) {
     triggerMoveHistoryPopupReload();
   }
-  updateDisplayedTimerIfNeeded(false, match, matchId);
+  matchTimers.update(false, match, matchId);
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
@@ -5931,7 +5319,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   }
 
   if (shouldRenderLiveBoard) {
-    clearViewedRematchState();
+    rematchViewing.clearSelection();
     boardViewMode = "activeLive";
     publishGameControlsContext();
     nextBoardRenderSession();
@@ -5965,7 +5353,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
     }
   }
 
-  updateDisplayedTimerIfNeeded(true, match, matchId);
+  matchTimers.update(true, match, matchId);
   ensureBoardViewInvariants("didRecoverMyMatch:after");
   preloadRematchScoresAfterGameLoaded();
 }

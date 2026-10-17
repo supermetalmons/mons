@@ -1,3 +1,4 @@
+import { createWagerClientHarness } from "./wagerClientHarness.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { registerHooks } from "node:module";
@@ -68,21 +69,14 @@ const names = [
   "createMatchContextGuard",
   "requireWritableContext",
   "detachFromMatchSession",
+  "detachMatchSession",
   "fetchInviteWithPendingCreation",
   "connectToGame",
   "applyInviteMetadata",
   "observeInviteMetadata",
-  "observeWagers",
-  "updateWagerStateForCurrentMatch",
   "setWagerViewMatchId",
-  "setLocalWagerState",
-  "beginWagerSnapshotMutation",
-  "runWagerMutation",
-  "createWagerContextGuard",
-  "restoreOptimisticWagerResolution",
   "cleanupInviteMetadataObserver",
   "cleanupInviteReactionObserver",
-  "cleanupWagerObserver",
   "stopObservingAllMatches",
   "rematchSeriesEndIsIndicatedForInvite",
   "getLatestBothSidesApprovedRematchIndexForInvite",
@@ -501,7 +495,7 @@ function harness({
     syncCurrentWagerMatchState: (matchId, state) => {
       publishedWagerState = state;
       events.wagerStates.push({ matchId, state });
-      events.wagering.push(instance.latestInvite?.wagers);
+      events.wagering.push(instance.wagerClient.wagers);
     },
     isWagerClientUpdateRequired: () => false,
     incrementLifecycleCounter: (key) =>
@@ -561,12 +555,6 @@ function harness({
     matchRefs: {},
     observedMatchSnapshots: new Map(),
     matchPresentations: new Map(),
-    optimisticResolvedMatchIds: new Set(),
-    pendingWagerMutations: new Set(),
-    inviteWagersSnapshot: null,
-    wagerSnapshotGeneration: 0,
-    wagerSnapshotRevisionFloor: -1,
-    wagerSnapshotNeedsReconciliation: false,
     getUserBoundAuthTokenProvider: (expectedUid = loginUid) => {
       events.auth.push(expectedUid);
       return Object.assign(async () => "header.payload.signature", {
@@ -612,6 +600,43 @@ function harness({
       },
     },
   });
+  const wagerHarness = createWagerClientHarness({
+    auth: instance.auth,
+    getActiveContext: () => instance.activeContext,
+    getSessionEpoch: () => instance.sessionEpoch,
+    getSameProfilePlayerUid: () => instance.sameProfilePlayerUid,
+    requireWritableContext: (...args) =>
+      instance.requireWritableContext(...args),
+    ensureAuthenticated: () => instance.ensureAuthenticated(),
+    getUserBoundAuthTokenProvider: (uid) =>
+      instance.getUserBoundAuthTokenProvider(uid),
+    createMatchContextGuard: (...args) =>
+      instance.createMatchContextGuard(...args),
+    isContextActive: (...args) => instance.isContextActive(...args),
+    isCurrentAuthUser: (uid) => instance.isCurrentAuthUser(uid),
+    isSessionEpochActive: (epoch) => instance.isSessionEpochActive(epoch),
+    registerObserverCleanup: (...args) =>
+      instance.registerObserverCleanup(...args),
+    unregisterObserverCleanup: (...args) =>
+      instance.unregisterObserverCleanup(...args),
+    changeObserverCount: (delta) =>
+      delta === 1
+        ? dependencies.incrementLifecycleCounter("connectionObservers")
+        : dependencies.decrementLifecycleCounter("connectionObservers"),
+    wagerStore: {
+      getWagerState: dependencies.getWagerState,
+      setWagerState: dependencies.setWagerState,
+      setCurrentWagerMatch: dependencies.setCurrentWagerMatch,
+      syncCurrentWagerMatchState: dependencies.syncCurrentWagerMatchState,
+    },
+    onInitialWagers: dependencies.didReceiveInitialWagers,
+    createWagerChannel: (options) =>
+      new dependencies.InviteWagersChannel(options),
+  });
+  wagerHarness.dependencies.api.readInviteWagersViaApi =
+    dependencies.readInviteWagersViaApi;
+  instance.wagerClient = wagerHarness.client;
+  instance.wagerClient.miningFrozenPoller = instance.miningFrozenPoller;
   return {
     instance,
     records,
@@ -755,14 +780,14 @@ test("game bootstrap preserves linked-login actors and recovers before independe
   assert.equal(h.instance.activeContext.loginUid, "login");
   assert.equal(h.instance.activeContext.actorUid, "host");
   assert.equal(h.events.wagering[0], null);
-  assert.deepEqual(h.instance.latestInvite.wagers, wagers);
+  assert.deepEqual(h.instance.wagerClient.wagers, wagers);
   assert.equal(h.events.bootstrapReads.length, 1);
   assert.ok(
     h.events.ui.indexOf("recover") < h.events.ui.indexOf("wagers-known"),
   );
   assert.equal(h.events.ui.includes("refresh-claims"), false);
   h.channel().emit(snapshot({ revision: 2, hostRematches: "1" }));
-  assert.deepEqual(h.instance.latestInvite.wagers, wagers);
+  assert.deepEqual(h.instance.wagerClient.wagers, wagers);
   h.instance.detachFromMatchSession();
 });
 
@@ -923,10 +948,10 @@ test("a loaded game remains available while wagers are unknown and rejects wager
   const h = harness({ readWagers: () => pending.promise });
   await h.connect();
   assert.equal(h.instance.activeContext.actorUid, "host");
-  assert.equal(h.instance.inviteWagersSnapshot, null);
+  assert.equal(h.instance.wagerClient.inviteWagersSnapshot, null);
   assert.ok(h.events.ui.includes("recover"));
   assert.ok(!h.events.ui.includes("wagers-known"));
-  const result = await h.instance.runWagerMutation(
+  const result = await h.instance.wagerClient.runWagerMutation(
     async () => assert.fail("wager write ran before its snapshot"),
     true,
   );
@@ -934,7 +959,7 @@ test("a loaded game remains available while wagers are unknown and rejects wager
   pending.resolve({ ok: true, snapshot: wagerSnapshot(1) });
   await settle();
   assert.ok(h.events.ui.includes("wagers-known"));
-  assert.deepEqual(h.instance.latestInvite.wagers, {});
+  assert.deepEqual(h.instance.wagerClient.wagers, {});
   h.instance.detachFromMatchSession();
 });
 
@@ -1703,7 +1728,7 @@ const proposalState = (count) => ({
 test("empty Worker wager bootstrap clears the displayed match without any legacy wager read", async () => {
   const h = harness({ wagers: {} });
   await h.connect();
-  assert.deepEqual(h.instance.latestInvite.wagers, {});
+  assert.deepEqual(h.instance.wagerClient.wagers, {});
   assert.deepEqual(h.events.wagerStates.at(-1), {
     matchId: "invite",
     state: null,
@@ -1742,7 +1767,7 @@ test("account replacement during wager bootstrap never publishes the old account
   assert.equal(h.events.wagerReads[0].signal.aborted, true);
   pending.resolve({ ok: true, snapshot: wagerSnapshot(2) });
   await settle();
-  assert.equal(h.instance.inviteWagersSnapshot, null);
+  assert.equal(h.instance.wagerClient.inviteWagersSnapshot, null);
   assert.equal(h.instance.isCurrentAuthUser("login"), false);
   assert.equal(h.events.wagerChannels.length, 1);
   assert.ok(h.events.wagerStates.every(({ state }) => state === null));
@@ -1770,7 +1795,7 @@ test("invite-wide wager snapshots update historical selection and empty snapshot
     matchId: "invite1",
     state: null,
   });
-  assert.deepEqual(h.instance.latestInvite.wagers, {});
+  assert.deepEqual(h.instance.wagerClient.wagers, {});
   h.instance.detachFromMatchSession();
 });
 
@@ -1782,8 +1807,8 @@ test("internal-only revisions refresh frozen balances while duplicate and older 
   h.wagerChannel().emit(wagerSnapshot(2, wagers));
   h.wagerChannel().emit(wagerSnapshot(1), "http");
   assert.equal(h.events.frozenRefreshes, 2);
-  assert.deepEqual(h.instance.latestInvite.wagers, wagers);
-  assert.equal(h.instance.inviteWagersSnapshot.revision, 2);
+  assert.deepEqual(h.instance.wagerClient.wagers, wagers);
+  assert.equal(h.instance.wagerClient.inviteWagersSnapshot.revision, 2);
   h.instance.detachFromMatchSession();
 });
 
@@ -1792,8 +1817,8 @@ test("a stale HTTP response cannot replace a newer socket snapshot", async () =>
   await h.connect();
   h.wagerChannel().emit(wagerSnapshot(4, { invite: proposalState(4) }));
   h.wagerChannel().emit(wagerSnapshot(3, { invite: proposalState(3) }), "http");
-  assert.equal(h.instance.inviteWagersSnapshot.revision, 4);
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(4));
+  assert.equal(h.instance.wagerClient.inviteWagersSnapshot.revision, 4);
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(4));
   h.instance.detachFromMatchSession();
 });
 
@@ -1802,16 +1827,16 @@ test("mutation generations protect optimistic state and reconcile only a fresh a
   await h.connect();
   const channel = h.wagerChannel();
   const beforeMutation = channel.dependencies.captureGeneration();
-  const finish = h.instance.beginWagerSnapshotMutation(
+  const finish = h.instance.wagerClient.beginWagerSnapshotMutation(
     h.instance.activeContext,
   );
-  h.instance.setLocalWagerState(proposalState(9));
+  h.instance.wagerClient.setLocalWagerState(proposalState(9));
   assert.deepEqual(
-    h.instance.inviteWagersSnapshot.wagers.invite,
+    h.instance.wagerClient.inviteWagersSnapshot.wagers.invite,
     proposalState(1),
   );
   channel.emit(wagerSnapshot(2, { invite: proposalState(2) }));
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(9));
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(9));
   finish();
   assert.equal(channel.refreshes, 1);
   channel.emit(
@@ -1821,10 +1846,10 @@ test("mutation generations protect optimistic state and reconcile only a fresh a
   );
   channel.emit(wagerSnapshot(3, { invite: proposalState(3) }));
   channel.emit(wagerSnapshot(2, { invite: proposalState(2) }), "http");
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(9));
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(9));
   assert.equal(channel.dependencies.needsHttpRefresh(), true);
   channel.emit(wagerSnapshot(3, { invite: proposalState(3) }), "http");
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(3));
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(3));
   assert.equal(channel.dependencies.needsHttpRefresh(), false);
   h.instance.detachFromMatchSession();
 });
@@ -1835,22 +1860,22 @@ test("successful and failed mutations both reconcile optimistic changes at the s
     await h.connect();
     const pending = deferred();
     const channel = h.wagerChannel();
-    const mutation = h.instance.runWagerMutation(async () => {
-      h.instance.setLocalWagerState(proposalState(9));
+    const mutation = h.instance.wagerClient.runWagerMutation(async () => {
+      h.instance.wagerClient.setLocalWagerState(proposalState(9));
       return pending.promise;
     }, false);
     const completion = fails
       ? assert.rejects(mutation, /mutation-failed/)
       : mutation;
     await settle();
-    assert.equal(h.instance.pendingWagerMutations.size, 1);
+    assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 1);
     if (fails) pending.reject(new Error("mutation-failed"));
     else pending.resolve({ ok: true });
     await completion;
-    assert.equal(h.instance.pendingWagerMutations.size, 0);
+    assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 0);
     assert.equal(channel.refreshes, 1);
     channel.emit(wagerSnapshot(1), "http");
-    assert.deepEqual(h.instance.latestInvite.wagers, {});
+    assert.deepEqual(h.instance.wagerClient.wagers, {});
     assert.equal(h.events.wagerStates.at(-1).state, null);
     h.instance.detachFromMatchSession();
   }
@@ -1859,17 +1884,19 @@ test("successful and failed mutations both reconcile optimistic changes at the s
 test("overlapping mutations hold snapshots until every mutation finishes", async () => {
   const h = harness({ wagers: {} });
   await h.connect();
-  const first = h.instance.beginWagerSnapshotMutation(h.instance.activeContext);
-  const second = h.instance.beginWagerSnapshotMutation(
+  const first = h.instance.wagerClient.beginWagerSnapshotMutation(
     h.instance.activeContext,
   );
-  h.instance.setLocalWagerState(proposalState(9));
+  const second = h.instance.wagerClient.beginWagerSnapshotMutation(
+    h.instance.activeContext,
+  );
+  h.instance.wagerClient.setLocalWagerState(proposalState(9));
   first();
   h.wagerChannel().emit(wagerSnapshot(2), "http");
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(9));
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(9));
   second();
   h.wagerChannel().emit(wagerSnapshot(2), "http");
-  assert.deepEqual(h.instance.latestInvite.wagers, {});
+  assert.deepEqual(h.instance.wagerClient.wagers, {});
   h.instance.detachFromMatchSession();
 });
 
@@ -1879,7 +1906,7 @@ test("rematch contexts retain historical wagers and refresh the new channel when
   });
   await h.connect();
   const oldChannel = h.wagerChannel();
-  const finish = h.instance.beginWagerSnapshotMutation(
+  const finish = h.instance.wagerClient.beginWagerSnapshotMutation(
     h.instance.activeContext,
   );
   h.instance.sendRematchProposal();
@@ -1891,7 +1918,7 @@ test("rematch contexts retain historical wagers and refresh the new channel when
     state: proposalState(2),
   });
   oldChannel.emit(wagerSnapshot(8));
-  assert.equal(h.instance.inviteWagersSnapshot.revision, 1);
+  assert.equal(h.instance.wagerClient.inviteWagersSnapshot.revision, 1);
   finish();
   assert.equal(h.wagerChannel().refreshes, 1);
   h.wagerChannel().emit(
@@ -1960,8 +1987,8 @@ test("reconnect keeps the latest wager snapshot received while metadata bootstra
   pending.resolve(response());
   await settle();
   assert.deepEqual(h.events.errors, []);
-  assert.equal(h.instance.inviteWagersSnapshot.revision, 3);
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(3));
+  assert.equal(h.instance.wagerClient.inviteWagersSnapshot.revision, 3);
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(3));
   assert.equal(h.events.wagerReads.length, 2);
   h.instance.detachFromMatchSession();
 });
@@ -1971,8 +1998,8 @@ test("same-invite reconnect preserves pending wager mutations and reconciles aft
     const h = harness({ wagers: {} });
     await h.connect();
     const pending = deferred();
-    const mutation = h.instance.runWagerMutation(async () => {
-      h.instance.setLocalWagerState(proposalState(9));
+    const mutation = h.instance.wagerClient.runWagerMutation(async () => {
+      h.instance.wagerClient.setLocalWagerState(proposalState(9));
       return pending.promise;
     }, false);
     await settle();
@@ -1986,23 +2013,23 @@ test("same-invite reconnect preserves pending wager mutations and reconciles aft
       oldContext.sessionEpoch,
     );
     assert.equal(oldChannel.stops, 1);
-    assert.equal(h.instance.pendingWagerMutations.size, 1);
+    assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 1);
     const channel = h.wagerChannel();
     const beforeCompletion = channel.dependencies.captureGeneration();
     channel.emit(wagerSnapshot(1), "http");
-    assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(9));
+    assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(9));
     if (fails) pending.reject(new Error("mutation-failed"));
     else pending.resolve({ ok: true });
     await mutation;
-    assert.equal(h.instance.pendingWagerMutations.size, 0);
+    assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 0);
     assert.equal(oldChannel.refreshes, 0);
     assert.equal(channel.refreshes, 1);
     assert.ok(channel.dependencies.captureGeneration() > beforeCompletion);
     channel.emit(wagerSnapshot(1), "http", beforeCompletion);
-    assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(9));
+    assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(9));
     assert.equal(channel.dependencies.needsHttpRefresh(), true);
     channel.emit(wagerSnapshot(1), "http");
-    assert.deepEqual(h.instance.latestInvite.wagers, {});
+    assert.deepEqual(h.instance.wagerClient.wagers, {});
     assert.equal(channel.dependencies.needsHttpRefresh(), false);
     h.instance.detachFromMatchSession();
     assert.equal(h.counters.get("connectionObservers"), 0);
@@ -2014,14 +2041,14 @@ test("an account switch invalidates old wager tickets even if that account recon
   await h.connect();
   h.instance.subscribeToAuthChanges(() => {});
   const pending = deferred();
-  const mutation = h.instance.runWagerMutation(
+  const mutation = h.instance.wagerClient.runWagerMutation(
     async () => pending.promise,
     false,
   );
   await settle();
-  assert.equal(h.instance.pendingWagerMutations.size, 1);
+  assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 1);
   h.authChange({ uid: "replacement" });
-  assert.equal(h.instance.pendingWagerMutations.size, 0);
+  assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 0);
   h.authChange({ uid: "login" });
   h.instance.connectToGame("login", "invite", false);
   await settle();
@@ -2036,28 +2063,28 @@ test("stale settlement restoration cannot modify another invite even with a matc
   const h = harness();
   await h.connect();
   const optimistic = { resolved: { optimistic: true } };
-  h.instance.setLocalWagerState(optimistic);
-  h.instance.restoreOptimisticWagerResolution(
+  h.instance.wagerClient.setLocalWagerState(optimistic);
+  h.instance.wagerClient.restoreOptimisticWagerResolution(
     "invite",
     proposalState(1),
     () => false,
     () => false,
   );
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, optimistic);
-  h.instance.restoreOptimisticWagerResolution(
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, optimistic);
+  h.instance.wagerClient.restoreOptimisticWagerResolution(
     "invite",
     proposalState(1),
     () => false,
     () => true,
   );
-  assert.deepEqual(h.instance.latestInvite.wagers.invite, proposalState(1));
+  assert.deepEqual(h.instance.wagerClient.wagers.invite, proposalState(1));
   h.instance.detachFromMatchSession();
 });
 
 test("detaching invalidates pending mutation completion and stale channel callbacks without observer leaks", async () => {
   const h = harness();
   await h.connect();
-  const finish = h.instance.beginWagerSnapshotMutation(
+  const finish = h.instance.wagerClient.beginWagerSnapshotMutation(
     h.instance.activeContext,
   );
   const channel = h.wagerChannel();
@@ -2067,7 +2094,7 @@ test("detaching invalidates pending mutation completion and stale channel callba
   assert.equal(h.instance.latestInvite, null);
   assert.equal(channel.refreshes, 0);
   assert.equal(channel.stops, 1);
-  assert.equal(h.instance.pendingWagerMutations.size, 0);
+  assert.equal(h.instance.wagerClient.pendingWagerMutations.size, 0);
   assert.equal(h.counters.get("connectionObservers"), 0);
   assert.equal(h.cleanups.size, 0);
 });
@@ -2075,17 +2102,17 @@ test("detaching invalidates pending mutation completion and stale channel callba
 test("a replacement account reconnecting to the same invite bootstraps its own canonical wager snapshot", async () => {
   const h = harness({ wagers: {} });
   await h.connect();
-  const finish = h.instance.beginWagerSnapshotMutation(
+  const finish = h.instance.wagerClient.beginWagerSnapshotMutation(
     h.instance.activeContext,
   );
-  h.instance.setLocalWagerState(proposalState(9));
+  h.instance.wagerClient.setLocalWagerState(proposalState(9));
   h.instance.auth.currentUser = { uid: "replacement" };
   h.instance.connectToGame("replacement", "invite", false);
   await settle();
   assert.deepEqual(h.events.errors, []);
   assert.equal(h.instance.activeContext.loginUid, "replacement");
   assert.equal(h.events.wagerReads.length, 2);
-  assert.deepEqual(h.instance.latestInvite.wagers, {});
+  assert.deepEqual(h.instance.wagerClient.wagers, {});
   finish();
   assert.equal(h.wagerChannel().refreshes, 0);
   h.instance.detachFromMatchSession();

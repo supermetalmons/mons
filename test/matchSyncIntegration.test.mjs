@@ -1,3 +1,4 @@
+import { createConnectionWagerClientHarness } from "./wagerClientHarness.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
@@ -34,6 +35,7 @@ const methods = [
   "activateContext",
   "clearActiveContext",
   "detachFromMatchSession",
+  "detachMatchSession",
   "tryNavigateWatchOnlyToLatestApprovedMatch",
   "subscribeToAuthChanges",
 ].map((name) => {
@@ -138,7 +140,6 @@ function harness({
       counters.set(name, (counters.get(name) ?? 0) + 1),
     decrementLifecycleCounter: (name) =>
       counters.set(name, (counters.get(name) ?? 0) - 1),
-    setCurrentWagerMatch: noop,
   };
   const Constructor = new Function(
     ...Object.keys(dependencies),
@@ -182,9 +183,6 @@ function harness({
     matchSyncSubscription: null,
     moveDeliveries: new Map([["journal", journal]]),
     matchPresentations: new Map(),
-    optimisticResolvedMatchIds: new Set(),
-    pendingWagerMutations: new Set(),
-    wagerSnapshotGeneration: 0,
     setSameProfilePlayerUid: noop,
     getSameProfilePlayerUid() {
       return this.activeContext?.canWrite ? this.activeContext.actorUid : null;
@@ -211,11 +209,8 @@ function harness({
     },
     getLatestBothSidesApprovedRematchIndex: () => 1,
     observeInviteMetadata: noop,
-    observeWagers: noop,
     observeInviteReactions: noop,
-    updateWagerStateForCurrentMatch: noop,
     cleanupInviteMetadataObserver: noop,
-    cleanupWagerObserver: noop,
     cleanupInviteReactionObserver: noop,
     eventClient: { reset: noop },
     refreshMoveDeliveries: noop,
@@ -227,6 +222,10 @@ function harness({
     logContextEvent: noop,
   });
   connection.observerRegistry = new ObserverRegistry(noop);
+  const wagerHarness = createConnectionWagerClientHarness(connection, {
+    createWagerChannel: () => ({ stop: noop, requestRefresh: noop }),
+  });
+  connection.wagerClient = wagerHarness.client;
   return {
     connection,
     context,

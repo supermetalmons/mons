@@ -1,3 +1,4 @@
+import { createConnectionWagerClientHarness } from "./wagerClientHarness.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
@@ -246,22 +247,24 @@ function harness(invite, onMatchRead = () => {}) {
       matchId: INVITE_ID,
       hasPendingProposal: false,
     }),
-    detachFromMatchSession: noop,
+    detachFromMatchSession: () => instance.wagerClient.resetMatch(),
+    detachMatchSession: (preserveInvite) =>
+      instance.wagerClient.resetMatch({ preserveInvite }),
     activateContext: (context) => {
       instance.activeContext = context;
+      instance.wagerClient.bindContext(context);
     },
-    updateWagerStateForCurrentMatch: noop,
     observeInviteReactions: noop,
     rematchSeriesEndIsIndicatedForInvite: () => false,
     isRematchEndPending: () => false,
     getRematchEndDelivery: () => ({ confirm: noop, refresh: noop }),
     refreshRematchEndDeliveries: noop,
     maybeRefreshContextAfterRematchMetadata: noop,
-    observeWagers: noop,
     ensureMatchSyncSubscription: noop,
     observeMatch: (uid) => events.matches.push(uid),
   });
   instance.observerRegistry = new Registry(noop);
+  instance.wagerClient = createConnectionWagerClientHarness(instance).client;
   const settle = async () => {
     await new Promise(setImmediate);
     assert.deepEqual(events.errors, []);

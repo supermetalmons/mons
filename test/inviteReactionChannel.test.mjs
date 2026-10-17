@@ -1,3 +1,4 @@
+import { createConnectionWagerClientHarness } from "./wagerClientHarness.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { registerHooks } from "node:module";
@@ -353,7 +354,6 @@ test("the actual session auth callback tears down participant and spectator reso
     "observeInviteReactions",
     "cleanupInviteReactionObserver",
     "cleanupInviteMetadataObserver",
-    "cleanupWagerObserver",
     "stopObservingAllMatches",
   ].map((name) => {
     const method = declaration.members.find(
@@ -440,8 +440,6 @@ test("the actual session auth callback tears down participant and spectator reso
       },
       currentUid: "original-login",
       authUnsubscribers: new Set(),
-      pendingWagerMutations: new Set([{}]),
-      wagerSnapshotGeneration: 0,
       activeContext: {
         contextId: 1,
         sessionEpoch: 1,
@@ -481,6 +479,9 @@ test("the actual session auth callback tears down participant and spectator reso
         );
       },
     });
+    const wagerHarness = createConnectionWagerClientHarness(connection);
+    connection.wagerClient = wagerHarness.client;
+    connection.wagerClient.pendingWagerMutations.add({});
     connection.observeInviteReactions();
     const [timerId, timer] = timers.entries().next().value;
     timers.delete(timerId);
@@ -504,8 +505,8 @@ test("the actual session auth callback tears down participant and spectator reso
     connection.auth.currentUser = newUser;
     authCallback(newUser);
     assert.equal(signal.aborted, true);
-    assert.equal(connection.pendingWagerMutations.size, 0);
-    assert.equal(connection.wagerSnapshotGeneration, 1);
+    assert.equal(connection.wagerClient.pendingWagerMutations.size, 0);
+    assert.equal(connection.wagerClient.wagerSnapshotGeneration, 1);
     assert.equal(presentationSignal.aborted, true);
     assert.equal(socket.closes, 1);
     assert.equal(socket.onmessage, null);

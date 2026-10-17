@@ -254,3 +254,19 @@ test("score prefetch can use provisional gameplay while archival is unavailable"
   assert.equal(h.history.isProvisional("a"), true);
   assert.deepEqual(h.history.getScore("a"), { white: 5, black: 2 });
 });
+
+test("an overlapping older archive miss cannot reinstate provisional data after archival succeeds", async () => {
+  const older = deferred();
+  let calls = 0;
+  const archived = pair("match", 7);
+  const h = harness(() =>
+    ++calls === 1 ? older.promise : Promise.resolve(archived),
+  );
+  h.history.seedProvisional(pair());
+  const first = h.history.load("match");
+  assert.equal(await h.history.load("match"), archived);
+  older.resolve(null);
+  assert.equal(await first, archived);
+  assert.equal(h.history.isProvisional("match"), false);
+  assert.equal(h.history.getCachedPair("match"), archived);
+});

@@ -148,6 +148,10 @@ async function fixture(
     initialSessionUid = spectator ? "s".repeat(28) : hostId,
     initialSessionStatus = 200,
     initialSessionGame,
+    initialMetadata,
+    initialMatch,
+    historicalPairs = [],
+    initialWagers = null,
   } = {},
 ) {
   const currentMetadata = {
@@ -160,6 +164,7 @@ async function fixture(
         ? "matched"
         : "pending"
       : null,
+    ...initialMetadata,
   };
   const currentViewer = spectator
     ? { role: "watch", actorUid: null, automatchOperationId: null }
@@ -170,7 +175,12 @@ async function fixture(
     matchId: pendingRematch ? `${inviteId}1` : inviteId,
     guestPlayerId: paired ? guestId : null,
     guestMatch: paired && !pendingRematch ? match.guestMatch : null,
+    ...initialMatch,
   };
+  const currentWagers = { inviteId, revision: 1, wagers: initialWagers ?? {} };
+  const historyByMatchId = new Map(
+    historicalPairs.map((pair) => [pair.matchId, pair]),
+  );
   const server = await serve();
   const browser = await chromium.launch({
     headless: true,
@@ -186,6 +196,7 @@ async function fixture(
   const matchSnapshotGate = deferred();
   const metadataSocketReady = deferred();
   const matchSocketReady = deferred();
+  const wagersSocketReady = deferred();
   const coreSockets = new Map();
   const sessionBootstrapGate = holdSessionBootstrap
     ? deferred()
@@ -215,7 +226,9 @@ async function fixture(
         ? currentMetadata
         : pathname.endsWith(`/matches/${currentMatch.matchId}/socket`)
           ? currentMatch
-          : null;
+          : pathname.endsWith("/wagers/socket") && initialWagers !== null
+            ? currentWagers
+            : null;
       if (snapshot)
         socket.send(
           JSON.stringify({ schemaVersion: 1, type: "snapshot", snapshot }),
@@ -226,6 +239,9 @@ async function fixture(
       } else if (pathname.endsWith(`/matches/${currentMatch.matchId}/socket`)) {
         coreSockets.set("match", socket);
         matchSocketReady.resolve();
+      } else if (pathname.endsWith("/wagers/socket")) {
+        coreSockets.set("wagers", socket);
+        wagersSocketReady.resolve();
       }
       socket.onMessage((message) => {
         if (message === "ping") socket.send("pong");
@@ -347,7 +363,15 @@ async function fixture(
       } else if (url.pathname === `/invites/${inviteId}/wagers`) {
         wagersRequested.resolve();
         await extrasGate.promise;
-        body = { ok: true, snapshot: { inviteId, revision: 1, wagers: {} } };
+        body = { ok: true, snapshot: currentWagers };
+      } else if (
+        url.pathname === "/matches/history" &&
+        historyByMatchId.size > 0
+      ) {
+        body = {
+          ok: true,
+          pair: historyByMatchId.get(url.searchParams.get("matchId")) ?? null,
+        };
       } else if (url.pathname === "/matches/snapshot") {
         body = {
           ok: true,
@@ -356,7 +380,8 @@ async function fixture(
           match: match.hostMatch,
         };
       } else if (
-        url.pathname === `/invites/${inviteId}/matches/${inviteId}/snapshot`
+        url.pathname ===
+        `/invites/${inviteId}/matches/${currentMatch.matchId}/snapshot`
       ) {
         await matchSnapshotGate.promise;
         body = { ok: true, snapshot: currentMatch };
@@ -477,6 +502,17 @@ async function fixture(
           }),
         );
       },
+      async publishWagers(update) {
+        await withinDeadline(wagersSocketReady.promise);
+        Object.assign(currentWagers, update);
+        coreSockets.get("wagers").send(
+          JSON.stringify({
+            schemaVersion: 1,
+            type: "snapshot",
+            snapshot: currentWagers,
+          }),
+        );
+      },
       resources,
       assetsGate,
       bootstrapGate,
@@ -486,6 +522,13 @@ async function fixture(
       selectedAssetsRequested,
       wagersRequested,
       profilesRequested,
+    }).catch(async (error) => {
+      const state = await page
+        .evaluate(() => window.gameStateProbe?.())
+        .catch(() => undefined);
+      throw new Error(JSON.stringify({ state, sockets, requests }), {
+        cause: error,
+      });
     });
     assert.deepEqual(pageErrors, []);
   } finally {
@@ -888,6 +931,216 @@ test(
         assert.equal(await page.locator("#highlightsLayer > *").count(), 0);
       },
       { pendingRematch: true },
+    );
+  },
+);
+
+async function installGameStateProbe(page) {
+  await page.waitForFunction(() => window.loadingProbe.populated !== null);
+  await page.evaluate(async () => {
+    const { getGameControlsSnapshot } =
+      await import("/src/game/gameControlsStore.ts");
+    const { getBoardPlayerInfoOverlayState } =
+      await import("/src/game/boardUiPort.ts");
+    const { getWagerState } = await import("/src/game/wagerState.ts");
+    const { getRematchSeriesNavigatorItems } =
+      await import("/src/game/gameController.ts");
+    const { connection } = await import("/src/connection/connection.ts");
+    const { getLifecycleCounters } =
+      await import("/src/lifecycle/lifecycleDiagnostics.ts");
+    window.gameStateProbe = () => ({
+      context: getGameControlsSnapshot().context,
+      timer: getGameControlsSnapshot().presentation.gameControls.timer,
+      playerInfo: getBoardPlayerInfoOverlayState(),
+      wager: getWagerState(),
+      selectedMatchId: getRematchSeriesNavigatorItems().find(
+        (item) => item.isSelected,
+      )?.matchId,
+      activeMatchId: connection.getActiveMatchId(),
+      counters: getLifecycleCounters(),
+    });
+  });
+}
+
+const historicalPair = {
+  matchId: inviteId,
+  hostPlayerId: hostId,
+  guestPlayerId: guestId,
+  hostMatch: record("white"),
+  guestMatch: record("black"),
+};
+
+test(
+  "real game owners preserve historical wagers while live timers update and clean up on navigation",
+  {
+    skip: benchmark || Boolean(process.env.MONS_LOADING_BUILD),
+    timeout: 60_000,
+  },
+  async () => {
+    const liveMatchId = `${inviteId}1`;
+    const proposals = (count) => ({
+      proposals: { [hostId]: { material: "dust", count } },
+    });
+    await fixture(
+      async ({ page, coreSocketsReady, publishMatch, publishWagers }) => {
+        await withinDeadline(coreSocketsReady);
+        await installGameStateProbe(page);
+        await page.waitForFunction(
+          (hostId) =>
+            window.gameStateProbe().wager?.proposals?.[hostId]?.count === 3,
+          hostId,
+        );
+        const series = page.getByRole("group", { name: "Rematch series" });
+        await series.getByRole("button").nth(0).click();
+        await page.waitForFunction(
+          (inviteId) =>
+            window.gameStateProbe().context.boardViewMode ===
+              "historicalView" &&
+            window.gameStateProbe().selectedMatchId === inviteId,
+          inviteId,
+        );
+        assert.equal(
+          await page.evaluate(
+            (hostId) => window.gameStateProbe().wager.proposals[hostId].count,
+            hostId,
+          ),
+          7,
+        );
+        const timer = `${new Game({ variant: "Classic" }).turnNumber};${Date.now() + 60_000}`;
+        publishMatch({
+          revision: 2,
+          guestMatch: { ...record("black"), timer },
+        });
+        await publishWagers({
+          revision: 2,
+          wagers: {
+            [inviteId]: proposals(9),
+            [liveMatchId]: proposals(4),
+          },
+        });
+        await page.waitForFunction(
+          (hostId) =>
+            window.gameStateProbe().wager?.proposals?.[hostId]?.count === 9,
+          hostId,
+        );
+        const historical = await page.evaluate(() => window.gameStateProbe());
+        assert.equal(historical.activeMatchId, liveMatchId);
+        assert.equal(historical.context.boardViewMode, "historicalView");
+        assert.equal(historical.timer.mode, "hidden");
+        assert.equal(historical.playerInfo.player.timerVisible, false);
+        assert.equal(historical.playerInfo.opponent.timerVisible, false);
+
+        await series.getByRole("button").nth(1).click();
+        await page.waitForFunction(
+          ({ liveMatchId, hostId }) => {
+            const state = window.gameStateProbe();
+            return (
+              state.context.boardViewMode === "activeLive" &&
+              state.selectedMatchId === liveMatchId &&
+              state.wager?.proposals?.[hostId]?.count === 4
+            );
+          },
+          { liveMatchId, hostId },
+        );
+        const restored = await page.evaluate(() => window.gameStateProbe());
+        assert.equal(
+          restored.playerInfo.player.timerVisible,
+          true,
+          JSON.stringify(restored),
+        );
+        assert.equal(restored.timer.mode, "hidden");
+        assert.match(restored.playerInfo.player.timerText, /^\d+s$/);
+        assert.ok(parseInt(restored.playerInfo.player.timerText, 10) <= 60);
+
+        await navigateWithinApp(page, "/");
+        await page.waitForFunction(() => {
+          const state = window.gameStateProbe();
+          return (
+            state.activeMatchId === null &&
+            state.counters.connectionObservers === 0 &&
+            state.counters.gameTimeouts === 0
+          );
+        });
+        const disposed = await page.evaluate(() => window.gameStateProbe());
+        assert.equal(disposed.wager, null);
+        assert.equal(disposed.timer.mode, "hidden");
+        assert.equal(disposed.playerInfo.player.timerVisible, false);
+        assert.equal(disposed.playerInfo.opponent.timerVisible, false);
+      },
+      {
+        healthyCoreSockets: true,
+        holdExtras: false,
+        initialMetadata: {
+          hostColor: "black",
+          hostRematches: "1",
+          guestRematches: "1",
+        },
+        initialMatch: {
+          matchId: liveMatchId,
+          hostMatch: record("white"),
+          guestMatch: record("black"),
+        },
+        historicalPairs: [
+          {
+            ...historicalPair,
+            hostMatch: record("black"),
+            guestMatch: record("white"),
+          },
+        ],
+        initialWagers: {
+          [inviteId]: proposals(7),
+          [liveMatchId]: proposals(3),
+        },
+      },
+    );
+  },
+);
+
+test(
+  "an incoming rematch acceptance restores the real live view from historical selection",
+  {
+    skip: benchmark || Boolean(process.env.MONS_LOADING_BUILD),
+    timeout: 60_000,
+  },
+  async () => {
+    await fixture(
+      async ({ page, coreSocketsReady, publishMatch, publishMetadata }) => {
+        await withinDeadline(coreSocketsReady);
+        await installGameStateProbe(page);
+        await page.waitForFunction(
+          () => window.gameStateProbe().context.boardViewMode === "waitingLive",
+        );
+        await page
+          .getByRole("group", { name: "Rematch series" })
+          .getByRole("button")
+          .nth(0)
+          .click();
+        await page.waitForFunction(
+          () =>
+            window.gameStateProbe().context.boardViewMode === "historicalView",
+        );
+        publishMatch({ revision: 2, guestMatch: record("white") });
+        publishMetadata({ revision: 2, guestRematches: "1" });
+        await page.waitForFunction((liveMatchId) => {
+          const state = window.gameStateProbe();
+          return (
+            state.context.boardViewMode === "activeLive" &&
+            state.activeMatchId === liveMatchId &&
+            state.selectedMatchId === liveMatchId
+          );
+        }, `${inviteId}1`);
+        assert.equal(
+          (await page.locator("#itemsLayer .item").count()) >= 20,
+          true,
+        );
+      },
+      {
+        pendingRematch: true,
+        healthyCoreSockets: true,
+        holdExtras: false,
+        initialMatch: { hostMatch: record("black") },
+        historicalPairs: [historicalPair],
+      },
     );
   },
 );

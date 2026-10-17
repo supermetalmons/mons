@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import ts from "typescript";
+import { createMatchTimerHarness } from "./fixtures/matchTimerHarness.mjs";
+import { createRematchViewingHarness } from "./fixtures/rematchViewingHarness.mjs";
 import { MatchPresentationState } from "../src/connection/matchPresentationState.ts";
 import { moveDeliveryStorageKey } from "../src/connection/moveDelivery.ts";
 
@@ -758,11 +760,10 @@ test("actual presentation callback is appearance-only and respects hydration, ac
     `
     let isOnlineGame = true;
     let boardViewMode = "activeLive";
-    let viewedRematchMatchId = null;
-    let viewedRematchPair = null;
     ${functions(controllerSource, ["getDisplayedMatchPresentation", "refreshDisplayedMatchPresentation", "didReceiveMatchPresentationUpdate"])}
   `,
     {
+      rematchViewing: createRematchViewingHarness(),
       Board: board,
       connection: {
         getActiveMatchId: () => "invite1",
@@ -771,7 +772,7 @@ test("actual presentation callback is appearance-only and respects hydration, ac
       },
       didReceiveMatchUpdate: () => assert.fail("appearance replayed gameplay"),
     },
-    "({ notify: didReceiveMatchPresentationUpdate, refresh: refreshDisplayedMatchPresentation, history: (matchId) => { boardViewMode = 'historicalView'; viewedRematchMatchId = matchId; viewedRematchPair = { hostPlayerId: 'actor', hostMatch: { emojiId: 5, aura: '' } }; }, live: () => { boardViewMode = 'activeLive'; viewedRematchMatchId = null; } })",
+    "({ notify: didReceiveMatchPresentationUpdate, refresh: refreshDisplayedMatchPresentation, history: (matchId) => { boardViewMode = 'historicalView'; rematchViewing.commitSelection(rematchViewing.beginSelection(() => true), { matchId, pair: { hostPlayerId: 'actor', hostMatch: { emojiId: 5, aura: '' } }, game: {} }); }, live: () => { boardViewMode = 'activeLive'; rematchViewing.clearSelection(); } })",
   );
   controller.notify("invite1", "actor");
   assert.deepEqual(rendered, []);
@@ -826,19 +827,29 @@ function historyAppearanceHarness({
     let puzzleMode = false;
     let isGameOver = true;
     let boardViewMode = "historicalView";
-    let viewedRematchMatchId = "old-match";
-    let viewedRematchPair = { hostPlayerId: "signed-in-login", hostMatch: { emojiId: ${online ? 1 : 0}, aura: "" } };
     let boardViewDebugLogsEnabled = false;
     let flashbackMode = true;
     let currentInputs = [];
-    let pendingTimerResolutionOnRestore = null;
     ${functions(controllerSource, ["publishGameControlsContext", "getDisplayedMatchPresentation", "refreshDisplayedMatchPresentation", "enterWaitingLiveView", "restoreLiveBoardView", "prepareLiveBoardView", "clearBoardViewInputs", "didConfirmRematchProposal"])}
-    function clearViewedRematchState() { viewedRematchMatchId = null; viewedRematchPair = null; }
   `,
     {
       getCurrentSessionId: () => 1,
       isGameConnectionBound: () => false,
       updateGameControlsContext: (context) => contexts.push(context),
+      rematchViewing: createRematchViewingHarness({
+        selection: {
+          matchId: "old-match",
+          pair: {
+            hostPlayerId: "signed-in-login",
+            hostMatch: { emojiId: online ? 1 : 0, aura: "" },
+          },
+          game: {},
+        },
+      }),
+      matchTimers: createMatchTimerHarness({
+        activeMatchId: null,
+        isOnlineGame: online,
+      }).controller,
       selectedProblem: null,
       Board: board,
       connection: {
@@ -861,8 +872,6 @@ function historyAppearanceHarness({
       triggerMoveHistoryPopupReload: noop,
       setEndMatchVisible: noop,
       setNewBoard: noop,
-      applyTimerStateFromStashes: () => false,
-      getTimerMatchIdCandidate: () => null,
       applyWagerState: noop,
       markKnownWagerInitialStateReceived: noop,
       updateUndoButtonBasedOnGameState: noop,

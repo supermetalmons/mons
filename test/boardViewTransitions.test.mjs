@@ -4,6 +4,9 @@ import { registerHooks } from "node:module";
 import test from "node:test";
 import ts from "typescript";
 import { deriveBoardViewControls } from "../src/game/boardViewPolicy.ts";
+import { MATCH_TIMER_TERMINAL } from "@mons/shared/timers";
+import { createMatchTimerHarness } from "./fixtures/matchTimerHarness.mjs";
+import { createRematchViewingHarness } from "./fixtures/rematchViewingHarness.mjs";
 
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -33,7 +36,6 @@ const source = ts.createSourceFile(
 );
 const declarations = [
   "publishGameControlsContext",
-  "clearViewedRematchState",
   "nextBoardRenderSession",
   "isBoardRenderSessionActive",
   "applyBoardViewGameControlPolicy",
@@ -73,26 +75,48 @@ function harness(
     isReconnect: false,
     boardViewDebugLogsEnabled: false,
     boardRenderSessionId: 5,
-    displayedHistoryViewId: 2,
-    viewedRematchRequestToken: 3,
-    viewedRematchMatchId: "old",
-    viewedRematchPair: { matchId: "old" },
-    viewedRematchGame: { id: "old" },
     flashbackMode: true,
     flashbackStateGame: { id: "old" },
     currentInputs: ["selected"],
     moveHistoryFlipOverrideEnabled: true,
     moveHistoryFlipOverrideSessionId: 5,
     moveHistoryFlipOverrideBaseBoardFlipped: false,
-    pendingTimerResolutionOnRestore: true,
     game: { winner: undefined },
     ...overrides,
   };
+  const rematchViewing = createRematchViewingHarness({
+    selection: {
+      matchId: "old",
+      pair: { matchId: "old" },
+      game: { id: "old" },
+    },
+  });
   let api;
   const record =
     (name) =>
     (...args) =>
       events.push({ name, args, state: api.state() });
+  let seedingTimer = true;
+  const timerHarness = createMatchTimerHarness(
+    { activeMatchId: "live" },
+    () => {
+      const state = api?.state() ?? initial;
+      return {
+        boardViewMode: seedingTimer ? "historicalView" : state.boardViewMode,
+        isReconnect: state.isReconnect,
+        isWatchOnly: state.isWatchOnly,
+        isGameOver: state.isGameOver,
+      };
+    },
+    ([name, ...args]) =>
+      record(name === "terminal" ? "restoreTimer" : name)(...args),
+  );
+  timerHarness.controller.update(
+    true,
+    { color: "white", timer: MATCH_TIMER_TERMINAL },
+    "live",
+  );
+  seedingTimer = false;
   const board = Object.fromEntries(
     [
       "setBoardMetadataDisplaySwapped",
@@ -109,6 +133,14 @@ function harness(
   );
   board.hasMonsBoardDisplayAnimationRunning = () => false;
   const dependencies = {
+    rematchViewing,
+    matchTimers: {
+      ...timerHarness.controller,
+      cancelVictoryClaim() {
+        record("cancelTimerVictoryClaim")();
+        timerHarness.controller.cancelVictoryClaim();
+      },
+    },
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
     updateGameControlsContext: (context) => contexts.push(context),
@@ -121,18 +153,12 @@ function harness(
     },
     activeBoardShouldBeFlipped: () => false,
     getViewedMatchBoardFlipped: () => true,
-    getTimerMatchIdCandidate: () => "live",
-    applyTimerStateFromStashes: (...args) => {
-      record("restoreTimer")(...args);
-      return true;
-    },
     MonsRules: { Game: { fromFen: (fen) => ({ fen }) } },
     getMoveHistorySourceGame: () => ({
       trackingEntries: [{ fen: "earlier" }, { fen: "latest" }],
     }),
     ...Object.fromEntries(
       [
-        "clearTimerVictoryClaimTimeout",
         "setEndMatchVisible",
         "setEndMatchConfirmed",
         "showVoiceReactionButton",
@@ -177,13 +203,17 @@ function harness(
       .map((name) => `let ${name} = initial.${name};`)
       .join("\n")}
     ${declarations.join("\n")}
-    function state() { return { ${Object.keys(initial).join(", ")} }; }
+    function state() { return { ${Object.keys(initial).join(", ")}, selection: rematchViewing.getSelection() }; }
     return {
       state,
+      setWaiting: (value) => { isWaitingForRematchResponse = value; },
       wait: enterWaitingLiveView,
       restore: restoreLiveBoardView,
       prepareLocal: prepareForNewLocalLiveMatch,
-      history: enterHistoricalView,
+      history: (matchId, pair, game, sessionId) => enterHistoricalView(
+        { matchId, pair, game },
+        rematchViewing.beginSelection(() => isBoardRenderSessionActive(sessionId)),
+      ),
       applyUi: applyBoardUiForCurrentView,
       selectMove: didSelectVerboseTrackingEntity,
     };`,
@@ -205,11 +235,7 @@ function assertLivePreparation(h, mode) {
   const state = h.state();
   assert.equal(state.boardViewMode, mode);
   assert.equal(state.boardRenderSessionId, 6);
-  assert.equal(state.displayedHistoryViewId, 3);
-  assert.equal(state.viewedRematchRequestToken, 4);
-  assert.equal(state.viewedRematchMatchId, null);
-  assert.equal(state.viewedRematchPair, null);
-  assert.equal(state.viewedRematchGame, null);
+  assert.equal(state.selection, null);
   assert.equal(state.flashbackMode, false);
   assert.equal(state.moveHistoryFlipOverrideEnabled, false);
   assert.deepEqual(state.currentInputs, []);
@@ -222,7 +248,7 @@ function assertLivePreparation(h, mode) {
   ]);
   const wagerView = h.events.find(({ name }) => name === "wagerView");
   assert.deepEqual(wagerView.args, [null]);
-  assert.equal(wagerView.state.viewedRematchMatchId, null);
+  assert.equal(wagerView.state.selection, null);
   const flip = h.events.find(({ name }) => name === "setBoardFlipped");
   assert.equal(flip.state.flashbackMode, false);
   assert.deepEqual(flip.state.currentInputs, []);
@@ -234,7 +260,7 @@ test("waiting entry clears historical input and orientation before waiting UI an
   assertLivePreparation(h, "waitingLive");
   assert.equal(h.contexts.at(-1).boardViewMode, "waitingLive");
   assert.deepEqual(h.names().slice(5), [
-    "clearTimerVictoryClaimTimeout",
+    "cancelTimerVictoryClaim",
     "runMonsBoardAsDisplayWaitingAnimation",
     "hideBoardPlayersInfo",
     "setEndMatchVisible",
@@ -267,10 +293,9 @@ test("active restoration refreshes appearance before rendering and restores time
     "updateUndoButtonBasedOnGameState",
     "triggerMoveHistoryPopupReload",
   ]);
-  assert.equal(h.state().pendingTimerResolutionOnRestore, null);
   assert.deepEqual(h.events.find(({ name }) => name === "restoreTimer").args, [
     true,
-    "live",
+    "white",
   ]);
 });
 
@@ -280,7 +305,12 @@ test("pending restoration stays waiting without restoring a live board or consum
   assertLivePreparation(h, "waitingLive");
   assert.equal(h.names().includes("setNewBoard"), false);
   assert.equal(h.names().includes("restoreTimer"), false);
-  assert.equal(h.state().pendingTimerResolutionOnRestore, true);
+  h.setWaiting(false);
+  h.restore();
+  assert.deepEqual(h.events.find(({ name }) => name === "restoreTimer").args, [
+    true,
+    "white",
+  ]);
 });
 
 test("new local preparation stops after base UI without restoring the previous game's timer or appearance", () => {
@@ -301,8 +331,6 @@ test("historical entry installs the selection before effects and renders before 
   const state = h.state();
   assert.equal(state.boardViewMode, "historicalView");
   assert.equal(state.boardRenderSessionId, 5);
-  assert.equal(state.viewedRematchRequestToken, 3);
-  assert.equal(state.displayedHistoryViewId, 3);
   assert.equal(state.flashbackStateGame, historicalGame);
   assert.deepEqual(h.names().slice(0, 4), [
     "wagerView",
@@ -310,8 +338,8 @@ test("historical entry installs the selection before effects and renders before 
     "removeHighlights",
     "hideItemSelectionOrConfirmationOverlay",
   ]);
-  assert.equal(h.events[0].state.viewedRematchMatchId, "older");
-  assert.equal(h.events[1].state.viewedRematchPair, pair);
+  assert.equal(h.events[0].state.selection.matchId, "older");
+  assert.equal(h.events[1].state.selection.pair, pair);
   assert.equal(h.events[2].state.flashbackMode, true);
   assert.deepEqual(h.events[2].state.currentInputs, []);
   assert.deepEqual(h.names().slice(-5), [
@@ -325,7 +353,7 @@ test("historical entry installs the selection before effects and renders before 
     h.events.find(
       ({ name }) => name === "scheduleHistoricalMatchArchiveRefresh",
     ).args,
-    ["older", 3],
+    [],
   );
 });
 
@@ -352,7 +380,7 @@ test("historical UI clears timer claims before presentation and hides controls b
   const h = harness();
   h.applyUi();
   assert.deepEqual(h.names(), [
-    "clearTimerVictoryClaimTimeout",
+    "cancelTimerVictoryClaim",
     "stopMonsBoardAsDisplayAnimations",
     "showBoardPlayersInfo",
     "showWaitingStateText",

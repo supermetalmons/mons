@@ -126,8 +126,9 @@ function harness({ historical = false, connected = true, onOutput } = {}) {
     applyWagerState: noop,
     syncWagerOutcome: noop,
     triggerMoveHistoryPopupReload: () => popupReloads++,
-    updateDisplayedTimerIfNeeded: (_onConnect, match, id) =>
-      timers.push({ match, id }),
+    matchTimers: {
+      update: (_onConnect, match, id) => timers.push({ match, id }),
+    },
     setCurrentVariant: noop,
     onSurrender: (color, fen) => surrendered.push({ color, fen }),
     prepareInitialGameHydration: (match) => ({

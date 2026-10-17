@@ -751,7 +751,8 @@ for (const [scenario, name] of [
             globalThis.resumeLogoutStorage &&
             globalThis.testSessionAuth.isStoppedForLogout &&
             !globalThis.testSessionConnection.inviteMetadataSubscription &&
-            !globalThis.testSessionConnection.inviteWagersSubscription &&
+            !globalThis.testSessionConnection.wagerClient
+              .inviteWagersSubscription &&
             !globalThis.testSessionConnection.matchSyncSubscription,
         );
       if (scenario !== "signal" && scenario !== "late-signal") {
@@ -831,7 +832,10 @@ for (const [scenario, name] of [
           Boolean(
             globalThis.testSessionConnection.inviteMetadataSubscription,
           ) &&
-          Boolean(globalThis.testSessionConnection.inviteWagersSubscription) &&
+          Boolean(
+            globalThis.testSessionConnection.wagerClient
+              .inviteWagersSubscription,
+          ) &&
           Boolean(globalThis.testSessionConnection.matchSyncSubscription),
         inviteId,
       );

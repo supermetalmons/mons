@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import ts from "typescript";
+import { createMatchTimerHarness } from "./fixtures/matchTimerHarness.mjs";
+import { createRematchViewingHarness } from "./fixtures/rematchViewingHarness.mjs";
 
 const source = ts.createSourceFile(
   "gameController.ts",
@@ -20,15 +22,10 @@ const declarations = [
   "resetSessionBoardState",
   "resetSessionFlags",
   "resetSessionState",
-  "clearAllManagedGameTimeouts",
   "resetBotScoreReactionState",
   "nextBoardRenderSession",
-  "clearViewedRematchState",
   "resetRemoteMoveHistories",
   "resetOnlineReconnectRequestState",
-  "resetTimerStateForMatch",
-  "clearTimerActivationCooldownState",
-  "clearTimerVictoryClaimTimeout",
   "setWatchOnlyState",
   "isCreateInviteRoute",
   "isSnapshotRoute",
@@ -90,11 +87,6 @@ function harness({
     watchOnlyListeners: new Set(),
     boardViewMode: "historicalView",
     boardRenderSessionId: 4,
-    displayedHistoryViewId: 3,
-    viewedRematchRequestToken: 2,
-    viewedRematchMatchId: "old",
-    viewedRematchGame: {},
-    viewedRematchPair: {},
     moveHistoryFlipOverrideEnabled: true,
     moveHistoryFlipOverrideSessionId: 4,
     moveHistoryFlipOverrideBaseBoardFlipped: true,
@@ -107,14 +99,6 @@ function harness({
     resignedColor: "white",
     winnerByTimerColor: "black",
     currentInputs: ["old-selection"],
-    timerStashMatchId: "old",
-    blackTimerStash: "old-black",
-    whiteTimerStash: "old-white",
-    pendingTimerResolutionOnRestore: "old",
-    timerActivationCooldownMatchId: "old",
-    timerActivationCooldownTurnNumber: 3,
-    timerActivationCooldownStartedAtMs: 123,
-    timerVictoryClaimTimeoutId: 1,
     wagerOutcomeAnimTimer: 2,
     didSetupWagerSubscription: false,
     unsubscribeFromWagerState: null,
@@ -139,6 +123,22 @@ function harness({
     isMoveHistoryPopupOpen: true,
     game: { contentPositions: () => [], winner: undefined },
   };
+  const rematchViewing = createRematchViewingHarness({
+    selection: { matchId: "old", pair: {}, game: {} },
+  });
+  const timerHarness = createMatchTimerHarness({ activeMatchId: null }, () => {
+    const state = api?.state() ?? initial;
+    return {
+      isOnlineGame: state.isOnlineGame,
+      isReconnect: state.isReconnect,
+      isWatchOnly: state.isWatchOnly,
+      boardViewMode: state.boardViewMode,
+      isGameOver: state.isGameOver,
+    };
+  });
+  timerHarness.controller.setStash("old", "white", "old-white");
+  timerHarness.controller.setStash("old", "black", "old-black");
+  timerHarness.controller.startCooldown("old");
   const capture = (name) =>
     events.push([
       name,
@@ -146,7 +146,7 @@ function harness({
         watchOnly: api.state().isWatchOnly,
         flashback: api.state().flashbackMode,
         inputs: [...api.state().currentInputs],
-        timer: api.state().timerStashMatchId,
+        timer: timerHarness.controller.getMatchId(),
         wager: api.state().currentWagerState,
         selectedProblem: api.state().selectedProblem,
         waiting: api.state().isWaitingForInviteToGetAccepted,
@@ -181,6 +181,7 @@ function harness({
   const boardMethods = [
     "setBoardMetadataDisplaySwapped",
     "resetPlayersMetadataForSession",
+    "resetLocalHumanSeriesOpponentAvatar",
     "setBoardFlipped",
     "setBotStrengthControlVisible",
     "setBotStrengthControlMode",
@@ -192,6 +193,8 @@ function harness({
     "hideItemSelectionOrConfirmationOverlay",
   ];
   const dependencies = {
+    rematchViewing,
+    matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
     updateGameControlsContext: (context) => contexts.push(context),
@@ -206,7 +209,6 @@ function harness({
       pendingTimeouts.clear();
     },
     clearManagedGameTimeout: (id) => pendingTimeouts.delete(id),
-    clearRematchHistoryCaches: () => events.push(["history-clear"]),
     setCurrentWagerMatch: (matchId) => {
       events.push(["wager-match", matchId]);
       if (wagerMatch === matchId) return;
@@ -284,7 +286,7 @@ function harness({
     ${declarations.join("\n")}
     return {
       go, disposeGameSession,
-      state: () => ({ ${keys.join(",")} }),
+      state: () => ({ ${keys.join(",")}, selection: rematchViewing.getSelection() }),
       setState: (values) => { ${keys.map((key) => `if (Object.hasOwn(values, "${key}")) ${key} = values.${key};`).join("\n")} }
     };
   `,
@@ -300,6 +302,7 @@ function harness({
     ui,
     subscriptions,
     pendingTimeouts,
+    timerHarness,
     publishWager: (state) => {
       wagerMatch = "old";
       wagerSnapshot = state;
@@ -324,10 +327,9 @@ for (const action of ["go", "disposeGameSession"]) {
       isSeriesEnded: false,
       selectedPuzzleId: null,
     });
-    assert.deepEqual(h.events.slice(0, 3), [
+    assert.deepEqual(h.events.slice(0, 2), [
       ["preload-cancel", null],
       ["timeouts-clear"],
-      ["history-clear"],
     ]);
     assert.equal(h.pendingTimeouts.size, 0);
     for (const flag of [
@@ -347,19 +349,15 @@ for (const action of ["go", "disposeGameSession"]) {
     }
     assert.equal(state.boardViewMode, "activeLive");
     assert.equal(state.boardRenderSessionId, 5);
-    assert.equal(state.viewedRematchMatchId, null);
-    assert.equal(state.viewedRematchGame, null);
+    assert.equal(state.selection, null);
     assert.equal(state.moveHistoryFlipOverrideEnabled, false);
     assert.equal(state.botScoreReactionPlayedTurns.size, 0);
     assert.equal(state.pendingOnlineReconnectInviteId, null);
     assert.deepEqual(state.currentInputs, []);
     assert.equal(state.resignedColor, undefined);
     assert.equal(state.winnerByTimerColor, undefined);
-    assert.equal(state.timerStashMatchId, null);
-    assert.equal(state.blackTimerStash, null);
-    assert.equal(state.whiteTimerStash, null);
-    assert.equal(state.timerActivationCooldownMatchId, null);
-    assert.equal(state.timerVictoryClaimTimeoutId, null);
+    assert.equal(h.timerHarness.controller.getMatchId(), null);
+    assert.equal(h.timerHarness.controller.restore(), false);
     assert.equal(state.cancelRematchScoresPreload, null);
     assert.equal(h.ui.setBoardFlipped, false);
     assert.equal(state.selectedProblem, action === "go" ? "old-problem" : null);
@@ -400,12 +398,12 @@ for (const [action, pendingAutomatch] of [
     await h.go(home);
     const wager = { agreed: "old" };
     h.publishWager(wager);
+    h.timerHarness.controller.setStash("old", "white", "old-white");
     h.setState({
       pendingAutomatchTransition: pendingAutomatch,
       isWatchOnly: true,
       flashbackMode: true,
       currentInputs: ["old-selection"],
-      timerStashMatchId: "old",
       selectedProblem: "old-problem",
     });
     h.events.length = 0;
