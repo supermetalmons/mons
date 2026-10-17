@@ -3,11 +3,35 @@ import {
   CanonicalProfileConflict,
   CanonicalProfileCorruption,
 } from "./profileCanonicalD1.ts";
+import {
+  parseRecoveryObservation,
+  parseRecoveryKey,
+  recoveryKeyHex,
+  recoveryKeyMatches,
+  recoveryObservationColumns,
+  recoveryObservationGuard,
+  type RecoveryKeyObservation,
+  type RecoveryKeyRow,
+  type RecoveryRowObservation,
+} from "./recoveryObservation.ts";
 
 const ACTIVE_CONTROL = `EXISTS (
   SELECT 1 FROM profile_canonical_control
   WHERE singleton = 1 AND state = 'active'
 )`;
+
+const JOB_COLUMNS = [
+  "login_uid",
+  "request_id",
+  "profile_id",
+  "cleanup_profile_ids_json",
+  "match_cursor",
+  "source_updated_at_ms",
+  "last_queued_at_ms",
+  "revision",
+] as const;
+const JOB_EXPRESSIONS = JOB_COLUMNS.map((column) => `job.${column}`);
+const JOB_REVISION_INDEX = 7;
 
 export type ProfileLinkCatchupJob = {
   loginUid: string;
@@ -20,13 +44,40 @@ export type ProfileLinkCatchupJob = {
   revision: number;
 };
 
+export type ProfileLinkCatchupQuarantineReason =
+  "invalid-login-uid" | "invalid-record";
+
+export type ProfileLinkCatchupInvalidEntry = {
+  kind: "invalid";
+  observation: RecoveryRowObservation;
+  reason: ProfileLinkCatchupQuarantineReason;
+};
+
+export type ProfileLinkCatchupScanEntry =
+  | { kind: "candidate"; value: ProfileLinkCatchupJob }
+  | ProfileLinkCatchupInvalidEntry
+  | { kind: "failure"; error: unknown };
+
+export type ProfileLinkCatchupQuarantineResult = {
+  loginUidHex: string;
+  revisionHex: string;
+  reason: ProfileLinkCatchupQuarantineReason;
+};
+
 export type ProfileLinkCatchupStore = {
   read(loginUid: string): Promise<ProfileLinkCatchupJob | null>;
   readForOwner(
     loginUid: string,
     profileId: string,
   ): Promise<ProfileLinkCatchupJob | null>;
-  listDue(dueBeforeMs: number, limit: number): Promise<ProfileLinkCatchupJob[]>;
+  scanDue(
+    dueBeforeMs: number,
+    limit: number,
+  ): Promise<ProfileLinkCatchupScanEntry[]>;
+  quarantineInvalidEntry(
+    entry: ProfileLinkCatchupInvalidEntry,
+    nowMs: number,
+  ): Promise<ProfileLinkCatchupQuarantineResult | null>;
   claimDispatch(
     loginUid: string,
     requestId: string,
@@ -74,6 +125,9 @@ function assertTimestamp(value: number): void {
 }
 
 function parseJob(row: JobRow): ProfileLinkCatchupJob {
+  if (typeof row.cleanup_profile_ids_json !== "string") {
+    throw new CanonicalProfileCorruption();
+  }
   let cleanupIds: unknown;
   try {
     cleanupIds = JSON.parse(row.cleanup_profile_ids_json) as unknown;
@@ -112,6 +166,65 @@ function parseJob(row: JobRow): ProfileLinkCatchupJob {
   };
 }
 
+function inspectJob(
+  row: JobRow,
+  key: RecoveryKeyObservation,
+):
+  | { kind: "candidate"; value: ProfileLinkCatchupJob }
+  | { kind: "invalid"; reason: ProfileLinkCatchupQuarantineReason } {
+  if (
+    !isCanonicalLoginUid(row.login_uid) ||
+    !recoveryKeyMatches(key, row.login_uid)
+  ) {
+    return { kind: "invalid", reason: "invalid-login-uid" };
+  }
+  try {
+    return { kind: "candidate", value: parseJob(row) };
+  } catch (error) {
+    if (!(error instanceof CanonicalProfileCorruption)) throw error;
+    return { kind: "invalid", reason: "invalid-record" };
+  }
+}
+
+async function inspectSweepJob(
+  db: D1Database,
+  row: JobRow & RecoveryKeyRow,
+  dueBeforeMs: number,
+): Promise<ProfileLinkCatchupScanEntry | null> {
+  try {
+    const key = parseRecoveryKey(row);
+    const inspected = inspectJob(row, key);
+    if (inspected.kind === "candidate") return inspected;
+    const fresh = await db
+      .withSession("first-primary")
+      .prepare(
+        `SELECT ${recoveryObservationColumns(JOB_EXPRESSIONS, JOB_REVISION_INDEX)}
+         FROM profile_link_catchup_jobs AS job
+         WHERE job.login_uid = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
+           AND job.last_queued_at_ms <= ?
+           AND NOT EXISTS (
+             SELECT 1 FROM profile_link_catchup_quarantine AS quarantine
+             WHERE quarantine.login_uid = job.login_uid
+               AND quarantine.revision_token = CAST(job.revision AS TEXT)
+           )`,
+      )
+      .bind(key.keyType, key.keyBytes, key.keyBytes, dueBeforeMs)
+      .first<Record<string, unknown>>();
+    if (!fresh) return null;
+    const { observation, value } = parseRecoveryObservation(
+      fresh,
+      JOB_COLUMNS,
+      JOB_REVISION_INDEX,
+    );
+    const refreshed = inspectJob(value as JobRow, observation);
+    return refreshed.kind === "candidate"
+      ? refreshed
+      : { ...refreshed, observation };
+  } catch (error) {
+    return { kind: "failure", error };
+  }
+}
+
 export function createProfileLinkCatchupStore(
   db: D1Database,
 ): ProfileLinkCatchupStore {
@@ -143,7 +256,7 @@ export function createProfileLinkCatchupStore(
         ...(requireMissingOwner ? [loginUid] : []),
       )
       .run();
-    return result.meta.changes === 1;
+    return result.meta.changes > 0;
   };
 
   return {
@@ -185,20 +298,62 @@ export function createProfileLinkCatchupStore(
       }
       return job;
     },
-    async listDue(dueBeforeMs, limit) {
+    async scanDue(dueBeforeMs, limit) {
       assertTimestamp(dueBeforeMs);
       if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1_000) {
         throw new TypeError("invalid-profile-link-catchup-limit");
       }
       const result = await db
         .prepare(
-          `SELECT * FROM profile_link_catchup_jobs
-           WHERE last_queued_at_ms <= ?
-           ORDER BY last_queued_at_ms, login_uid LIMIT ?`,
+          `SELECT job.*, CAST(job.login_uid AS BLOB) AS recovery_key_bytes,
+                  typeof(job.login_uid) AS recovery_key_type
+           FROM profile_link_catchup_jobs AS job
+           WHERE job.last_queued_at_ms <= ?
+             AND NOT EXISTS (
+               SELECT 1 FROM profile_link_catchup_quarantine AS quarantine
+               WHERE quarantine.login_uid = job.login_uid
+                 AND quarantine.revision_token = CAST(job.revision AS TEXT)
+             )
+           ORDER BY job.last_queued_at_ms, job.login_uid LIMIT ?`,
         )
         .bind(dueBeforeMs, limit)
-        .all<JobRow>();
-      return result.results.map(parseJob);
+        .all<JobRow & RecoveryKeyRow>();
+      const entries: ProfileLinkCatchupScanEntry[] = [];
+      for (const row of result.results) {
+        const entry = await inspectSweepJob(db, row, dueBeforeMs);
+        if (entry) entries.push(entry);
+      }
+      return entries;
+    },
+    async quarantineInvalidEntry({ observation, reason }, nowMs) {
+      assertTimestamp(nowMs);
+      const key = observation.keyBytes;
+      const guard = recoveryObservationGuard(JOB_EXPRESSIONS, observation);
+      const result = await db
+        .prepare(
+          `INSERT INTO profile_link_catchup_quarantine (
+             login_uid, revision_token, reason, quarantined_at_ms
+           )
+           SELECT job.login_uid, CAST(job.revision AS TEXT), ?, ?
+           FROM profile_link_catchup_jobs AS job
+           WHERE job.login_uid = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
+             AND ${guard.sql}
+             AND ${ACTIVE_CONTROL}
+           ON CONFLICT (login_uid) DO UPDATE SET
+             revision_token = excluded.revision_token,
+             reason = excluded.reason,
+             quarantined_at_ms = excluded.quarantined_at_ms
+           WHERE profile_link_catchup_quarantine.revision_token != excluded.revision_token`,
+        )
+        .bind(reason, nowMs, observation.keyType, key, key, ...guard.bindings)
+        .run();
+      return result.meta.changes === 1
+        ? {
+            loginUidHex: recoveryKeyHex(observation),
+            revisionHex: observation.revisionHex,
+            reason,
+          }
+        : null;
     },
     async claimDispatch(loginUid, requestId, expectedLastQueuedAtMs, nowMs) {
       assertTimestamp(expectedLastQueuedAtMs);

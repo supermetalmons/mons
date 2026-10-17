@@ -318,15 +318,34 @@ export async function sweepRatingProfileGameProjections(
       ))
   )(env);
   const nowMs = now();
-  const records = await rating.listDueRatingProfileGameProjections(
+  const entries = await rating.scanDueRatingProfileGameProjections(
     nowMs,
     PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
   );
   const { successes, failures } = await collectRecoveryItems(
-    records,
-    async (record, itemIndex) => {
-      let phase: "claim" | "quarantine" = "claim";
+    entries,
+    async (entry, itemIndex) => {
+      let phase: "inspect" | "claim" | "quarantine" = "inspect";
       try {
+        if (entry.kind === "failure") throw entry.error;
+        if (entry.kind === "invalid") {
+          phase = "quarantine";
+          const quarantined = await rating.quarantineRatingRecoveryEntry(
+            entry,
+            nowMs,
+          );
+          if (quarantined) {
+            logRecoveryEvent(logger, "error", {
+              event: "profile_game_projection_recovery_record_quarantined",
+              scope: "profile-game",
+              source: "rating",
+              ...quarantined,
+            });
+          }
+          return;
+        }
+        const record = entry.value;
+        phase = "claim";
         const claimed = await rating.claimRatingProfileGameProjection(
           record.operationId,
           record.revision,
@@ -363,7 +382,8 @@ export async function sweepRatingProfileGameProjections(
             source: "rating",
             phase,
             itemIndex,
-            operationId: record.operationId,
+            operationId:
+              entry.kind === "candidate" ? entry.value.operationId : undefined,
           },
           error,
         );
@@ -586,42 +606,73 @@ export async function sweepProfileLinkProfileGameProjections(
     dependencies.createProfileLinkJobs ||
     ((workerEnv: Env) => createProfileLinkCatchupStore(workerEnv.PROFILE_DB))
   )(env);
-  const candidates = await jobs.listDue(
+  const entries = await jobs.scanDue(
     nowMs - PROFILE_GAME_PROJECTION_RECOVERY_DELAY_MS,
     PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
   );
-  const { sentCount, claimFailure } = await claimAndEnqueueProjectionTasks({
-    candidates,
-    claim: (job) =>
-      jobs.claimDispatch(
-        job.loginUid,
-        job.requestId,
-        job.lastQueuedAtMs,
-        nowMs,
-      ),
-    toTask: ({ loginUid, requestId }): ProfileGameProjectionTask => ({
-      kind: "profile-link-profile-game-projection",
-      loginUid,
-      requestId,
-    }),
-    queue: env.PROFILE_GAME_PROJECTION_QUEUE,
-    fallbackErrorMessage: "profile-game-projection-claim-failed",
-    onClaimFailure: (job, error, itemIndex) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "profile_game_projection_recovery_record_failed",
-          scope: "profile-game",
-          source: "profile-link",
-          phase: "claim",
-          itemIndex,
+  const { successes, failures } = await collectRecoveryItems(
+    entries,
+    async (entry) => {
+      if (entry.kind === "failure") throw entry.error;
+      if (entry.kind === "invalid") {
+        const quarantined = await jobs.quarantineInvalidEntry(entry, nowMs);
+        if (quarantined) {
+          logRecoveryEvent(logger, "error", {
+            event: "profile_game_projection_recovery_record_quarantined",
+            scope: "profile-game",
+            source: "profile-link",
+            ...quarantined,
+          });
+        }
+        return;
+      }
+      const job = entry.value;
+      if (
+        await jobs.claimDispatch(
+          job.loginUid,
+          job.requestId,
+          job.lastQueuedAtMs,
+          nowMs,
+        )
+      ) {
+        return {
+          kind: "profile-link-profile-game-projection",
           loginUid: job.loginUid,
-        },
-        error,
-      ),
-  });
-  if (claimFailure) throw claimFailure;
-  return sentCount;
+          requestId: job.requestId,
+        } satisfies ProfileGameProjectionTask;
+      }
+    },
+    {
+      onFailure: (entry, error, itemIndex) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "profile_game_projection_recovery_record_failed",
+            scope: "profile-game",
+            source: "profile-link",
+            phase:
+              entry.kind === "candidate"
+                ? "claim"
+                : entry.kind === "invalid"
+                  ? "quarantine"
+                  : "inspect",
+            itemIndex,
+            loginUid:
+              entry.kind === "candidate" ? entry.value.loginUid : undefined,
+          },
+          error,
+        ),
+    },
+  );
+  const tasks = successes.flatMap(({ value }) => (value ? [value] : []));
+  await sendQueueTasks(env.PROFILE_GAME_PROJECTION_QUEUE, tasks);
+  if (failures.length > 0) {
+    const error = failures[0].error;
+    throw error instanceof Error
+      ? error
+      : new Error("profile-game-projection-claim-failed");
+  }
+  return tasks.length;
 }
 
 export async function sweepProfileGameProjections(

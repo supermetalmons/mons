@@ -14,9 +14,10 @@ import type {
   RatingProjectionRepository,
 } from "../ratingContracts.ts";
 import {
-  listDueRatingEventProgress,
-  listDueRatingProfileGameProjections,
-  listDueRatingTelegramProjections,
+  scanDueRatingEventProgress,
+  scanDueRatingProfileGameProjections,
+  scanDueRatingTelegramProjections,
+  quarantineRatingRecoveryEntry,
 } from "../ratingProjectionD1.ts";
 import { mergedRatingValue } from "./codec.ts";
 
@@ -112,14 +113,17 @@ export function createRatingProjections(
   | "claimRatingEventProgress"
   | "claimRatingProfileGameProjection"
   | "claimRatingTelegramProjection"
-  | "listDueRatingEventProgress"
-  | "listDueRatingProfileGameProjections"
-  | "listDueRatingTelegramProjections"
+  | "scanDueRatingEventProgress"
+  | "scanDueRatingProfileGameProjections"
+  | "scanDueRatingTelegramProjections"
+  | "quarantineRatingRecoveryEntry"
   | "markRatingEventProgress"
   | "markRatingProfileGameProjection"
   | "markRatingTelegramProjection"
 > {
   return {
+    quarantineRatingRecoveryEntry: (entry, nowMs) =>
+      quarantineRatingRecoveryEntry(db, entry, nowMs),
     async claimRatingEventProgress(operationId, expectedRevision, claimedAtMs) {
       return claimProjection(
         db,
@@ -158,14 +162,14 @@ export function createRatingProjections(
       );
     },
 
-    async listDueRatingEventProgress(updatedBeforeMs, limit) {
-      return listDueRatingEventProgress(db, updatedBeforeMs, limit);
+    async scanDueRatingEventProgress(updatedBeforeMs, limit) {
+      return scanDueRatingEventProgress(db, updatedBeforeMs, limit);
     },
-    async listDueRatingProfileGameProjections(updatedBeforeMs, limit) {
-      return listDueRatingProfileGameProjections(db, updatedBeforeMs, limit);
+    async scanDueRatingProfileGameProjections(updatedBeforeMs, limit) {
+      return scanDueRatingProfileGameProjections(db, updatedBeforeMs, limit);
     },
-    async listDueRatingTelegramProjections(updatedBeforeMs, limit) {
-      return listDueRatingTelegramProjections(db, updatedBeforeMs, limit);
+    async scanDueRatingTelegramProjections(updatedBeforeMs, limit) {
+      return scanDueRatingTelegramProjections(db, updatedBeforeMs, limit);
     },
     async markRatingEventProgress(operationId, state, updatedAtMs, reason) {
       return markProjection(

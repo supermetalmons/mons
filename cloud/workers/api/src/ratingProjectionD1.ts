@@ -1,4 +1,3 @@
-import { Buffer } from "node:buffer";
 import {
   CanonicalProfileCorruption,
   type RatingRow,
@@ -9,10 +8,82 @@ import {
   safeInteger,
 } from "./profileCanonical/validation.ts";
 import type {
+  InvalidRatingRecoveryEntry,
+  RatingRecoveryProjectionKind,
+  RatingRecoveryQuarantineResult,
+  RatingRecoveryScanEntry,
   PendingRatingEventProgress,
   PendingRatingProfileGameProjection,
   PendingRatingTelegramProjection,
 } from "./ratingContracts.ts";
+import {
+  parseRecoveryObservation,
+  parseRecoveryKey,
+  recoveryKeyHex,
+  recoveryKeyMatches,
+  recoveryObservationColumns,
+  recoveryObservationGuard,
+  type RecoveryKeyObservation,
+  type RecoveryKeyRow,
+} from "./recoveryObservation.ts";
+
+const EVENT_ID_BYTES_SQL = `(SELECT CASE WHEN type = 'text' THEN CAST(atom AS BLOB) ELSE NULL END
+  FROM json_each(rating.payload_json)
+  WHERE key = 'eventId'
+  ORDER BY id DESC LIMIT 1)`;
+
+const RECOVERY_LANES = {
+  "event-progress": "event_progress",
+  "profile-game": "profile_game_projection",
+  telegram: "telegram_projection",
+} as const;
+
+function recoveryLane(projectionKind: RatingRecoveryProjectionKind) {
+  if (!Object.hasOwn(RECOVERY_LANES, projectionKind)) {
+    throw new TypeError("invalid-rating-recovery-projection");
+  }
+  const prefix = RECOVERY_LANES[projectionKind];
+  const fieldNames = [
+    "operation_id",
+    "revision",
+    ...(projectionKind === "telegram"
+      ? []
+      : ["invite_id", "match_id", "version"]),
+    ...(projectionKind === "event-progress" ? ["event_id_bytes"] : []),
+  ];
+  return {
+    prefix,
+    sourceColumns: [
+      "rating.operation_id",
+      "rating.revision",
+      `rating.${prefix}_state AS recovery_state`,
+      `rating.${prefix}_updated_at_ms AS recovery_updated_at_ms`,
+      ...(projectionKind === "telegram"
+        ? []
+        : [
+            "rating.invite_id",
+            "rating.match_id",
+            `rating.${prefix}_version AS version`,
+          ]),
+      ...(projectionKind === "event-progress"
+        ? [`${EVENT_ID_BYTES_SQL} AS event_id_bytes`]
+        : []),
+    ].join(", "),
+    selectedColumns: fieldNames
+      .map((column) => `observed.${column}`)
+      .join(", "),
+    observationFieldNames: [
+      ...fieldNames,
+      "recovery_state",
+      "recovery_updated_at_ms",
+    ],
+    observationExpressions: [
+      ...fieldNames,
+      "recovery_state",
+      "recovery_updated_at_ms",
+    ].map((column) => `observed.${column}`),
+  };
+}
 
 type RatingRecoveryRow = Pick<RatingRow, "operation_id" | "revision">;
 
@@ -20,7 +91,7 @@ type RatingGameRecoveryRow = RatingRecoveryRow &
   Pick<RatingRow, "invite_id" | "match_id"> & { version: number | null };
 
 type RatingEventRecoveryRow = RatingGameRecoveryRow & {
-  event_id_hex: string | null;
+  event_id_bytes: number[] | Uint8Array | null;
 };
 
 function parseRatingRecoveryRow(
@@ -43,23 +114,114 @@ function parseRatingGameRecoveryRow(
   };
 }
 
-function parseRatingEventId(hex: string | null): string {
-  if (hex === null) return "";
+function parseRatingEventId(value: number[] | Uint8Array | null): string {
+  if (value === null) return "";
   try {
+    if (
+      !(value instanceof Uint8Array) &&
+      (!Array.isArray(value) ||
+        !value.every(
+          (byte) => Number.isInteger(byte) && byte >= 0 && byte <= 255,
+        ))
+    ) {
+      throw new CanonicalProfileCorruption();
+    }
     return new TextDecoder("utf-8", { fatal: true })
-      .decode(Buffer.from(hex, "hex"))
+      .decode(value instanceof Uint8Array ? value : Uint8Array.from(value))
       .trim();
   } catch {
     throw new CanonicalProfileCorruption();
   }
 }
 
-async function listDueRatings<Row>(
+function inspectRatingRecoveryRow<Row extends RatingRecoveryRow, Value>(
+  row: Row,
+  key: RecoveryKeyObservation,
+  parse: (row: Row) => Value,
+):
+  | { kind: "candidate"; value: Value }
+  | { kind: "invalid"; reason: "invalid-operation-id" | "invalid-record" } {
+  if (
+    typeof row.operation_id !== "string" ||
+    row.operation_id === "" ||
+    !recoveryKeyMatches(key, row.operation_id)
+  ) {
+    return { kind: "invalid", reason: "invalid-operation-id" };
+  }
+  try {
+    return { kind: "candidate", value: parse(row) };
+  } catch (error) {
+    if (!(error instanceof CanonicalProfileCorruption)) throw error;
+    return { kind: "invalid", reason: "invalid-record" };
+  }
+}
+
+async function inspectSweepRating<Row extends RatingRecoveryRow, Value>(
   db: D1Database,
-  query: string,
+  row: Row & RecoveryKeyRow,
+  projectionKind: RatingRecoveryProjectionKind,
+  updatedBeforeMs: number,
+  parse: (row: Row) => Value,
+): Promise<RatingRecoveryScanEntry<Value> | null> {
+  try {
+    const key = parseRecoveryKey(row);
+    const inspected = inspectRatingRecoveryRow(row, key, parse);
+    if (inspected.kind === "candidate") return inspected;
+    const {
+      prefix,
+      sourceColumns,
+      observationExpressions,
+      observationFieldNames,
+    } = recoveryLane(projectionKind);
+    const fresh = await db
+      .withSession("first-primary")
+      .prepare(
+        `WITH observed AS MATERIALIZED (
+           SELECT ${sourceColumns}
+           FROM rating_updates AS rating
+           WHERE rating.operation_id = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
+             AND rating.${prefix}_state = 'pending' AND rating.${prefix}_updated_at_ms <= ?
+             AND NOT EXISTS (
+               SELECT 1 FROM rating_projection_recovery_quarantine AS quarantine
+               WHERE quarantine.operation_id = rating.operation_id
+                 AND quarantine.projection_kind = '${projectionKind}'
+                 AND quarantine.revision_token = CAST(rating.revision AS TEXT)
+             )
+         )
+         SELECT ${recoveryObservationColumns(observationExpressions, 1)} FROM observed`,
+      )
+      .bind(key.keyType, key.keyBytes, key.keyBytes, updatedBeforeMs)
+      .first<Record<string, unknown>>();
+    if (!fresh) return null;
+    const { observation, value } = parseRecoveryObservation(
+      fresh,
+      observationFieldNames,
+      1,
+    );
+    const refreshed = inspectRatingRecoveryRow(
+      value as Row,
+      observation,
+      parse,
+    );
+    return refreshed.kind === "candidate"
+      ? refreshed
+      : {
+          ...refreshed,
+          observation,
+          projectionKind,
+        };
+  } catch (error) {
+    return { kind: "failure", error };
+  }
+}
+
+async function scanDueRatings<Row extends RatingRecoveryRow, Value>(
+  db: D1Database,
+  projectionKind: RatingRecoveryProjectionKind,
   updatedBeforeMs: number,
   limit: number,
-): Promise<Row[]> {
+  parse: (row: Row) => Value,
+): Promise<RatingRecoveryScanEntry<Value>[]> {
   if (
     !Number.isSafeInteger(updatedBeforeMs) ||
     updatedBeforeMs < 0 ||
@@ -69,75 +231,142 @@ async function listDueRatings<Row>(
   ) {
     throw new TypeError("invalid-rating-projection-list");
   }
+  const { prefix, sourceColumns, selectedColumns } =
+    recoveryLane(projectionKind);
   const result = await db
-    .prepare(query)
+    .prepare(
+      `WITH observed AS MATERIALIZED (
+         SELECT ${sourceColumns}
+         FROM rating_updates AS rating
+         WHERE rating.${prefix}_state = 'pending' AND rating.${prefix}_updated_at_ms <= ?
+           AND NOT EXISTS (
+             SELECT 1 FROM rating_projection_recovery_quarantine AS quarantine
+             WHERE quarantine.operation_id = rating.operation_id
+               AND quarantine.projection_kind = '${projectionKind}'
+               AND quarantine.revision_token = CAST(rating.revision AS TEXT)
+           )
+         ORDER BY rating.${prefix}_updated_at_ms ASC, rating.operation_id ASC
+         LIMIT ?
+       )
+       SELECT ${selectedColumns},
+         CAST(observed.operation_id AS BLOB) AS recovery_key_bytes,
+         typeof(observed.operation_id) AS recovery_key_type
+       FROM observed
+       ORDER BY observed.recovery_updated_at_ms ASC, observed.operation_id ASC`,
+    )
     .bind(updatedBeforeMs, limit)
-    .all<Row>();
-  return result.results;
+    .all<Row & RecoveryKeyRow>();
+  const entries: RatingRecoveryScanEntry<Value>[] = [];
+  for (const row of result.results) {
+    const entry = await inspectSweepRating(
+      db,
+      row,
+      projectionKind,
+      updatedBeforeMs,
+      parse,
+    );
+    if (entry) entries.push(entry);
+  }
+  return entries;
 }
 
-export async function listDueRatingEventProgress(
+export function scanDueRatingEventProgress(
   db: D1Database,
   updatedBeforeMs: number,
   limit: number,
-): Promise<PendingRatingEventProgress[]> {
-  return (
-    await listDueRatings<RatingEventRecoveryRow>(
-      db,
-      `SELECT operation_id, revision, invite_id, match_id,
-                  event_progress_version AS version,
-                  (SELECT CASE WHEN type = 'text' THEN hex(atom) ELSE NULL END
-                   FROM json_each(rating_updates.payload_json)
-                   WHERE key = 'eventId'
-                   ORDER BY id DESC LIMIT 1) AS event_id_hex
-           FROM rating_updates
-           WHERE event_progress_state = 'pending' AND event_progress_updated_at_ms <= ?
-           ORDER BY event_progress_updated_at_ms ASC, operation_id ASC
-           LIMIT ?`,
-      updatedBeforeMs,
-      limit,
-    )
-  ).map((row) => ({
-    ...parseRatingGameRecoveryRow(row),
-    eventId: parseRatingEventId(row.event_id_hex),
-  }));
+): Promise<RatingRecoveryScanEntry<PendingRatingEventProgress>[]> {
+  return scanDueRatings<RatingEventRecoveryRow, PendingRatingEventProgress>(
+    db,
+    "event-progress",
+    updatedBeforeMs,
+    limit,
+    (row) => ({
+      ...parseRatingGameRecoveryRow(row),
+      eventId: parseRatingEventId(row.event_id_bytes),
+    }),
+  );
 }
 
-export async function listDueRatingProfileGameProjections(
+export function scanDueRatingProfileGameProjections(
   db: D1Database,
   updatedBeforeMs: number,
   limit: number,
-): Promise<PendingRatingProfileGameProjection[]> {
-  return (
-    await listDueRatings<RatingGameRecoveryRow>(
-      db,
-      `SELECT operation_id, revision, invite_id, match_id,
-                  profile_game_projection_version AS version
-           FROM rating_updates
-           WHERE profile_game_projection_state = 'pending' AND profile_game_projection_updated_at_ms <= ?
-           ORDER BY profile_game_projection_updated_at_ms ASC, operation_id ASC
-           LIMIT ?`,
-      updatedBeforeMs,
-      limit,
-    )
-  ).map(parseRatingGameRecoveryRow);
+): Promise<RatingRecoveryScanEntry<PendingRatingProfileGameProjection>[]> {
+  return scanDueRatings(
+    db,
+    "profile-game",
+    updatedBeforeMs,
+    limit,
+    parseRatingGameRecoveryRow,
+  );
 }
 
-export async function listDueRatingTelegramProjections(
+export function scanDueRatingTelegramProjections(
   db: D1Database,
   updatedBeforeMs: number,
   limit: number,
-): Promise<PendingRatingTelegramProjection[]> {
-  return (
-    await listDueRatings<RatingRecoveryRow>(
-      db,
-      `SELECT operation_id, revision
-           FROM rating_updates
-           WHERE telegram_projection_state = 'pending' AND telegram_projection_updated_at_ms <= ?
-           ORDER BY telegram_projection_updated_at_ms ASC, operation_id ASC
-           LIMIT ?`,
-      updatedBeforeMs,
-      limit,
+): Promise<RatingRecoveryScanEntry<PendingRatingTelegramProjection>[]> {
+  return scanDueRatings(
+    db,
+    "telegram",
+    updatedBeforeMs,
+    limit,
+    parseRatingRecoveryRow,
+  );
+}
+
+export async function quarantineRatingRecoveryEntry(
+  db: D1Database,
+  { observation, projectionKind, reason }: InvalidRatingRecoveryEntry,
+  nowMs: number,
+): Promise<RatingRecoveryQuarantineResult | null> {
+  if (!Number.isSafeInteger(nowMs) || nowMs < 0) {
+    throw new TypeError("invalid-rating-quarantine-timestamp");
+  }
+  const { prefix, sourceColumns, observationExpressions } =
+    recoveryLane(projectionKind);
+  const key = observation.keyBytes;
+  const guard = recoveryObservationGuard(observationExpressions, observation);
+  const result = await db
+    .prepare(
+      `WITH observed AS MATERIALIZED (
+         SELECT ${sourceColumns}
+         FROM rating_updates AS rating
+         WHERE rating.operation_id = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
+           AND rating.${prefix}_state = 'pending'
+           AND EXISTS (
+             SELECT 1 FROM profile_canonical_control
+             WHERE singleton = 1 AND state = 'active'
+           )
+       )
+       INSERT INTO rating_projection_recovery_quarantine (
+         operation_id, projection_kind, revision_token, reason, quarantined_at_ms
+       )
+       SELECT observed.operation_id, ?, CAST(observed.revision AS TEXT), ?, ?
+       FROM observed
+       WHERE ${guard.sql}
+       ON CONFLICT (operation_id, projection_kind) DO UPDATE SET
+         revision_token = excluded.revision_token,
+         reason = excluded.reason,
+         quarantined_at_ms = excluded.quarantined_at_ms
+       WHERE rating_projection_recovery_quarantine.revision_token != excluded.revision_token`,
     )
-  ).map(parseRatingRecoveryRow);
+    .bind(
+      observation.keyType,
+      key,
+      key,
+      projectionKind,
+      reason,
+      nowMs,
+      ...guard.bindings,
+    )
+    .run();
+  return result.meta.changes === 1
+    ? {
+        operationIdHex: recoveryKeyHex(observation),
+        revisionHex: observation.revisionHex,
+        reason,
+        projectionKind,
+      }
+    : null;
 }

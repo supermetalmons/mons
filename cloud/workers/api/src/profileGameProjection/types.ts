@@ -41,7 +41,13 @@ export type EventProfileProjectionState = Pick<
 
 export type ProfileLinkProjectionJobs = Pick<
   ProfileLinkCatchupStore,
-  "read" | "listDue" | "claimDispatch" | "advance" | "settle" | "settleMissing"
+  | "read"
+  | "scanDue"
+  | "quarantineInvalidEntry"
+  | "claimDispatch"
+  | "advance"
+  | "settle"
+  | "settleMissing"
 >;
 
 export type ProfileGameProjectionDependencies = {
@@ -103,7 +109,7 @@ export type ProfileLinkProcessingJobs = Pick<
 
 export type ProfileLinkRecoveryJobs = Pick<
   ProfileLinkProjectionJobs,
-  "listDue" | "claimDispatch"
+  "scanDue" | "quarantineInvalidEntry" | "claimDispatch"
 >;
 
 export type ProfileGameProjectionQueueDependencies = Pick<

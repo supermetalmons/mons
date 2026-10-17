@@ -17,6 +17,7 @@ import type { RatingEventProgressRepository } from "./ratingContracts.ts";
 import { PROFILE_BACKGROUND_SWEEP_LIMIT } from "./profileBackgroundLimits.ts";
 import { runRecoveryItems } from "./recoveryRunner.ts";
 import {
+  logRecoveryEvent,
   reportRecoveryFailure,
   type RecoveryFailureContext,
 } from "./recoveryReporting.ts";
@@ -99,7 +100,8 @@ export type EventProgressSweepRepository = Pick<
 export type EventProgressRatingRepository = Pick<
   RatingEventProgressRepository,
   | "claimRatingEventProgress"
-  | "listDueRatingEventProgress"
+  | "scanDueRatingEventProgress"
+  | "quarantineRatingRecoveryEntry"
   | "markRatingEventProgress"
 >;
 
@@ -261,17 +263,34 @@ async function recoverRatingEventProgress(
   logger: Pick<Console, "error">,
 ): Promise<void> {
   const nowMs = now();
-  const records = await ratingRepository.listDueRatingEventProgress(
+  const entries = await ratingRepository.scanDueRatingEventProgress(
     nowMs,
     EVENT_PROGRESS_SWEEP_LIMIT,
   );
   let index = 0;
   await runRecoveryItems(
-    records,
-    async (record) => {
+    entries,
+    async (entry) => {
       const itemIndex = index++;
-      let phase: RecoveryFailureContext["phase"] = "claim";
+      let phase: RecoveryFailureContext["phase"] = "inspect";
       try {
+        if (entry.kind === "failure") throw entry.error;
+        if (entry.kind === "invalid") {
+          phase = "quarantine";
+          const quarantined =
+            await ratingRepository.quarantineRatingRecoveryEntry(entry, nowMs);
+          if (quarantined) {
+            logRecoveryEvent(logger, "error", {
+              event: "event_progress_recovery_record_quarantined",
+              scope: "event-progress",
+              source: "rating",
+              ...quarantined,
+            });
+          }
+          return;
+        }
+        const record = entry.value;
+        phase = "claim";
         const claimed = await ratingRepository.claimRatingEventProgress(
           record.operationId,
           record.revision,
@@ -330,8 +349,10 @@ async function recoverRatingEventProgress(
             source: "rating",
             phase,
             itemIndex,
-            eventId: record.eventId,
-            operationId: record.operationId,
+            eventId:
+              entry.kind === "candidate" ? entry.value.eventId : undefined,
+            operationId:
+              entry.kind === "candidate" ? entry.value.operationId : undefined,
           },
           error,
         );

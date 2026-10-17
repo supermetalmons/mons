@@ -111,7 +111,8 @@ function ratingRepository(): RatingProjectionRepository {
     readMatchPair: async () => {
       throw new Error("unexpected-match-pair-read");
     },
-    listDueRatingTelegramProjections: async () => [],
+    quarantineRatingRecoveryEntry: async () => null,
+    scanDueRatingTelegramProjections: async () => [],
     markRatingTelegramProjection: async () => undefined,
     putEventProgressOutbox: async () => undefined,
     readProfileOwnershipSnapshot: async () => {

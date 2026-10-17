@@ -68,7 +68,7 @@ D1 metrics aggregate calls, failures, client latency, and available SQL duration
 
 Scheduled-task entries include their nested phases' D1 work. Task and nested-phase entries overlap and must not be summed; scope and database totals count each call once.
 
-Recovery failure logs retain their existing event names and include the recovery scope, phase, validated record identifiers, and bounded error summaries. Malformed identifiers are omitted in favor of the item index; auth quarantine reporting retains its existing hexadecimal identifiers. Reports never include record payloads or stacks, and logging failures do not interrupt recovery. Each failed repair or claim is reported before dispatch, so a later Queue failure cannot hide it. Successful work still dispatches before accumulated record failures are raised, with enqueue failures retaining precedence. Telegram sweep failures retain all failed lanes as aggregate causes.
+Recovery failure logs retain their existing event names and include the recovery scope, phase, validated record identifiers, and bounded error summaries. Malformed identifiers are omitted in favor of the item index; successful auth and projection quarantine reports identify retained records in hexadecimal. Reports never include record payloads or stacks, and logging failures do not interrupt recovery. Each failed repair or claim is reported before dispatch, so a later Queue failure cannot hide it. Successful work still dispatches before accumulated record failures are raised, with enqueue failures retaining precedence. Telegram sweep failures retain all failed lanes as aggregate causes.
 
 Event rating and persisted-outbox recovery emit `event_progress_recovery_record_failed` with scope `event-progress`, source `rating` or `outbox`, the failing phase, and validated identifiers. Failed items retain their original errors while other items continue; stale outbox snapshots are benign no-ops and are not logged as failures.
 
@@ -81,7 +81,37 @@ npm run manage:profile-canonical -- --audit
 
 Ordinary commits check topology only for affected profiles, so unrelated corruption does not block healthy updates. `--audit` checks topology across the whole profile store with one read-only query and reports counts for inconsistent retiring-profile redirects, active profiles with redirects, and login owners, auth methods, or recovery jobs without an active profile. It exits unsuccessfully for any violation or unreadable result and does not change maintenance state.
 
-Schema maintenance may require `--freeze`, affected Queue pauses, verification of drained admissions/leases, the reviewed D1 migration, and `PRAGMA foreign_key_check`. Resume only after required checks pass. The deployment guide contains store-specific commands. Routine code changes do not need this procedure. Never rewrite profile ownership, delete imported profile fields, or restore a coordinated database independently.
+Schema maintenance may require `--freeze`, affected Queue pauses, verification of drained admissions/leases, the reviewed D1 migration, and `PRAGMA foreign_key_check`. Resume only after required checks pass. The deployment guide contains store-specific commands. Routine code changes and the additive projection-quarantine migration described below do not need this procedure. Never rewrite profile ownership, delete imported profile fields, or restore a coordinated database independently.
+
+### Projection recovery quarantine
+
+Scheduled recovery records malformed profile-link jobs in `PROFILE_DB.profile_link_catchup_quarantine` and malformed rating projections in `PROFILE_DB.rating_projection_recovery_quarantine`. The canonical job or rating row remains unchanged. A marker suppresses only the matching raw identifier and `CAST(revision AS TEXT)` token; rating markers also select one lane: `event-progress`, `profile-game`, or `telegram`. Other lanes and healthy records remain eligible. A changed revision is reconsidered, and canonical-row deletion cascades to its markers. Point reads, Queue processing, and mutation validation remain strict.
+
+Quarantine writes compare the exact observed snapshot so a concurrent repair is not hidden. Successful reports use `loginUidHex` or `operationIdHex`, `revisionHex`, and, for ratings, `projectionKind`. Raw-key comparisons preserve BLOB and invalid UTF-8 identities. Read retained markers without modifying data:
+
+```sql
+SELECT hex(quarantine.login_uid) AS login_uid_hex,
+       typeof(job.login_uid) AS login_uid_type,
+       hex(quarantine.revision_token) AS revision_hex,
+       hex(CAST(job.revision AS TEXT)) AS current_revision_hex,
+       quarantine.reason, quarantine.quarantined_at_ms
+FROM profile_link_catchup_quarantine AS quarantine
+JOIN profile_link_catchup_jobs AS job USING (login_uid)
+ORDER BY quarantine.quarantined_at_ms, hex(quarantine.login_uid);
+
+SELECT hex(quarantine.operation_id) AS operation_id_hex,
+       typeof(rating.operation_id) AS operation_id_type,
+       quarantine.projection_kind,
+       hex(quarantine.revision_token) AS revision_hex,
+       hex(CAST(rating.revision AS TEXT)) AS current_revision_hex,
+       quarantine.reason, quarantine.quarantined_at_ms
+FROM rating_projection_recovery_quarantine AS quarantine
+JOIN rating_updates AS rating USING (operation_id)
+ORDER BY quarantine.quarantined_at_ms, hex(quarantine.operation_id),
+         quarantine.projection_kind;
+```
+
+Repair canonical data only through the existing profile maintenance procedure, preserving job/request IDs, rating completions, replay state, and cursors. A reviewed repair must bump the canonical revision; do not delete markers or pending work to force retries. Installing the empty side tables is a separate compatible operation: follow the [projection recovery quarantine release procedure](../scripts/deploy-cloudflare.md#projection-recovery-quarantine), which keeps existing writes and Queues running.
 
 ## Gameplay and operators
 

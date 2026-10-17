@@ -64,6 +64,34 @@ npm run test:api:runtime -- automatchQueriesD1.test.ts recoveryOutboxOrderingMig
 
 The Telegram plan searches its due index without a temporary ordering B-tree. The profile plan searches its due index in all four branches without branch-level ordering B-trees; the final union sort is intentional and bounded to four times the query limit. For incident diagnosis, use the exact expanded queries captured by `observeReads()` in the runtime tests rather than a simplified `ORDER BY record_key`. Retain these compatible indexes on rollback and never clear outboxes to verify them.
 
+## Projection recovery quarantine
+
+`profile-migrations/0019_projection_recovery_quarantine.sql` adds `profile_link_catchup_quarantine` and `rating_projection_recovery_quarantine` to `PROFILE_DB`. These empty child tables reference existing jobs and rating operations with deletion cascades. The migration does not rewrite canonical records, alter their constraints, or change admission controls. Existing Workers remain compatible, so apply it with writes and Queue delivery running; no freeze, pause, or drain is required.
+
+Prepare and validate the API candidate first, including migration, malformed-row isolation, concurrent-repair, replay, and affected event tests. Upload that candidate before changing remote schema. Inspect the remote migration list and apply only when `0019_projection_recovery_quarantine.sql` is the sole reviewed pending profile migration:
+
+```sh
+npx wrangler d1 migrations list PROFILE_DB --remote --config cloud/workers/api/wrangler.jsonc --env-file cloud/workers/api/release.env
+npx wrangler d1 migrations apply PROFILE_DB --remote --config cloud/workers/api/wrangler.jsonc --env-file cloud/workers/api/release.env
+```
+
+Before promoting the exact candidate, inspect both table definitions and foreign keys and require an empty `PRAGMA foreign_key_check` result:
+
+```sql
+SELECT name, sql FROM sqlite_schema
+WHERE type = 'table' AND name IN (
+  'profile_link_catchup_quarantine', 'rating_projection_recovery_quarantine'
+)
+ORDER BY name;
+PRAGMA foreign_key_list(profile_link_catchup_quarantine);
+PRAGMA foreign_key_list(rating_projection_recovery_quarantine);
+PRAGMA foreign_key_check;
+```
+
+The new recovery code requires both tables. If verification fails, retain the serving Worker and investigate before promotion. After promotion, publish both owned Workflow definitions when the release includes shared event-repository changes: `mons-link-event-progress` uses that repository directly, and `mons-link-event-prize-withdrawal` uses it through its runtime dependencies. Use the existing publication helper with the promoted Worker Version ID and omit `--workflow` to select both; preserve running instances and their versions.
+
+Run the standard API smoke, authenticated `--require-events` check, and affected profile/gameplay or invite snapshot checks. Use the read-only withdrawal preflight if its runtime dependencies changed. Do not corrupt production records, force projection replay, or wait for a Cron interval to demonstrate quarantine; local runtime tests cover those cases. Finish when the required checks pass. Keep both side tables and retained markers on Worker rollback; older code may reconsider malformed records but does not require removing quarantine evidence. [Cloud operations](../cloud/README.md#projection-recovery-quarantine) documents inspection and repair.
+
 ## Prize-selection index removal
 
 `event-migrations/0007_drop_unused_prize_selection_profile_index.sql` removes only the unused nonunique `idx_event_prize_selections_profile` index. Supported selection queries continue using the `(event_id, profile_id)` primary key. The migration preserves records, constraints, admissions, leases, and compatibility with older Workers; it does not require a write freeze, Queue pause, or drain.
@@ -186,7 +214,7 @@ Reaction checks require the match ID for v2 appearance delivery and publish no r
 
 ## Canonical profile D1 maintenance
 
-The canonical profile control accepts only `active` and `frozen`. Freeze before schema maintenance and leave production frozen on any failure:
+The canonical profile control accepts only `active` and `frozen`. Freeze before schema maintenance that requires exclusive access and leave affected writes frozen on a failure of that maintenance. The compatible `0019_projection_recovery_quarantine.sql` addition is an explicit exception: use its [release procedure](#projection-recovery-quarantine) above without these freeze or Queue-pause commands.
 
 ```sh
 npm run manage:profile-canonical -- --status

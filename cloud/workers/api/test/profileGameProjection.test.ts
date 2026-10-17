@@ -1,3 +1,4 @@
+import { recoveryCandidates } from "./recoveryScanTestFixtures.ts";
 import { attachProjectionTestPorts } from "./projectionTestPorts.ts";
 import assert from "node:assert/strict";
 import test, { beforeEach } from "node:test";
@@ -136,7 +137,8 @@ function ratingRepository(
     readMatchPair: async () => {
       throw new Error("unexpected-match-pair-read");
     },
-    listDueRatingProfileGameProjections: async () => [],
+    quarantineRatingRecoveryEntry: async () => null,
+    scanDueRatingProfileGameProjections: async () => [],
     markRatingProfileGameProjection: async (
       _operationId,
       projectionState,
@@ -277,22 +279,31 @@ function profileLinkJobs(
   values = new Map<string, ProfileLinkCatchupJob>(),
 ): Pick<
   ProfileLinkCatchupStore,
-  "read" | "listDue" | "claimDispatch" | "advance" | "settle" | "settleMissing"
+  | "read"
+  | "scanDue"
+  | "quarantineInvalidEntry"
+  | "claimDispatch"
+  | "advance"
+  | "settle"
+  | "settleMissing"
 > {
   return {
     async read(loginUid) {
       return structuredClone(values.get(loginUid) || null);
     },
-    async listDue(dueBeforeMs, limit) {
-      return [...values.values()]
-        .filter((job) => job.lastQueuedAtMs <= dueBeforeMs)
-        .sort(
-          (left, right) =>
-            left.lastQueuedAtMs - right.lastQueuedAtMs ||
-            left.loginUid.localeCompare(right.loginUid),
-        )
-        .slice(0, limit)
-        .map((job) => structuredClone(job));
+    quarantineInvalidEntry: async () => null,
+    async scanDue(dueBeforeMs, limit) {
+      return recoveryCandidates(
+        [...values.values()]
+          .filter((job) => job.lastQueuedAtMs <= dueBeforeMs)
+          .sort(
+            (left, right) =>
+              left.lastQueuedAtMs - right.lastQueuedAtMs ||
+              left.loginUid.localeCompare(right.loginUid),
+          )
+          .slice(0, limit)
+          .map((job) => structuredClone(job)),
+      );
     },
     async claimDispatch(loginUid, requestId, expectedLastQueuedAtMs, nowMs) {
       const job = values.get(loginUid);
@@ -2180,13 +2191,13 @@ test("scheduled recovery claims, repairs, and batches valid projection records",
     patches: Array<Record<string, unknown>>;
   };
   const rating = ratingRepository(ratingUpdate(), state);
-  rating.listDueRatingProfileGameProjections = async (
+  rating.scanDueRatingProfileGameProjections = async (
     updatedBeforeMs,
     limit,
   ) => {
     assert.equal(updatedBeforeMs, 600_000);
     assert.equal(limit, 10);
-    return [
+    return recoveryCandidates([
       {
         inviteId: "auto_aaaaaaaaaaa",
         matchId: "auto_aaaaaaaaaaa",
@@ -2201,7 +2212,7 @@ test("scheduled recovery claims, repairs, and batches valid projection records",
         revision: 2,
         version: 1,
       },
-    ];
+    ]);
   };
   const claims: string[] = [];
   rating.claimRatingProfileGameProjection = async (
@@ -2238,14 +2249,16 @@ test("scheduled recovery bounds concurrent claims", async () => {
     marks: [],
     patches: [],
   });
-  rating.listDueRatingProfileGameProjections = async () =>
-    Array.from({ length: 25 }, (_, index) => ({
-      inviteId: `auto_${String(index).padStart(11, "a")}`,
-      matchId: `auto_${String(index).padStart(11, "a")}`,
-      operationId: `operation-${index}`,
-      revision: index + 1,
-      version: 1,
-    }));
+  rating.scanDueRatingProfileGameProjections = async () =>
+    recoveryCandidates(
+      Array.from({ length: 25 }, (_, index) => ({
+        inviteId: `auto_${String(index).padStart(11, "a")}`,
+        matchId: `auto_${String(index).padStart(11, "a")}`,
+        operationId: `operation-${index}`,
+        revision: index + 1,
+        version: 1,
+      })),
+    );
   let active = 0;
   let maximum = 0;
   rating.claimRatingProfileGameProjection = async () => {
@@ -2280,7 +2293,8 @@ test("rating recovery identifies concurrent failures and dispatches healthy work
     revision: 1,
     version: 1,
   }));
-  rating.listDueRatingProfileGameProjections = async () => records;
+  rating.scanDueRatingProfileGameProjections = async () =>
+    recoveryCandidates(records);
   rating.claimRatingProfileGameProjection = async (id) => {
     if (id === records[0].operationId) return first.promise;
     if (id === records[1].operationId) return second.promise;
@@ -2365,7 +2379,8 @@ test("rating recovery retains falsy failures after healthy dispatch and gives Qu
         revision: 1,
         version: 1,
       }));
-      rating.listDueRatingProfileGameProjections = async () => records;
+      rating.scanDueRatingProfileGameProjections = async () =>
+        recoveryCandidates(records);
       rating.claimRatingProfileGameProjection = async (id) => {
         if (id === records[0].operationId) throw firstFailure;
         if (id === records[1].operationId) throw laterFailure;

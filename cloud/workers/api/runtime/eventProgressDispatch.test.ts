@@ -22,6 +22,7 @@ import { createEventProgressRecoveryStore } from "../src/eventProgressRecoveryD1
 import { readEventOwnedPath } from "./eventD1Fixture.ts";
 import { applyEventTestMigrations } from "./eventTestMigrations.ts";
 import { applyStrictMatchStateTestMigrations } from "./strictMatchStateTestFixture.ts";
+import { recoveryCandidates } from "../test/recoveryScanTestFixtures.ts";
 
 const testEnv = env as Env & {
   TEST_EVENT_D1_MIGRATIONS: D1Migration[];
@@ -51,39 +52,56 @@ async function admissionCount(): Promise<number | null> {
 function environment(
   status: "waiting" | "complete" | "errored" = "waiting",
   beforeProvider: (operation: string) => Promise<void> = async () => {},
+  existingIds: string[] = [],
 ) {
   const operations: string[] = [];
   const call = async (operation: string) => {
     operations.push(operation);
     await beforeProvider(operation);
   };
-  const instance: WorkflowInstance = {
-    id: "dispatch-workflow",
-    delete: () => call("delete"),
-    pause: async () => {},
-    restart: async () => {},
-    resume: async () => {},
-    sendEvent: async () => {},
-    status: async () => {
-      await call("status");
-      return { status };
-    },
-    terminate: async () => {},
+  const instances = new Map<string, WorkflowInstance>();
+  const addInstance = (id: string): WorkflowInstance => {
+    const instance: WorkflowInstance = {
+      id,
+      delete: async () => {
+        await call("delete");
+        instances.delete(id);
+      },
+      pause: async () => {},
+      restart: async () => {},
+      resume: async () => {},
+      sendEvent: async () => {},
+      status: async () => {
+        await call("status");
+        if (!instances.has(id)) throw new Error("instance-missing");
+        return { status };
+      },
+      terminate: async () => {},
+    };
+    instances.set(id, instance);
+    return instance;
   };
+  for (const id of existingIds) addInstance(id);
   const value: Env = {
     ...testEnv,
     EVENT_PROGRESS_WORKFLOW: {
-      create: async () => {
+      create: async (options) => {
         await call("create");
-        return instance;
+        return addInstance(options?.id || crypto.randomUUID());
       },
-      createBatch: async () => {
+      createBatch: async (items) => {
         await call("createBatch");
-        return [instance];
+        return items.map(({ id }) => {
+          const instanceId = id || crypto.randomUUID();
+          if (instances.has(instanceId)) throw new Error("instance-exists");
+          return addInstance(instanceId);
+        });
       },
       deleteBatch: async () => ({ deleted: [], errors: [] }),
-      get: async () => {
+      get: async (id) => {
         await call("get");
+        const instance = instances.get(id);
+        if (!instance) throw new Error("instance-missing");
         return instance;
       },
     },
@@ -382,9 +400,10 @@ describe("event-progress Workflow dispatch admissions", () => {
           ratingRepository:
             lane === "rating"
               ? {
-                  listDueRatingEventProgress: async () => {
+                  quarantineRatingRecoveryEntry: async () => null,
+                  scanDueRatingEventProgress: async () => {
                     if (order === "cleanup-first") await cleaned.promise;
-                    return [
+                    return recoveryCandidates([
                       {
                         eventId,
                         inviteId: "rating-invite",
@@ -393,7 +412,7 @@ describe("event-progress Workflow dispatch admissions", () => {
                         revision: 1,
                         version: 1,
                       },
-                    ];
+                    ]);
                   },
                   claimRatingEventProgress: async () => true,
                   markRatingEventProgress: async (operationId, state) => {
@@ -491,8 +510,12 @@ describe("event-progress Workflow dispatch admissions", () => {
     },
   );
 
-  for (const status of ["waiting", "complete", "errored"] as const) {
-    it(`prevents the gate from closing during ${status} dispatch and outbox publication`, async () => {
+  for (const [status, exists] of (
+    ["waiting", "complete", "errored"] as const
+  ).flatMap((status) =>
+    [false, true].map((exists) => [status, exists] as const),
+  )) {
+    it(`prevents the gate from closing during ${exists ? "existing" : "missing"} ${status} dispatch and outbox publication`, async () => {
       const { plan, repository } = await seedOutbox();
       const blocked: string[] = [];
       let providerStarted = false;
@@ -501,10 +524,14 @@ describe("event-progress Workflow dispatch admissions", () => {
         expect(await freezeEventGate()).toBe(false);
         blocked.push(phase);
       };
-      const f = environment(status, async (phase) => {
-        providerStarted = true;
-        await assertBlocked(phase);
-      });
+      const f = environment(
+        status,
+        async (phase) => {
+          providerStarted = true;
+          await assertBlocked(phase);
+        },
+        exists ? [plan.workflowId] : [],
+      );
       const db = f.value.EVENT_DB;
       f.value.EVENT_DB = new Proxy(db, {
         get(target, property) {
@@ -525,12 +552,13 @@ describe("event-progress Workflow dispatch admissions", () => {
         now: () => 200,
         ratingRepository: null,
       });
-      expect(blocked).toContain("createBatch");
+      expect(blocked).toContain("get");
+      expect(blocked).toContain("status");
+      expect(
+        f.operations.filter((value) => value === "createBatch"),
+      ).toHaveLength((exists ? 0 : 1) + (status === "errored" ? 1 : 0));
       if (status === "errored") {
         expect(blocked).toContain("delete");
-        expect(
-          f.operations.filter((value) => value === "createBatch"),
-        ).toHaveLength(2);
       } else {
         expect(blocked).toContain("after-outbox");
         const outbox = await readEventOwnedPath(

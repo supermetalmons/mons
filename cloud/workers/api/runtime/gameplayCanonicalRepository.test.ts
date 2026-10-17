@@ -27,6 +27,7 @@ import { patchCanonicalProfile } from "../src/profileMutationD1.ts";
 import { getProfileGameProjections } from "../src/profileGamesD1.ts";
 import { createCanonicalRatingRepository } from "../src/ratingCanonicalRepository.ts";
 import { createRatingRepository } from "../src/ratingRepository.ts";
+import type { RatingRecoveryScanEntry } from "../src/ratingContracts.ts";
 import { matchTestPort } from "../test/gameSessionTestPorts.ts";
 import type { StateRepository } from "../test/stateRepositoryTestTypes.ts";
 import { observeD1FailureDatabase } from "./d1FailureTestUtils.ts";
@@ -270,6 +271,15 @@ async function insertProjectionRating(
   return value;
 }
 
+function recoveryCandidates<T>(entries: RatingRecoveryScanEntry<T>[]): T[] {
+  return entries.map((entry) => {
+    expect(entry.kind).toBe("candidate");
+    if (entry.kind !== "candidate")
+      throw new Error("expected-recovery-candidate");
+    return entry.value;
+  });
+}
+
 function projectionRatingRepository(db = testEnv.PROFILE_DB) {
   return createCanonicalRatingRepository(
     db,
@@ -295,21 +305,21 @@ function miningReadRepository(db = testEnv.PROFILE_DB) {
 
 const ratingDiscoveryCases = [
   {
-    list: "listDueRatingEventProgress",
+    list: "scanDueRatingEventProgress",
     claim: "claimRatingEventProgress",
     mark: "markRatingEventProgress",
     field: "eventProgress",
     prefix: "event_progress",
   },
   {
-    list: "listDueRatingProfileGameProjections",
+    list: "scanDueRatingProfileGameProjections",
     claim: "claimRatingProfileGameProjection",
     mark: "markRatingProfileGameProjection",
     field: "profileGameProjection",
     prefix: "profile_game_projection",
   },
   {
-    list: "listDueRatingTelegramProjections",
+    list: "scanDueRatingTelegramProjections",
     claim: "claimRatingTelegramProjection",
     mark: "markRatingTelegramProjection",
     field: "telegramProjection",
@@ -2382,7 +2392,9 @@ describe("canonical gameplay repositories", () => {
       winPresent: true,
     });
 
-    const eventDue = await rating.listDueRatingEventProgress(2_000, 10);
+    const eventDue = await rating
+      .scanDueRatingEventProgress(2_000, 10)
+      .then(recoveryCandidates);
     expect(eventDue).toHaveLength(1);
     expect(
       await rating.claimRatingEventProgress(
@@ -2391,10 +2403,9 @@ describe("canonical gameplay repositories", () => {
         3_000,
       ),
     ).toBe(true);
-    const gamesDue = await rating.listDueRatingProfileGameProjections(
-      2_000,
-      10,
-    );
+    const gamesDue = await rating
+      .scanDueRatingProfileGameProjections(2_000, 10)
+      .then(recoveryCandidates);
     expect(gamesDue).toHaveLength(1);
     expect(
       await rating.claimRatingProfileGameProjection(
@@ -2403,10 +2414,9 @@ describe("canonical gameplay repositories", () => {
         3_000,
       ),
     ).toBe(true);
-    const telegramDue = await rating.listDueRatingTelegramProjections(
-      2_000,
-      10,
-    );
+    const telegramDue = await rating
+      .scanDueRatingTelegramProjections(2_000, 10)
+      .then(recoveryCandidates);
     expect(telegramDue).toHaveLength(1);
     expect(
       await rating.claimRatingTelegramProjection(
@@ -2745,7 +2755,9 @@ describe("canonical gameplay repositories", () => {
             }),
         ...(field === "eventProgress" ? { eventId: "projection-event" } : {}),
       }));
-      await expect(rating[list](2_000, 10)).resolves.toEqual(expected);
+      await expect(
+        rating[list](2_000, 10).then(recoveryCandidates),
+      ).resolves.toEqual(expected);
       expect(observed.queries).toHaveLength(1);
       expect(observed.reads).toHaveLength(1);
       const read = observed.reads[0];
@@ -2754,9 +2766,15 @@ describe("canonical gameplay repositories", () => {
       for (const row of read.rows) {
         expect(row).not.toHaveProperty("payload_json");
         expect(row).not.toHaveProperty("owner_token");
+        expect(row).not.toHaveProperty("recovery_snapshot_token");
+        expect(row).not.toHaveProperty("recovery_revision_hex");
       }
       expect(JSON.stringify(read.rows)).not.toContain(archive);
       expect(JSON.stringify(read.rows).length).toBeLessThan(2_000);
+      if (field === "eventProgress") {
+        expect(read.query.match(/FROM json_each\(/g)).toHaveLength(1);
+        expect(read.query).toContain("AS MATERIALIZED");
+      }
       const plan = await testEnv.PROFILE_DB.prepare(
         `EXPLAIN QUERY PLAN ${read.query}`,
       )
@@ -2765,13 +2783,15 @@ describe("canonical gameplay repositories", () => {
       expect(plan.results.map((row) => row.detail).join("\n")).toContain(
         `USING INDEX idx_rating_updates_${prefix}`,
       );
-      await expect(rating[list](2_000, 1)).resolves.toEqual(
-        expected.slice(0, 1),
-      );
-      await expect(rating[list](1_999, 100)).resolves.toEqual(
-        expected.slice(0, 2),
-      );
-      await expect(rating[list](0, 100)).resolves.toEqual([]);
+      await expect(
+        rating[list](2_000, 1).then(recoveryCandidates),
+      ).resolves.toEqual(expected.slice(0, 1));
+      await expect(
+        rating[list](1_999, 100).then(recoveryCandidates),
+      ).resolves.toEqual(expected.slice(0, 2));
+      await expect(
+        rating[list](0, 100).then(recoveryCandidates),
+      ).resolves.toEqual([]);
     },
   );
 
@@ -2781,7 +2801,7 @@ describe("canonical gameplay repositories", () => {
     }
     const rating = projectionRatingRepository();
     for (const { list } of ratingDiscoveryCases) {
-      const page = await rating[list](2_000, 100);
+      const page = await rating[list](2_000, 100).then(recoveryCandidates);
       expect(page).toHaveLength(100);
       expect(page[0].operationId).toBe("limit-000");
       expect(page.at(-1)?.operationId).toBe("limit-099");
@@ -2803,9 +2823,9 @@ describe("canonical gameplay repositories", () => {
         [2_000, 1.5],
         [2_000, Infinity],
       ]) {
-        await expect(rating[list](cutoff, limit)).rejects.toThrow(
-          "invalid-rating-projection-list",
-        );
+        await expect(
+          rating[list](cutoff, limit).then(recoveryCandidates),
+        ).rejects.toThrow("invalid-rating-projection-list");
       }
       expect(observed.queries).toEqual([]);
     },
@@ -2845,8 +2865,9 @@ describe("canonical gameplay repositories", () => {
         .bind(payload, operationId)
         .run();
     }
-    const records =
-      await projectionRatingRepository().listDueRatingEventProgress(2_000, 100);
+    const records = await projectionRatingRepository()
+      .scanDueRatingEventProgress(2_000, 100)
+      .then(recoveryCandidates);
     expect(records.map((record) => record.eventId)).toEqual(
       payloads.map((payload) => {
         const value = JSON.parse(payload).eventId;
@@ -2860,7 +2881,7 @@ describe("canonical gameplay repositories", () => {
     '{"eventId":"\\udfff"}',
     '{"eventId":"first","eventId":"\\ud800"}',
   ])(
-    "rejects invalid Unicode event IDs before claiming: %s",
+    "isolates invalid Unicode event IDs before claiming: %s",
     async (payload) => {
       const operationId = "invalid-unicode-event";
       await insertProjectionRating(operationId);
@@ -2873,8 +2894,8 @@ describe("canonical gameplay repositories", () => {
       await expect(
         projectionRatingRepository(
           observed.database,
-        ).listDueRatingEventProgress(2_000, 100),
-      ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
+        ).scanDueRatingEventProgress(2_000, 100),
+      ).resolves.toMatchObject([{ kind: "invalid", reason: "invalid-record" }]);
       expect(observed.batches).toEqual([]);
       await expect(
         testEnv.PROFILE_DB.prepare(
@@ -2887,7 +2908,7 @@ describe("canonical gameplay repositories", () => {
   );
 
   it.each(ratingDiscoveryCases)(
-    "rejects malformed selected $field discovery metadata",
+    "isolates malformed selected $field discovery metadata",
     async ({ list, prefix, field }) => {
       const operationId = "invalid-discovery-metadata";
       await insertProjectionRating(operationId);
@@ -2904,7 +2925,9 @@ describe("canonical gameplay repositories", () => {
             .run();
           await expect(
             projectionRatingRepository()[list](2_000, 10),
-          ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
+          ).resolves.toMatchObject([
+            { kind: "invalid", reason: "invalid-record" },
+          ]);
         }
         await testEnv.PROFILE_DB.prepare(
           `UPDATE rating_updates SET ${column} = 1 WHERE operation_id = ?`,
@@ -2927,7 +2950,7 @@ describe("canonical gameplay repositories", () => {
         .run();
       const observed = observeD1FailureDatabase(testEnv.PROFILE_DB);
       const rating = projectionRatingRepository(observed.database);
-      const records = await rating[list](2_000, 10);
+      const records = await rating[list](2_000, 10).then(recoveryCandidates);
       expect(records).toHaveLength(1);
       await expect(
         rating[claim](operationId, records[0].revision, 3_000),
@@ -3524,7 +3547,9 @@ describe("canonical gameplay repositories", () => {
         now: () => 2_000,
       },
     );
-    const due = await rating.listDueRatingEventProgress(1_200, 100);
+    const due = await rating
+      .scanDueRatingEventProgress(1_200, 100)
+      .then(recoveryCandidates);
     const imported = due.find((entry) => entry.operationId === operationId);
     expect(imported).toBeDefined();
     expect(

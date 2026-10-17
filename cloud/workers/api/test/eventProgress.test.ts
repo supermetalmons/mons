@@ -31,6 +31,11 @@ import {
 } from "./eventTestPorts.ts";
 import { TELEGRAM_TEST_ENV } from "./testEnv.ts";
 import { createEventProgressRecoveryTestStore } from "./eventProgressRecoveryTestStore.ts";
+import {
+  recoveryCandidates,
+  invalidRatingRecoveryEntry,
+} from "./recoveryScanTestFixtures.ts";
+import { recoveryKeyHex } from "../src/recoveryObservation.ts";
 
 const outboxRecoveryStores = new WeakMap<
   EventProgressSweepRepository,
@@ -98,33 +103,53 @@ function scheduledRecovery(
 
 function workflowEnvironment({
   status = "waiting",
+  existingIds = [],
   onCreate = () => undefined,
   onDelete = () => undefined,
 }: {
   status?: WorkflowInstanceStatus;
+  existingIds?: string[];
   onCreate?: () => void;
   onDelete?: () => void;
 } = {}): Env {
-  const instance = {
-    id: "event-progress-test",
-    delete: async () => onDelete(),
-    pause: async () => undefined,
-    restart: async () => undefined,
-    resume: async () => undefined,
-    sendEvent: async () => undefined,
-    status: async () => ({ status }),
-    terminate: async () => undefined,
-  } satisfies WorkflowInstance;
+  const instances = new Map<string, WorkflowInstance>();
+  const addInstance = (id: string): WorkflowInstance => {
+    const instance: WorkflowInstance = {
+      id,
+      delete: async () => {
+        instances.delete(id);
+        onDelete();
+      },
+      pause: async () => undefined,
+      restart: async () => undefined,
+      resume: async () => undefined,
+      sendEvent: async () => undefined,
+      status: async () => ({ status }),
+      terminate: async () => undefined,
+    };
+    instances.set(id, instance);
+    return instance;
+  };
+  for (const id of existingIds) addInstance(id);
   return {
     ...TELEGRAM_TEST_ENV,
     EVENT_PROGRESS_WORKFLOW: {
-      create: async () => instance,
-      createBatch: async () => {
+      create: async (options) =>
+        addInstance(options?.id || crypto.randomUUID()),
+      createBatch: async (items) => {
         onCreate();
-        return [instance];
+        return items.map(({ id }) => {
+          const instanceId = id || crypto.randomUUID();
+          if (instances.has(instanceId)) throw new Error("instance-exists");
+          return addInstance(instanceId);
+        });
       },
       deleteBatch: async () => ({ deleted: [], errors: [] }),
-      get: async () => instance,
+      get: async (id) => {
+        const instance = instances.get(id);
+        if (!instance) throw new Error("instance-missing");
+        return instance;
+      },
     },
   };
 }
@@ -242,7 +267,9 @@ for (const scenario of ["outbox-read", "outbox-dispatch"] as const) {
           repository: repository.value,
           scheduledRecovery: recovery,
           ratingRepository: {
-            listDueRatingEventProgress: async () => ratingRecoveryRecords(),
+            quarantineRatingRecoveryEntry: async () => null,
+            scanDueRatingEventProgress: async () =>
+              recoveryCandidates(ratingRecoveryRecords()),
             claimRatingEventProgress: async () => true,
             markRatingEventProgress: async (_id, status) => {
               ratingDone = status === "done";
@@ -288,7 +315,8 @@ test(
           scheduled: { startAtMs: 10_000 },
         }),
         ratingRepository: {
-          listDueRatingEventProgress: async () => {
+          quarantineRatingRecoveryEntry: async () => null,
+          scanDueRatingEventProgress: async () => {
             await healthyDispatched.promise;
             throw new Error("rating-read-failed");
           },
@@ -365,7 +393,9 @@ test(
       repository: repository.value,
       scheduledRecovery: scheduledRecovery(events),
       ratingRepository: {
-        listDueRatingEventProgress: async () => ratingRecoveryRecords(10),
+        quarantineRatingRecoveryEntry: async () => null,
+        scanDueRatingEventProgress: async () =>
+          recoveryCandidates(ratingRecoveryRecords(10)),
         claimRatingEventProgress: async () => {
           await wait("rating");
           return true;
@@ -418,7 +448,9 @@ test("failed records cannot exhaust outbox or rating runners before the rest of 
       repository: repository.value,
       scheduledRecovery: scheduledRecovery({}),
       ratingRepository: {
-        listDueRatingEventProgress: async () => ratingRecoveryRecords(10),
+        quarantineRatingRecoveryEntry: async () => null,
+        scanDueRatingEventProgress: async () =>
+          recoveryCandidates(ratingRecoveryRecords(10)),
         claimRatingEventProgress: async (id) => {
           claimed.push(id);
           if (claimed.length <= 5) throw new Error("rating-claim-failed");
@@ -513,7 +545,9 @@ for (const kind of ["start", "reminder"] as const) {
           }
         },
       };
-      const environment = workflowEnvironment();
+      const environment = workflowEnvironment({
+        existingIds: [plan.workflowId],
+      });
       const create = environment.EVENT_PROGRESS_WORKFLOW.createBatch;
       const get = environment.EVENT_PROGRESS_WORKFLOW.get;
       const original = await get(plan.workflowId);
@@ -521,13 +555,7 @@ for (const kind of ["start", "reminder"] as const) {
         if (items[0].id === plan.workflowId) {
           creates++;
           operations.push(`create-${creates}`);
-          if (creates === 1) {
-            recreating = true;
-            providerStarted.resolve();
-            await candidatesRead.promise;
-          } else if (creates === 2) {
-            recreating = false;
-          }
+          recreating = false;
         }
         return create(items);
       };
@@ -540,11 +568,15 @@ for (const kind of ["start", "reminder"] as const) {
               terminate: () => original.terminate(),
               restart: () => original.restart(),
               sendEvent: (event) => original.sendEvent(event),
-              status: async () => ({
-                status: creates === 1 ? "errored" : "complete",
-              }),
+              status: async () => {
+                recreating = true;
+                providerStarted.resolve();
+                await candidatesRead.promise;
+                return { status: creates === 0 ? "errored" : "complete" };
+              },
               delete: async () => {
                 operations.push("delete");
+                await original.delete();
               },
             }
           : get(id);
@@ -554,12 +586,12 @@ for (const kind of ["start", "reminder"] as const) {
         scheduledRecovery: recovery,
         ratingRepository: null,
       });
-      assert.equal(creates, 2);
+      assert.equal(creates, 1);
       assert.deepEqual(
         operations.filter((operation) =>
           /^(create-|delete|remove)/.test(operation),
         ),
-        ["create-1", "delete", "create-2"],
+        ["delete", "create-1"],
       );
       assert.deepEqual(current, plan.outbox);
     },
@@ -1063,12 +1095,13 @@ test("a failed concurrent dispatch keeps its sweep admitted until every other pr
   const failed = Promise.withResolvers<void>();
   const environment = workflowEnvironment();
   const originalGet = environment.EVENT_PROGRESS_WORKFLOW.get;
+  const originalCreate = environment.EVENT_PROGRESS_WORKFLOW.createBatch;
   environment.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
     if (items[0].id === first.workflowId)
       throw new Error("first-dispatch-failed");
     started.resolve();
     await delayed.promise;
-    return [];
+    return originalCreate(items);
   };
   environment.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
     if (id === first.workflowId) {
@@ -1169,8 +1202,10 @@ test("both announcements survive slow start dispatch and all three jobs can fail
       },
     });
     const environment = workflowEnvironment();
-    const instance =
-      await environment.EVENT_PROGRESS_WORKFLOW.get("test-instance");
+    const instance = await environment.EVENT_PROGRESS_WORKFLOW.create({
+      id: "test-instance",
+    });
+    const createdIds = new Set<string>();
     environment.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
       return items.map((item) => {
         if (item.params?.reason === failureReason) {
@@ -1178,11 +1213,13 @@ test("both announcements survive slow start dispatch and all three jobs can fail
           throw new Error("dispatch-failed");
         }
         created.push(item.params!.reason);
+        createdIds.add(item.id!);
         return instance;
       });
     };
     environment.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
-      if (id === failedId) throw new Error("instance-missing");
+      if (id === failedId || !createdIds.has(id))
+        throw new Error("instance-missing");
       instance.status = async () => {
         nowMs += 1_500;
         return { status: "waiting" };
@@ -1227,6 +1264,7 @@ test("recreates terminal event progress Workflow instances", async () => {
   await sweepEventProgress(
     workflowEnvironment({
       status: "errored",
+      existingIds: [outbox.plan.workflowId],
       onCreate: () => creates++,
       onDelete: () => deletes++,
     }),
@@ -1236,7 +1274,7 @@ test("recreates terminal event progress Workflow instances", async () => {
       repository: repository.value,
     },
   );
-  assert.equal(creates, 2);
+  assert.equal(creates, 1);
   assert.equal(deletes, 1);
   assert.equal(repository.patches.length, 0);
 });
@@ -1248,6 +1286,7 @@ test("recreates operator-terminated event progress Workflow instances", async ()
   await sweepEventProgress(
     workflowEnvironment({
       status: "terminated",
+      existingIds: [outbox.plan.workflowId],
       onDelete: () => deletes++,
     }),
     {
@@ -1262,11 +1301,17 @@ test("recreates operator-terminated event progress Workflow instances", async ()
 test("removes outbox records for completed Workflow instances", async () => {
   const outbox = await validOutbox();
   const repository = sweepRepository(outbox.value);
-  await sweepEventProgress(workflowEnvironment({ status: "complete" }), {
-    now: () => 2_000,
-    ratingRepository: null,
-    repository: repository.value,
-  });
+  await sweepEventProgress(
+    workflowEnvironment({
+      status: "complete",
+      existingIds: [outbox.plan.workflowId],
+    }),
+    {
+      now: () => 2_000,
+      ratingRepository: null,
+      repository: repository.value,
+    },
+  );
   assert.deepEqual(repository.patches, [
     { [`eventProgressOutbox/${outbox.plan.outboxId}`]: null },
   ]);
@@ -1366,16 +1411,18 @@ test("recovers a finalized event rating when its outbox write was lost", async (
       calls.push("claim");
       return true;
     },
-    listDueRatingEventProgress: async () => [
-      {
-        eventId: "event-1",
-        inviteId: "invite-1",
-        matchId: "match-1",
-        operationId: "invite-1__match-1",
-        revision: 1,
-        version: 1,
-      },
-    ],
+    quarantineRatingRecoveryEntry: async () => null,
+    scanDueRatingEventProgress: async () =>
+      recoveryCandidates([
+        {
+          eventId: "event-1",
+          inviteId: "invite-1",
+          matchId: "match-1",
+          operationId: "invite-1__match-1",
+          revision: 1,
+          version: 1,
+        },
+      ]),
     markRatingEventProgress: async (_operationId, state) => {
       calls.push(state);
     },
@@ -1412,6 +1459,140 @@ test("recovers a finalized event rating when its outbox write was lost", async (
   );
 });
 
+for (const scenario of [
+  "quarantined",
+  "stale",
+  "quarantine-failed",
+  "inspect-failed",
+] as const) {
+  for (const loggerThrows of [false, true]) {
+    test(`rating scan ${scenario} preserves healthy recovery with throwing logger: ${loggerThrows}`, async () => {
+      const invalid = invalidRatingRecoveryEntry("event-progress");
+      const record = ratingRecoveryRecords()[0];
+      const failure = new Error(scenario);
+      const logs: Record<string, unknown>[] = [];
+      const claimed: string[] = [];
+      const completed: string[] = [];
+      let quarantines = 0;
+      let creates = 0;
+      const quarantineResult = {
+        operationIdHex: recoveryKeyHex(invalid.observation),
+        revisionHex: invalid.observation.revisionHex,
+        reason: invalid.reason,
+        projectionKind: invalid.projectionKind,
+      };
+      const sweep = sweepEventProgress(
+        workflowEnvironment({ onCreate: () => creates++ }),
+        {
+          now: () => 2_000,
+          repository: sweepRepository({}).value,
+          scheduledRecovery: scheduledRecovery({}),
+          logger: {
+            error(entry) {
+              logs.push(JSON.parse(entry));
+              if (loggerThrows) throw new Error("logger-failed");
+            },
+          },
+          ratingRepository: {
+            scanDueRatingEventProgress: async () => [
+              scenario === "inspect-failed"
+                ? { kind: "failure", error: failure }
+                : invalid,
+              ...recoveryCandidates([record]),
+            ],
+            quarantineRatingRecoveryEntry: async (entry, nowMs) => {
+              assert.equal(entry, invalid);
+              assert.equal(nowMs, 2_000);
+              quarantines++;
+              if (scenario === "quarantine-failed") throw failure;
+              return scenario === "stale" ? null : quarantineResult;
+            },
+            claimRatingEventProgress: async (operationId) => {
+              claimed.push(operationId);
+              return true;
+            },
+            markRatingEventProgress: async (operationId, status) => {
+              assert.equal(status, "done");
+              completed.push(operationId);
+            },
+          },
+        },
+      );
+      if (scenario === "quarantine-failed" || scenario === "inspect-failed") {
+        await assert.rejects(sweep, (error) => error === failure);
+        assert.deepEqual(logs, [
+          {
+            event: "event_progress_recovery_record_failed",
+            scope: "event-progress",
+            phase: scenario === "quarantine-failed" ? "quarantine" : "inspect",
+            code: failure.message,
+            error: { name: "Error", message: failure.message },
+            source: "rating",
+            itemIndex: 0,
+          },
+        ]);
+      } else {
+        await sweep;
+        assert.deepEqual(
+          logs,
+          scenario === "stale"
+            ? []
+            : [
+                {
+                  event: "event_progress_recovery_record_quarantined",
+                  scope: "event-progress",
+                  source: "rating",
+                  ...quarantineResult,
+                },
+              ],
+        );
+      }
+      assert.equal(quarantines, scenario === "inspect-failed" ? 0 : 1);
+      assert.deepEqual(claimed, [record.operationId]);
+      assert.deepEqual(completed, [record.operationId]);
+      assert.equal(creates, 1);
+      assert.equal(JSON.stringify(logs).includes("private"), false);
+      assert.equal(
+        logs.some((entry) => "observation" in entry || "operationId" in entry),
+        false,
+      );
+    });
+  }
+}
+
+test("rating scan transport failures never enter row quarantine or claim", async () => {
+  const failure = new Error("rating-scan-unavailable");
+  const logs: string[] = [];
+  const mutations: string[] = [];
+  await assert.rejects(
+    sweepEventProgress(workflowEnvironment(), {
+      now: () => 2_000,
+      repository: sweepRepository({}).value,
+      scheduledRecovery: scheduledRecovery({}),
+      logger: { error: (entry) => logs.push(entry) },
+      ratingRepository: {
+        scanDueRatingEventProgress: async () => {
+          throw failure;
+        },
+        quarantineRatingRecoveryEntry: async () => {
+          mutations.push("quarantine");
+          return null;
+        },
+        claimRatingEventProgress: async () => {
+          mutations.push("claim");
+          return true;
+        },
+        markRatingEventProgress: async () => {
+          mutations.push("mark");
+        },
+      },
+    }),
+    (error) => error === failure,
+  );
+  assert.deepEqual(mutations, []);
+  assert.deepEqual(logs, []);
+});
+
 for (const phase of ["claim", "quarantine", "enqueue", "cleanup"] as const) {
   for (const loggerThrows of [false, true]) {
     test(`rating ${phase} failures retain identity and context with throwing logger: ${loggerThrows}`, async () => {
@@ -1436,7 +1617,9 @@ for (const phase of ["claim", "quarantine", "enqueue", "cleanup"] as const) {
             },
           },
           ratingRepository: {
-            listDueRatingEventProgress: async () => [record],
+            quarantineRatingRecoveryEntry: async () => null,
+            scanDueRatingEventProgress: async () =>
+              recoveryCandidates([record]),
             claimRatingEventProgress: async () => {
               if (phase === "claim") throw failure;
               return true;
@@ -1563,7 +1746,8 @@ test("malformed recovery identities and payloads are omitted from record failure
         },
       },
       ratingRepository: {
-        listDueRatingEventProgress: async () => [record],
+        quarantineRatingRecoveryEntry: async () => null,
+        scanDueRatingEventProgress: async () => recoveryCandidates([record]),
         claimRatingEventProgress: async () => true,
         markRatingEventProgress: async () => {
           throw failure;

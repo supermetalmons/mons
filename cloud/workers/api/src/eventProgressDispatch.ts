@@ -80,11 +80,16 @@ export async function dispatchOutboxPlan(
   const plan = await parseEventProgressOutbox(outboxId, current.record);
   if (!plan) return;
   try {
-    await ensureEventProgressWorkflowInstance(
-      env.EVENT_PROGRESS_WORKFLOW,
-      plan,
-    );
-    const instance = await env.EVENT_PROGRESS_WORKFLOW.get(plan.workflowId);
+    let instance: WorkflowInstance;
+    try {
+      instance = await env.EVENT_PROGRESS_WORKFLOW.get(plan.workflowId);
+    } catch {
+      await ensureEventProgressWorkflowInstance(
+        env.EVENT_PROGRESS_WORKFLOW,
+        plan,
+      );
+      instance = await env.EVENT_PROGRESS_WORKFLOW.get(plan.workflowId);
+    }
     const status = await instance.status();
     if (status.status === "errored" || status.status === "terminated") {
       await instance.delete();

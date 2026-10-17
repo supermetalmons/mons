@@ -1,3 +1,4 @@
+import { recoveryCandidates } from "./recoveryScanTestFixtures.ts";
 import { attachProjectionTestPorts } from "./projectionTestPorts.ts";
 import {
   createTelegramRepository,
@@ -142,15 +143,18 @@ function ratingRepository(
     readMatchPair: async () => {
       throw new Error("unexpected-match-pair-read");
     },
-    listDueRatingTelegramProjections: async (updatedBeforeMs) =>
-      data && (data.telegramProjectionUpdatedAtMs || 0) <= updatedBeforeMs
-        ? [
-            {
-              operationId: "auto_example__auto_example",
-              revision: 1,
-            },
-          ]
-        : [],
+    quarantineRatingRecoveryEntry: async () => null,
+    scanDueRatingTelegramProjections: async (updatedBeforeMs) =>
+      recoveryCandidates(
+        data && (data.telegramProjectionUpdatedAtMs || 0) <= updatedBeforeMs
+          ? [
+              {
+                operationId: "auto_example__auto_example",
+                revision: 1,
+              },
+            ]
+          : [],
+      ),
     markRatingTelegramProjection: async (
       _operationId,
       state,
@@ -998,12 +1002,14 @@ test("recovery claims bounded pages sequentially", async () => {
   const rating = ratingRepository(null, []);
   let activeClaims = 0;
   let maxActiveClaims = 0;
-  rating.listDueRatingTelegramProjections = async (_updatedBeforeMs, limit) => {
+  rating.scanDueRatingTelegramProjections = async (_updatedBeforeMs, limit) => {
     assert.equal(limit, 10);
-    return Array.from({ length: limit }, (_, index) => ({
-      operationId: `operation-${index}`,
-      revision: index + 1,
-    }));
+    return recoveryCandidates(
+      Array.from({ length: limit }, (_, index) => ({
+        operationId: `operation-${index}`,
+        revision: index + 1,
+      })),
+    );
   };
   rating.claimRatingTelegramProjection = async (
     operationId,

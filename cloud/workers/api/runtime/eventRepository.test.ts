@@ -16,6 +16,8 @@ import {
   transitionEventStorageMode,
 } from "./eventTestMigrations.ts";
 import {
+  EventD1Conflict,
+  EventD1Failure,
   acquireEventWriteAdmission,
   createEventTransitionIntent,
   listPendingEventTransitionIntents,
@@ -755,6 +757,33 @@ describe("typed event repository", () => {
     expect(genericRead).not.toHaveBeenCalled();
   });
 
+  it("rejects upcoming-event plans with effects before journaling or applying them", async () => {
+    const f = eventTransitionFixture(testEnv);
+    await f.client.commitEventPlan([
+      { kind: "event", eventId, value: eventRecord() },
+    ]);
+    const commit = f.client.commitEventPlan(
+      decodeEventUpdates({
+        [`events/${eventId}/status`]: "active",
+        "players/login-one/matches/event-match/timer": "gg",
+      }),
+      undefined,
+      { upcomingEventId: eventId },
+    );
+    await expect(commit).rejects.toBeInstanceOf(EventD1Failure);
+    await expect(commit).rejects.toThrow(
+      "event-upcoming-guard-effects-unsupported",
+    );
+    expect(f.patches).toEqual([]);
+    expect(await listPendingEventTransitionIntents(testEnv.EVENT_DB)).toEqual(
+      [],
+    );
+    expect(await readEventSnapshot(testEnv.EVENT_DB, eventId)).toMatchObject({
+      event: { status: "scheduled" },
+      revision: 1,
+    });
+  });
+
   it("replays a stored v2 intent with unchanged serialized effect keys and digest", async () => {
     const f = eventTransitionFixture(testEnv);
     const timerPath = "players/login-one/matches/event-match/timer";
@@ -1373,9 +1402,11 @@ describe("typed event repository", () => {
     };
     const first = f.client.commitEventPlan(decodeEventUpdates(update));
     await started;
-    await expect(
-      f.client.commitEventPlan(decodeEventUpdates(update)),
-    ).rejects.toThrow("event-transition-application-busy");
+    const duplicate = f.client.commitEventPlan(decodeEventUpdates(update));
+    await expect(duplicate).rejects.toBeInstanceOf(EventD1Conflict);
+    await expect(duplicate).rejects.toThrow(
+      "event-transition-application-busy",
+    );
     continueEffects();
     await expect(first).resolves.toBeUndefined();
     expect(f.patches).toHaveLength(1);

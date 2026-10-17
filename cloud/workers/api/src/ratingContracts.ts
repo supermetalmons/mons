@@ -2,6 +2,7 @@ import type { HistoricalMatchPair } from "@mons/shared/game-sessions";
 import type { EventProgressOutboxRecord } from "../../../runtime/events.js";
 import type { GameSessionPort } from "./gameSessionContracts.ts";
 import type { MatchStatePort } from "./repositoryContracts.ts";
+import type { RecoveryRowObservation } from "./recoveryObservation.ts";
 import type {
   ProfileOwnershipProfile,
   ProfileOwnershipReader,
@@ -68,6 +69,38 @@ export type PendingRatingEventProgress = {
   operationId: string;
   revision: number;
   version: number;
+};
+
+export type RatingRecoveryProjectionKind =
+  "event-progress" | "profile-game" | "telegram";
+
+export type RatingRecoveryQuarantineReason =
+  "invalid-operation-id" | "invalid-record";
+
+export type InvalidRatingRecoveryEntry = {
+  kind: "invalid";
+  projectionKind: RatingRecoveryProjectionKind;
+  observation: RecoveryRowObservation;
+  reason: RatingRecoveryQuarantineReason;
+};
+
+export type RatingRecoveryScanEntry<T> =
+  | { kind: "candidate"; value: T }
+  | InvalidRatingRecoveryEntry
+  | { kind: "failure"; error: unknown };
+
+export type RatingRecoveryQuarantineResult = {
+  operationIdHex: string;
+  revisionHex: string;
+  reason: RatingRecoveryQuarantineReason;
+  projectionKind: RatingRecoveryProjectionKind;
+};
+
+type RatingRecoveryRepository = {
+  quarantineRatingRecoveryEntry: (
+    entry: InvalidRatingRecoveryEntry,
+    nowMs: number,
+  ) => Promise<RatingRecoveryQuarantineResult | null>;
 };
 
 export type RatingLeaseInput = {
@@ -190,59 +223,62 @@ export type RatingRepository = RatingGameplayReader & {
   ) => Promise<RatingLeaseResult>;
 };
 
-export type RatingEventProgressRepository = RatingRepository & {
-  claimRatingEventProgress: (
-    operationId: string,
-    expectedRevision: number,
-    claimedAtMs: number,
-  ) => Promise<boolean>;
-  listDueRatingEventProgress: (
-    updatedBeforeMs: number,
-    limit: number,
-  ) => Promise<PendingRatingEventProgress[]>;
-  markRatingEventProgress: (
-    operationId: string,
-    state: "dead" | "done",
-    updatedAtMs: number,
-    reason?: string,
-  ) => Promise<void>;
-};
+export type RatingEventProgressRepository = RatingRepository &
+  RatingRecoveryRepository & {
+    claimRatingEventProgress: (
+      operationId: string,
+      expectedRevision: number,
+      claimedAtMs: number,
+    ) => Promise<boolean>;
+    scanDueRatingEventProgress: (
+      updatedBeforeMs: number,
+      limit: number,
+    ) => Promise<RatingRecoveryScanEntry<PendingRatingEventProgress>[]>;
+    markRatingEventProgress: (
+      operationId: string,
+      state: "dead" | "done",
+      updatedAtMs: number,
+      reason?: string,
+    ) => Promise<void>;
+  };
 
-export type RatingProjectionRepository = RatingRepository & {
-  readRatingUpdates: (
-    operationIds: readonly string[],
-  ) => Promise<Array<RatingUpdateData | null>>;
-  claimRatingTelegramProjection: (
-    operationId: string,
-    expectedRevision: number,
-    claimedAtMs: number,
-  ) => Promise<boolean>;
-  listDueRatingTelegramProjections: (
-    updatedBeforeMs: number,
-    limit: number,
-  ) => Promise<PendingRatingTelegramProjection[]>;
-  markRatingTelegramProjection: (
-    operationId: string,
-    state: "dead" | "done",
-    updatedAtMs: number,
-    reason?: string,
-  ) => Promise<void>;
-};
+export type RatingProjectionRepository = RatingRepository &
+  RatingRecoveryRepository & {
+    readRatingUpdates: (
+      operationIds: readonly string[],
+    ) => Promise<Array<RatingUpdateData | null>>;
+    claimRatingTelegramProjection: (
+      operationId: string,
+      expectedRevision: number,
+      claimedAtMs: number,
+    ) => Promise<boolean>;
+    scanDueRatingTelegramProjections: (
+      updatedBeforeMs: number,
+      limit: number,
+    ) => Promise<RatingRecoveryScanEntry<PendingRatingTelegramProjection>[]>;
+    markRatingTelegramProjection: (
+      operationId: string,
+      state: "dead" | "done",
+      updatedAtMs: number,
+      reason?: string,
+    ) => Promise<void>;
+  };
 
-export type RatingProfileGameProjectionRepository = RatingRepository & {
-  claimRatingProfileGameProjection: (
-    operationId: string,
-    expectedRevision: number,
-    claimedAtMs: number,
-  ) => Promise<boolean>;
-  listDueRatingProfileGameProjections: (
-    updatedBeforeMs: number,
-    limit: number,
-  ) => Promise<PendingRatingProfileGameProjection[]>;
-  markRatingProfileGameProjection: (
-    operationId: string,
-    state: "dead" | "done",
-    updatedAtMs: number,
-    reason?: string,
-  ) => Promise<void>;
-};
+export type RatingProfileGameProjectionRepository = RatingRepository &
+  RatingRecoveryRepository & {
+    claimRatingProfileGameProjection: (
+      operationId: string,
+      expectedRevision: number,
+      claimedAtMs: number,
+    ) => Promise<boolean>;
+    scanDueRatingProfileGameProjections: (
+      updatedBeforeMs: number,
+      limit: number,
+    ) => Promise<RatingRecoveryScanEntry<PendingRatingProfileGameProjection>[]>;
+    markRatingProfileGameProjection: (
+      operationId: string,
+      state: "dead" | "done",
+      updatedAtMs: number,
+      reason?: string,
+    ) => Promise<void>;
+  };

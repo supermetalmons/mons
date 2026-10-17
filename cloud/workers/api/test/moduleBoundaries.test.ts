@@ -8,6 +8,7 @@ import { extractIdFromJsonUri } from "../src/helius.ts";
 import { handleFetch, handleRequest } from "../src/router.ts";
 import * as eventProgress from "../src/eventProgress.ts";
 import * as eventProgressDispatch from "../src/eventProgressDispatch.ts";
+import * as eventRepository from "../src/eventRepository.ts";
 import * as authRecovery from "../src/authRecovery.ts";
 import * as authRecoveryJobs from "../src/authRecovery/jobs.ts";
 import * as authRecoveryDispatch from "../src/authRecovery/dispatch.ts";
@@ -35,6 +36,38 @@ test("the Worker entrypoint remains a thin exact compatibility facade", () => {
   assert.strictEqual(entrypoint.extractIdFromJsonUri, extractIdFromJsonUri);
   assert.equal(typeof entrypoint.default.queue, "function");
   assert.equal(typeof entrypoint.default.scheduled, "function");
+});
+
+test("event repositories retain their public factory and recovery exports", () => {
+  assert.deepEqual(Object.keys(eventRepository).sort(), [
+    "createD1AuthRecoveryPrizeStore",
+    "createEventGameplayRepository",
+    "createEventProgressOutboxWriter",
+    "createEventStateRepository",
+    "recoverEventTransitionIntents",
+  ]);
+});
+
+test("event transition coordination stays independent of repository factories", () => {
+  const sourceRoot = resolve(import.meta.dirname, "../src");
+  const coordinator = resolve(sourceRoot, "eventTransitionCoordinator.ts");
+  const reachable = reachableRuntimeFiles(coordinator);
+  for (const filename of [
+    "eventRepository.ts",
+    "gameplayRepository.ts",
+    "matchStateSource.ts",
+  ]) {
+    assert.ok(!reachable.includes(resolve(sourceRoot, filename)), filename);
+  }
+  for (const specifier of runtimeSpecifiers(coordinator)) {
+    const dependency = resolveRuntimeImport(coordinator, specifier);
+    if (dependency) {
+      assert.ok(
+        !reachableRuntimeFiles(dependency).includes(coordinator),
+        relative(repositoryRoot, dependency),
+      );
+    }
+  }
 });
 
 test("auth recovery retains its exact public facade and function identities", () => {

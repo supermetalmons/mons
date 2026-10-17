@@ -19,6 +19,7 @@ async function fixture(runAtMs: number | null = 20_000_000) {
   let record: Record<string, unknown> | null = plan.outbox;
   let nowMs = 600_123;
   let status: WorkflowInstanceStatus = "waiting";
+  let exists = true;
   const calls: string[] = [];
   const repository: EventProgressSweepRepository = {
     readEvent: async () => null,
@@ -35,6 +36,7 @@ async function fixture(runAtMs: number | null = 20_000_000) {
     id: plan.workflowId,
     delete: async () => {
       calls.push("delete");
+      exists = false;
     },
     pause: async () => {},
     restart: async () => {},
@@ -43,6 +45,7 @@ async function fixture(runAtMs: number | null = 20_000_000) {
     terminate: async () => {},
     status: async () => {
       calls.push("status");
+      if (!exists) throw new Error("instance-missing");
       return { status };
     },
   };
@@ -52,11 +55,14 @@ async function fixture(runAtMs: number | null = 20_000_000) {
       create: async () => instance,
       createBatch: async () => {
         calls.push("create");
+        if (exists) throw new Error("instance-exists");
+        exists = true;
         return [instance];
       },
       deleteBatch: async () => ({ deleted: [], errors: [] }),
       get: async () => {
         calls.push("get");
+        if (!exists) throw new Error("instance-missing");
         return instance;
       },
     },
@@ -75,6 +81,9 @@ async function fixture(runAtMs: number | null = 20_000_000) {
     setStatus: (value: WorkflowInstanceStatus) => {
       status = value;
     },
+    setExists: (value: boolean) => {
+      exists = value;
+    },
     replace: (value: Record<string, unknown> | null) => {
       record = value;
     },
@@ -86,6 +95,7 @@ test("confirmed future waiting instances are checked hourly without rewriting th
   const f = await fixture();
   const original = JSON.stringify(f.current());
   await f.dispatch();
+  assert.deepEqual(f.calls, ["get", "status"]);
   assert.equal(
     (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
     600_123 + HOUR,
@@ -160,7 +170,7 @@ for (const status of ["errored", "terminated"] as const) {
     const f = await fixture();
     f.setStatus(status);
     await f.dispatch();
-    assert.deepEqual(f.calls, ["create", "get", "status", "delete", "create"]);
+    assert.deepEqual(f.calls, ["get", "status", "delete", "create"]);
     assert.equal(
       (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
       900_000,
@@ -175,7 +185,13 @@ for (const status of ["errored", "terminated"] as const) {
   });
 }
 
-for (const phase of ["create", "status", "recreate"] as const) {
+for (const phase of [
+  "create",
+  "status",
+  "delete",
+  "recreate",
+  "created-get",
+] as const) {
   test(`${phase} failure remains retryable and preserves the provider error`, async () => {
     const f = await fixture();
     const failure = new Error(`${phase}-failed`);
@@ -183,20 +199,24 @@ for (const phase of ["create", "status", "recreate"] as const) {
       f.instance.status = async () => {
         throw failure;
       };
-    } else {
+    } else if (phase === "delete") {
       f.setStatus("errored");
-      let creates = 0;
-      const create = f.env.EVENT_PROGRESS_WORKFLOW.createBatch;
-      f.env.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
-        creates++;
-        if (phase === "create" || creates === 2) throw failure;
-        return create(items);
+      f.instance.delete = async () => {
+        throw failure;
       };
+    } else if (phase === "created-get") {
+      f.setExists(false);
       const get = f.env.EVENT_PROGRESS_WORKFLOW.get;
+      let reads = 0;
       f.env.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
-        if (phase === "create" || creates === 2)
-          throw new Error("workflow-missing");
+        if (++reads === 2) throw failure;
         return get(id);
+      };
+    } else {
+      if (phase === "create") f.setExists(false);
+      else f.setStatus("errored");
+      f.env.EVENT_PROGRESS_WORKFLOW.createBatch = async () => {
+        throw failure;
       };
     }
     await assert.rejects(f.dispatch(), (error) => error === failure);
@@ -205,8 +225,90 @@ for (const phase of ["create", "status", "recreate"] as const) {
       900_000,
     );
     assert.deepEqual(f.current(), f.plan.outbox);
+    if (phase === "status" || phase === "delete") {
+      assert.equal(f.calls.includes("create"), false);
+    }
   });
 }
+
+for (const reason of ["missing", "retention-expired"] as const) {
+  test(`${reason} instances are created with the original identity and retention`, async () => {
+    const f = await fixture();
+    if (reason === "retention-expired") {
+      await f.dispatch();
+      f.setNow(600_123 + HOUR);
+      f.calls.length = 0;
+    }
+    f.setExists(false);
+    const create = f.env.EVENT_PROGRESS_WORKFLOW.createBatch;
+    f.env.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
+      assert.deepEqual(items, [
+        {
+          id: f.plan.workflowId,
+          params: f.plan.params,
+          retention: { successRetention: "1 day", errorRetention: "30 days" },
+        },
+      ]);
+      return create(items);
+    };
+    await f.dispatch();
+    assert.deepEqual(f.calls, ["get", "create", "get", "status"]);
+    assert.equal(
+      (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+      600_123 + (reason === "retention-expired" ? 2 : 1) * HOUR,
+    );
+    assert.deepEqual(f.current(), f.plan.outbox);
+  });
+}
+
+test("an initial provider lookup failure retains the existing creation fallback", async () => {
+  const f = await fixture();
+  const get = f.env.EVENT_PROGRESS_WORKFLOW.get;
+  let reads = 0;
+  f.env.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
+    if (++reads === 1) throw new Error("provider-unavailable");
+    return get(id);
+  };
+  await f.dispatch();
+  assert.deepEqual(f.calls, ["create", "get", "get", "status"]);
+  assert.equal(f.calls.includes("delete"), false);
+});
+
+for (const race of ["concurrent-create", "ambiguous-create"] as const) {
+  test(`${race} is confirmed through the existing fallback without deleting the instance`, async () => {
+    const f = await fixture();
+    f.setExists(false);
+    const create = f.env.EVENT_PROGRESS_WORKFLOW.createBatch;
+    f.env.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
+      if (race === "concurrent-create") f.setExists(true);
+      await create(items);
+      throw new Error("provider-response-lost");
+    };
+    await f.dispatch();
+    assert.deepEqual(f.calls, ["get", "create", "get", "get", "status"]);
+    assert.deepEqual(f.current(), f.plan.outbox);
+  });
+}
+
+test("an instance deleted after lookup is retried on the next sweep without eager recreation", async () => {
+  const f = await fixture();
+  const failure = new Error("instance-disappeared");
+  const status = f.instance.status;
+  f.instance.status = async () => {
+    f.setExists(false);
+    throw failure;
+  };
+  await assert.rejects(f.dispatch(), (error) => error === failure);
+  assert.deepEqual(f.calls, ["get"]);
+  assert.equal(
+    (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+    900_000,
+  );
+  f.instance.status = status;
+  f.setNow(900_000);
+  await f.dispatch();
+  assert.deepEqual(f.calls, ["get", "get", "create", "get", "status"]);
+});
 
 for (const status of ["waiting", "complete"] as const) {
   for (const replaced of [false, true]) {
@@ -286,6 +388,7 @@ test("completed instances remove only their captured outbox", async () => {
   f.setStatus("complete");
   await f.dispatch();
   assert.equal(f.current(), null);
+  assert.deepEqual(f.calls, ["get", "status"]);
   await f.dispatch();
   assert.equal(f.calls.filter((call) => call === "status").length, 1);
 });
