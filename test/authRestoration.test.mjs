@@ -4,6 +4,7 @@ import { registerHooks } from "node:module";
 import test from "node:test";
 import ts from "typescript";
 import { normalizeProfileEmojiId } from "../cloud/runtime/shared/profiles.js";
+import { bindProfileCosmeticStorage } from "./fixtures/profileCosmeticStorageHarness.mjs";
 
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -318,6 +319,10 @@ function harness({
       events.profiles.push({ profile, uid });
     },
   };
+  dependencies.createProfileCosmeticWrites = bindProfileCosmeticStorage(
+    storage,
+    dependencies.localStorage,
+  );
   dependencies.applyVerifiedProfile = new Function(
     ...Object.keys(dependencies),
     `${profileApplicationOutput}\nreturn applyVerifiedProfile;`,

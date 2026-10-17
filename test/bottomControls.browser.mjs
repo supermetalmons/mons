@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { createServer } from "vite";
@@ -189,7 +199,7 @@ import { flushSync } from 'react-dom';
 import BottomControls from '/src/ui/BottomControls.tsx';
 import * as port from '/src/ui/controls/bottomControlsPort.ts';
 import * as controlsStore from '/src/game/gameControlsStore.ts';
-import { applyRouteControlsPreset, applyDisposedControlsPreset } from '/src/game/sessionControls.ts';
+import { applyRouteControlsPreset, applyDisposedControlsPreset, applyGameplayControlsPreset } from '/src/game/sessionControls.ts';
 import { triggerMoveHistoryPopupReload, subscribeMoveHistoryPopupSelectionReset } from '/src/ui/controls/moveHistoryPopupStore.ts';
 import { getLifecycleCounters } from '/src/lifecycle/lifecycleDiagnostics.ts';
 import { resolveNavigationGamesCacheScope, writeNavigationGamesRuntimeCache } from '/src/services/navigationGamesCache.ts';
@@ -206,7 +216,7 @@ const settle = async callback => {
   finally { globalThis.IS_REACT_ACT_ENVIRONMENT = false; }
 };
 window.harness = {
-  environment, port, run, controlsStore, applyRouteControlsPreset, applyDisposedControlsPreset,
+  environment, port, run, controlsStore, applyRouteControlsPreset, applyDisposedControlsPreset, applyGameplayControlsPreset,
   render(profileId = 'a') {
     run(() => root.render(React.createElement(React.StrictMode, null,
       React.createElement(BottomControls, {
@@ -361,7 +371,12 @@ session.initializeAppSessionManager();
 
 async function fixture(
   run,
-  { realNavigation = false, mobile = false, mount = true } = {},
+  {
+    realNavigation = false,
+    mobile = false,
+    mount = true,
+    productionStyles = false,
+  } = {},
 ) {
   const modules = new Map([
     ["bottom-environment", environmentSource],
@@ -514,6 +529,12 @@ export const teardownProfileScope = () => {};
 `,
     );
   }
+  if (productionStyles) {
+    modules.set(
+      "bottom-harness",
+      'import "/src/index.css";\n' + modules.get("bottom-harness"),
+    );
+  }
   const server = await createServer({
     root: repository,
     cacheDir: `node_modules/.vite-bottom-controls-${process.pid}`,
@@ -623,6 +644,228 @@ const click = async (page, name) =>
     window.harness.run(() => element.click()),
   );
 const count = (page, name) => button(page, name).count();
+const confirmationGeometry = (page, label) =>
+  button(page, label)
+    .last()
+    .evaluate((action, label) => {
+      const popup = action.parentElement;
+      const container = popup.parentElement;
+      const trigger = container.querySelector(
+        label === "Start a Timer"
+          ? '[aria-label="Timer"]'
+          : '[aria-label="Claim Victory"]',
+      );
+      const measure = (element) => {
+        const bounds = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return {
+          rect: [bounds.x, bounds.y, bounds.width, bounds.height],
+          style: Object.fromEntries(
+            [
+              "display",
+              "position",
+              "bottom",
+              "right",
+              "left",
+              "transform",
+              "padding",
+              "gap",
+              "borderRadius",
+              "backgroundColor",
+              "color",
+              "fontFamily",
+              "fontSize",
+            ].map((key) => [key, style[key]]),
+          ),
+        };
+      };
+      return {
+        trigger: measure(trigger),
+        container: measure(container),
+        popup: measure(popup),
+        action: measure(action),
+        anchor: Number.parseFloat(popup.style.left),
+      };
+    }, label);
+
+const assertConfirmationAnchor = (geometry) => {
+  const [triggerX, , triggerWidth] = geometry.trigger.rect;
+  const [containerX, , containerWidth] = geometry.container.rect;
+  const expected = Math.min(
+    containerWidth - 16,
+    Math.max(16, triggerX + triggerWidth / 2 - containerX),
+  );
+  assert.equal(geometry.anchor, expected);
+  const [popupX, , popupWidth] = geometry.popup.rect;
+  assert.ok(Math.abs(popupX + popupWidth / 2 - containerX - expected) < 0.02);
+};
+
+const prepareConfirmationOutputDirectory = (
+  baselineDirectory,
+  outputDirectory,
+) => {
+  mkdirSync(outputDirectory, { recursive: true });
+  if (baselineDirectory) {
+    assert.notEqual(
+      realpathSync(outputDirectory),
+      realpathSync(baselineDirectory),
+      "Confirmation baseline and output directories must be different",
+    );
+  }
+};
+
+for (const alias of ["same path", "relative path", "symlink"]) {
+  test(`confirmation capture rejects a shared directory via ${alias}`, (t) => {
+    const directory = mkdtempSync(
+      path.join(tmpdir(), "mons-confirmation-guard-"),
+    );
+    t.after(() => rmSync(directory, { recursive: true, force: true }));
+    const baselineDirectory = path.join(directory, "baseline");
+    mkdirSync(baselineDirectory);
+    const outputDirectory =
+      alias === "relative path"
+        ? path.relative(process.cwd(), baselineDirectory)
+        : alias === "symlink"
+          ? path.join(directory, "output")
+          : baselineDirectory;
+    if (alias === "symlink") {
+      symlinkSync(baselineDirectory, outputDirectory, "dir");
+    }
+    const sentinels = ["1200x900-light-timer.png", "1200x900-light-timer.json"];
+    for (const name of sentinels) {
+      writeFileSync(path.join(baselineDirectory, name), "original baseline");
+    }
+    assert.throws(
+      () =>
+        prepareConfirmationOutputDirectory(baselineDirectory, outputDirectory),
+      /Confirmation baseline and output directories must be different/,
+    );
+    for (const name of sentinels) {
+      assert.equal(
+        readFileSync(path.join(baselineDirectory, name), "utf8"),
+        "original baseline",
+      );
+    }
+  });
+}
+
+test(
+  "confirmation placement preserves immediate, painted, and resized geometry",
+  { timeout: 120000 },
+  async (t) => {
+    const baselineDirectory = process.env.MONS_BOTTOM_CONTROLS_BASELINE;
+    const outputDirectory = path.resolve(
+      process.env.MONS_BOTTOM_CONTROLS_OUTPUT ||
+        "test-results/bottom-controls-current",
+    );
+    prepareConfirmationOutputDirectory(baselineDirectory, outputDirectory);
+    let captures = 0;
+    for (const mobile of [false, true]) {
+      await fixture(
+        async (page) => {
+          const viewports = mobile
+            ? [
+                { width: 390, height: 844 },
+                { width: 320, height: 568 },
+                { width: 844, height: 390 },
+              ]
+            : [{ width: 1200, height: 900 }];
+          for (const viewport of viewports) {
+            for (const colorScheme of ["light", "dark"]) {
+              await page.setViewportSize(viewport);
+              await page.emulateMedia({ colorScheme });
+              await page.evaluate(() => document.fonts.ready);
+              for (const label of ["Start a Timer", "Claim Victory"]) {
+                await page.evaluate((label) => {
+                  const { port, run, applyDisposedControlsPreset } =
+                    window.harness;
+                  run(() => {
+                    applyDisposedControlsPreset(false);
+                    port.setHomeVisible(true);
+                    port.setNavigationListButtonVisible(true);
+                    port.showMoveHistoryButton(true);
+                    port.showVoiceReactionButton(true);
+                    port.showResignButton();
+                    if (label === "Start a Timer") {
+                      port.showTimerButtonProgressing(10, 10, true);
+                    } else {
+                      port.enableTimerVictoryClaim();
+                    }
+                  });
+                }, label);
+                await page.clock.runFor(40);
+                await click(page, label === "Start a Timer" ? "Timer" : label);
+                const opening = await confirmationGeometry(page, label);
+                assertConfirmationAnchor(opening);
+                await page.clock.runFor(40);
+                const painted = await confirmationGeometry(page, label);
+                assert.deepEqual(painted, opening);
+                await page.screenshot({ animations: "disabled" });
+                const png = await page.screenshot({ animations: "disabled" });
+                assert.ok(
+                  png.equals(await page.screenshot({ animations: "disabled" })),
+                  "confirmation capture must be stable",
+                );
+                await page.setViewportSize({
+                  width: viewport.width - 37,
+                  height: viewport.height - 19,
+                });
+                await page.evaluate(() =>
+                  window.harness.run(() =>
+                    window.dispatchEvent(new Event("resize")),
+                  ),
+                );
+                await page.clock.runFor(40);
+                const resized = await confirmationGeometry(page, label);
+                assertConfirmationAnchor(resized);
+                await page.setViewportSize(viewport);
+                await page.evaluate(() =>
+                  window.harness.run(() =>
+                    window.dispatchEvent(new Event("resize")),
+                  ),
+                );
+                await page.clock.runFor(40);
+                const restored = await confirmationGeometry(page, label);
+                assert.deepEqual(restored, painted);
+                const geometry = { opening, painted, resized, restored };
+                const name = `${viewport.width}x${viewport.height}-${colorScheme}-${label === "Start a Timer" ? "timer" : "claim"}`;
+                writeFileSync(path.join(outputDirectory, name + ".png"), png);
+                writeFileSync(
+                  path.join(outputDirectory, name + ".json"),
+                  JSON.stringify(geometry, null, 2),
+                );
+                if (baselineDirectory) {
+                  assert.deepEqual(
+                    geometry,
+                    JSON.parse(
+                      readFileSync(
+                        path.join(baselineDirectory, name + ".json"),
+                        "utf8",
+                      ),
+                    ),
+                    name + ": confirmation geometry/styles changed",
+                  );
+                  assert.ok(
+                    png.equals(
+                      readFileSync(path.join(baselineDirectory, name + ".png")),
+                    ),
+                    name + ": confirmation screenshot changed",
+                  );
+                }
+                captures += 1;
+              }
+            }
+          }
+        },
+        { mobile, productionStyles: true },
+      );
+    }
+    t.diagnostic(
+      `${baselineDirectory ? "Compared" : "Captured"} ${captures} confirmation screenshots and geometry/style snapshots.`,
+    );
+  },
+);
+
 const rematchButtons = (page) =>
   page.getByRole("group", { name: "Rematch series" }).getByRole("button");
 const rematchItem = (matchId, overrides = {}) => ({
@@ -1125,9 +1368,29 @@ for (const mobile of [false, true]) {
           await activate(button(page, "Timer"));
           await activate(button(page, "Start a Timer"));
           assert.equal(await count(page, "Start a Timer"), 0);
+          await page.evaluate(() =>
+            window.harness.run(() =>
+              window.harness.port.enableTimerVictoryClaim(),
+            ),
+          );
+          await activate(button(page, "Claim Victory"));
+          assert.equal(await count(page, "Claim Victory"), 2);
+          await button(page, "Claim Victory")
+            .last()
+            .locator("..")
+            .dispatchEvent(mobile ? "touchstart" : "mousedown");
+          assert.equal(await count(page, "Claim Victory"), 2);
+          await activate(button(page, "Claim Victory").first());
+          assert.equal(await count(page, "Claim Victory"), 1);
+          await activate(button(page, "Claim Victory"));
+          await activate(page.locator("#monsboard"));
+          assert.equal(await count(page, "Claim Victory"), 1);
+          await activate(button(page, "Claim Victory"));
+          await activate(button(page, "Claim Victory").last());
+          assert.equal(await count(page, "Claim Victory"), 1);
           assert.deepEqual(
             await page.evaluate(() => window.harness.environment.calls),
-            [["reaction", { kind: "yo" }], ["timer"]],
+            [["reaction", { kind: "yo" }], ["timer"], ["claim"]],
           );
         },
         { mobile },
@@ -2592,11 +2855,158 @@ test(
 );
 
 test(
-  "route and disposal presets clear invite loading, copied text, and ready state before reopening",
+  "gameplay presets prepare controls while preserving unrelated match state",
   { timeout: 60000 },
   async () => {
     await fixture(async (page) => {
-      for (const preset of ["watch", "snapshot", false, true]) {
+      await page.evaluate(() => {
+        const {
+          run,
+          port,
+          applyDisposedControlsPreset,
+          applyGameplayControlsPreset,
+        } = window.harness;
+        run(() => {
+          applyDisposedControlsPreset(false);
+          port.setAutomoveActionEnabled(false);
+          port.setEndMatchVisible(true);
+          applyGameplayControlsPreset("localMatch");
+        });
+      });
+      assert.equal(await button(page, "Undo").isDisabled(), true);
+      assert.equal(await button(page, "Bot").isDisabled(), false);
+      for (const name of ["Move History", "Resign", "End Match"]) {
+        assert.equal(await count(page, name), 1);
+      }
+      for (const name of [
+        "Automatch",
+        "Bot Game",
+        "New Link Game",
+        "Voice Reaction",
+      ]) {
+        assert.equal(await count(page, name), 0);
+      }
+
+      for (const waiting of [false, true]) {
+        const retained = await page.evaluate((waiting) => {
+          const {
+            run,
+            port,
+            controlsStore,
+            applyDisposedControlsPreset,
+            applyGameplayControlsPreset,
+          } = window.harness;
+          run(() => {
+            applyDisposedControlsPreset(false);
+            port.setAutomatchVisible(true);
+            port.setAutomatchEnabled(false);
+            port.setAutomatchWaitingState(waiting);
+            port.setUndoVisible(true);
+            port.setUndoEnabled(true);
+            port.setNavigationListButtonVisible(true);
+            port.setAutomoveActionVisible(true);
+            port.showMoveHistoryButton(true);
+            port.showResignButton();
+          });
+          const before = controlsStore.getGameControlsSnapshot().presentation;
+          const timeouts = window.harness.counters().uiTimeouts;
+          run(() => applyGameplayControlsPreset("automatchRequest"));
+          const after = controlsStore.getGameControlsSnapshot().presentation;
+          return {
+            undoUnchanged: before.gameControls.undo === after.gameControls.undo,
+            navigationUnchanged:
+              before.navigationVisible === after.navigationVisible,
+            resignUnchanged:
+              before.gameControls.resignVisible ===
+              after.gameControls.resignVisible,
+            deadlineUnchanged:
+              timeouts === window.harness.counters().uiTimeouts,
+          };
+        }, waiting);
+        assert.deepEqual(retained, {
+          undoUnchanged: true,
+          navigationUnchanged: true,
+          resignUnchanged: true,
+          deadlineUnchanged: true,
+        });
+        assert.equal(
+          await button(
+            page,
+            waiting ? "Automatching" : "Automatch",
+          ).isDisabled(),
+          true,
+        );
+        assert.equal(await button(page, "Undo").isDisabled(), false);
+        assert.equal(await count(page, "Bot"), 0);
+        assert.equal(await count(page, "Move History"), 0);
+      }
+
+      for (const visible of [false, true]) {
+        const retained = await page.evaluate((visible) => {
+          const {
+            run,
+            port,
+            controlsStore,
+            applyDisposedControlsPreset,
+            applyGameplayControlsPreset,
+          } = window.harness;
+          run(() => {
+            applyDisposedControlsPreset(false);
+            port.showTimerButtonProgressing(0, 10, false);
+            port.setNavigationListButtonVisible(visible);
+            port.setAutomoveActionVisible(visible);
+            port.setAutomoveActionEnabled(false);
+            port.showMoveHistoryButton(visible);
+            if (visible) port.showResignButton();
+          });
+          const before = controlsStore.getGameControlsSnapshot().presentation;
+          run(() => applyGameplayControlsPreset("puzzle"));
+          const after = controlsStore.getGameControlsSnapshot().presentation;
+          return {
+            timerUnchanged:
+              before.gameControls.timer === after.gameControls.timer,
+            automoveUnchanged:
+              before.gameControls.automove === after.gameControls.automove,
+            navigationUnchanged:
+              before.navigationVisible === after.navigationVisible,
+            historyUnchanged:
+              before.moveHistoryVisible === after.moveHistoryVisible,
+            resignUnchanged:
+              before.gameControls.resignVisible ===
+              after.gameControls.resignVisible,
+          };
+        }, visible);
+        assert.deepEqual(retained, {
+          timerUnchanged: true,
+          automoveUnchanged: true,
+          navigationUnchanged: true,
+          historyUnchanged: true,
+          resignUnchanged: true,
+        });
+        assert.equal(await count(page, "Undo"), 1);
+        assert.equal(await count(page, "Voice Reaction"), 1);
+        assert.equal(await button(page, "Timer").isDisabled(), true);
+        assert.equal(await count(page, "Automatch"), 0);
+        assert.equal(await count(page, "Bot Game"), 0);
+      }
+    });
+  },
+);
+
+test(
+  "session presets clear invite loading, copied text, and ready state before reopening",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      for (const preset of [
+        "watch",
+        "snapshot",
+        false,
+        true,
+        "localMatch",
+        "automatchRequest",
+        "puzzle",
+      ]) {
         await page.evaluate(() =>
           window.harness.run(() => {
             window.harness.applyDisposedControlsPreset(false);
@@ -2611,6 +3021,10 @@ test(
               window.harness.run(() => {
                 if (typeof preset === "boolean") {
                   window.harness.applyDisposedControlsPreset(preset);
+                } else if (
+                  ["localMatch", "automatchRequest", "puzzle"].includes(preset)
+                ) {
+                  window.harness.applyGameplayControlsPreset(preset);
                 } else {
                   window.harness.applyRouteControlsPreset(preset);
                 }
@@ -2671,6 +3085,7 @@ test(
               controlsStore,
               applyRouteControlsPreset,
               applyDisposedControlsPreset,
+              applyGameplayControlsPreset,
             } = window.harness;
             const before = controlsStore.getGameControlsSnapshot();
             let notifications = 0;
@@ -2690,6 +3105,13 @@ test(
                 }
                 applyDisposedControlsPreset(false);
                 applyDisposedControlsPreset(true);
+                for (const preset of [
+                  "localMatch",
+                  "automatchRequest",
+                  "puzzle",
+                ]) {
+                  applyGameplayControlsPreset(preset);
+                }
               });
               return {
                 unchanged: controlsStore.getGameControlsSnapshot() === before,

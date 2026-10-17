@@ -4,6 +4,7 @@ import { connection } from "./connection";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { syncTutorialProgress } from "../content/problems";
 import { storage } from "../utils/storage";
+import { createProfileCosmeticWrites } from "../utils/profileCosmeticStorage";
 import { sessionAuth } from "../session/sessionAuth";
 import {
   formatProfileDisplayName,
@@ -36,29 +37,7 @@ export function applyVerifiedProfile(
         throw error;
     }
   };
-  const presentationWrites = [
-    {
-      read: () => localStorage.getItem("cardBackgroundId"),
-      write: () =>
-        storage.setCardBackgroundId(profile.cardBackgroundId ?? null),
-    },
-    {
-      read: () => localStorage.getItem("cardStickers"),
-      write: () => storage.setCardStickers(profile.cardStickers ?? null),
-    },
-    {
-      read: () => localStorage.getItem("cardSubtitleId"),
-      write: () => storage.setCardSubtitleId(profile.cardSubtitleId ?? null),
-    },
-    {
-      read: () => localStorage.getItem("profileCounter"),
-      write: () => storage.setProfileCounter(profile.profileCounter ?? null),
-    },
-    {
-      read: () => localStorage.getItem("profileMons"),
-      write: () => storage.setProfileMons(profile.profileMons ?? null),
-    },
-  ];
+  const presentationWrites = createProfileCosmeticWrites(profile);
   const emoji = normalizeProfileEmojiId(profile.emoji, 1);
   storage.setLoginId(uid);
   storage.setProfileId(profile.id);

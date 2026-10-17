@@ -60,6 +60,9 @@ import {
 import { useReactionActions } from "./controls/useReactionActions";
 import { useAutomatchControls } from "./controls/useAutomatchControls";
 import { useRematchSeries } from "./controls/useRematchSeries";
+import { useMatchControlTimers } from "./controls/useMatchControlTimers";
+import { useConfirmationAnchor } from "./controls/useConfirmationAnchor";
+import { AnchoredConfirmation } from "./controls/AnchoredConfirmation";
 import { RematchSeriesControls } from "./controls/RematchSeriesControls";
 import {
   STICKER_IMAGE_BASE_URL,
@@ -106,10 +109,6 @@ import {
 } from "../session/AppSessionManager";
 import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
-import {
-  decrementLifecycleCounter,
-  incrementLifecycleCounter,
-} from "../lifecycle/lifecycleDiagnostics";
 import { problems } from "../content/problems";
 import { emojis } from "../content/emojis";
 import { openEventModal } from "./eventModalController";
@@ -132,10 +131,6 @@ import {
 } from "../game/gameControlsStore";
 import { didDismissSomethingWithOutsideTapJustNow } from "./controls/outsideTapState";
 import { observeBottomControlsViewport } from "./controls/bottomControlsViewport";
-import {
-  getTimerEnableDelayMs,
-  hasControlDeadlineElapsed,
-} from "./controls/controlTiming";
 
 export {
   didDismissSomethingWithOutsideTapJustNow,
@@ -449,10 +444,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
   const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(
     undefined,
   );
-  const [timerConfirmLeft, setTimerConfirmLeft] = useState<number | null>(null);
-  const [claimVictoryConfirmLeft, setClaimVictoryConfirmLeft] = useState<
-    number | null
-  >(null);
 
   const materialUrls = useMaterialImages(
     isWagerMode && isReactionPickerVisible,
@@ -484,11 +475,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
   const timerConfirmRef = useRef<HTMLDivElement>(null);
   const claimVictoryButtonRef = useRef<HTMLButtonElement>(null);
   const claimVictoryConfirmRef = useRef<HTMLDivElement>(null);
-  const hourglassEnableTimeoutRef = useRef<number | null>(null);
-  const hourglassEnableDeadlineRef = useRef<number | null>(null);
-  const isTimerButtonDisabledRef = useRef(true);
-  const isStartTimerVisibleRef = useRef(false);
-  const matchScopedTimeoutIdsRef = useRef<Set<number>>(new Set());
   const navigationPopupRef = useRef<HTMLDivElement>(null);
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const boardStylePickerRef = useRef<HTMLDivElement>(null);
@@ -506,47 +492,20 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     );
   }, []);
 
-  const clearTrackedMatchScopedTimeout = useCallback(
-    (timeoutId: number | null) => {
-      if (timeoutId === null) {
-        return;
-      }
-      if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
-        matchScopedTimeoutIdsRef.current.delete(timeoutId);
-        decrementLifecycleCounter("uiTimeouts");
-      }
-      clearTimeout(timeoutId);
-    },
-    [],
-  );
-
-  const setMatchScopedTimeout = useCallback(
-    (callback: () => void, delay: number, guard?: () => boolean): number => {
-      const timeoutId = window.setTimeout(() => {
-        if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
-          matchScopedTimeoutIdsRef.current.delete(timeoutId);
-          decrementLifecycleCounter("uiTimeouts");
-        }
-        if (guard && !guard()) {
-          return;
-        }
-        callback();
-      }, delay);
-      matchScopedTimeoutIdsRef.current.add(timeoutId);
-      incrementLifecycleCounter("uiTimeouts");
-      return timeoutId;
-    },
-    [],
-  );
+  const {
+    setMatchScopedTimeout,
+    clearTrackedMatchScopedTimeout,
+    clearMatchScopedTimeouts,
+    hideTimerButtons: hideTimerButtonsHandler,
+    showTimerButtonProgressing: showTimerButtonProgressingHandler,
+  } = useMatchControlTimers({
+    isStartTimerVisible,
+    isTimerButtonDisabled,
+    dispatchGameControls,
+  });
 
   const clearAllMatchScopedTimeouts = useCallback(() => {
-    matchScopedTimeoutIdsRef.current.forEach((timeoutId) => {
-      clearTimeout(timeoutId);
-      decrementLifecycleCounter("uiTimeouts");
-    });
-    matchScopedTimeoutIdsRef.current.clear();
-    hourglassEnableTimeoutRef.current = null;
-    hourglassEnableDeadlineRef.current = null;
+    clearMatchScopedTimeouts();
     clearAutomatchMatchScope();
     if (endMatchGracePeriodTimeoutRef.current !== null) {
       clearTimeout(endMatchGracePeriodTimeoutRef.current);
@@ -554,51 +513,7 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     }
     setIsEndMatchTemporarilyDisabled(false);
     setIsVoiceReactionDisabled(false);
-  }, [clearAutomatchMatchScope]);
-
-  useEffect(() => {
-    isTimerButtonDisabledRef.current = isTimerButtonDisabled;
-  }, [isTimerButtonDisabled]);
-
-  useEffect(() => {
-    isStartTimerVisibleRef.current = isStartTimerVisible;
-  }, [isStartTimerVisible]);
-
-  const tryEnableTimerButtonFromDeadline = useCallback(() => {
-    const deadline = hourglassEnableDeadlineRef.current;
-    if (!hasControlDeadlineElapsed(deadline, Date.now())) {
-      return;
-    }
-    if (hourglassEnableTimeoutRef.current !== null) {
-      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
-      hourglassEnableTimeoutRef.current = null;
-    }
-    hourglassEnableDeadlineRef.current = null;
-    if (isStartTimerVisibleRef.current && isTimerButtonDisabledRef.current) {
-      dispatchGameControls({ type: "enableTimer" });
-    }
-  }, [clearTrackedMatchScopedTimeout, dispatchGameControls]);
-
-  useEffect(() => {
-    const handleTimerDeadlineCheck = () => {
-      if (document.visibilityState === "hidden") {
-        return;
-      }
-      tryEnableTimerButtonFromDeadline();
-    };
-    handleTimerDeadlineCheck();
-    document.addEventListener("visibilitychange", handleTimerDeadlineCheck);
-    window.addEventListener("focus", handleTimerDeadlineCheck);
-    window.addEventListener("pageshow", handleTimerDeadlineCheck);
-    return () => {
-      document.removeEventListener(
-        "visibilitychange",
-        handleTimerDeadlineCheck,
-      );
-      window.removeEventListener("focus", handleTimerDeadlineCheck);
-      window.removeEventListener("pageshow", handleTimerDeadlineCheck);
-    };
-  }, [tryEnableTimerButtonFromDeadline]);
+  }, [clearAutomatchMatchScope, clearMatchScopedTimeouts]);
 
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
@@ -691,51 +606,20 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     });
   }, [visibleStickerIds, isReactionPickerVisible, isWagerMode, wagerSelection]);
 
-  const updateTimerConfirmPosition = useCallback(() => {
-    if (!timerButtonRef.current || !controlsContainerRef.current) return;
-    const buttonRect = timerButtonRef.current.getBoundingClientRect();
-    const containerRect = controlsContainerRef.current.getBoundingClientRect();
-    const center = buttonRect.left + buttonRect.width / 2 - containerRect.left;
-    const padding = 16;
-    const clampedCenter = Math.min(
-      containerRect.width - padding,
-      Math.max(padding, center),
-    );
-    setTimerConfirmLeft(clampedCenter);
-  }, []);
-
-  const updateClaimVictoryConfirmPosition = useCallback(() => {
-    if (!claimVictoryButtonRef.current || !controlsContainerRef.current) return;
-    const buttonRect = claimVictoryButtonRef.current.getBoundingClientRect();
-    const containerRect = controlsContainerRef.current.getBoundingClientRect();
-    const center = buttonRect.left + buttonRect.width / 2 - containerRect.left;
-    const padding = 16;
-    const clampedCenter = Math.min(
-      containerRect.width - padding,
-      Math.max(padding, center),
-    );
-    setClaimVictoryConfirmLeft(clampedCenter);
-  }, []);
-
-  useEffect(() => {
-    if (!isTimerConfirmVisible) return;
-    const raf = requestAnimationFrame(updateTimerConfirmPosition);
-    window.addEventListener("resize", updateTimerConfirmPosition);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", updateTimerConfirmPosition);
-    };
-  }, [isTimerConfirmVisible, updateTimerConfirmPosition]);
-
-  useEffect(() => {
-    if (!isClaimVictoryConfirmVisible) return;
-    const raf = requestAnimationFrame(updateClaimVictoryConfirmPosition);
-    window.addEventListener("resize", updateClaimVictoryConfirmPosition);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", updateClaimVictoryConfirmPosition);
-    };
-  }, [isClaimVictoryConfirmVisible, updateClaimVictoryConfirmPosition]);
+  const { left: timerConfirmLeft, updatePosition: updateTimerConfirmPosition } =
+    useConfirmationAnchor({
+      isOpen: isTimerConfirmVisible,
+      triggerRef: timerButtonRef,
+      containerRef: controlsContainerRef,
+    });
+  const {
+    left: claimVictoryConfirmLeft,
+    updatePosition: updateClaimVictoryConfirmPosition,
+  } = useConfirmationAnchor({
+    isOpen: isClaimVictoryConfirmVisible,
+    triggerRef: claimVictoryButtonRef,
+    containerRef: controlsContainerRef,
+  });
 
   useEffect(() => {
     const unsubscribe = subscribeToWagerState((state) => {
@@ -840,51 +724,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     updateGameControlsPresentation({ voiceReactionVisible: show });
     if (!show) {
       dispatchControlsUi({ type: "dismissPopups", reaction: true });
-    }
-  };
-
-  const hideTimerButtonsHandler = () => {
-    if (hourglassEnableTimeoutRef.current) {
-      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
-      hourglassEnableTimeoutRef.current = null;
-    }
-    hourglassEnableDeadlineRef.current = null;
-    dispatchGameControls({ type: "hideTimers" });
-  };
-
-  const showTimerButtonProgressingHandler = (
-    currentProgress: number,
-    target: number,
-    enableWhenTargetReached: boolean,
-  ) => {
-    if (hourglassEnableTimeoutRef.current) {
-      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
-      hourglassEnableTimeoutRef.current = null;
-    }
-    hourglassEnableDeadlineRef.current = null;
-
-    dispatchGameControls({
-      type: "showTimerProgress",
-      config: {
-        duration: target,
-        progress: currentProgress,
-        requestDate: Date.now(),
-      },
-    });
-
-    if (enableWhenTargetReached) {
-      const timeUntilTarget = getTimerEnableDelayMs(currentProgress, target);
-      if (timeUntilTarget <= 0) {
-        dispatchGameControls({ type: "enableTimer" });
-        return;
-      }
-      hourglassEnableDeadlineRef.current = Date.now() + timeUntilTarget;
-      hourglassEnableTimeoutRef.current = setMatchScopedTimeout(() => {
-        dispatchGameControls({ type: "enableTimer" });
-        hourglassEnableTimeoutRef.current = null;
-        hourglassEnableDeadlineRef.current = null;
-      }, timeUntilTarget);
-      tryEnableTimerButtonFromDeadline();
     }
   };
 
@@ -1662,40 +1501,21 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
           </ReactionPillsContainer>
         )}
         {isTimerConfirmVisible && (
-          <ResignConfirmation
-            ref={timerConfirmRef}
-            style={
-              timerConfirmLeft !== null
-                ? {
-                    left: `${timerConfirmLeft}px`,
-                    right: "auto",
-                    transform: "translateX(-50%)",
-                  }
-                : undefined
-            }
-          >
+          <AnchoredConfirmation ref={timerConfirmRef} left={timerConfirmLeft}>
             <ReactionPill onClick={handleConfirmStartTimer}>
               Start a Timer
             </ReactionPill>
-          </ResignConfirmation>
+          </AnchoredConfirmation>
         )}
         {isClaimVictoryConfirmVisible && (
-          <ResignConfirmation
+          <AnchoredConfirmation
             ref={claimVictoryConfirmRef}
-            style={
-              claimVictoryConfirmLeft !== null
-                ? {
-                    left: `${claimVictoryConfirmLeft}px`,
-                    right: "auto",
-                    transform: "translateX(-50%)",
-                  }
-                : undefined
-            }
+            left={claimVictoryConfirmLeft}
           >
             <ReactionPill onClick={handleConfirmClaimVictory}>
               Claim Victory
             </ReactionPill>
-          </ResignConfirmation>
+          </AnchoredConfirmation>
         )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>

@@ -1,11 +1,28 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { registerHooks } from "node:module";
 import test from "node:test";
 import * as MonsRules from "mons-rules";
 import { createGameVariantHelpers } from "@mons/shared/game-variants";
 import ts from "typescript";
 import { createMatchTimerHarness } from "./fixtures/matchTimerHarness.mjs";
 import { createRematchViewingHarness } from "./fixtures/rematchViewingHarness.mjs";
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (
+      context.parentURL?.endsWith(".ts") &&
+      (specifier.startsWith("./") || specifier.startsWith("../")) &&
+      !/\.[^/]+$/.test(specifier)
+    ) {
+      return nextResolve(`${specifier}.ts`, context);
+    }
+    return nextResolve(specifier, context);
+  },
+});
+
+const { createSessionControlsPresenter } =
+  await import("../src/game/sessionControls.ts");
 
 const variants = createGameVariantHelpers(MonsRules);
 const randomVariant = variants
@@ -185,6 +202,7 @@ function harness({ bot = false } = {}) {
     dismissNotificationBannerIfNeeded: noop,
     automove: () => automoves.push(capture()),
   };
+  Object.assign(dependencies, createSessionControlsPresenter(dependencies));
   const { outputText } = ts.transpileModule(
     `${Object.keys(initial)
       .map((name) => `let ${name} = initial.${name};`)
@@ -256,6 +274,18 @@ function assertFreshMatch(state, bot) {
   assert.equal(state.boardRenderSessionId, 5);
 }
 
+function assertPlayableControls(ui) {
+  assert.equal(ui.setUndoVisible, true);
+  assert.equal(ui.setAutomoveActionVisible, true);
+  assert.equal(ui.setAutomoveActionEnabled, true);
+  assert.equal(ui.showMoveHistoryButton, true);
+  assert.equal(ui.resign, true);
+  assert.equal(ui.setInviteLinkActionVisible, false);
+  assert.equal(ui.setAutomatchVisible, false);
+  assert.equal(ui.setBotGameOptionVisible, false);
+  assert.equal(ui.setNavigationListButtonVisible, false);
+}
+
 test("local rematch clears historical and terminal state while preserving history and alternating sides", () => {
   const h = harness();
   h.rematch();
@@ -263,6 +293,7 @@ test("local rematch clears historical and terminal state while preserving histor
   assertFreshMatch(state, false);
   assert.equal(h.renders.length, 1);
   assertFreshMatch(h.renders[0], false);
+  assertPlayableControls(h.renders[0].ui);
   assert.notEqual(state.game, h.originalGame);
   assert.deepEqual(h.seeds, [variants.legacyDefaultGameVariant]);
   assert.equal(state.game.variant, variants.legacyDefaultGameVariant);
@@ -305,6 +336,7 @@ test("white bot start opens with one automove only after the new model, colors a
   assert.equal(started.renderCount, 1);
   assert.equal(h.renders.length, 1);
   assert.equal(h.renders[0].game, started.game);
+  assertPlayableControls(h.renders[0].ui);
   assert.equal(started.ui.flipped, true);
   assert.equal(started.ui.opponentIsBot, true);
   assert.equal(started.ui.reset, true);
@@ -336,5 +368,6 @@ test("bot rematch preserves the previous game, switches the bot to black and wai
   assert.equal(previous.boardFlipped, true);
   assert.equal(h.renders.length, 1);
   assert.notEqual(h.renders[0].game, h.originalGame);
+  assertPlayableControls(h.renders[0].ui);
   assert.equal(h.automoves.length, 0);
 });

@@ -2,6 +2,7 @@ import type { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
 import { createRatingUpdater } from "@mons/shared/ratings";
 import { storage } from "./storage";
+import { createProfileCosmeticWrites } from "./profileCosmeticStorage";
 import {
   ensForUids,
   ethAddressesForUids,
@@ -150,6 +151,15 @@ export function updatePlayerMetadataWithProfile(
     }
     onSuccess();
   } else {
+    const cosmeticBaselines = own
+      ? createProfileCosmeticWrites(profile).map((field) => {
+          try {
+            return field.read();
+          } catch {
+            return undefined;
+          }
+        })
+      : [];
     getPlayerProfileByLoginId(loginId)
       .then((profile) => {
         if (!sessionGuard()) {
@@ -172,25 +182,12 @@ export function updatePlayerMetadataWithProfile(
             );
           }
 
-          if (profile.cardBackgroundId) {
-            storage.setCardBackgroundId(profile.cardBackgroundId);
-          }
-
-          if (profile.cardStickers) {
-            storage.setCardStickers(profile.cardStickers);
-          }
-
-          if (profile.cardSubtitleId) {
-            storage.setCardSubtitleId(profile.cardSubtitleId);
-          }
-
-          if (profile.profileCounter) {
-            storage.setProfileCounter(profile.profileCounter);
-          }
-
-          if (profile.profileMons) {
-            storage.setProfileMons(profile.profileMons);
-          }
+          createProfileCosmeticWrites(profile).forEach((field, index) => {
+            const baseline = cosmeticBaselines[index];
+            if (baseline !== undefined && field.read() === baseline) {
+              field.write();
+            }
+          });
 
           syncPlayerMiningState(profile);
 

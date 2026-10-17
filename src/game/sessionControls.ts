@@ -5,6 +5,9 @@ import { PrimaryActionType } from "../ui/controls/primaryAction";
 export type RouteControlsPreset =
   "automatchTransition" | "watch" | "snapshot" | "lobby" | "invite";
 
+export type GameplayControlsPreset =
+  "localMatch" | "automatchRequest" | "puzzle";
+
 type SessionControlsCommands = Pick<
   typeof bottomControls,
   | "setHomeVisible"
@@ -17,6 +20,7 @@ type SessionControlsCommands = Pick<
   | "setUndoVisible"
   | "setAutomoveActionVisible"
   | "showMoveHistoryButton"
+  | "showResignButton"
   | "setPlaySamePuzzleAgainButtonVisible"
   | "setAutomatchEnabled"
   | "setAutomoveActionEnabled"
@@ -103,7 +107,50 @@ export function createSessionControlsPresenter(
     commands.showPrimaryAction(PrimaryActionType.None);
   };
 
-  return { applyRouteControlsPreset, applyDisposedControlsPreset };
+  const applyGameplayControlsPreset = (
+    preset: GameplayControlsPreset,
+  ): void => {
+    switch (preset) {
+      case "localMatch":
+        commands.setHomeVisible(true);
+        commands.setIslandButtonDimmed(true);
+        commands.setUndoVisible(true);
+        commands.setBrushAndNavigationButtonDimmed(true);
+        commands.setInviteLinkActionVisible(false);
+        commands.setAutomatchVisible(false);
+        commands.setBotGameOptionVisible(false);
+        commands.setNavigationListButtonVisible(false);
+        commands.setAutomoveActionVisible(true);
+        commands.setAutomoveActionEnabled(true);
+        commands.showMoveHistoryButton(true);
+        commands.showResignButton();
+        return;
+      case "automatchRequest":
+        commands.setHomeVisible(true);
+        commands.setIslandButtonDimmed(true);
+        commands.setBrushAndNavigationButtonDimmed(true);
+        commands.setAutomoveActionVisible(false);
+        commands.showMoveHistoryButton(false);
+        commands.setInviteLinkActionVisible(false);
+        commands.setBotGameOptionVisible(false);
+        return;
+      case "puzzle":
+        commands.setHomeVisible(true);
+        commands.setIslandButtonDimmed(true);
+        commands.setBrushAndNavigationButtonDimmed(true);
+        commands.setUndoVisible(true);
+        commands.setInviteLinkActionVisible(false);
+        commands.setAutomatchVisible(false);
+        commands.setBotGameOptionVisible(false);
+        commands.showVoiceReactionButton(true);
+    }
+  };
+
+  return {
+    applyRouteControlsPreset,
+    applyDisposedControlsPreset,
+    applyGameplayControlsPreset,
+  };
 }
 
 const sessionControls = createSessionControlsPresenter({
@@ -115,3 +162,5 @@ export const applyRouteControlsPreset =
   sessionControls.applyRouteControlsPreset;
 export const applyDisposedControlsPreset =
   sessionControls.applyDisposedControlsPreset;
+export const applyGameplayControlsPreset =
+  sessionControls.applyGameplayControlsPreset;

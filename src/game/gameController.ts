@@ -9,6 +9,7 @@ import { MATCH_TIMER_DURATION_SECONDS } from "@mons/shared/timers";
 import { createMatchTimerController } from "./matchTimerController";
 import {
   applyDisposedControlsPreset,
+  applyGameplayControlsPreset,
   applyRouteControlsPreset,
 } from "./sessionControls";
 import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
@@ -2019,18 +2020,7 @@ function initializeLocalMatch(mode: "local" | "bot") {
   currentInputs = [];
   matchTimers.reset(null);
   publishGameControlsContext();
-  setHomeVisible(true);
-  setIslandButtonDimmed(true);
-  setUndoVisible(true);
-  setBrushAndNavigationButtonDimmed(true);
-  setInviteLinkActionVisible(false);
-  setAutomatchVisible(false);
-  setBotGameOptionVisible(false);
-  setNavigationListButtonVisible(false);
-  setAutomoveActionVisible(true);
-  setAutomoveActionEnabled(true);
-  showMoveHistoryButton(true);
-  showResignButton();
+  applyGameplayControlsPreset("localMatch");
 }
 
 function startFreshLocalMatch() {
@@ -2251,14 +2241,7 @@ export function didFindInviteThatCanBeJoined() {
 export function didClickAutomatchButton(
   onAutomatchResponse?: (response: AutomatchResponse) => void,
 ) {
-  setHomeVisible(true);
-  setIslandButtonDimmed(true);
-
-  setBrushAndNavigationButtonDimmed(true);
-  setAutomoveActionVisible(false);
-  showMoveHistoryButton(false);
-  setInviteLinkActionVisible(false);
-  setBotGameOptionVisible(false);
+  applyGameplayControlsPreset("automatchRequest");
   dismissNotificationBannerIfNeeded();
   setNavigationListButtonVisible(false);
   Board.hideBoardPlayersInfo();
@@ -4838,15 +4821,7 @@ export function didSelectPuzzle(
   clearMoveHistoryFlipOverrideForCurrentSession();
   flashbackMode = false;
   didStartLocalGame = true;
-  setHomeVisible(true);
-  setIslandButtonDimmed(true);
-
-  setBrushAndNavigationButtonDimmed(true);
-  setUndoVisible(true);
-  setInviteLinkActionVisible(false);
-  setAutomatchVisible(false);
-  setBotGameOptionVisible(false);
-  showVoiceReactionButton(true);
+  applyGameplayControlsPreset("puzzle");
   closeNavigationAndAppearancePopupIfAny();
 
   setNewBoard(false);
