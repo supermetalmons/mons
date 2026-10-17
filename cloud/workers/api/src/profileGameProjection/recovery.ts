@@ -18,7 +18,7 @@ import {
 } from "../profileGameProjectionTasks.ts";
 import { createProfileGameProjectionLockStore } from "../profileGameProjectionLocksD1.ts";
 import { createProfileLinkCatchupStore } from "../profileLinkCatchupD1.ts";
-import { runRecoveryItems } from "../recoveryRunner.ts";
+import { collectRecoveryItems } from "../recoveryRunner.ts";
 import {
   logRecoveryEvent,
   reportRecoveryFailure,
@@ -322,13 +322,9 @@ export async function sweepRatingProfileGameProjections(
     nowMs,
     PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
   );
-  const tasks: ProfileGameProjectionTask[] = [];
-  let firstFailure: unknown;
-  let index = 0;
-  await runRecoveryItems(
+  const { successes, failures } = await collectRecoveryItems(
     records,
-    async (record) => {
-      const itemIndex = index++;
+    async (record, itemIndex) => {
       let phase: "claim" | "quarantine" = "claim";
       try {
         const claimed = await rating.claimRatingProfileGameProjection(
@@ -354,12 +350,11 @@ export async function sweepRatingProfileGameProjections(
           );
           return;
         }
-        tasks.push({
+        return {
           kind: "rating-profile-game-projection",
           operationId: record.operationId,
-        });
+        } satisfies ProfileGameProjectionTask;
       } catch (error) {
-        firstFailure ||= error;
         reportRecoveryFailure(
           logger,
           {
@@ -372,16 +367,18 @@ export async function sweepRatingProfileGameProjections(
           },
           error,
         );
+        throw error;
       }
     },
     { concurrency: PROFILE_GAME_PROJECTION_SWEEP_CONCURRENCY },
   );
+  const tasks = successes.flatMap(({ value }) => (value ? [value] : []));
   await sendProfileGameProjectionTasks(
     env.PROFILE_GAME_PROJECTION_QUEUE,
     tasks,
   );
-  if (firstFailure) {
-    throw firstFailure;
+  if (failures.length > 0) {
+    throw failures[0].error;
   }
   return tasks.length;
 }

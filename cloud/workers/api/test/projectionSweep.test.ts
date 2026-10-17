@@ -212,6 +212,44 @@ test("repair and claim reporters receive original failures and cannot interrupt 
   ]);
 });
 
+test("repair and claim failures are reported before the next item begins", async () => {
+  const events: string[] = [];
+  const report = (_item: number, error: unknown, index: number) => {
+    assert.equal(error, undefined);
+    assert.equal(index, 0);
+    events.push("report");
+    throw new Error("reporter-unavailable");
+  };
+  const repair = await collectProjectionRepairs(
+    [0, 1],
+    async (item) => {
+      events.push(`repair-${item}`);
+      if (item === 0) throw undefined;
+      return { kind: "repaired", task: item };
+    },
+    "repair-failed",
+    report,
+  );
+  assert.deepEqual(events, ["repair-0", "report", "repair-1"]);
+  assert.deepEqual(repair.repairedTasks, [1]);
+  assert.equal(repair.failures[0].message, "repair-failed");
+
+  events.length = 0;
+  const claims = await collectSuccessfulClaims(
+    [0, 1],
+    async (item) => {
+      events.push(`claim-${item}`);
+      if (item === 0) throw undefined;
+      return true;
+    },
+    "claim-failed",
+    report,
+  );
+  assert.deepEqual(events, ["claim-0", "report", "claim-1"]);
+  assert.deepEqual(claims.claimed, [1]);
+  assert.equal(claims.failure?.message, "claim-failed");
+});
+
 test("projection dispatch sends initial tasks and successful claims before returning all failures", async () => {
   const failure = new Error("claim-unavailable");
   const laterFailure = new Error("later-failure");

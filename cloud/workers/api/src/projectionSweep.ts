@@ -1,8 +1,5 @@
-import { runRecoveryItems } from "./recoveryRunner.ts";
-import {
-  reportRecoveryItemFailure,
-  type RecoveryFailureReporter,
-} from "./recoveryReporting.ts";
+import { collectRecoveryItems } from "./recoveryRunner.ts";
+import type { RecoveryFailureReporter } from "./recoveryReporting.ts";
 
 export async function sendQueueTasks<T>(
   queue: Pick<Queue<T>, "sendBatch">,
@@ -28,27 +25,19 @@ export async function collectProjectionRepairs<Entry, Task = never>(
   removedCount: number;
   failures: Error[];
 }> {
-  const repairedTasks: Task[] = [];
-  let removedCount = 0;
-  const failures: Error[] = [];
-  let index = 0;
-  await runRecoveryItems(entries, async (entry) => {
-    const itemIndex = index++;
-    try {
-      const result = await repair(entry);
-      if (result?.kind === "repaired") {
-        repairedTasks.push(result.task);
-      } else if (result?.kind === "removed") {
-        removedCount += 1;
-      }
-    } catch (error) {
-      reportRecoveryItemFailure(onFailure, entry, error, itemIndex);
-      failures.push(
-        error instanceof Error ? error : new Error(fallbackErrorMessage),
-      );
-    }
+  const { successes, failures } = await collectRecoveryItems(entries, repair, {
+    onFailure,
   });
-  return { repairedTasks, removedCount, failures };
+  return {
+    repairedTasks: successes.flatMap(({ value }) =>
+      value?.kind === "repaired" ? [value.task] : [],
+    ),
+    removedCount: successes.filter(({ value }) => value?.kind === "removed")
+      .length,
+    failures: failures.map(({ error }) =>
+      error instanceof Error ? error : new Error(fallbackErrorMessage),
+    ),
+  };
 }
 
 export async function collectSuccessfulClaims<T>(
@@ -57,23 +46,19 @@ export async function collectSuccessfulClaims<T>(
   fallbackErrorMessage: string,
   onFailure?: RecoveryFailureReporter<T>,
 ): Promise<{ claimed: T[]; failure: Error | null; failures: Error[] }> {
-  const claimed: T[] = [];
-  const failures: Error[] = [];
-  let index = 0;
-  await runRecoveryItems(items, async (item) => {
-    const itemIndex = index++;
-    try {
-      if (await claim(item)) {
-        claimed.push(item);
-      }
-    } catch (error) {
-      reportRecoveryItemFailure(onFailure, item, error, itemIndex);
-      failures.push(
-        error instanceof Error ? error : new Error(fallbackErrorMessage),
-      );
-    }
-  });
-  return { claimed, failure: failures[0] ?? null, failures };
+  const { successes, failures: itemFailures } = await collectRecoveryItems(
+    items,
+    claim,
+    { onFailure },
+  );
+  const failures = itemFailures.map(({ error }) =>
+    error instanceof Error ? error : new Error(fallbackErrorMessage),
+  );
+  return {
+    claimed: successes.flatMap(({ item, value }) => (value ? [item] : [])),
+    failure: failures[0] ?? null,
+    failures,
+  };
 }
 
 export async function claimAndEnqueueProjectionTasks<Candidate, Task>({

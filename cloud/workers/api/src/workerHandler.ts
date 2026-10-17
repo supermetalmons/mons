@@ -1,7 +1,6 @@
-import { handleRequest } from "./router.ts";
+import { handleFetch, handleRequest } from "./router.ts";
 import { requireActiveDurableMatchState } from "./matchStateAuthority.ts";
 import { readMatchStateControl } from "./matchStateD1.ts";
-import { handleTelegramBridge } from "./telegramBridge.ts";
 import {
   AUTH_RECOVERY_QUEUE_NAME,
   handleAuthRecoverySweep,
@@ -39,17 +38,9 @@ import {
 import { sweepGameSessionMutationReceipts } from "./gameSessionMutationRunner.ts";
 import { sweepExpiredAuthState } from "./authStateD1.ts";
 import {
-  handleTelegramCommand,
-  TELEGRAM_COMMAND_PATH,
-} from "./telegramCommand.ts";
-import {
   assertProfileMutationAllowed,
   profileBackgroundMutationsEnabled,
 } from "./profileCanonicalActivation.ts";
-import {
-  handleHistoricalMatchRoute,
-  HISTORICAL_MATCH_PATH,
-} from "./historicalMatchRoute.ts";
 import { createGameplayRepository } from "./gameplayRepository.ts";
 import { createAutomatchPersistence } from "./automatchPersistence.ts";
 import { createMatchStateSource } from "./matchStateSource.ts";
@@ -60,35 +51,12 @@ import {
 import { sweepMatchTimerStarts } from "./matchTimerStartSweep.ts";
 import { recoverEventTransitionIntents } from "./eventRepository.ts";
 import { readAutomatchRuntimeControl } from "./automatchD1.ts";
-import { MATCH_SNAPSHOT_PATH } from "@mons/shared/game-sessions";
-import { handleMatchSnapshotRoute } from "./matchSnapshotRoute.ts";
 import { runScheduledTasks } from "./scheduledTasks.ts";
 import { withD1OperationTelemetry } from "./d1Telemetry.ts";
 
 export { extractIdFromJsonUri } from "./helius.ts";
 export type { ProviderFetch } from "./provider.ts";
-export { handleRequest };
-
-export function handleFetch(
-  request: Request,
-  env: Env,
-  ctx: ExecutionContext,
-): Promise<Response> {
-  const pathname = new URL(request.url).pathname;
-  if (pathname === MATCH_SNAPSHOT_PATH) {
-    return handleMatchSnapshotRoute(request, env);
-  }
-  if (pathname === HISTORICAL_MATCH_PATH) {
-    return handleHistoricalMatchRoute(request, env);
-  }
-  if (pathname === "/internal/telegram/delivery") {
-    return handleTelegramBridge(request, env);
-  }
-  if (pathname === TELEGRAM_COMMAND_PATH) {
-    return handleTelegramCommand(request, env);
-  }
-  return handleRequest(request, env, {}, ctx);
-}
+export { handleFetch, handleRequest };
 
 type ScheduledTasks = {
   authRecovery: () => Promise<unknown>;

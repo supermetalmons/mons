@@ -47,6 +47,7 @@ export {
   readCanonicalProfile,
   readCanonicalMergeTarget,
   resolveCanonicalProfile,
+  resolveCanonicalProfiles,
   resolveCanonicalPublicProfile,
   readCanonicalLeaderboard,
 } from "./profileCanonical/profiles.ts";

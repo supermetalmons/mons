@@ -709,6 +709,44 @@ describe("canonical auth recovery sweep quarantine", () => {
     expect(JSON.stringify(entries)).not.toContain("login_uids_json");
   });
 
+  it.each([undefined, null, 0, false, ""])(
+    "retains the first falsy enqueue failure %s while later rows continue",
+    async (firstFailure) => {
+      const first = await seedJob({ lastEnqueuedAtMs: 0 });
+      const second = await seedJob({ lastEnqueuedAtMs: 1 });
+      const healthy = await seedJob({ lastEnqueuedAtMs: 2 });
+      const originals = await Promise.all([readJob(first), readJob(second)]);
+      send.mockImplementation(async (task) => {
+        if (task.profileId === first) throw firstFailure;
+        if (task.profileId === second) throw new Error("later-queue-failure");
+      });
+
+      await expect(sweep()).rejects.toBe(firstFailure);
+      expect(send.mock.calls.map(([task]) => task.profileId)).toEqual([
+        first,
+        second,
+        healthy,
+      ]);
+      expect(await Promise.all([readJob(first), readJob(second)])).toEqual(
+        originals,
+      );
+      expect(
+        await Promise.all([readQuarantine(first), readQuarantine(second)]),
+      ).toEqual([null, null]);
+      expect(await readJob(healthy)).toMatchObject({
+        last_enqueued_at_ms: nowMs,
+        updated_at_ms: nowMs,
+        revision: 2,
+      });
+      expect(
+        logger.error.mock.calls.map(([entry]) => JSON.parse(entry)),
+      ).toMatchObject([
+        { profileId: first, itemIndex: 0, phase: "enqueue" },
+        { profileId: second, itemIndex: 1, phase: "enqueue" },
+      ]);
+    },
+  );
+
   it("omits malformed profile identity from quarantine failure logs", async () => {
     const invalid = await seedJob({
       profileId: " profile#private ",

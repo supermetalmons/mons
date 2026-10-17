@@ -1,12 +1,7 @@
-import type { NftApiRequest } from "@mons/shared/nfts";
-import { CORS_HEADERS, jsonResponse, parseRequestBody } from "./http.ts";
-import { fetchNftInventory } from "./inventory.ts";
-import {
-  HELIUS_TIMEOUT_MS,
-  MAX_HELIUS_RESPONSE_BODY_BYTES,
-  ProviderFailure,
-  type WorkerDependencies,
-} from "./provider.ts";
+import { MATCH_SNAPSHOT_PATH } from "@mons/shared/game-sessions";
+import { jsonResponse } from "./http.ts";
+import { handleNftRoute } from "./nftRoute.ts";
+import type { WorkerDependencies } from "./provider.ts";
 import {
   handleXCallback,
   type XCallbackDependencyOverrides,
@@ -74,203 +69,214 @@ import {
   isGameBootstrapPath,
   type GameBootstrapRouteDependencies,
 } from "./gameBootstrapRoute.ts";
+import { handleMatchSnapshotRoute } from "./matchSnapshotRoute.ts";
+import {
+  handleHistoricalMatchRoute,
+  HISTORICAL_MATCH_PATH,
+} from "./historicalMatchRoute.ts";
+import { handleTelegramBridge } from "./telegramBridge.ts";
+import {
+  handleTelegramCommand,
+  TELEGRAM_COMMAND_PATH,
+} from "./telegramCommand.ts";
 
-const RATE_LIMIT_RETRY_AFTER_SECONDS = 60;
-
-const defaultDependencies: WorkerDependencies = {
-  providerFetch: (input, init) => fetch(input, init),
-  providerTimeoutMs: HELIUS_TIMEOUT_MS,
-  providerMaxResponseBodyBytes: MAX_HELIUS_RESPONSE_BODY_BYTES,
-  logProviderFailure: (kind) => {
-    console.error({ event: "nft_provider_failure", kind });
-  },
-  logRateLimitFailure: () => {
-    console.error({ event: "nft_rate_limit_failure" });
-  },
+type RequestDependencies = Partial<WorkerDependencies> & {
+  auth?: AuthRouteDependencies;
+  session?: SessionRouteDependencies;
+  gameplay?: GameplayRouteDependencies;
+  mining?: MiningRouteDependencies;
+  profile?: ProfileRouteDependencies;
+  reactions?: InviteReactionRouteDependencies;
+  presentation?: MatchPresentationRouteDependencies;
+  metadata?: InviteMetadataRouteDependencies;
+  wagers?: InviteWagersRouteDependencies;
+  matchSync?: MatchSyncRouteDependencies;
+  gameBootstrap?: GameBootstrapRouteDependencies;
+  xCallback?: XCallbackDependencyOverrides;
 };
+
+type RouteInput = {
+  request: Request;
+  env: Env;
+  overrides: RequestDependencies;
+};
+
+type HttpRoute = {
+  matches: (pathname: string) => boolean;
+  fetchOnly?: true;
+} & (
+  | {
+      needsContext: false;
+      run: (input: RouteInput) => Promise<Response>;
+    }
+  | {
+      needsContext: true;
+      run: (
+        input: RouteInput & { ctx: WorkerExecutionContext },
+      ) => Promise<Response>;
+    }
+);
+
+const routes: readonly HttpRoute[] = [
+  {
+    matches: (path) => path === MATCH_SNAPSHOT_PATH,
+    fetchOnly: true,
+    needsContext: false,
+    run: ({ request, env }) => handleMatchSnapshotRoute(request, env),
+  },
+  {
+    matches: (path) => path === HISTORICAL_MATCH_PATH,
+    fetchOnly: true,
+    needsContext: false,
+    run: ({ request, env }) => handleHistoricalMatchRoute(request, env),
+  },
+  {
+    matches: (path) => path === "/internal/telegram/delivery",
+    fetchOnly: true,
+    needsContext: false,
+    run: ({ request, env }) => handleTelegramBridge(request, env),
+  },
+  {
+    matches: (path) => path === TELEGRAM_COMMAND_PATH,
+    fetchOnly: true,
+    needsContext: false,
+    run: ({ request, env }) => handleTelegramCommand(request, env),
+  },
+  {
+    matches: (path) => SESSION_PATHS.includes(path),
+    needsContext: false,
+    run: ({ request, env, overrides }) =>
+      handleSessionRoute(request, env, overrides.session),
+  },
+  {
+    matches: isGameBootstrapPath,
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleGameBootstrapRoute(request, env, ctx, overrides.gameBootstrap),
+  },
+  {
+    matches: isMatchSyncPath,
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleMatchSyncRoute(request, env, ctx, overrides.matchSync),
+  },
+  {
+    matches: isInviteWagersPath,
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleInviteWagersRoute(request, env, ctx, overrides.wagers),
+  },
+  {
+    matches: isInviteMetadataPath,
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleInviteMetadataRoute(request, env, ctx, overrides.metadata),
+  },
+  {
+    matches: isMatchPresentationPath,
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleMatchPresentationRoute(request, env, ctx, overrides.presentation),
+  },
+  {
+    matches: isInviteReactionPath,
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleInviteReactionRoute(request, env, ctx, overrides.reactions),
+  },
+  {
+    matches: (path) =>
+      path === EVENT_SNAPSHOT_PATH || path === PROFILE_EVENT_PRIZES_PATH,
+    needsContext: true,
+    run: ({ request, env, ctx }) => handleEventReadRoute(request, env, ctx),
+  },
+  {
+    matches: (path) => path === "/auth/x/callback",
+    needsContext: false,
+    run: ({ request, env, overrides }) =>
+      handleXCallback(request, env, overrides.xCallback),
+  },
+  {
+    matches: (path) => AUTH_PATHS.has(path),
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleAuthRoute(request, env, ctx, overrides.auth),
+  },
+  {
+    matches: (path) => GAMEPLAY_PATHS.has(path),
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleGameplayRoute(request, env, ctx, overrides.gameplay),
+  },
+  {
+    matches: (path) => PROFILE_PATHS.has(path),
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleProfileRoute(request, env, ctx, overrides.profile),
+  },
+  {
+    matches: (path) => EVENT_PATHS.has(path),
+    needsContext: true,
+    run: ({ request, env, ctx }) => handleEventRoute(request, env, ctx),
+  },
+  {
+    matches: (path) =>
+      path === EVENT_PRIZE_WITHDRAWAL_PATH ||
+      path === EVENT_PRIZE_WITHDRAWAL_STATUS_PATH,
+    needsContext: true,
+    run: ({ request, env, ctx }) =>
+      handleEventPrizeWithdrawalRoute(request, env, ctx),
+  },
+  {
+    matches: (path) => path === "/mining/rock",
+    needsContext: true,
+    run: ({ request, env, ctx, overrides }) =>
+      handleMiningRoute(request, env, ctx, overrides.mining),
+  },
+  {
+    matches: (path) => path === "/nfts",
+    needsContext: false,
+    run: ({ request, env, overrides }) =>
+      handleNftRoute(request, env, overrides),
+  },
+];
+
+async function dispatchRequest(
+  entrypoint: "request" | "fetch",
+  request: Request,
+  env: Env,
+  overrides: RequestDependencies,
+  ctx?: WorkerExecutionContext,
+): Promise<Response> {
+  const pathname = new URL(request.url).pathname;
+  const route = routes.find(
+    (candidate) =>
+      (entrypoint === "fetch" || !candidate.fetchOnly) &&
+      candidate.matches(pathname),
+  );
+  if (!route) {
+    return jsonResponse({ ok: false, error: "not-found" }, 404);
+  }
+  if (route.needsContext) {
+    if (!ctx) return jsonResponse({ ok: false, error: "unavailable" }, 503);
+    return route.run({ request, env, overrides, ctx });
+  }
+  return route.run({ request, env, overrides });
+}
 
 export async function handleRequest(
   request: Request,
   env: Env,
-  dependencyOverrides: Partial<WorkerDependencies> & {
-    auth?: AuthRouteDependencies;
-    session?: SessionRouteDependencies;
-    gameplay?: GameplayRouteDependencies;
-    mining?: MiningRouteDependencies;
-    profile?: ProfileRouteDependencies;
-    reactions?: InviteReactionRouteDependencies;
-    presentation?: MatchPresentationRouteDependencies;
-    metadata?: InviteMetadataRouteDependencies;
-    wagers?: InviteWagersRouteDependencies;
-    matchSync?: MatchSyncRouteDependencies;
-    gameBootstrap?: GameBootstrapRouteDependencies;
-    xCallback?: XCallbackDependencyOverrides;
-  } = {},
+  dependencyOverrides: RequestDependencies = {},
   ctx?: WorkerExecutionContext,
 ): Promise<Response> {
-  const pathname = new URL(request.url).pathname;
-  if (SESSION_PATHS.includes(pathname)) {
-    return handleSessionRoute(request, env, dependencyOverrides.session);
-  }
-  if (isGameBootstrapPath(pathname)) {
-    if (!ctx) return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    return handleGameBootstrapRoute(
-      request,
-      env,
-      ctx,
-      dependencyOverrides.gameBootstrap,
-    );
-  }
-  if (isMatchSyncPath(pathname)) {
-    if (!ctx) return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    return handleMatchSyncRoute(
-      request,
-      env,
-      ctx,
-      dependencyOverrides.matchSync,
-    );
-  }
-  if (isInviteWagersPath(pathname)) {
-    if (!ctx) return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    return handleInviteWagersRoute(
-      request,
-      env,
-      ctx,
-      dependencyOverrides.wagers,
-    );
-  }
-  if (isInviteMetadataPath(pathname)) {
-    if (!ctx) return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    return handleInviteMetadataRoute(
-      request,
-      env,
-      ctx,
-      dependencyOverrides.metadata,
-    );
-  }
-  if (isMatchPresentationPath(pathname)) {
-    if (!ctx) return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    return handleMatchPresentationRoute(
-      request,
-      env,
-      ctx,
-      dependencyOverrides.presentation,
-    );
-  }
-  if (isInviteReactionPath(pathname)) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleInviteReactionRoute(
-      request,
-      env,
-      ctx,
-      dependencyOverrides.reactions,
-    );
-  }
-  if (
-    pathname === EVENT_SNAPSHOT_PATH ||
-    pathname === PROFILE_EVENT_PRIZES_PATH
-  ) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleEventReadRoute(request, env, ctx);
-  }
-  if (pathname === "/auth/x/callback") {
-    return handleXCallback(request, env, dependencyOverrides.xCallback);
-  }
-  if (AUTH_PATHS.has(pathname)) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleAuthRoute(request, env, ctx, dependencyOverrides.auth);
-  }
-  if (GAMEPLAY_PATHS.has(pathname)) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleGameplayRoute(request, env, ctx, dependencyOverrides.gameplay);
-  }
-  if (PROFILE_PATHS.has(pathname)) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleProfileRoute(request, env, ctx, dependencyOverrides.profile);
-  }
-  if (EVENT_PATHS.has(pathname)) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleEventRoute(request, env, ctx);
-  }
-  if (
-    pathname === EVENT_PRIZE_WITHDRAWAL_PATH ||
-    pathname === EVENT_PRIZE_WITHDRAWAL_STATUS_PATH
-  ) {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleEventPrizeWithdrawalRoute(request, env, ctx);
-  }
-  if (pathname === "/mining/rock") {
-    if (!ctx) {
-      return jsonResponse({ ok: false, error: "unavailable" }, 503);
-    }
-    return handleMiningRoute(request, env, ctx, dependencyOverrides.mining);
-  }
-  if (pathname !== "/nfts") {
-    return jsonResponse({ ok: false, error: "not-found" }, 404);
-  }
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        ...CORS_HEADERS,
-        "Cache-Control": "no-store",
-      },
-    });
-  }
-  if (request.method !== "POST") {
-    return jsonResponse({ ok: false, error: "method-not-allowed" }, 405, {
-      Allow: "POST, OPTIONS",
-    });
-  }
+  return dispatchRequest("request", request, env, dependencyOverrides, ctx);
+}
 
-  const dependencies = { ...defaultDependencies, ...dependencyOverrides };
-  const connectingIp = request.headers.get("CF-Connecting-IP")?.trim();
-  try {
-    const outcome = await env.NFT_RATE_LIMITER.limit({
-      key: `nfts:${connectingIp || "unknown"}`,
-    });
-    if (!outcome.success) {
-      return jsonResponse({ ok: false, error: "rate-limited" }, 429, {
-        "Retry-After": String(RATE_LIMIT_RETRY_AFTER_SECONDS),
-      });
-    }
-  } catch {
-    dependencies.logRateLimitFailure();
-    return jsonResponse({ ok: false, error: "rate-limit-unavailable" }, 503);
-  }
-
-  let requestBody: NftApiRequest;
-  try {
-    requestBody = await parseRequestBody(request);
-  } catch {
-    return jsonResponse({ ok: false, error: "invalid-request" }, 400);
-  }
-
-  try {
-    return jsonResponse(
-      await fetchNftInventory(requestBody, env, dependencies),
-      200,
-    );
-  } catch (error) {
-    const kind = error instanceof ProviderFailure ? error.kind : "unavailable";
-    dependencies.logProviderFailure(kind);
-    if (kind === "timeout") {
-      return jsonResponse({ ok: false, error: "nft-provider-timeout" }, 504);
-    }
-    return jsonResponse({ ok: false, error: "nft-provider-unavailable" }, 502);
-  }
+export function handleFetch(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<Response> {
+  return dispatchRequest("fetch", request, env, {}, ctx);
 }

@@ -23,6 +23,7 @@ import {
   type CanonicalRatingUpdateValue,
 } from "../src/profileCanonicalD1.ts";
 import { createProfileGameProjectionRuntime } from "../src/profileGameProjectionRepository.ts";
+import { patchCanonicalProfile } from "../src/profileMutationD1.ts";
 import { getProfileGameProjections } from "../src/profileGamesD1.ts";
 import { createCanonicalRatingRepository } from "../src/ratingCanonicalRepository.ts";
 import { createRatingRepository } from "../src/ratingRepository.ts";
@@ -96,6 +97,7 @@ function beforeMatchingBatch(
   action: () => Promise<void>,
   onPrepare?: (query: string) => void,
   onBind?: (query: string, values: unknown[]) => void,
+  { repeat = false }: { repeat?: boolean } = {},
 ): D1Database {
   const nativeStatements = new WeakMap<object, D1PreparedStatement>();
   const statementQueries = new WeakMap<object, string>();
@@ -129,7 +131,8 @@ function beforeMatchingBatch(
       const queries = statements.map(
         (statement) => statementQueries.get(statement) || "",
       );
-      if (!fired && matches(queries)) {
+      const matched = matches(queries);
+      if ((!fired || repeat) && matched) {
         fired = true;
         await action();
       }
@@ -695,7 +698,10 @@ describe("canonical gameplay repositories", () => {
     let writeFailed = false;
     const db = beforeMatchingBatch(
       testEnv.PROFILE_DB,
-      () => true,
+      (queries) =>
+        queries.some((query) =>
+          query.includes("INSERT INTO wager_settlements"),
+        ),
       async () => {
         writeFailed = true;
         throw writeFailure;
@@ -800,21 +806,23 @@ describe("canonical gameplay repositories", () => {
       await insertProfile("retry-winner", null);
       await insertProfile("retry-loser", null);
       const conflicts: CanonicalProfileConflict[] = [];
-      const db = new Proxy(testEnv.PROFILE_DB, {
-        get(target, property) {
-          if (property === "batch") {
-            return async () => {
-              const conflict = new CanonicalProfileConflict({
-                cause: new Error("private-conflict-value"),
-              });
-              conflicts.push(conflict);
-              throw conflict;
-            };
-          }
-          const member = Reflect.get(target, property, target);
-          return typeof member === "function" ? member.bind(target) : member;
+      const db = beforeMatchingBatch(
+        testEnv.PROFILE_DB,
+        (queries) =>
+          queries.some((query) =>
+            /^\s*(?:INSERT|UPDATE|DELETE)\b/i.test(query),
+          ),
+        async () => {
+          const conflict = new CanonicalProfileConflict({
+            cause: new Error("private-conflict-value"),
+          });
+          conflicts.push(conflict);
+          throw conflict;
         },
-      });
+        undefined,
+        undefined,
+        { repeat: true },
+      );
       const failureEnv = { ...testEnv, PROFILE_DB: db };
       const gameplay = createGameplayRepository(failureEnv, {
         stateClient: matchTestPort(state),
@@ -1235,9 +1243,21 @@ describe("canonical gameplay repositories", () => {
         },
       ],
     });
-    const repository = createGameplayRepository(testEnv, {
-      stateClient: matchTestPort(state),
-    });
+    const profileReadBatches: string[][] = [];
+    const observedDb = beforeMatchingBatch(
+      testEnv.PROFILE_DB,
+      (queries) => {
+        if (queries.every((query) => query.includes("SELECT profile.*"))) {
+          profileReadBatches.push([...queries]);
+        }
+        return false;
+      },
+      async () => {},
+    );
+    const repository = createGameplayRepository(
+      { ...testEnv, PROFILE_DB: observedDb },
+      { stateClient: matchTestPort(state) },
+    );
     const ownership = await repository.readProfileOwnershipSnapshot({
       loginUids: ["d1-game-login-winner", "d1-game-login-loser"],
       profileIds: ["d1-game-source"],
@@ -1267,6 +1287,7 @@ describe("canonical gameplay repositories", () => {
     await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
       "applied",
     );
+    expect(profileReadBatches.map((queries) => queries.length)).toEqual([2]);
     await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
       "replayed",
     );
@@ -1276,6 +1297,7 @@ describe("canonical gameplay repositories", () => {
         fingerprint: "d1-game-mismatch",
       }),
     ).rejects.toThrow("gameplay-repository-unavailable");
+    expect(profileReadBatches).toHaveLength(1);
     const storedWinner = await readCanonicalProfile(
       testEnv.PROFILE_DB,
       "d1-game-winner",
@@ -1391,39 +1413,173 @@ describe("canonical gameplay repositories", () => {
     ).rejects.toThrow();
   });
 
-  it("keeps same-profile wager settlements net zero", async () => {
-    await insertProfile("d1-same-profile", null, {
-      mining: {
-        lastRockDate: "2026-08-28",
-        materials: { dust: 2, slime: 0, gum: 0, metal: 0, ice: 0 },
-      },
-    });
-    const repository = createGameplayRepository(testEnv, {
-      stateClient: matchTestPort(state),
-    });
-    const transfer = {
-      operationId: "d1-same-profile-wager",
-      fingerprint: "d1-same-profile-fingerprint",
-      winnerProfileId: "d1-same-profile",
-      loserProfileId: "d1-same-profile",
-      material: "dust" as const,
-      count: 3,
-      appliedAtMs: 3_000,
-    };
+  it.each(["identical", "merged"] as const)(
+    "keeps %s-profile wager settlements net zero",
+    async (kind) => {
+      await insertProfile("d1-same-profile", null, {
+        mining: {
+          lastRockDate: "2026-08-28",
+          materials: { dust: 2, slime: 0, gum: 0, metal: 0, ice: 0 },
+        },
+      });
+      if (kind === "merged") {
+        for (const sourceId of ["same-source-one", "same-source-two"]) {
+          await insertProfile(sourceId, null, { username: null });
+          await retireProfileInto(
+            sourceId,
+            "d1-same-profile",
+            2_000,
+            `${sourceId}-merge`,
+          );
+        }
+      }
+      const repository = createGameplayRepository(testEnv, {
+        stateClient: matchTestPort(state),
+      });
+      const transfer = {
+        operationId: "d1-same-profile-wager",
+        fingerprint: "d1-same-profile-fingerprint",
+        winnerProfileId:
+          kind === "merged" ? "same-source-one" : "d1-same-profile",
+        loserProfileId:
+          kind === "merged" ? "same-source-two" : "d1-same-profile",
+        material: "dust" as const,
+        count: 3,
+        appliedAtMs: 3_000,
+      };
 
-    await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
-      "applied",
-    );
-    await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
-      "replayed",
-    );
-    expect(
-      await readCanonicalProfile(testEnv.PROFILE_DB, "d1-same-profile"),
-    ).toMatchObject({
-      revision: 1,
-      profile: { mining: { materials: { dust: 2 } } },
-    });
-  });
+      await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
+        "applied",
+      );
+      await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
+        "replayed",
+      );
+      expect(
+        await readCanonicalProfile(testEnv.PROFILE_DB, "d1-same-profile"),
+      ).toMatchObject({
+        revision: 1,
+        profile: { mining: { materials: { dust: 2 } } },
+      });
+      expect(
+        await readCanonicalWagerSettlement(
+          testEnv.PROFILE_DB,
+          transfer.operationId,
+        ),
+      ).toMatchObject({
+        winnerProfileId: "d1-same-profile",
+        loserProfileId: "d1-same-profile",
+        revision: 1,
+      });
+    },
+  );
+
+  it.each(["merge", "balance"] as const)(
+    "retries a wager from a fresh profile batch after a concurrent %s change",
+    async (kind) => {
+      for (const profileId of ["batch-winner", "batch-target", "batch-loser"]) {
+        await insertProfile(profileId, null, { username: null });
+      }
+      const profileReadBatches: string[][] = [];
+      const racedDb = beforeMatchingBatch(
+        testEnv.PROFILE_DB,
+        (queries) => {
+          if (queries.every((query) => query.includes("SELECT profile.*"))) {
+            profileReadBatches.push([...queries]);
+          }
+          return queries.some((query) =>
+            query.includes("INSERT INTO wager_settlements"),
+          );
+        },
+        async () => {
+          if (kind === "merge") {
+            await retireProfileInto(
+              "batch-winner",
+              "batch-target",
+              2_000,
+              "batch-wager-merge",
+            );
+            return;
+          }
+          const loser = await readCanonicalProfile(
+            testEnv.PROFILE_DB,
+            "batch-loser",
+          );
+          if (!loser) throw new Error("missing-batch-loser");
+          await commitCanonicalPlan(testEnv.PROFILE_DB, {
+            expectations: [
+              {
+                kind: "profile-revision",
+                profileId: loser.profileId,
+                revision: loser.revision,
+              },
+            ],
+            mutations: [
+              {
+                kind: "patch-active-profile",
+                current: loser,
+                value: patchCanonicalProfile(
+                  loser,
+                  {
+                    mining: {
+                      ...loser.profile.mining,
+                      materials: { ...loser.profile.mining.materials, dust: 1 },
+                    },
+                  },
+                  2_000,
+                  ["dust"],
+                ),
+              },
+            ],
+          });
+        },
+      );
+      const repository = miningReadRepository(racedDb);
+      const transfer = {
+        operationId: "batch-wager-race",
+        fingerprint: "batch-wager-fingerprint",
+        winnerProfileId: "batch-winner",
+        loserProfileId: "batch-loser",
+        material: "dust" as const,
+        count: 3,
+        appliedAtMs: 3_000,
+      };
+      const outcome = kind === "merge" ? "applied" : "insufficient-materials";
+      await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
+        outcome,
+      );
+      expect(profileReadBatches.map((queries) => queries.length)).toEqual([
+        2, 2,
+      ]);
+      expect(
+        await readCanonicalProfile(testEnv.PROFILE_DB, "batch-target"),
+      ).toMatchObject({
+        revision: kind === "merge" ? 2 : 1,
+        profile: {
+          mining: { materials: { dust: kind === "merge" ? 13 : 10 } },
+        },
+      });
+      expect(
+        await readCanonicalProfile(testEnv.PROFILE_DB, "batch-loser"),
+      ).toMatchObject({
+        revision: 2,
+        profile: { mining: { materials: { dust: kind === "merge" ? 7 : 1 } } },
+      });
+      expect(
+        await readCanonicalWagerSettlement(
+          testEnv.PROFILE_DB,
+          transfer.operationId,
+        ),
+      ).toMatchObject({
+        winnerProfileId: kind === "merge" ? "batch-target" : "batch-winner",
+        outcome,
+        revision: 1,
+      });
+      await expect(repository.applyWagerTransferOnce(transfer)).resolves.toBe(
+        kind === "merge" ? "replayed" : "insufficient-materials",
+      );
+      expect(profileReadBatches).toHaveLength(2);
+    },
+  );
 
   it("preserves raw gameplay emoji and rating zero in ownership snapshots", async () => {
     const profileId = "d1-raw-gameplay-profile";

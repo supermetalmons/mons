@@ -3,7 +3,7 @@ import {
   commitCanonicalPlan,
   readCanonicalProfileOwnershipSnapshot,
   readCanonicalWagerSettlement,
-  resolveCanonicalProfile,
+  resolveCanonicalProfiles,
   resolveCanonicalPublicProfile,
   CanonicalProfileConflict,
   type CanonicalProfileSnapshot,
@@ -140,9 +140,9 @@ export function createCanonicalGameplayRepository(
       let lastConflict: CanonicalProfileConflict | undefined;
       for (let attempt = 0; attempt < attempts; attempt++) {
         try {
-          const [winner, loser] = await Promise.all([
-            resolveCanonicalProfile(db, input.winnerProfileId),
-            resolveCanonicalProfile(db, input.loserProfileId),
+          const [winner, loser] = await resolveCanonicalProfiles(db, [
+            input.winnerProfileId,
+            input.loserProfileId,
           ]);
           if (!winner || !loser) throw new Error("wager-profile-unavailable");
           const mutations: CanonicalMutation[] = [];

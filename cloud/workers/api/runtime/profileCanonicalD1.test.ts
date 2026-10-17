@@ -26,6 +26,7 @@ import {
   readCanonicalRatingUpdate,
   readCanonicalWagerSettlement,
   resolveCanonicalProfile,
+  resolveCanonicalProfiles,
   resolveCanonicalPublicProfile,
   type CanonicalAuthRecoveryValue,
   type CanonicalCommitPlan,
@@ -134,10 +135,12 @@ function observeAggregateDatabase(
   } = {},
 ) {
   const batches: string[][] = [];
+  const batchBindings: unknown[][][] = [];
   const allQueries: string[] = [];
   const allBindings: unknown[][] = [];
   const statements = new WeakMap<object, D1PreparedStatement>();
   const queries = new WeakMap<object, string>();
+  const bindings = new WeakMap<object, unknown[]>();
   const wrap = (
     statement: D1PreparedStatement,
     query: string,
@@ -172,6 +175,7 @@ function observeAggregateDatabase(
     });
     statements.set(wrapped, statement);
     queries.set(wrapped, query);
+    bindings.set(wrapped, values);
     return wrapped;
   };
   const database = new Proxy(testEnv.PROFILE_DB, {
@@ -185,6 +189,9 @@ function observeAggregateDatabase(
             (statement) => queries.get(statement) || "",
           );
           batches.push(batchQueries);
+          batchBindings.push(
+            prepared.map((statement) => bindings.get(statement) || []),
+          );
           if (batches.length === 1) await options.beforeBatch?.();
           const results = await target.batch<Record<string, unknown>>(
             prepared.map((statement) => statements.get(statement) || statement),
@@ -197,7 +204,7 @@ function observeAggregateDatabase(
       return typeof member === "function" ? member.bind(target) : member;
     },
   });
-  return { database, batches, allQueries, allBindings };
+  return { database, batches, batchBindings, allQueries, allBindings };
 }
 
 function observeRecoveryDatabase(failure?: Error) {
@@ -603,6 +610,91 @@ describe("canonical profile D1 store", () => {
       return value;
     }
 
+    it("batches full profiles in input order with exact keys and no writes", async () => {
+      const value = await seedLookup();
+      const profileIds = [
+        value.profile.id,
+        "missing",
+        value.profile.id,
+        ` ${value.profile.id}' OR 1 = 1 -- `,
+        "",
+        "é",
+        "e\u0301",
+        "\ud83d\ude00",
+      ];
+      const observed = observeAggregateDatabase({
+        mapResults: (_queries, results) => {
+          expect(
+            results.every((result) => result.meta.rows_written === 0),
+          ).toBe(true);
+          return results;
+        },
+      });
+      await expect(
+        resolveCanonicalProfiles(observed.database, profileIds),
+      ).resolves.toEqual(
+        profileIds.map((profileId) =>
+          profileId === value.profile.id
+            ? { ...value, profileId, revision: 1 }
+            : null,
+        ),
+      );
+      expect(observed.batches).toHaveLength(1);
+      expect(observed.batches[0]).toHaveLength(profileIds.length);
+      expect(observed.batchBindings).toEqual([
+        profileIds.map((profileId) => [
+          JSON.stringify([profileId]),
+          CANONICAL_PROFILE_INTERNAL_REDIRECT_LIMIT,
+        ]),
+      ]);
+    });
+
+    it("skips empty profile batches", async () => {
+      const observed = observeAggregateDatabase();
+      await expect(
+        resolveCanonicalProfiles(observed.database, []),
+      ).resolves.toEqual([]);
+      expect(observed.batches).toHaveLength(0);
+    });
+
+    it.each(["\ud800", "\udc00"])(
+      "preserves direct binding for mixed profile batches containing %j",
+      async (surrogate) => {
+        const value = await seedLookup();
+        const profileId = `a${surrogate}b`;
+        const observed = observeAggregateDatabase({ mapAll: (rows) => rows });
+        await expect(
+          resolveCanonicalProfiles(observed.database, [
+            profileId,
+            value.profile.id,
+          ]),
+        ).resolves.toEqual([
+          null,
+          { ...value, profileId: value.profile.id, revision: 1 },
+        ]);
+        expect(observed.batchBindings).toEqual([[[profileId], [profileId]]]);
+        expect(observed.allBindings).toEqual([
+          [
+            JSON.stringify([value.profile.id]),
+            CANONICAL_PROFILE_INTERNAL_REDIRECT_LIMIT,
+          ],
+        ]);
+      },
+    );
+
+    it("propagates full profile batch failures", async () => {
+      const failure = new Error("D1 batch unavailable");
+      const observed = observeAggregateDatabase({
+        beforeBatch: async () => {
+          throw failure;
+        },
+      });
+      await expect(
+        resolveCanonicalProfiles(observed.database, ["first", "second"]),
+      ).rejects.toBe(failure);
+      expect(observed.batches).toHaveLength(1);
+    });
+
     it("reads a healthy profile with one query", async () => {
       const value = await seedLookup();
       const observed = observeRecoveryDatabase();
@@ -745,31 +837,30 @@ describe("canonical profile D1 store", () => {
           updatedAtMs: 2_000,
         });
         const target = profileValue("full-valid-target");
-        const observed = observeAggregateDatabase({
-          mapAll: () => [
-            {
-              ...profileWriteRow(source),
-              revision: 1,
-              chain_profile_id: source.profile.id,
-              chain_depth: 0,
-              redirect_source_profile_id: source.profile.id,
-              redirect_target_profile_id: target.profile.id,
-              redirect_merged_at_ms: 3_000,
-              redirect_op_id: null,
-              [column]: invalid,
-            },
-            {
-              ...profileWriteRow(target),
-              revision: 1,
-              chain_profile_id: target.profile.id,
-              chain_depth: 1,
-              redirect_source_profile_id: null,
-              redirect_target_profile_id: null,
-              redirect_merged_at_ms: null,
-              redirect_op_id: null,
-            },
-          ],
-        });
+        const corruptedRows = () => [
+          {
+            ...profileWriteRow(source),
+            revision: 1,
+            chain_profile_id: source.profile.id,
+            chain_depth: 0,
+            redirect_source_profile_id: source.profile.id,
+            redirect_target_profile_id: target.profile.id,
+            redirect_merged_at_ms: 3_000,
+            redirect_op_id: null,
+            [column]: invalid,
+          },
+          {
+            ...profileWriteRow(target),
+            revision: 1,
+            chain_profile_id: target.profile.id,
+            chain_depth: 1,
+            redirect_source_profile_id: null,
+            redirect_target_profile_id: null,
+            redirect_merged_at_ms: null,
+            redirect_op_id: null,
+          },
+        ];
+        const observed = observeAggregateDatabase({ mapAll: corruptedRows });
         await expect(
           resolveCanonicalProfile(
             observed.database,
@@ -787,6 +878,19 @@ describe("canonical profile D1 store", () => {
             4,
           ),
         ).resolves.toMatchObject({ profileId: target.profile.id });
+        const batched = observeAggregateDatabase({
+          mapResults: (_queries, results) =>
+            results.map((result, index) =>
+              index === 0 ? { ...result, results: corruptedRows() } : result,
+            ),
+        });
+        await expect(
+          resolveCanonicalProfiles(batched.database, [
+            source.profile.id,
+            target.profile.id,
+          ]),
+        ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
+        expect(batched.batches).toHaveLength(1);
       },
     );
 

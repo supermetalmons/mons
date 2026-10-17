@@ -35,6 +35,7 @@ test("the canonical profile facade preserves its exact public exports and identi
     readCanonicalAuthMethod: auth.readCanonicalAuthMethod,
     readCanonicalMergeTarget: profiles.readCanonicalMergeTarget,
     resolveCanonicalProfile: profiles.resolveCanonicalProfile,
+    resolveCanonicalProfiles: profiles.resolveCanonicalProfiles,
     resolveCanonicalPublicProfile: profiles.resolveCanonicalPublicProfile,
     readCanonicalProfileByLogin: auth.readCanonicalProfileByLogin,
     readCanonicalPublicProfileByLogin: auth.readCanonicalPublicProfileByLogin,

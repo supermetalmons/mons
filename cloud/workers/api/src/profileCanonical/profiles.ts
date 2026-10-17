@@ -505,6 +505,33 @@ export function resolveCanonicalProfile(
   );
 }
 
+export async function resolveCanonicalProfiles(
+  db: D1Database,
+  profileIds: readonly string[],
+): Promise<Array<CanonicalProfileSnapshot | null>> {
+  if (profileIds.length === 0) return [];
+  if (profileIds.some((profileId) => !profileId.isWellFormed())) {
+    return Promise.all(
+      profileIds.map((profileId) => resolveCanonicalProfile(db, profileId)),
+    );
+  }
+  const redirectLimit = CANONICAL_PROFILE_INTERNAL_REDIRECT_LIMIT;
+  const results = await db.batch<Record<string, unknown>>(
+    profileIds.map((profileId) =>
+      prepareCanonicalProfileResolution(db, profileId, redirectLimit, "*"),
+    ),
+  );
+  return profileIds.map((profileId, index) =>
+    parseCanonicalProfileResolution(
+      results[index].results,
+      profileId,
+      redirectLimit,
+      "throw",
+      parseCanonicalProfileRow,
+    ),
+  );
+}
+
 async function resolveCanonicalProfileUsing<
   T extends Pick<
     CanonicalPublicProfileSnapshot,
@@ -532,7 +559,28 @@ async function resolveCanonicalProfileUsing<
     if (onRedirectFailure === "null") return null;
     throw new CanonicalProfileCorruption();
   }
-  const { results } = await db
+  const { results } = await prepareCanonicalProfileResolution(
+    db,
+    profileId,
+    redirectLimit,
+    columns,
+  ).all<Record<string, unknown>>();
+  return parseCanonicalProfileResolution(
+    results,
+    profileId,
+    redirectLimit,
+    onRedirectFailure,
+    parseProfile,
+  );
+}
+
+function prepareCanonicalProfileResolution(
+  db: D1Database,
+  profileId: string,
+  redirectLimit: number,
+  columns: string,
+): D1PreparedStatement {
+  return db
     .prepare(
       `${canonicalProfileRedirectCte("profile")}
        SELECT ${columns
@@ -551,8 +599,21 @@ async function resolveCanonicalProfileUsing<
          ON target.source_profile_id = chain.chain_profile_id
        ORDER BY chain.depth ASC`,
     )
-    .bind(JSON.stringify([profileId]), Math.floor(redirectLimit))
-    .all<Record<string, unknown>>();
+    .bind(JSON.stringify([profileId]), Math.floor(redirectLimit));
+}
+
+function parseCanonicalProfileResolution<
+  T extends Pick<
+    CanonicalPublicProfileSnapshot,
+    "mergedIntoProfileId" | "state"
+  >,
+>(
+  results: readonly Record<string, unknown>[],
+  profileId: string,
+  redirectLimit: number,
+  onRedirectFailure: "null" | "throw",
+  parseProfile: (value: unknown) => T,
+): T | null {
   const visited = new Set<string>();
   let currentProfileId = profileId;
   for (let hop = 0; hop <= redirectLimit; hop++) {

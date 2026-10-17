@@ -1,6 +1,97 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { runRecoveryItems } from "../src/recoveryRunner.ts";
+import {
+  collectRecoveryItems,
+  runRecoveryItems,
+} from "../src/recoveryRunner.ts";
+
+test("recovery collection retains source indexes and completion order while reporting failures immediately", async () => {
+  const items = ["slow", "fast", "failed", "skipped", "later-failed"];
+  const gates = items.map(() => Promise.withResolvers<number | undefined>());
+  const started = items.map(() => Promise.withResolvers<void>());
+  const reported = items.map(() => Promise.withResolvers<void>());
+  const failure = new Error("unavailable");
+  const reports: unknown[][] = [];
+  const visited: string[] = [];
+  let active = 0;
+  let maximum = 0;
+  let settled = false;
+  const recovery = collectRecoveryItems(
+    items,
+    async (item, index) => {
+      visited.push(item);
+      active++;
+      maximum = Math.max(maximum, active);
+      started[index].resolve();
+      try {
+        return await gates[index].promise;
+      } finally {
+        active--;
+      }
+    },
+    {
+      concurrency: 2,
+      onFailure(item, error, index) {
+        reports.push([item, error, index]);
+        reported[index].resolve();
+        throw new Error("reporter-unavailable");
+      },
+    },
+  ).then((result) => {
+    settled = true;
+    return result;
+  });
+
+  await started[1].promise;
+  assert.deepEqual(visited, items.slice(0, 2));
+  gates[1].resolve(20);
+  await started[2].promise;
+  gates[2].reject(failure);
+  await reported[2].promise;
+  await started[3].promise;
+  gates[3].resolve(undefined);
+  await started[4].promise;
+  gates[4].reject(0);
+  await reported[4].promise;
+  assert.equal(settled, false);
+  assert.equal(active, 1);
+  gates[0].resolve(10);
+
+  assert.deepEqual(await recovery, {
+    successes: [
+      { item: "fast", index: 1, value: 20 },
+      { item: "skipped", index: 3, value: undefined },
+      { item: "slow", index: 0, value: 10 },
+    ],
+    failures: [
+      { item: "failed", index: 2, error: failure },
+      { item: "later-failed", index: 4, error: 0 },
+    ],
+  });
+  assert.deepEqual(reports, [
+    ["failed", failure, 2],
+    ["later-failed", 0, 4],
+  ]);
+  assert.deepEqual(visited, items);
+  assert.equal(maximum, 2);
+  assert.equal(active, 0);
+});
+
+test("recovery collection retains synchronous falsy failures without rejecting", async () => {
+  const reasons = [undefined, null, 0, false, ""];
+  const visited: number[] = [];
+  const result = await collectRecoveryItems(reasons, (reason, index) => {
+    visited.push(index);
+    throw reason;
+  });
+
+  assert.deepEqual(visited, [0, 1, 2, 3, 4]);
+  assert.deepEqual(result.successes, []);
+  assert.deepEqual(
+    result.failures,
+    reasons.map((error, index) => ({ item: error, index, error })),
+  );
+});
 
 test("recovery runs sequentially in input order by default", async () => {
   const events: string[] = [];
@@ -74,7 +165,15 @@ test("recovery rejects invalid concurrency before running any items", async () =
 });
 
 test("recovery continues after synchronous failures and preserves the raw single reason", async () => {
-  for (const failure of [new Error("unavailable"), "unavailable", 0, null]) {
+  for (const failure of [
+    new Error("unavailable"),
+    "unavailable",
+    undefined,
+    null,
+    0,
+    false,
+    "",
+  ]) {
     const visited: number[] = [];
     await assert.rejects(
       runRecoveryItems([0, 1, 2], (item) => {

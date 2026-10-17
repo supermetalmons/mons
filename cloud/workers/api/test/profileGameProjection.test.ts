@@ -2352,6 +2352,78 @@ test("rating recovery identifies concurrent failures and dispatches healthy work
   ]);
 });
 
+test("rating recovery retains falsy failures after healthy dispatch and gives Queue failures precedence", async () => {
+  for (const firstFailure of [undefined, null, 0, false, ""]) {
+    for (const failSend of [false, true]) {
+      const laterFailure = new Error("later-claim-failed");
+      const queueFailure = new Error("queue-failed");
+      const rating = ratingRepository(null, { marks: [], patches: [] });
+      const records = ["first", "later", "healthy"].map((id) => ({
+        inviteId: id,
+        matchId: id,
+        operationId: `${id}__${id}`,
+        revision: 1,
+        version: 1,
+      }));
+      rating.listDueRatingProfileGameProjections = async () => records;
+      rating.claimRatingProfileGameProjection = async (id) => {
+        if (id === records[0].operationId) throw firstFailure;
+        if (id === records[1].operationId) throw laterFailure;
+        return true;
+      };
+      const logs: Array<{ operationId: string; itemIndex: number }> = [];
+      const batches: unknown[][] = [];
+      await assert.rejects(
+        sweepRatingProfileGameProjections(
+          {
+            ...TELEGRAM_TEST_ENV,
+            PROFILE_GAME_PROJECTION_QUEUE: {
+              ...TELEGRAM_TEST_ENV.PROFILE_GAME_PROJECTION_QUEUE,
+              async sendBatch(messages) {
+                assert.deepEqual(
+                  logs.map(({ operationId, itemIndex }) => ({
+                    operationId,
+                    itemIndex,
+                  })),
+                  records.slice(0, 2).map(({ operationId }, itemIndex) => ({
+                    operationId,
+                    itemIndex,
+                  })),
+                );
+                batches.push(Array.from(messages, ({ body }) => body));
+                if (failSend) throw queueFailure;
+                return {
+                  metadata: { metrics: { backlogCount: 0, backlogBytes: 0 } },
+                };
+              },
+            },
+          },
+          {
+            createRating: () => rating,
+            now: () => 600_000,
+            logger: {
+              error(message) {
+                logs.push(JSON.parse(message));
+                throw new Error("logger-failed");
+              },
+              info() {},
+            },
+          },
+        ),
+        (error) => error === (failSend ? queueFailure : firstFailure),
+      );
+      assert.deepEqual(batches, [
+        [
+          {
+            kind: "rating-profile-game-projection",
+            operationId: records[2].operationId,
+          },
+        ],
+      ]);
+    }
+  }
+});
+
 test("event recovery helpers accept only their required outbox capabilities", async () => {
   const state: Pick<
     EventStore,

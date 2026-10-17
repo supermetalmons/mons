@@ -12,6 +12,7 @@ import {
 } from "../recoveryReporting.ts";
 import { enqueuePersistedCanonicalAuthRecovery } from "./dispatch.ts";
 import type { AuthRecoveryDependencies } from "./processing.ts";
+import { collectRecoveryItems } from "../recoveryRunner.ts";
 
 const STALE_ENQUEUE_MS = 2 * 60 * 60 * 1_000;
 
@@ -26,60 +27,61 @@ async function sweepCanonicalAuthRecoveryJobs(
   const logger = dependencies.logger || console;
   const now = dependencies.now || Date.now;
   const threshold = now() - STALE_ENQUEUE_MS;
-  let enqueued = 0;
-  let firstFailure: unknown;
   const rows = await listCanonicalAuthRecoverySweepRows(
     db,
     threshold,
     PROFILE_BACKGROUND_SWEEP_LIMIT,
   );
-  for (const [itemIndex, row] of rows.entries()) {
-    let quarantineReason: AuthRecoveryQuarantineReason | null = null;
-    let profileId: string | undefined;
-    let phase: RecoveryFailureContext["phase"] = "inspect";
-    try {
-      const inspected = inspectCanonicalAuthRecoverySweepRow(row);
-      profileId = inspected.profileId;
-      quarantineReason = inspected.quarantineReason;
-      if (quarantineReason) {
-        phase = "quarantine";
-        const quarantined = await quarantineCanonicalAuthRecoveryJob(
-          db,
-          row,
-          quarantineReason,
-          now(),
-        );
-        if (quarantined) {
-          logRecoveryEvent(logger, "error", {
-            event: "auth_recovery_job_quarantined",
-            ...quarantined,
-          });
+  const { successes, failures } = await collectRecoveryItems(
+    rows,
+    async (row, itemIndex) => {
+      let quarantineReason: AuthRecoveryQuarantineReason | null = null;
+      let profileId: string | undefined;
+      let phase: RecoveryFailureContext["phase"] = "inspect";
+      try {
+        const inspected = inspectCanonicalAuthRecoverySweepRow(row);
+        profileId = inspected.profileId;
+        quarantineReason = inspected.quarantineReason;
+        if (quarantineReason) {
+          phase = "quarantine";
+          const quarantined = await quarantineCanonicalAuthRecoveryJob(
+            db,
+            row,
+            quarantineReason,
+            now(),
+          );
+          if (quarantined) {
+            logRecoveryEvent(logger, "error", {
+              event: "auth_recovery_job_quarantined",
+              ...quarantined,
+            });
+          }
+          return false;
         }
-        continue;
+        phase = "enqueue";
+        await enqueuePersistedCanonicalAuthRecovery(env, db, profileId, now());
+        return true;
+      } catch (error) {
+        reportRecoveryFailure(
+          logger,
+          {
+            event: quarantineReason
+              ? "auth_recovery_quarantine_failure"
+              : "auth_recovery_enqueue_failure",
+            scope: "auth",
+            phase,
+            itemIndex,
+            profileId:
+              quarantineReason === "invalid-profile-id" ? undefined : profileId,
+          },
+          error,
+        );
+        throw error;
       }
-      phase = "enqueue";
-      await enqueuePersistedCanonicalAuthRecovery(env, db, profileId, now());
-      enqueued++;
-    } catch (error) {
-      firstFailure ||= error;
-      reportRecoveryFailure(
-        logger,
-        {
-          event: quarantineReason
-            ? "auth_recovery_quarantine_failure"
-            : "auth_recovery_enqueue_failure",
-          scope: "auth",
-          phase,
-          itemIndex,
-          profileId:
-            quarantineReason === "invalid-profile-id" ? undefined : profileId,
-        },
-        error,
-      );
-    }
-  }
-  if (firstFailure) throw firstFailure;
-  return enqueued;
+    },
+  );
+  if (failures.length > 0) throw failures[0].error;
+  return successes.filter(({ value }) => value).length;
 }
 
 export async function sweepAuthRecoveryJobs(

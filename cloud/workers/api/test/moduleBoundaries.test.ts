@@ -5,7 +5,7 @@ import test from "node:test";
 import typescript from "typescript";
 import * as entrypoint from "../src/workerHandler.ts";
 import { extractIdFromJsonUri } from "../src/helius.ts";
-import { handleRequest } from "../src/router.ts";
+import { handleFetch, handleRequest } from "../src/router.ts";
 import * as eventProgress from "../src/eventProgress.ts";
 import * as eventProgressDispatch from "../src/eventProgressDispatch.ts";
 import * as authRecovery from "../src/authRecovery.ts";
@@ -30,6 +30,8 @@ test("the Worker entrypoint remains a thin exact compatibility facade", () => {
     "handleScheduled",
   ]);
   assert.strictEqual(entrypoint.handleRequest, handleRequest);
+  assert.strictEqual(entrypoint.handleFetch, handleFetch);
+  assert.strictEqual(entrypoint.default.fetch, handleFetch);
   assert.strictEqual(entrypoint.extractIdFromJsonUri, extractIdFromJsonUri);
   assert.equal(typeof entrypoint.default.queue, "function");
   assert.equal(typeof entrypoint.default.scheduled, "function");
