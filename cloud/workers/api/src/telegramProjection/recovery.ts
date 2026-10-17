@@ -18,10 +18,10 @@ import {
 import {
   claimAndEnqueueProjectionTasks,
   collectProjectionRepairs,
+  recoverAndEnqueueProjectionScan,
   sendQueueTasks,
 } from "../projectionSweep.ts";
 import { PROJECTION_SWEEP_LIMIT } from "./policy.ts";
-import { collectRecoveryItems } from "../recoveryRunner.ts";
 import type { ProjectionDependencies, ProjectionLogger } from "./types.ts";
 
 function toRecord(value: unknown): Record<string, unknown> | null {
@@ -213,26 +213,24 @@ export async function sweepRatingProjections(
       nowMs,
       PROJECTION_SWEEP_LIMIT,
     );
-    const { successes, failures } = await collectRecoveryItems(
+    const { sentCount, failures } = await recoverAndEnqueueProjectionScan({
       entries,
-      async (entry) => {
-        if (entry.kind === "failure") throw entry.error;
-        if (entry.kind === "invalid") {
-          const quarantined = await rating.quarantineRatingRecoveryEntry(
-            entry,
-            nowMs,
-          );
-          if (quarantined) {
-            logRecoveryEvent(logger, "error", {
-              event: "telegram_projection_recovery_record_quarantined",
-              scope: "telegram",
-              source: "rating",
-              ...quarantined,
-            });
-          }
-          return;
+      queue: env.TELEGRAM_PROJECTION_QUEUE,
+      async quarantine(entry) {
+        const quarantined = await rating.quarantineRatingRecoveryEntry(
+          entry,
+          nowMs,
+        );
+        if (quarantined) {
+          logRecoveryEvent(logger, "error", {
+            event: "telegram_projection_recovery_record_quarantined",
+            scope: "telegram",
+            source: "rating",
+            ...quarantined,
+          });
         }
-        const record = entry.value;
+      },
+      async processCandidate(record) {
         if (
           await rating.claimRatingTelegramProjection(
             record.operationId,
@@ -246,39 +244,28 @@ export async function sweepRatingProjections(
           } satisfies TelegramProjectionTask;
         }
       },
-      {
-        onFailure: (entry, error, itemIndex) =>
-          reportRecoveryFailure(
-            logger,
-            {
-              event: "telegram_projection_recovery_record_failed",
-              scope: "telegram",
-              source: "rating",
-              phase:
-                entry.kind === "candidate"
-                  ? "claim"
-                  : entry.kind === "invalid"
-                    ? "quarantine"
-                    : "inspect",
-              itemIndex,
-              operationId:
-                entry.kind === "candidate"
-                  ? entry.value.operationId
-                  : undefined,
-            },
-            error,
-          ),
-      },
-    );
-    const tasks = successes.flatMap(({ value }) => (value ? [value] : []));
-    await sendQueueTasks(env.TELEGRAM_PROJECTION_QUEUE, tasks);
+      onFailure: (entry, error, itemIndex, phase) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "telegram_projection_recovery_record_failed",
+            scope: "telegram",
+            source: "rating",
+            phase,
+            itemIndex,
+            operationId:
+              entry.kind === "candidate" ? entry.value.operationId : undefined,
+          },
+          error,
+        ),
+    });
     if (failures.length > 0) {
       const error = failures[0].error;
       throw error instanceof Error
         ? error
         : new Error("projection-claim-failed");
     }
-    return tasks.length;
+    return sentCount;
   } catch (error) {
     reportRecoveryFailure(
       logger,

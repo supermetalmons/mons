@@ -259,6 +259,39 @@ test("read validation stays stricter than participant record-key validation with
   assert.equal(reads.length, 0);
 });
 
+test("role reads ignore unrelated malformed metadata and preserve pending source fields", async () => {
+  const { reader, reads } = ownershipReader({});
+  const source = {
+    hostId: paired.hostId,
+    guestId: undefined,
+    hostColor: 7,
+    hostRematches: false,
+    guestRematches: ["1"],
+    eventId: { malformed: true },
+    automatchStateHint: "future-state",
+    password: null,
+  };
+  const before = structuredClone(source);
+  assert.deepEqual(
+    await resolveInviteRoleFromSnapshot(
+      { uid: paired.hostId },
+      request,
+      source,
+      reader,
+    ),
+    {
+      ok: true,
+      inviteId: request.inviteId,
+      hostId: paired.hostId,
+      guestId: null,
+      actorUid: paired.hostId,
+      role: "host",
+    },
+  );
+  assert.deepEqual(source, before);
+  assert.deepEqual(reads, []);
+});
+
 test("ownership failures never degrade into spectator access or permission errors", async () => {
   const empty = ownershipReader({}).reader;
   const readers: ProfileOwnershipReader[] = [

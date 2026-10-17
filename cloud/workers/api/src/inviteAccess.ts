@@ -3,6 +3,7 @@ import type {
   ResolveInviteRoleResponse,
 } from "@mons/shared/game-sessions";
 import { AuthApiFailure } from "./authErrors.ts";
+import { decodeCanonicalInviteParticipants } from "./canonicalInviteParticipants.ts";
 import type { InviteAccessRepository } from "./gameplayContracts.ts";
 import {
   getLoginProfileId,
@@ -10,7 +11,7 @@ import {
   type ProfileOwnershipReader,
   type ProfileOwnershipSnapshot,
 } from "./profileOwnership.ts";
-import { isCanonicalLoginUid, isSafeRecordKey } from "./recordKeys.ts";
+import { isSafeRecordKey } from "./recordKeys.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 
 type InviteActorResolution = (
@@ -83,26 +84,14 @@ export async function resolveInviteRoleFromSnapshot(
   storedInvite: unknown,
   repository: ProfileOwnershipReader,
 ): Promise<ResolveInviteRoleResponse> {
-  if (storedInvite === null || storedInvite === undefined) {
+  const participants = decodeCanonicalInviteParticipants(storedInvite);
+  if (participants.status === "missing") {
     throw new AuthApiFailure(404, "not-found", "invite-not-found");
   }
-  if (typeof storedInvite !== "object" || Array.isArray(storedInvite)) {
+  if (participants.status === "invalid") {
     throw new AuthApiFailure(409, "failed-precondition", "invite-invalid");
   }
-  const invite = storedInvite as Record<string, unknown>;
-  const hostId = readStoredString(invite.hostId);
-  const storedGuestId = invite.guestId;
-  const guestId =
-    storedGuestId === null || storedGuestId === undefined
-      ? null
-      : readStoredString(storedGuestId);
-  const passwordProtected = Object.hasOwn(invite, "password");
-  if (
-    !isCanonicalLoginUid(hostId) ||
-    (guestId !== null && (!isCanonicalLoginUid(guestId) || guestId === hostId))
-  ) {
-    throw new AuthApiFailure(409, "failed-precondition", "invite-invalid");
-  }
+  const { hostId, guestId, passwordProtected } = participants;
   const { actorUid, role } = await resolveInviteActor(
     identity,
     hostId,

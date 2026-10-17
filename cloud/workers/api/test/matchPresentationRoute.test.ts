@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { AuthApiFailure } from "../src/authErrors.ts";
 import { createGameplayRepository } from "../src/gameplayRepository.ts";
+import { readPresentationInvite } from "../src/matchPresentationAccess.ts";
 import {
   handleMatchPresentationRoute,
   isMatchPresentationPath,
@@ -158,6 +159,49 @@ function setup(invite: unknown = paired, uid = "host-login") {
     current,
   };
 }
+
+test("presentation invite validation keeps missing and malformed failures distinct", async () => {
+  for (const [source, status, message] of [
+    [null, 404, "invite-not-found"],
+    ["invalid", 409, "invite-invalid"],
+    [[], 409, "invite-invalid"],
+    [{ ...paired, hostId: " host-login " }, 409, "invite-invalid"],
+    [{ ...paired, guestId: paired.hostId }, 409, "invite-invalid"],
+    [{ ...paired, guestId: ["guest-login"] }, 409, "invite-invalid"],
+  ] as const) {
+    const state = setup(source);
+    await assert.rejects(
+      readPresentationInvite(state.repository, "invite-one"),
+      { status, message },
+    );
+    assert.deepEqual(state.calls.reads, ["invites/invite-one"]);
+    assert.deepEqual(state.calls.updated, []);
+  }
+});
+
+test("presentation invites retain fields while normalizing only guests and rematch types", async () => {
+  const source = {
+    hostId: paired.hostId,
+    hostColor: 7,
+    hostRematches: false,
+    guestRematches: " 1;2x ",
+    eventId: { malformed: true },
+    password: null,
+    custom: { retained: true },
+  };
+  const before = structuredClone(source);
+  const state = setup(source);
+  const invite = await readPresentationInvite(state.repository, "invite-one");
+  assert.deepEqual(invite, {
+    ...source,
+    guestId: null,
+    hostRematches: undefined,
+  });
+  assert.notEqual(invite, source);
+  assert.equal(invite.custom, source.custom);
+  assert.deepEqual(source, before);
+  assert.deepEqual(state.calls.reads, ["invites/invite-one"]);
+});
 
 test("presentation routes preflight before authentication or reads", async () => {
   assert.equal(

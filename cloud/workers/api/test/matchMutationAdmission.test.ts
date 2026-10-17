@@ -185,6 +185,16 @@ for (const command of ["move", "surrender"] as const) {
         message: "invite-invalid",
       },
       {
+        inviteValue: { ...invite, hostId: " actor " },
+        status: 409,
+        message: "invite-invalid",
+      },
+      {
+        inviteValue: { ...invite, guestId: ["opponent"] },
+        status: 409,
+        message: "invite-invalid",
+      },
+      {
         inviteValue: { ...invite, guestId: "actor" },
         status: 409,
         message: "invite-invalid",
@@ -206,6 +216,33 @@ for (const command of ["move", "surrender"] as const) {
         message: scenario.message,
       });
       assert.deepEqual(h.steps, ["invite"]);
+    }
+  });
+
+  test(`${command} preserves pending hosts and tolerant nonparticipant metadata`, async () => {
+    for (const scenario of [
+      {
+        inviteValue: { hostId: "actor", hostRematches: false },
+        matchId: "invite",
+      },
+      {
+        inviteValue: {
+          ...invite,
+          hostColor: 7,
+          hostRematches: false,
+          eventId: { malformed: true },
+        },
+        matchId: "invite2",
+      },
+    ]) {
+      const before = structuredClone(scenario.inviteValue);
+      const h = harness(command, {
+        inviteValue: scenario.inviteValue,
+        body: { ...request, matchId: scenario.matchId },
+      });
+      await h.run();
+      assert.deepEqual(h.steps, ["invite", "guard", "canonical"]);
+      assert.deepEqual(scenario.inviteValue, before);
     }
   });
 

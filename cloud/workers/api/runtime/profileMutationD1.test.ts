@@ -3,6 +3,7 @@ import type { D1Migration } from "cloudflare:test";
 import type { CompletePlayerProfile } from "@mons/shared/profiles";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  CanonicalProfileConflict,
   CanonicalProfileCorruption,
   commitCanonicalPlan,
   materializeCanonicalProfile,
@@ -968,6 +969,36 @@ describe("canonical profile mutation reads", () => {
     });
   });
 
+  it("exhausts customization conflicts after five fresh authorizations and clocks", async () => {
+    const initial = await createProfile();
+    const conflict = new CanonicalProfileConflict();
+    const observed = observeDatabase({ batchFailure: conflict });
+    let authorizations = 0;
+    let clockReads = 0;
+    await expect(
+      createProfileCustomizationRepository(testEnv, {
+        d1: observed.database,
+        now: () => {
+          expect(authorizations).toBe(clockReads + 1);
+          return 4_000 + clockReads++;
+        },
+      }).updateCustomization(
+        initial.owner.loginUid,
+        { field: "cardBackgroundId", value: 4 },
+        async () => {
+          authorizations++;
+        },
+      ),
+    ).rejects.toBe(conflict);
+    expect(authorizations).toBe(5);
+    expect(clockReads).toBe(5);
+    expect(observed.firstQueries).toHaveLength(5);
+    expect(observed.batchQueries).toHaveLength(5);
+    await expect(
+      readCanonicalProfile(db, initial.profile.profileId),
+    ).resolves.toEqual(initial.profile);
+  });
+
   it("reauthorizes against the new owner's wallets after a concurrent merge", async () => {
     const source = await createProfile({ eth: "0xsource", sol: "sol-source" });
     const target = await createProfile({ eth: "0xtarget", sol: "sol-target" });
@@ -1090,6 +1121,36 @@ describe("canonical profile mutation reads", () => {
       readCanonicalProfile(db, initial.profile.profileId),
     ).resolves.toEqual(initial.profile);
   });
+
+  it.each([
+    { configured: 2, expected: 2 },
+    { configured: 0, expected: 5 },
+  ])(
+    "keeps username retry limit $expected for configuration $configured and samples its clock once",
+    async ({ configured, expected }) => {
+      const initial = await createProfile();
+      const observed = observeDatabase({
+        batchFailure: new CanonicalProfileConflict(),
+      });
+      let clockReads = 0;
+      await expect(
+        createUsernameRepository(testEnv, {
+          d1: observed.database,
+          maxTransactionAttempts: configured,
+          now: () => {
+            clockReads++;
+            return 4_000;
+          },
+        }).editUsername(initial.owner.loginUid, `Retry${crypto.randomUUID()}`),
+      ).rejects.toBeInstanceOf(UsernameRepositoryFailure);
+      expect(clockReads).toBe(1);
+      expect(observed.firstQueries).toHaveLength(expected * 2);
+      expect(observed.batchQueries).toHaveLength(expected);
+      await expect(
+        readCanonicalProfile(db, initial.profile.profileId),
+      ).resolves.toEqual(initial.profile);
+    },
+  );
 
   it("rechecks username clearing after a concurrent social method link", async () => {
     const initial = await createProfile({

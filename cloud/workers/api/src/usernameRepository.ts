@@ -1,4 +1,5 @@
 import { buildUsernameLookupKey } from "@mons/shared/usernames";
+import { runConflictRetry } from "./conflictRetry.ts";
 import { CanonicalProfileConflict } from "./profileCanonicalD1.ts";
 import { readCanonicalAuthProfileByLogin } from "./profileCanonical/authProfile.ts";
 import {
@@ -53,79 +54,83 @@ export function createUsernameRepository(
         throw new UsernameRepositoryFailure();
       }
       const updatedAtMs = now();
-      for (let attempt = 0; attempt < attempts; attempt++) {
-        try {
-          const authSnapshot = nextUsername
-            ? null
-            : await readCanonicalAuthProfileByLogin(d1, loginUid);
-          const resolved = nextUsername
-            ? await readCanonicalProfileMutationByLogin(d1, loginUid)
-            : authSnapshot;
-          if (!resolved) return "profile-not-found";
-          const { owner, profile } = resolved;
-          const currentUsername = profile.profile.username || "";
-          if (currentUsername === nextUsername) return "updated";
-          if (!nextUsername) {
-            if (!authSnapshot) throw new UsernameRepositoryFailure();
-            const methods = new Set(
-              authSnapshot.authMethods.map((method) => method.method),
+      return runConflictRetry<UsernameEditOutcome>({
+        maxAttempts: attempts,
+        async attempt() {
+          try {
+            const authSnapshot = nextUsername
+              ? null
+              : await readCanonicalAuthProfileByLogin(d1, loginUid);
+            const resolved = nextUsername
+              ? await readCanonicalProfileMutationByLogin(d1, loginUid)
+              : authSnapshot;
+            if (!resolved) return { value: "profile-not-found" };
+            const { owner, profile } = resolved;
+            const currentUsername = profile.profile.username || "";
+            if (currentUsername === nextUsername) return { value: "updated" };
+            if (!nextUsername) {
+              if (!authSnapshot) throw new UsernameRepositoryFailure();
+              const methods = new Set(
+                authSnapshot.authMethods.map((method) => method.method),
+              );
+              if (
+                (methods.has("apple") || methods.has("x")) &&
+                !methods.has("eth") &&
+                !methods.has("sol")
+              ) {
+                return { value: "cannot-clear" };
+              }
+            }
+            const usernameKey = nextUsername
+              ? buildUsernameLookupKey(nextUsername)
+              : "";
+            let usernameOwnedByProfile = false;
+            if (usernameKey) {
+              const existing = await d1
+                .prepare(
+                  "SELECT profile_id FROM profile_records WHERE username_key = ?",
+                )
+                .bind(usernameKey)
+                .first<CanonicalUsernameOwnerRow>();
+              if (existing && existing.profile_id !== profile.profileId) {
+                return { value: "taken" };
+              }
+              usernameOwnedByProfile =
+                existing?.profile_id === profile.profileId;
+            }
+            const nextProfile = materializeCanonicalProfileUpdate(
+              profile,
+              {
+                ...profile.profile,
+                username: nextUsername || null,
+              },
+              updatedAtMs,
             );
-            if (
-              (methods.has("apple") || methods.has("x")) &&
-              !methods.has("eth") &&
-              !methods.has("sol")
-            ) {
-              return "cannot-clear";
+            await commitCanonicalProfileUpdate(d1, profile, nextProfile, {
+              owner,
+              additionalExpectations: usernameKey
+                ? usernameOwnedByProfile
+                  ? ([
+                      {
+                        kind: "username-owner",
+                        usernameKey,
+                        profileId: profile.profileId,
+                        revision: profile.revision,
+                      },
+                    ] as const)
+                  : ([{ kind: "username-absent", usernameKey }] as const)
+                : [],
+            });
+            return { value: "updated" };
+          } catch (error) {
+            if (error instanceof CanonicalProfileConflict) {
+              return { conflict: error };
             }
+            throw new UsernameRepositoryFailure();
           }
-          const usernameKey = nextUsername
-            ? buildUsernameLookupKey(nextUsername)
-            : "";
-          let usernameOwnedByProfile = false;
-          if (usernameKey) {
-            const existing = await d1
-              .prepare(
-                "SELECT profile_id FROM profile_records WHERE username_key = ?",
-              )
-              .bind(usernameKey)
-              .first<CanonicalUsernameOwnerRow>();
-            if (existing && existing.profile_id !== profile.profileId) {
-              return "taken";
-            }
-            usernameOwnedByProfile = existing?.profile_id === profile.profileId;
-          }
-          const nextProfile = materializeCanonicalProfileUpdate(
-            profile,
-            {
-              ...profile.profile,
-              username: nextUsername || null,
-            },
-            updatedAtMs,
-          );
-          await commitCanonicalProfileUpdate(d1, profile, nextProfile, {
-            owner,
-            additionalExpectations: usernameKey
-              ? usernameOwnedByProfile
-                ? ([
-                    {
-                      kind: "username-owner",
-                      usernameKey,
-                      profileId: profile.profileId,
-                      revision: profile.revision,
-                    },
-                  ] as const)
-                : ([{ kind: "username-absent", usernameKey }] as const)
-              : [],
-          });
-          return "updated";
-        } catch (error) {
-          if (error instanceof CanonicalProfileConflict) {
-            if (attempt < attempts - 1) continue;
-          }
-          throw new UsernameRepositoryFailure();
-        }
-      }
-      throw new UsernameRepositoryFailure();
+        },
+        exhausted: () => new UsernameRepositoryFailure(),
+      });
     },
   };
 }

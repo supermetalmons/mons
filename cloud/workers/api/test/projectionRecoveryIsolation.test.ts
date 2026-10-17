@@ -23,15 +23,21 @@ function recoveryHarness(
     failSend = false,
     loggerThrows = false,
     stale = false,
+    claimed = true,
+    failureReason,
   }: {
     failure?: "none" | "inspect" | "quarantine" | "scan";
     failSend?: boolean;
     loggerThrows?: boolean;
     stale?: boolean;
+    claimed?: boolean;
+    failureReason?: { value: unknown };
   } = {},
 ) {
   const nowMs = 600_000;
-  const recoveryFailure = new Error(`${failure}-failed`);
+  const recoveryFailure = failureReason
+    ? failureReason.value
+    : new Error(`${failure}-failed`);
   const queueFailure = new Error("queue-failed");
   const calls: string[] = [];
   const logs: Record<string, unknown>[] = [];
@@ -76,7 +82,7 @@ function recoveryHarness(
   const claim = (timestamp: number) => {
     assert.equal(timestamp, nowMs);
     calls.push("claim");
-    return true;
+    return claimed;
   };
   let run: () => Promise<number>;
   let expectedTask: unknown;
@@ -270,6 +276,36 @@ for (const lane of ["profile-link", "profile-game", "telegram"] as const) {
     assert.deepEqual(harness.logs, []);
   });
 
+  test(`${lane} skips unclaimed candidates without sending empty batches`, async () => {
+    const harness = recoveryHarness(lane, { claimed: false });
+    assert.equal(await harness.run(), 0);
+    assert.deepEqual(harness.sent, []);
+    assert.equal(harness.calls.includes("send"), false);
+    assert.equal(harness.calls.filter((call) => call === "claim").length, 1);
+  });
+
+  test(`${lane} preserves its non-Error failure policy after healthy dispatch`, async () => {
+    for (const value of [undefined, null, 0, false, ""]) {
+      const harness = recoveryHarness(lane, {
+        failure: "inspect",
+        failureReason: { value },
+        loggerThrows: true,
+      });
+      await assert.rejects(harness.run(), (error) => {
+        if (lane === "profile-game") return error === value;
+        assert.ok(error instanceof Error);
+        assert.equal(
+          error.message,
+          lane === "profile-link"
+            ? "profile-game-projection-claim-failed"
+            : "projection-claim-failed",
+        );
+        return true;
+      });
+      assert.deepEqual(harness.sent, [harness.expectedTask]);
+    }
+  });
+
   test(`${lane} preserves scan transport failures without quarantining or claiming`, async () => {
     const harness = recoveryHarness(lane, { failure: "scan" });
     await assert.rejects(
@@ -286,3 +322,77 @@ for (const lane of ["profile-link", "profile-game", "telegram"] as const) {
     );
   });
 }
+
+test("profile-link recovery keeps claims sequential and retains scanned task identifiers", async () => {
+  const nowMs = 600_000;
+  const jobs: ProfileLinkCatchupJob[] = ["first", "second", "third"].map(
+    (id, index) => ({
+      loginUid: `${id}-login`,
+      requestId: `${id}-request`,
+      profileId: `${id}-profile`,
+      cleanupProfileIds: [],
+      matchCursor: `${id}-saved-cursor`,
+      sourceUpdatedAtMs: index + 1,
+      lastQueuedAtMs: index + 1,
+      revision: index + 1,
+    }),
+  );
+  const claims: string[] = [];
+  const sent: unknown[] = [];
+  let active = 0;
+  let maximum = 0;
+  const count = await sweepProfileLinkProfileGameProjections(
+    {
+      ...TELEGRAM_TEST_ENV,
+      PROFILE_GAME_PROJECTION_QUEUE: {
+        ...TELEGRAM_TEST_ENV.PROFILE_GAME_PROJECTION_QUEUE,
+        async sendBatch(messages) {
+          assert.equal(active, 0);
+          sent.push(...Array.from(messages, ({ body }) => body));
+          return {
+            metadata: { metrics: { backlogCount: 0, backlogBytes: 0 } },
+          };
+        },
+      },
+    },
+    {
+      now: () => nowMs,
+      createProfileLinkJobs: () => ({
+        async scanDue(dueBeforeMs, limit) {
+          assert.equal(dueBeforeMs, 300_000);
+          assert.equal(limit, 10);
+          return recoveryCandidates(jobs);
+        },
+        quarantineInvalidEntry: async () =>
+          assert.fail("unexpected-quarantine"),
+        async claimDispatch(loginUid, requestId, lastQueuedAtMs, timestamp) {
+          const job = jobs[claims.length];
+          assert.equal(loginUid, job.loginUid);
+          assert.equal(requestId, job.requestId);
+          assert.equal(lastQueuedAtMs, job.lastQueuedAtMs);
+          assert.equal(timestamp, nowMs);
+          claims.push(loginUid);
+          active++;
+          maximum = Math.max(maximum, active);
+          await Promise.resolve();
+          active--;
+          return true;
+        },
+      }),
+    },
+  );
+  assert.equal(count, 3);
+  assert.equal(maximum, 1);
+  assert.deepEqual(
+    claims,
+    jobs.map(({ loginUid }) => loginUid),
+  );
+  assert.deepEqual(
+    sent,
+    jobs.map(({ loginUid, requestId }) => ({
+      kind: "profile-link-profile-game-projection",
+      loginUid,
+      requestId,
+    })),
+  );
+});

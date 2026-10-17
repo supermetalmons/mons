@@ -4,8 +4,203 @@ import {
   claimAndEnqueueProjectionTasks,
   collectProjectionRepairs,
   collectSuccessfulClaims,
+  recoverAndEnqueueProjectionScan,
   sendQueueTasks,
 } from "../src/projectionSweep.ts";
+
+test("scan recovery retains entry identity and raw failures, reports each phase safely, and sends healthy work", async () => {
+  const invalid = { kind: "invalid" as const, observation: { key: "raw-key" } };
+  const claimFailure = new Error("claim-failed");
+  const markFailure = new Error("mark-failed");
+  const entries = [
+    { kind: "failure" as const, error: 0 },
+    invalid,
+    ...["skipped", "claim-failed", "mark-failed", "healthy"].map((value) => ({
+      kind: "candidate" as const,
+      value,
+    })),
+  ];
+  const events: string[] = [];
+  const reports: Array<[unknown, number, string]> = [];
+  const batches: object[][] = [];
+  const result = await recoverAndEnqueueProjectionScan({
+    entries,
+    async quarantine(entry) {
+      assert.equal(entry, invalid);
+      events.push("quarantine");
+      throw undefined;
+    },
+    async processCandidate(value, setPhase) {
+      events.push(value);
+      if (value === "skipped") return;
+      if (value === "claim-failed") throw claimFailure;
+      if (value === "mark-failed") {
+        setPhase("quarantine");
+        throw markFailure;
+      }
+      return { value };
+    },
+    onFailure(entry, error, index, phase) {
+      assert.equal(entry, entries[index]);
+      reports.push([error, index, phase]);
+      events.push(`report-${index}`);
+      throw new Error("reporter-failed");
+    },
+    queue: {
+      async sendBatch(messages) {
+        events.push("send");
+        batches.push(Array.from(messages, ({ body }) => body));
+        return { metadata: { metrics: { backlogCount: 0, backlogBytes: 0 } } };
+      },
+    },
+  });
+
+  assert.deepEqual(events, [
+    "report-0",
+    "quarantine",
+    "report-1",
+    "skipped",
+    "claim-failed",
+    "report-3",
+    "mark-failed",
+    "report-4",
+    "healthy",
+    "send",
+  ]);
+  assert.deepEqual(reports, [
+    [0, 0, "inspect"],
+    [undefined, 1, "quarantine"],
+    [claimFailure, 3, "claim"],
+    [markFailure, 4, "quarantine"],
+  ]);
+  assert.equal(result.sentCount, 1);
+  assert.deepEqual(batches, [[{ value: "healthy" }]]);
+  assert.deepEqual(
+    result.failures,
+    reports.map(([error, index]) => ({
+      item: entries[index],
+      index,
+      error,
+    })),
+  );
+});
+
+test("scan recovery bounds work and retains completion order before dispatch", async () => {
+  const entries = ["slow", "fast", "failed", "skipped", "later-failed"].map(
+    (value) => ({ kind: "candidate" as const, value }),
+  );
+  const gates = entries.map(() => Promise.withResolvers<object | undefined>());
+  const started = entries.map(() => Promise.withResolvers<void>());
+  const reported = entries.map(() => Promise.withResolvers<void>());
+  const failure = new Error("unavailable");
+  const reports: unknown[][] = [];
+  const batches: object[][] = [];
+  let active = 0;
+  let maximum = 0;
+  const recovery = recoverAndEnqueueProjectionScan({
+    entries,
+    concurrency: 2,
+    quarantine: async () => assert.fail("unexpected-quarantine"),
+    async processCandidate(value) {
+      const index = entries.findIndex((entry) => entry.value === value);
+      active++;
+      maximum = Math.max(maximum, active);
+      started[index].resolve();
+      try {
+        return await gates[index].promise;
+      } finally {
+        active--;
+      }
+    },
+    onFailure(entry, error, index, phase) {
+      assert.equal(entry, entries[index]);
+      reports.push([error, index, phase]);
+      reported[index].resolve();
+    },
+    queue: {
+      async sendBatch(messages) {
+        assert.equal(active, 0);
+        batches.push(Array.from(messages, ({ body }) => body));
+        return { metadata: { metrics: { backlogCount: 0, backlogBytes: 0 } } };
+      },
+    },
+  });
+
+  await started[1].promise;
+  gates[1].resolve({ value: "fast" });
+  await started[2].promise;
+  gates[2].reject(failure);
+  await reported[2].promise;
+  await started[3].promise;
+  gates[3].resolve(undefined);
+  await started[4].promise;
+  gates[4].reject(false);
+  await reported[4].promise;
+  assert.deepEqual(batches, []);
+  gates[0].resolve({ value: "slow" });
+
+  const result = await recovery;
+  assert.equal(maximum, 2);
+  assert.equal(result.sentCount, 2);
+  assert.deepEqual(batches, [[{ value: "fast" }, { value: "slow" }]]);
+  assert.deepEqual(reports, [
+    [failure, 2, "claim"],
+    [false, 4, "claim"],
+  ]);
+  assert.deepEqual(result.failures, [
+    { item: entries[2], index: 2, error: failure },
+    { item: entries[4], index: 4, error: false },
+  ]);
+});
+
+test("scan recovery preserves Queue failure precedence after reporting item failures", async () => {
+  const failure = new Error("queue-failed");
+  const events: string[] = [];
+  await assert.rejects(
+    recoverAndEnqueueProjectionScan({
+      entries: [
+        { kind: "failure", error: null },
+        { kind: "candidate", value: "healthy" },
+      ],
+      quarantine: async () => assert.fail("unexpected-quarantine"),
+      processCandidate: async (value) => ({ value }),
+      onFailure(_entry, error) {
+        assert.equal(error, null);
+        events.push("report");
+      },
+      queue: {
+        async sendBatch(messages) {
+          assert.deepEqual(Array.from(messages), [
+            { body: { value: "healthy" } },
+          ]);
+          events.push("send");
+          throw failure;
+        },
+      },
+    }),
+    (error) => error === failure,
+  );
+  assert.deepEqual(events, ["report", "send"]);
+});
+
+test("scan recovery skips empty and entirely skipped batches", async () => {
+  for (const entries of [
+    [],
+    [{ kind: "candidate" as const, value: "stale" }],
+  ]) {
+    assert.deepEqual(
+      await recoverAndEnqueueProjectionScan({
+        entries,
+        quarantine: async () => assert.fail("unexpected-quarantine"),
+        processCandidate: async () => undefined,
+        queue: {
+          sendBatch: async () => assert.fail("unexpected-send"),
+        },
+      }),
+      { sentCount: 0, failures: [] },
+    );
+  }
+});
 
 test("projection repairs continue sequentially and retain ordered results and failures", async () => {
   const failure = new Error("repair-unavailable");

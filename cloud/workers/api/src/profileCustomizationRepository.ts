@@ -1,4 +1,5 @@
 import type { ProfileCustomizationUpdateRequest } from "@mons/shared/profiles";
+import { runConflictRetry } from "./conflictRetry.ts";
 import {
   CanonicalProfileConflict,
   type CanonicalProfileSnapshot,
@@ -55,35 +56,39 @@ export function createProfileCustomizationRepository(
 ): ProfileCustomizationRepository {
   return {
     async updateCustomization(uid, request, authorize) {
-      for (let attempt = 0; attempt < 5; attempt++) {
-        try {
-          const resolved = await readCanonicalProfileMutationByLogin(d1, uid);
-          if (!resolved) return "profile-not-found";
-          const owner = resolved.owner;
-          const profile = resolved.profile;
-          await authorize({
-            documentName: profile.profileId,
-            eth: profile.profile.eth || "",
-            sol: profile.profile.sol || "",
-          });
-          const value = materializeCanonicalProfileUpdate(
-            profile,
-            customizedProfile(profile, request),
-            now(),
-            request.field === "emojiAndAura"
-              ? { emojiPresent: true, gameplayEmoji: request.value.emoji }
-              : {},
-          );
-          await commitCanonicalProfileUpdate(d1, profile, value, { owner });
-          return "updated";
-        } catch (error) {
-          if (error instanceof CanonicalProfileConflict && attempt < 4) {
-            continue;
+      return runConflictRetry<ProfileCustomizationUpdateOutcome>({
+        maxAttempts: 5,
+        async attempt() {
+          try {
+            const resolved = await readCanonicalProfileMutationByLogin(d1, uid);
+            if (!resolved) return { value: "profile-not-found" };
+            const owner = resolved.owner;
+            const profile = resolved.profile;
+            await authorize({
+              documentName: profile.profileId,
+              eth: profile.profile.eth || "",
+              sol: profile.profile.sol || "",
+            });
+            const value = materializeCanonicalProfileUpdate(
+              profile,
+              customizedProfile(profile, request),
+              now(),
+              request.field === "emojiAndAura"
+                ? { emojiPresent: true, gameplayEmoji: request.value.emoji }
+                : {},
+            );
+            await commitCanonicalProfileUpdate(d1, profile, value, { owner });
+            return { value: "updated" };
+          } catch (error) {
+            if (error instanceof CanonicalProfileConflict) {
+              return { conflict: error };
+            }
+            throw error;
           }
-          throw error;
-        }
-      }
-      throw new CanonicalProfileConflict();
+        },
+        exhausted: (lastConflict) =>
+          lastConflict ?? new CanonicalProfileConflict(),
+      });
     },
   };
 }

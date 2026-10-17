@@ -9,12 +9,13 @@ import {
   rematchSeriesEnded,
 } from "@mons/shared/rematches";
 import { AuthApiFailure } from "./authErrors.ts";
+import { decodeCanonicalInviteParticipants } from "./canonicalInviteParticipants.ts";
 import type { GameplayRepository } from "./gameplayRepository.ts";
 import {
   readMatchPresentationControl,
   readRegisteredMatchPresentations,
 } from "./matchPresentationRegistry.ts";
-import { isCanonicalLoginUid, isSafeRecordKey } from "./recordKeys.ts";
+import { isSafeRecordKey } from "./recordKeys.ts";
 
 export type MatchPresentationReadDependencies = {
   readPresentationControl?: (
@@ -46,27 +47,18 @@ export async function readPresentationInvite(
   inviteId: string,
 ): Promise<PresentationInvite> {
   const value = await repository.readInviteMetadata(inviteId);
-  if (value === null || value === undefined) {
+  const participants = decodeCanonicalInviteParticipants(value);
+  if (participants.status === "missing") {
     throw new AuthApiFailure(404, "not-found", "invite-not-found");
   }
-  const invite =
-    value && typeof value === "object" && !Array.isArray(value)
-      ? (value as Record<string, unknown>)
-      : null;
-  if (
-    !invite ||
-    !isCanonicalLoginUid(invite.hostId) ||
-    (invite.guestId !== undefined &&
-      invite.guestId !== null &&
-      (!isCanonicalLoginUid(invite.guestId) ||
-        invite.guestId === invite.hostId))
-  ) {
+  if (participants.status === "invalid") {
     throw new AuthApiFailure(409, "failed-precondition", "invite-invalid");
   }
+  const { source: invite, hostId, guestId } = participants;
   return {
     ...invite,
-    hostId: invite.hostId,
-    guestId: typeof invite.guestId === "string" ? invite.guestId : null,
+    hostId,
+    guestId,
     hostRematches:
       typeof invite.hostRematches === "string"
         ? invite.hostRematches

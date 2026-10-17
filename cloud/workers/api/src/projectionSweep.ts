@@ -1,5 +1,8 @@
 import { collectRecoveryItems } from "./recoveryRunner.ts";
-import type { RecoveryFailureReporter } from "./recoveryReporting.ts";
+import {
+  reportRecoveryItemFailure,
+  type RecoveryFailureReporter,
+} from "./recoveryReporting.ts";
 
 export async function sendQueueTasks<T>(
   queue: Pick<Queue<T>, "sendBatch">,
@@ -10,6 +13,82 @@ export async function sendQueueTasks<T>(
       tasks.slice(index, index + 100).map((task) => ({ body: task })),
     );
   }
+}
+
+type ProjectionScanEntry<Candidate, Invalid extends { kind: "invalid" }> =
+  | { kind: "candidate"; value: Candidate }
+  | Invalid
+  | { kind: "failure"; error: unknown };
+
+type ProjectionScanPhase = "inspect" | "claim" | "quarantine";
+
+export async function recoverAndEnqueueProjectionScan<
+  Candidate,
+  Invalid extends { kind: "invalid" },
+  Task extends object,
+>({
+  entries,
+  queue,
+  concurrency = 1,
+  quarantine,
+  processCandidate,
+  onFailure,
+}: {
+  entries: readonly ProjectionScanEntry<Candidate, Invalid>[];
+  queue: Pick<Queue<Task>, "sendBatch">;
+  concurrency?: number;
+  quarantine: (entry: Invalid) => Promise<void>;
+  processCandidate: (
+    candidate: Candidate,
+    setPhase: (phase: "claim" | "quarantine") => void,
+  ) => Promise<Task | undefined>;
+  onFailure?: (
+    entry: ProjectionScanEntry<Candidate, Invalid>,
+    error: unknown,
+    index: number,
+    phase: ProjectionScanPhase,
+  ) => void;
+}): Promise<{
+  sentCount: number;
+  failures: Array<{
+    item: ProjectionScanEntry<Candidate, Invalid>;
+    index: number;
+    error: unknown;
+  }>;
+}> {
+  const { successes, failures } = await collectRecoveryItems(
+    entries,
+    async (entry, index) => {
+      let phase: ProjectionScanPhase = "inspect";
+      try {
+        if (entry.kind === "failure") throw entry.error;
+        if (entry.kind === "invalid") {
+          phase = "quarantine";
+          await quarantine(entry);
+          return;
+        }
+        phase = "claim";
+        return await processCandidate(entry.value, (nextPhase) => {
+          phase = nextPhase;
+        });
+      } catch (error) {
+        reportRecoveryItemFailure(
+          (item, failure, itemIndex) =>
+            onFailure?.(item, failure, itemIndex, phase),
+          entry,
+          error,
+          index,
+        );
+        throw error;
+      }
+    },
+    { concurrency },
+  );
+  const tasks = successes.flatMap(({ value }) =>
+    value === undefined ? [] : [value],
+  );
+  await sendQueueTasks(queue, tasks);
+  return { sentCount: tasks.length, failures };
 }
 
 type ProjectionRepairResult<Task> =

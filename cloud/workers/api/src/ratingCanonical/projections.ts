@@ -20,6 +20,7 @@ import {
   quarantineRatingRecoveryEntry,
 } from "../ratingProjectionD1.ts";
 import { mergedRatingValue } from "./codec.ts";
+import { runConflictRetry } from "../conflictRetry.ts";
 
 async function claimProjection(
   db: D1Database,
@@ -69,38 +70,45 @@ async function markProjection(
   attempts: number,
 ): Promise<void> {
   const fields = canonicalRatingProjectionFields(projection);
-  for (let attempt = 0; attempt < attempts; attempt++) {
-    const stored = await readCanonicalRatingProjectionSnapshot(db, operationId);
-    if (!stored) throw new TypeError("rating-operation-missing");
-    const { snapshot, payloadJson } = stored;
-    try {
-      await commitCanonicalPlan(db, {
-        expectations: [
-          {
-            kind: "rating-update-revision",
-            operationId,
-            revision: snapshot.revision,
-          },
-        ],
-        mutations: [
-          buildCanonicalRatingProjectionMutation(
-            snapshot,
-            mergedRatingValue(snapshot, {
-              [fields.state]: state,
-              [fields.updated]: updatedAtMs,
-              [fields.reason]: reason?.trim() || null,
-            }),
-            projection,
-            payloadJson,
-          ),
-        ],
-      });
-      return;
-    } catch (error) {
-      if (!(error instanceof CanonicalProfileConflict)) throw error;
-    }
-  }
-  throw new CanonicalProfileConflict();
+  return runConflictRetry<void>({
+    maxAttempts: attempts,
+    async attempt() {
+      const stored = await readCanonicalRatingProjectionSnapshot(
+        db,
+        operationId,
+      );
+      if (!stored) throw new TypeError("rating-operation-missing");
+      const { snapshot, payloadJson } = stored;
+      try {
+        await commitCanonicalPlan(db, {
+          expectations: [
+            {
+              kind: "rating-update-revision",
+              operationId,
+              revision: snapshot.revision,
+            },
+          ],
+          mutations: [
+            buildCanonicalRatingProjectionMutation(
+              snapshot,
+              mergedRatingValue(snapshot, {
+                [fields.state]: state,
+                [fields.updated]: updatedAtMs,
+                [fields.reason]: reason?.trim() || null,
+              }),
+              projection,
+              payloadJson,
+            ),
+          ],
+        });
+        return { value: undefined };
+      } catch (error) {
+        if (!(error instanceof CanonicalProfileConflict)) throw error;
+        return { conflict: error };
+      }
+    },
+    exhausted: () => new CanonicalProfileConflict(),
+  });
 }
 
 export function createRatingProjections(

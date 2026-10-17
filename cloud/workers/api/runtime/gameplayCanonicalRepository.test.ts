@@ -3332,6 +3332,42 @@ describe("canonical gameplay repositories", () => {
     expect(observed.batches).toHaveLength(0);
   });
 
+  it.each(["unavailable", "conflict"] as const)(
+    "does not retry a projection snapshot read that throws %s",
+    async (kind) => {
+      const operationId = `projection-read-${kind}`;
+      await insertProjectionRating(operationId);
+      const failure =
+        kind === "conflict"
+          ? new CanonicalProfileConflict()
+          : new Error("projection-read-unavailable");
+      let reads = 0;
+      const observed = observeD1FailureDatabase(testEnv.PROFILE_DB);
+      const database = beforeMatchingBatch(
+        observed.database,
+        () => false,
+        async () => {},
+        (query) => {
+          expect(query).toMatch(/^\s*SELECT \* FROM rating_updates/);
+          reads++;
+          throw failure;
+        },
+      );
+      await expect(
+        projectionRatingRepository(database).markRatingEventProgress(
+          operationId,
+          "done",
+          3_000,
+        ),
+      ).rejects.toBe(failure);
+      expect(reads).toBe(1);
+      expect(observed.batches).toHaveLength(0);
+      expect(
+        await projectionRatingRepository().readRatingUpdate(operationId),
+      ).toMatchObject({ eventProgressState: "pending" });
+    },
+  );
+
   it.each(["claim", "mark"] as const)(
     "preserves global revision conflicts during projection %s",
     async (operation) => {
