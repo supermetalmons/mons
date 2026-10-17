@@ -1,9 +1,26 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { registerHooks } from "node:module";
 import test from "node:test";
 import ts from "typescript";
 import { createMatchTimerHarness } from "./fixtures/matchTimerHarness.mjs";
 import { createRematchViewingHarness } from "./fixtures/rematchViewingHarness.mjs";
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (
+      context.parentURL?.endsWith(".ts") &&
+      (specifier.startsWith("./") || specifier.startsWith("../")) &&
+      !/\.[^/]+$/.test(specifier)
+    ) {
+      return nextResolve(`${specifier}.ts`, context);
+    }
+    return nextResolve(specifier, context);
+  },
+});
+
+const { createSessionControlsPresenter } =
+  await import("../src/game/sessionControls.ts");
 
 const source = ts.createSourceFile(
   "gameController.ts",
@@ -55,6 +72,7 @@ function harness({
   pendingAutomatch = false,
   route = home,
   waiting = false,
+  snapshotValid = true,
 } = {}) {
   const events = [];
   const ui = {};
@@ -117,11 +135,16 @@ function harness({
     lastObservedMatchSideFallbackWarningKey: "old",
     lastReactionTime: 123,
     lastBotMoveTimestamp: 123,
+    consecutiveWatchAutomoveWorkerFailures: 3,
     processedVoiceReactions: new Set(["old"]),
     playerSideColor: "black",
     currentGameVariant: "old",
     isMoveHistoryPopupOpen: true,
-    game: { contentPositions: () => [], winner: undefined },
+    game: {
+      contentPositions: () => [],
+      winner: undefined,
+      scores: { white: 0, black: 0 },
+    },
   };
   const rematchViewing = createRematchViewingHarness({
     selection: { matchId: "old", pair: {}, game: {} },
@@ -191,15 +214,21 @@ function harness({
     "setInviteBotButtonVisible",
     "removeHighlights",
     "hideItemSelectionOrConfirmationOverlay",
+    "updateScore",
+    "showRandomEmojisForLoopMode",
   ];
   const dependencies = {
     rematchViewing,
     matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
-    updateGameControlsContext: (context) => contexts.push(context),
+    updateGameControlsContext: (context) => {
+      contexts.push(context);
+      events.push(["context", context]);
+    },
     initial,
-    MonsRules: { Color: { White: "white" } },
+    MonsRules: { Color: { White: "white", Black: "black" } },
+    INVALID_SNAPSHOT_ROUTE_ERROR: "invalid-snapshot-route",
     PrimaryActionType: { None: "none" },
     legacyDefaultGameVariant: "Classic",
     botAutomoveMode: "normal",
@@ -235,15 +264,17 @@ function harness({
         events.push(["wager-view", id]);
         subscriptions.forEach((listener) => listener(wagerSnapshot));
       },
-      setupConnection: noop,
+      setupConnection: (reconnect, target) =>
+        events.push(["setup-connection", reconnect, target]),
       hasPendingInviteCreationFor: (id) => id === "next",
     },
     Board: {
       ...Object.fromEntries(
         boardMethods.map((name) => [
           name,
-          (value) => {
-            ui[name] = value;
+          (...args) => {
+            ui[name] = args[0];
+            events.push(["board", name, ...args]);
           },
         ]),
       ),
@@ -251,8 +282,10 @@ function harness({
       hasMonsBoardDisplayAnimationRunning: () => waiting,
       setPreserveDisplayAnimation: (value) => {
         ui.preserveAnimation = value;
+        events.push(["preserve-animation", value]);
       },
       stopMonsBoardAsDisplayAnimations: () => {
+        events.push(["stop-animation"]);
         if (!ui.preserveAnimation) waiting = false;
       },
       runMonsBoardAsDisplayWaitingAnimation: () => {
@@ -263,22 +296,33 @@ function harness({
     ...Object.fromEntries(
       setterNames.map((name) => [
         name,
-        (value) => {
-          ui[name] = value;
+        (...args) => {
+          ui[name] = args[0];
+          events.push(["control", name, ...args]);
         },
       ]),
     ),
-    triggerMoveHistoryPopupReload: noop,
+    triggerMoveHistoryPopupReload: () => events.push(["reload-history"]),
     buildInitialRouteGameSeed: () => ({}),
-    applyGameSeedToCurrentGame: noop,
+    applyGameSeedToCurrentGame: () => events.push(["apply-seed"]),
+    loadCurrentGameFromFen: (fen) => {
+      events.push(["load-snapshot", fen]);
+      return snapshotValid;
+    },
+    scheduleWatchAutomove: () => events.push(["schedule-watch"]),
+    updateBoardMoveStatuses: () => events.push(["update-move-statuses"]),
     ensureLocalRematchSeriesInitialized: noop,
-    updateDisplayedBoardSquareTypes: noop,
+    updateDisplayedBoardSquareTypes: () =>
+      events.push(["display-square-types"]),
     syncInviteBotIntoLocalGameButton: noop,
-    markMainGameContentReady: noop,
-    hideTimerButtons: noop,
-    disableAndHideUndoResignAndTimerControls: noop,
+    markMainGameContentReady: (interactive) =>
+      events.push(["content-ready", interactive]),
+    hideTimerButtons: () => events.push(["control", "hideTimerButtons"]),
+    disableAndHideUndoResignAndTimerControls: () =>
+      events.push(["control", "disableAndHideUndoResignAndTimerControls"]),
     createLegacyBoardSquareTypeGrid: () => "legacy-grid",
   };
+  Object.assign(dependencies, createSessionControlsPresenter(dependencies));
   const keys = Object.keys(initial);
   const { outputText } = ts.transpileModule(
     `
@@ -547,3 +591,274 @@ test("manual invite animation is preserved only for a matching pending creation 
     }
   }
 });
+
+const controlCalls = (events) =>
+  events.filter(([name]) => name === "control").map(([, ...call]) => call);
+
+const lobbyControls = [
+  ["setInviteLinkActionVisible", true],
+  ["setAutomatchVisible", true],
+  ["setBotGameOptionVisible", true],
+  ["setNavigationListButtonVisible", true],
+];
+const inviteControls = [
+  ["setHomeVisible", true],
+  ["setIslandButtonDimmed", true],
+  ["setBrushAndNavigationButtonDimmed", true],
+  ["setNavigationListButtonVisible", false],
+];
+const automatchControls = [
+  ...inviteControls,
+  ["setAutomatchWaitingState", true],
+];
+const routeCases = [
+  { name: "home", route: home, controls: lobbyControls, local: true },
+  {
+    name: "event",
+    route: { mode: "event", path: "event/party", eventId: "party" },
+    controls: lobbyControls,
+    local: true,
+  },
+  {
+    name: "watch",
+    route: { mode: "watch", path: "watch" },
+    controls: [
+      ["setHomeVisible", true],
+      ["setIslandButtonDimmed", true],
+      ["setBrushAndNavigationButtonDimmed", true],
+      ["setInviteLinkActionVisible", false],
+      ["setAutomatchVisible", false],
+      ["setBotGameOptionVisible", false],
+      ["setNavigationListButtonVisible", false],
+    ],
+    local: true,
+  },
+  {
+    name: "snapshot",
+    route: { mode: "snapshot", path: "snapshot/saved", snapshotId: "saved" },
+    controls: [
+      ["setHomeVisible", true],
+      ["setIslandButtonDimmed", true],
+      ["setBrushAndNavigationButtonDimmed", true],
+      ["setUndoVisible", true],
+      ["setInviteLinkActionVisible", false],
+      ["setAutomatchVisible", false],
+      ["setBotGameOptionVisible", false],
+      ["setNavigationListButtonVisible", false],
+      ["setAutomoveActionVisible", true],
+      ["showMoveHistoryButton", true],
+    ],
+    local: true,
+  },
+  { name: "invite", route: invite(), controls: inviteControls, local: false },
+];
+
+for (const scenario of routeCases) {
+  test(`${scenario.name} startup preserves ordered controls and unrelated dirty presentation on repeated calls`, async () => {
+    const h = harness({ route: scenario.route });
+    for (let iteration = 0; iteration < 2; iteration += 1) {
+      h.events.length = 0;
+      Object.assign(h.ui, {
+        setEndMatchVisible: true,
+        setEndMatchConfirmed: true,
+        setAutomoveActionEnabled: false,
+        setUndoEnabled: true,
+        setAutomatchEnabled: false,
+        showWaitingStateText: "retained",
+        showPrimaryAction: "rematch",
+      });
+      await h.go(scenario.route);
+      assert.deepEqual(controlCalls(h.events), [
+        ["setIslandButtonDimmed", false],
+        ...scenario.controls,
+      ]);
+      assert.equal(h.ui.setEndMatchVisible, true);
+      assert.equal(h.ui.setEndMatchConfirmed, true);
+      assert.equal(h.ui.setAutomoveActionEnabled, false);
+      assert.equal(h.ui.setUndoEnabled, true);
+      assert.equal(h.ui.setAutomatchEnabled, false);
+      assert.equal(h.ui.showWaitingStateText, "retained");
+      assert.equal(h.ui.showPrimaryAction, "rematch");
+      const setup = h.events.findIndex(([name]) => name === "setup-connection");
+      const firstControl = h.events.findIndex(
+        ([name], index) => index > setup && name === "control",
+      );
+      const lastControl = h.events.findLastIndex(
+        ([name]) => name === "control",
+      );
+      const info = h.events.findIndex(
+        ([name, method]) =>
+          name === "board" && method === "setupGameInfoElements",
+      );
+      assert.ok(setup < firstControl);
+      assert.ok(lastControl < info);
+      if (scenario.local) {
+        const squares = h.events.findIndex(
+          ([name]) => name === "display-square-types",
+        );
+        assert.ok(setup < squares && squares < firstControl);
+      } else {
+        const squares = h.events.findIndex(
+          ([name]) => name === "display-square-types",
+        );
+        assert.ok(lastControl < squares && squares < info);
+      }
+      if (scenario.name === "watch") {
+        const watchNotification = h.events.findLastIndex(
+          ([name]) => name === "watcher",
+        );
+        const schedule = h.events.findIndex(
+          ([name]) => name === "schedule-watch",
+        );
+        assert.ok(
+          lastControl < watchNotification && watchNotification < schedule,
+        );
+        assert.equal(h.state().isWatchOnly, true);
+      }
+      if (scenario.name === "snapshot") {
+        const load = h.events.findIndex(([name]) => name === "load-snapshot");
+        assert.ok(setup < load && load < firstControl);
+      }
+    }
+  });
+}
+
+test("invalid snapshot startup throws before route controls and board completion", async () => {
+  const route = { mode: "snapshot", path: "snapshot/bad", snapshotId: "bad" };
+  const h = harness({ route, snapshotValid: false });
+  await assert.rejects(h.go(route), /invalid-snapshot-route/);
+  assert.deepEqual(controlCalls(h.events), [["setIslandButtonDimmed", false]]);
+  assert.deepEqual(h.events.at(-1), ["load-snapshot", "bad"]);
+  assert.equal(
+    h.events.some(
+      ([name, method]) =>
+        name === "board" && method === "setupGameInfoElements",
+    ),
+    false,
+  );
+  assert.equal(
+    h.events.some(([name]) => name === "content-ready"),
+    false,
+  );
+});
+
+test("automatch invite startup retains both waiting commands and their animation boundaries", async () => {
+  const h = harness({ route: invite(), pendingAutomatch: true });
+  await h.go(invite());
+  assert.deepEqual(controlCalls(h.events), [
+    ["setIslandButtonDimmed", false],
+    ...automatchControls,
+    ...inviteControls,
+    ["setAutomatchWaitingState", true],
+  ]);
+  const connection = h.events.findIndex(
+    ([name]) => name === "setup-connection",
+  );
+  const controlsAndAnimations = h.events
+    .slice(connection + 1)
+    .filter(([name]) => name === "control" || name === "waiting-animation");
+  assert.deepEqual(controlsAndAnimations, [
+    ...automatchControls.map((call) => ["control", ...call]),
+    ["waiting-animation"],
+    ...inviteControls.map((call) => ["control", ...call]),
+    ["control", "setAutomatchWaitingState", true],
+    ["waiting-animation"],
+  ]);
+  const contexts = h.events
+    .slice(connection + 1)
+    .filter(([name]) => name === "context");
+  assert.equal(contexts.length, 2);
+  assert.ok(contexts.every(([, context]) => context.isOnlineGame));
+  assert.equal(h.state().pendingAutomatchTransition, false);
+  h.events.length = 0;
+  await h.go(invite());
+  assert.deepEqual(controlCalls(h.events), [
+    ["setIslandButtonDimmed", false],
+    ...inviteControls,
+  ]);
+  assert.equal(
+    h.events.some(([name]) => name === "waiting-animation"),
+    false,
+  );
+});
+
+for (const preserve of [false, true]) {
+  test(`disposal preserves command order and cleanup boundaries with automatch preservation ${preserve}`, async () => {
+    const h = harness({ pendingAutomatch: preserve });
+    await h.go(home);
+    for (let iteration = 0; iteration < 2; iteration += 1) {
+      h.setState({ pendingAutomatchTransition: preserve, isWatchOnly: true });
+      Object.assign(h.ui, {
+        setAutomatchVisible: true,
+        setAutomatchWaitingState: true,
+        setAutomatchEnabled: false,
+        setUndoVisible: true,
+        setAutomoveActionVisible: true,
+        setAutomoveActionEnabled: false,
+        setUndoEnabled: true,
+        setWatchOnlyVisible: true,
+        showVoiceReactionButton: true,
+        showMoveHistoryButton: true,
+        setEndMatchVisible: true,
+        setEndMatchConfirmed: true,
+        showWaitingStateText: "old",
+        showPrimaryAction: "rematch",
+      });
+      h.events.length = 0;
+      h.disposeGameSession(invite());
+      assert.deepEqual(controlCalls(h.events), [
+        ["setIslandButtonDimmed", preserve],
+        ["setHomeVisible", preserve],
+        ["setInviteLinkActionVisible", false],
+        ...(!preserve ? [["setAutomatchVisible", false]] : []),
+        ["setBotGameOptionVisible", false],
+        ["setNavigationListButtonVisible", false],
+        ["setPlaySamePuzzleAgainButtonVisible", false],
+        ...(!preserve
+          ? [
+              ["setAutomatchWaitingState", false],
+              ["setAutomatchEnabled", true],
+            ]
+          : []),
+        ["setBrushAndNavigationButtonDimmed", preserve],
+        ["setUndoVisible", false],
+        ["setAutomoveActionVisible", false],
+        ["setAutomoveActionEnabled", true],
+        ["setUndoEnabled", false],
+        ["setWatchOnlyVisible", false],
+        ["showVoiceReactionButton", false],
+        ["showMoveHistoryButton", false],
+        ["hideTimerButtons"],
+        ["disableAndHideUndoResignAndTimerControls"],
+        ["setEndMatchVisible", false],
+        ["setEndMatchConfirmed", false],
+        ["showWaitingStateText", ""],
+        ["showPrimaryAction", "none"],
+        ...(!preserve ? [["setDisplayedBoardSquareTypes", null]] : []),
+      ]);
+      assert.equal(h.ui.setAutomatchVisible, preserve);
+      assert.equal(h.ui.setAutomatchWaitingState, preserve);
+      assert.equal(h.ui.setAutomatchEnabled, !preserve);
+      const notifications = h.events.findLastIndex(
+        ([name]) => name === "watcher" || name === "wager-view",
+      );
+      const controls = h.events.findIndex(
+        ([name, method]) => name === "control" && method === "setHomeVisible",
+      );
+      const clearedPrimary = h.events.findIndex(
+        ([name, method]) =>
+          name === "control" && method === "showPrimaryAction",
+      );
+      const animation = h.events.findIndex(
+        ([name]) => name === "preserve-animation",
+      );
+      const cleanup = h.events.findIndex(
+        ([name, method]) =>
+          name === "board" && method === "hideTimerCountdownDigits",
+      );
+      assert.ok(notifications < controls);
+      assert.ok(clearedPrimary < animation && animation < cleanup);
+      assert.deepEqual(h.events.at(-1), ["reload-history"]);
+    }
+  });
+}

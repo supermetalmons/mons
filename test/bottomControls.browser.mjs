@@ -189,6 +189,7 @@ import { flushSync } from 'react-dom';
 import BottomControls from '/src/ui/BottomControls.tsx';
 import * as port from '/src/ui/controls/bottomControlsPort.ts';
 import * as controlsStore from '/src/game/gameControlsStore.ts';
+import { applyRouteControlsPreset, applyDisposedControlsPreset } from '/src/game/sessionControls.ts';
 import { triggerMoveHistoryPopupReload, subscribeMoveHistoryPopupSelectionReset } from '/src/ui/controls/moveHistoryPopupStore.ts';
 import { getLifecycleCounters } from '/src/lifecycle/lifecycleDiagnostics.ts';
 import { resolveNavigationGamesCacheScope, writeNavigationGamesRuntimeCache } from '/src/services/navigationGamesCache.ts';
@@ -205,7 +206,7 @@ const settle = async callback => {
   finally { globalThis.IS_REACT_ACT_ENVIRONMENT = false; }
 };
 window.harness = {
-  environment, port, run, controlsStore,
+  environment, port, run, controlsStore, applyRouteControlsPreset, applyDisposedControlsPreset,
   render(profileId = 'a') {
     run(() => root.render(React.createElement(React.StrictMode, null,
       React.createElement(BottomControls, {
@@ -358,7 +359,10 @@ navigation.replaceRoutePath('/event-game-1');
 session.initializeAppSessionManager();
 `;
 
-async function fixture(run, { realNavigation = false, mobile = false } = {}) {
+async function fixture(
+  run,
+  { realNavigation = false, mobile = false, mount = true } = {},
+) {
   const modules = new Map([
     ["bottom-environment", environmentSource],
     ["bottom-controller", controllerSource],
@@ -368,7 +372,10 @@ async function fixture(run, { realNavigation = false, mobile = false } = {}) {
     ["bottom-navigation", navigationSource],
     ["bottom-app-navigation", appNavigationSource],
     ["bottom-event-modal", eventModalSource],
-    ["bottom-harness", harnessSource + "\nwindow.harness.render();"],
+    [
+      "bottom-harness",
+      harnessSource + (mount ? "\nwindow.harness.render();" : ""),
+    ],
   ]);
   const replacements = new Map([
     ["../game/gameController", "bottom-controller"],
@@ -458,7 +465,7 @@ async function fixture(run, { realNavigation = false, mobile = false } = {}) {
       "bottom-harness",
       harnessSource +
         realNavigationHarnessSource +
-        "\nwindow.harness.render();",
+        (mount ? "\nwindow.harness.render();" : ""),
     );
     modules.set(
       "bottom-connection",
@@ -1130,7 +1137,7 @@ for (const mobile of [false, true]) {
 }
 
 test(
-  "event navigation survives outside and preserved closes, with ordinary close and expiry still dismissing",
+  "event navigation survives reset presets and preserved closes, with ordinary close and expiry still dismissing",
   { timeout: 60000 },
   async () => {
     await fixture(async (page) => {
@@ -1159,7 +1166,7 @@ test(
           window.harness.port.closeNavigationAndAppearancePopupIfAny({
             preserveNavigationSelection: true,
           });
-          window.harness.port.setNavigationListButtonVisible(false);
+          window.harness.applyDisposedControlsPreset(false);
         }),
       );
       await page.locator("#monsboard").click({ force: true });
@@ -1194,7 +1201,7 @@ test(
       await page.clock.runFor(10001);
       await page.evaluate(() =>
         window.harness.run(() =>
-          window.harness.port.setNavigationListButtonVisible(false),
+          window.harness.applyDisposedControlsPreset(false),
         ),
       );
       assert.equal((await popupState(page)).navigation, false);
@@ -2026,7 +2033,7 @@ test(
 );
 
 test(
-  "fresh automatch preserves its Cancel deadline through the match reset before entering its invite",
+  "preserved disposal retains the optimistic automatch and its Cancel deadline before entering its invite",
   { timeout: 60000 },
   async () => {
     await fixture(async (page) => {
@@ -2040,10 +2047,18 @@ test(
         ),
       );
       await page.evaluate(() => window.harness.resetMatch());
+      await page.evaluate(() =>
+        window.harness.run(() =>
+          window.harness.applyDisposedControlsPreset(true),
+        ),
+      );
       assert.equal(
         await page.evaluate(() => window.harness.counters().uiTimeouts),
         0,
       );
+      assert.equal(await count(page, "Automatching"), 1);
+      await click(page, "Navigation");
+      assert.equal(await count(page, "Open fresh-after-reset"), 1);
       await page.evaluate(() =>
         window.harness.run(() => {
           window.harness.environment.route = {
@@ -2051,12 +2066,62 @@ test(
             inviteId: "fresh-after-reset",
             path: "fresh-after-reset",
           };
-          window.harness.port.setAutomatchWaitingState(true);
+          window.harness.applyRouteControlsPreset("automatchTransition");
         }),
       );
       await page.clock.runFor(6999);
       assert.equal(await count(page, "Cancel"), 0);
       await page.clock.runFor(1);
+      assert.equal(await button(page, "Cancel").isDisabled(), false);
+      assert.equal(
+        await page.evaluate(() => window.harness.counters().uiTimeouts),
+        0,
+      );
+    });
+  },
+);
+
+test(
+  "ordinary disposal clears the optimistic automatch and pending cancellation intent",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await startAutomatch(page);
+      await page.clock.runFor(3000);
+      await page.evaluate(() =>
+        window.harness.respondAutomatch(
+          0,
+          { ok: true, mode: "pending", inviteId: "discarded-pending" },
+          false,
+        ),
+      );
+      await click(page, "Navigation");
+      assert.equal(await count(page, "Open discarded-pending"), 1);
+      await page.evaluate(() => {
+        window.harness.resetMatch();
+        window.harness.run(() => {
+          window.harness.applyDisposedControlsPreset(false);
+          window.harness.applyRouteControlsPreset("lobby");
+        });
+      });
+      assert.equal(await button(page, "Automatch").isDisabled(), false);
+      assert.equal(await count(page, "Cancel"), 0);
+      assert.equal(
+        await page.evaluate(() => window.harness.counters().uiTimeouts),
+        0,
+      );
+      await click(page, "Navigation");
+      assert.equal(await count(page, "Open discarded-pending"), 0);
+      await page.evaluate(() =>
+        window.harness.run(() => {
+          window.harness.environment.route = {
+            mode: "invite",
+            inviteId: "discarded-pending",
+            path: "discarded-pending",
+          };
+          window.harness.applyRouteControlsPreset("automatchTransition");
+        }),
+      );
       assert.equal(await button(page, "Cancel").isDisabled(), false);
       assert.equal(
         await page.evaluate(() => window.harness.counters().uiTimeouts),
@@ -2444,21 +2509,216 @@ test(
 );
 
 test(
-  "repeating a hidden reaction command still dismisses an open picker",
+  "repeating a disposed preset still dismisses a picker whose reaction button is hidden",
   { timeout: 60000 },
   async () => {
     await fixture(async (page) => {
-      await page.evaluate(() =>
-        window.harness.run(() => window.harness.port.toggleReactionPicker()),
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        await page.evaluate(() =>
+          window.harness.run(() => window.harness.port.toggleReactionPicker()),
+        );
+        assert.equal(await count(page, "yo"), 1);
+        assert.equal(await count(page, "Voice Reaction"), 0);
+        await page.evaluate(() =>
+          window.harness.run(() =>
+            window.harness.applyDisposedControlsPreset(false),
+          ),
+        );
+        assert.equal(await count(page, "yo"), 0);
+      }
+    });
+  },
+);
+
+test(
+  "route presets retain timer progress while disposal cancels its deadline before another timer starts",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      const retained = await page.evaluate(() => {
+        const { run, port, controlsStore, applyRouteControlsPreset } =
+          window.harness;
+        run(() => port.showTimerButtonProgressing(0, 10, true));
+        const config =
+          controlsStore.getGameControlsSnapshot().presentation.gameControls
+            .timer.config;
+        window.savedTimerConfig = config;
+        run(() => applyRouteControlsPreset("invite"));
+        return (
+          controlsStore.getGameControlsSnapshot().presentation.gameControls
+            .timer.config === config
+        );
+      });
+      assert.equal(retained, true);
+      assert.equal(await button(page, "Timer").isDisabled(), true);
+      assert.equal(
+        await page.evaluate(() => window.harness.counters().uiTimeouts),
+        1,
       );
-      assert.equal(await count(page, "yo"), 1);
       await page.evaluate(() =>
         window.harness.run(() =>
-          window.harness.port.showVoiceReactionButton(false),
+          window.harness.applyDisposedControlsPreset(false),
         ),
       );
-      assert.equal(await count(page, "yo"), 0);
+      assert.equal(await count(page, "Timer"), 0);
+      assert.equal(
+        await page.evaluate(
+          () =>
+            window.harness.controlsStore.getGameControlsSnapshot().presentation
+              .gameControls.timer.config === window.savedTimerConfig,
+        ),
+        true,
+      );
+      assert.equal(
+        await page.evaluate(() => window.harness.counters().uiTimeouts),
+        0,
+      );
+      await page.evaluate(() =>
+        window.harness.run(() =>
+          window.harness.port.showTimerButtonProgressing(0, 30, false),
+        ),
+      );
+      await page.clock.runFor(10001);
+      await page.evaluate(() =>
+        window.harness.run(() => window.dispatchEvent(new Event("focus"))),
+      );
+      assert.equal(await button(page, "Timer").isDisabled(), true);
+      assert.equal(
+        await page.evaluate(() => window.harness.counters().uiTimeouts),
+        0,
+      );
     });
+  },
+);
+
+test(
+  "route and disposal presets clear invite loading, copied text, and ready state before reopening",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      for (const preset of ["watch", "snapshot", false, true]) {
+        await page.evaluate(() =>
+          window.harness.run(() => {
+            window.harness.applyDisposedControlsPreset(false);
+            window.harness.applyRouteControlsPreset("lobby");
+          }),
+        );
+        await click(page, "New Link Game");
+        assert.equal(await count(page, "Creating a Link..."), 1);
+        const hideInvite = () =>
+          page.evaluate(
+            (preset) =>
+              window.harness.run(() => {
+                if (typeof preset === "boolean") {
+                  window.harness.applyDisposedControlsPreset(preset);
+                } else {
+                  window.harness.applyRouteControlsPreset(preset);
+                }
+              }),
+            preset,
+          );
+        const openLobby = () =>
+          page.evaluate(() =>
+            window.harness.run(() =>
+              window.harness.applyRouteControlsPreset("lobby"),
+            ),
+          );
+        const completeInvite = () =>
+          page.evaluate(() =>
+            window.harness.run(() =>
+              window.harness.environment.inviteRequests.at(-1)(true),
+            ),
+          );
+        await hideInvite();
+        await openLobby();
+        assert.equal(await button(page, "New Link Game").isDisabled(), false);
+        assert.equal(await count(page, "Creating a Link..."), 0);
+        await click(page, "New Link Game");
+        await completeInvite();
+        await click(page, "Copy Link");
+        await completeInvite();
+        assert.equal(await count(page, "Link is copied"), 1);
+        await hideInvite();
+        assert.equal(
+          await page.evaluate(
+            () =>
+              window.harness.controlsStore.getGameControlsSnapshot()
+                .presentation.inviteReadyToCopy,
+          ),
+          false,
+        );
+        await openLobby();
+        assert.equal(await count(page, "New Link Game"), 1);
+        await click(page, "New Link Game");
+        await completeInvite();
+        assert.equal(await count(page, "Copy Link"), 1);
+        assert.equal(await count(page, "Link is copied"), 0);
+      }
+    });
+  },
+);
+
+test(
+  "session presets cannot mutate presentation before binding or after unmount",
+  { timeout: 60000 },
+  async () => {
+    await fixture(
+      async (page) => {
+        const checkUnboundPresets = () =>
+          page.evaluate(() => {
+            const {
+              run,
+              controlsStore,
+              applyRouteControlsPreset,
+              applyDisposedControlsPreset,
+            } = window.harness;
+            const before = controlsStore.getGameControlsSnapshot();
+            let notifications = 0;
+            const unsubscribe = controlsStore.subscribeGameControls(() => {
+              notifications += 1;
+            });
+            try {
+              run(() => {
+                for (const preset of [
+                  "lobby",
+                  "watch",
+                  "snapshot",
+                  "invite",
+                  "automatchTransition",
+                ]) {
+                  applyRouteControlsPreset(preset);
+                }
+                applyDisposedControlsPreset(false);
+                applyDisposedControlsPreset(true);
+              });
+              return {
+                unchanged: controlsStore.getGameControlsSnapshot() === before,
+                notifications,
+              };
+            } finally {
+              unsubscribe();
+            }
+          });
+        assert.deepEqual(await checkUnboundPresets(), {
+          unchanged: true,
+          notifications: 0,
+        });
+        await page.evaluate(() => {
+          window.harness.render();
+          window.harness.run(() =>
+            window.harness.applyRouteControlsPreset("lobby"),
+          );
+        });
+        assert.equal(await count(page, "New Link Game"), 1);
+        await page.evaluate(() => window.harness.dispose());
+        assert.deepEqual(await checkUnboundPresets(), {
+          unchanged: true,
+          notifications: 0,
+        });
+        assert.equal(await page.locator("#root").textContent(), "");
+      },
+      { mount: false },
+    );
   },
 );
 

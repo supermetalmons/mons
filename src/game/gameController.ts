@@ -7,6 +7,10 @@ import {
 } from "./mainGameLoadState";
 import { MATCH_TIMER_DURATION_SECONDS } from "@mons/shared/timers";
 import { createMatchTimerController } from "./matchTimerController";
+import {
+  applyDisposedControlsPreset,
+  applyRouteControlsPreset,
+} from "./sessionControls";
 import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
 import type { WorkerAutomoveResult } from "./automoveWorkerProtocol";
 import {
@@ -1849,11 +1853,7 @@ export async function go(routeStateOverride?: RouteState) {
     isOnlineGame = true;
     publishGameControlsContext();
     isWaitingForInviteToGetAccepted = true;
-    setHomeVisible(true);
-    setIslandButtonDimmed(true);
-    setBrushAndNavigationButtonDimmed(true);
-    setNavigationListButtonVisible(false);
-    setAutomatchWaitingState(true);
+    applyRouteControlsPreset("automatchTransition");
     Board.runMonsBoardAsDisplayWaitingAnimation();
   }
 
@@ -1865,14 +1865,7 @@ export async function go(routeStateOverride?: RouteState) {
     updateDisplayedBoardSquareTypes(game);
 
     didStartLocalGame = true;
-    setHomeVisible(true);
-    setIslandButtonDimmed(true);
-
-    setBrushAndNavigationButtonDimmed(true);
-    setInviteLinkActionVisible(false);
-    setAutomatchVisible(false);
-    setBotGameOptionVisible(false);
-    setNavigationListButtonVisible(false);
+    applyRouteControlsPreset("watch");
 
     setWatchOnlyState(true);
     lastBotMoveTimestamp = 0;
@@ -1889,17 +1882,7 @@ export async function go(routeStateOverride?: RouteState) {
     });
     updateDisplayedBoardSquareTypes(game);
     didStartLocalGame = true;
-    setHomeVisible(true);
-    setIslandButtonDimmed(true);
-
-    setBrushAndNavigationButtonDimmed(true);
-    setUndoVisible(true);
-    setInviteLinkActionVisible(false);
-    setAutomatchVisible(false);
-    setBotGameOptionVisible(false);
-    setNavigationListButtonVisible(false);
-    setAutomoveActionVisible(true);
-    showMoveHistoryButton(true);
+    applyRouteControlsPreset("snapshot");
   } else if (isCreateInviteRoute()) {
     ensureLocalRematchSeriesInitialized();
     game.contentPositions().forEach((position) => {
@@ -1907,18 +1890,11 @@ export async function go(routeStateOverride?: RouteState) {
       updateLocation(location);
     });
     updateDisplayedBoardSquareTypes(game);
-    setInviteLinkActionVisible(true);
-    setAutomatchVisible(true);
-    setBotGameOptionVisible(true);
-    setNavigationListButtonVisible(true);
+    applyRouteControlsPreset("lobby");
   } else {
     isOnlineGame = true;
     publishGameControlsContext();
-    setHomeVisible(true);
-    setIslandButtonDimmed(true);
-
-    setBrushAndNavigationButtonDimmed(true);
-    setNavigationListButtonVisible(false);
+    applyRouteControlsPreset("invite");
 
     if (isAutomatchTransition) {
       isWaitingForInviteToGetAccepted = true;
@@ -1970,32 +1946,7 @@ export function disposeGameSession(nextRouteState?: RouteState) {
   const preserveWaitingAnimation =
     preserveAutomatchUi || preserveManualInviteAnimation;
   resetSessionState("dispose", preserveAutomatchUi);
-  setHomeVisible(preserveAutomatchUi);
-  setInviteLinkActionVisible(false);
-  if (!preserveAutomatchUi) {
-    setAutomatchVisible(false);
-  }
-  setBotGameOptionVisible(false);
-  setNavigationListButtonVisible(false);
-  setPlaySamePuzzleAgainButtonVisible(false);
-  if (!preserveAutomatchUi) {
-    setAutomatchWaitingState(false);
-    setAutomatchEnabled(true);
-  }
-  setBrushAndNavigationButtonDimmed(preserveAutomatchUi);
-  setUndoVisible(false);
-  setAutomoveActionVisible(false);
-  setAutomoveActionEnabled(true);
-  setUndoEnabled(false);
-  setWatchOnlyVisible(false);
-  showVoiceReactionButton(false);
-  showMoveHistoryButton(false);
-  hideTimerButtons();
-  disableAndHideUndoResignAndTimerControls();
-  setEndMatchVisible(false);
-  setEndMatchConfirmed(false);
-  showWaitingStateText("");
-  showPrimaryAction(PrimaryActionType.None);
+  applyDisposedControlsPreset(preserveAutomatchUi);
   Board.setPreserveDisplayAnimation(preserveWaitingAnimation);
   Board.stopMonsBoardAsDisplayAnimations();
   currentGameVariant = legacyDefaultGameVariant;
