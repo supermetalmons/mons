@@ -5,7 +5,10 @@ import {
 import { normalizeMaterials } from "@mons/shared/mining";
 import { createAutomatchPersistenceStub } from "./automatchPersistenceTestUtils.ts";
 import type { WagerReservationRuntime } from "../src/wagerReservationRuntime.ts";
-import type { GameplayRepository } from "../src/gameplayRepository.ts";
+import type {
+  GameplayRepository,
+  WagerWriteRepository,
+} from "../src/gameplayRepository.ts";
 import { frozenOperationState } from "../src/wagerFrozenRecords.ts";
 import {
   assertWagerFrozenKey,
@@ -29,7 +32,7 @@ type MemoryBackend = {
   ): Promise<Transaction>;
 };
 
-export type TestGameplayRepository = GameplayRepository & WagerTestState;
+export type TestGameplayRepository = WagerWriteRepository & WagerTestState;
 
 function record(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -135,20 +138,30 @@ export function attachMemoryWagerFrozenStore(
       | "getMiningSnapshot"
       | "readProfileOwnershipSnapshot"
     > &
-    Partial<GameplayRepository>,
+    Partial<WagerWriteRepository>,
 ): TestGameplayRepository {
   const unexpected = async () => {
     throw new Error("unexpected-gameplay-operation");
   };
-  const repository = {
+  const wagerState = createMemoryWagerState({
+    readState: (...args) => repository.readState(...args),
+    transactState: (...args) => repository.transactState(...args),
+    patchStateRoot: (...args) => repository.patchStateRoot(...args),
+  });
+  const repository: TestGameplayRepository = {
     automatchPersistence: createAutomatchPersistenceStub(),
     readAutomatchTelegramSource: unexpected,
     transactAutomatchTelegramSource: unexpected,
     readAutomatchTelegramOutbox: unexpected,
     transactAutomatchTelegramOutbox: unexpected,
+    claimAutomatchTelegramOutbox: unexpected,
+    acknowledgeAutomatchTelegramOutbox: unexpected,
     listDueAutomatchTelegramOutboxes: unexpected,
     readAutomatchProfileOutbox: unexpected,
     transactAutomatchProfileOutbox: unexpected,
+    claimAutomatchProfileOutbox: unexpected,
+    acknowledgeAutomatchProfileOutbox: unexpected,
+    finishAutomatchProfileOutbox: unexpected,
     listDueAutomatchProfileOutboxes: unexpected,
     listMalformedAutomatchProfileOutboxes: unexpected,
     readAutomatchEntry: unexpected,
@@ -176,50 +189,62 @@ export function attachMemoryWagerFrozenStore(
           undefined,
           signal,
         )) as Record<string, unknown> | null),
-  } as TestGameplayRepository;
-  const wagerState = createMemoryWagerState(repository);
-  repository.wagers ??= wagerState;
-  repository.wagerWriter ??= wagerState;
-  repository.readInviteMetadataMany ??= (ids, signal) =>
-    Promise.all(ids.map((id) => repository.readInviteMetadata(id, signal)));
-  repository.readMatchRecords ??= (inputs, signal) =>
-    Promise.all(
-      inputs.map((input) => repository.readMatchRecord(input, signal)),
-    );
-  repository.readMatchPair ??= async (input, signal) => ({
-    ...input,
-    epoch: 1,
-    revision: 1,
-    claim: null,
-    playerMatch: (await repository.readState(
-      `players/${input.playerId}/matches/${input.matchId}`,
-      undefined,
-      signal,
-    )) as import("../src/matchStateTypes.ts").MatchStateRecord | null,
-    opponentMatch: input.opponentId
-      ? ((await repository.readState(
-          `players/${input.opponentId}/matches/${input.matchId}`,
+    wagers: state.wagers ?? wagerState,
+    wagerWriter: state.wagerWriter ?? wagerState,
+    readInviteMetadataMany:
+      state.readInviteMetadataMany ??
+      ((ids, signal) =>
+        Promise.all(
+          ids.map((id) => repository.readInviteMetadata(id, signal)),
+        )),
+    readMatchRecords:
+      state.readMatchRecords ??
+      ((inputs, signal) =>
+        Promise.all(
+          inputs.map((input) => repository.readMatchRecord(input, signal)),
+        )),
+    readMatchPair:
+      state.readMatchPair ??
+      (async (input, signal) => ({
+        ...input,
+        epoch: 1,
+        revision: 1,
+        claim: null,
+        playerMatch: (await repository.readState(
+          `players/${input.playerId}/matches/${input.matchId}`,
           undefined,
           signal,
-        )) as import("../src/matchStateTypes.ts").MatchStateRecord | null)
-      : null,
-  });
-  repository.readMatchPairs ??= (inputs, signal) =>
-    Promise.all(inputs.map((input) => repository.readMatchPair(input, signal)));
-  repository.wagerFrozen ??= createMemoryWagerFrozenStore({
-    read: (playerUid) => repository.readState(`reservations/${playerUid}`),
-    transact: (playerUid, update, signal) =>
-      repository.transactState(`reservations/${playerUid}`, update, signal),
-  });
+        )) as import("../src/matchStateTypes.ts").MatchStateRecord | null,
+        opponentMatch: input.opponentId
+          ? ((await repository.readState(
+              `players/${input.opponentId}/matches/${input.matchId}`,
+              undefined,
+              signal,
+            )) as import("../src/matchStateTypes.ts").MatchStateRecord | null)
+          : null,
+      })),
+    readMatchPairs:
+      state.readMatchPairs ??
+      ((inputs, signal) =>
+        Promise.all(
+          inputs.map((input) => repository.readMatchPair(input, signal)),
+        )),
+    wagerFrozen:
+      state.wagerFrozen ??
+      createMemoryWagerFrozenStore({
+        read: (playerUid) => repository.readState(`reservations/${playerUid}`),
+        transact: (playerUid, update, signal) =>
+          repository.transactState(`reservations/${playerUid}`, update, signal),
+      }),
+  };
   return repository;
 }
 
 export function createTestWagerReservationRuntime(
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
 ): WagerReservationRuntime {
-  repository.wagerFrozen ??= createMemoryWagerFrozenStore();
   return {
-    readBalance: (playerUid) => repository.wagerFrozen!.readBalance(playerUid),
+    readBalance: (playerUid) => repository.wagerFrozen.readBalance(playerUid),
     run: (_kind, work) => work(repository, async () => undefined),
   };
 }

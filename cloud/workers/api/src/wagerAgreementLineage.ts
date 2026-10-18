@@ -1,9 +1,10 @@
-import { requireWagerWriter, type WagerKey } from "./wagerStateRepository.ts";
+import type { WagerKey } from "./wagerStateRepository.ts";
 import { lineageFingerprint } from "./wagerStateCommands.ts";
 import type { MiningMaterialName } from "@mons/shared/mining";
 import { isWagerAgreement, type WagerAgreement } from "@mons/shared/wagers";
 import { isSafeRecordKey } from "./recordKeys.ts";
-import type { GameplayRepository } from "./gameplayRepository.ts";
+import type { WagerWriteRepository } from "./gameplayRepository.ts";
+import type { WagerFrozenReadRepository } from "./wagerFrozenStore.ts";
 import {
   createOperationId,
   createWagerReservationOperationId,
@@ -124,7 +125,7 @@ async function createLineageContext(
 }
 
 async function validateProposerLineage(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   context: LineageContext,
 ): Promise<boolean> {
   const {
@@ -167,7 +168,7 @@ async function validateProposerLineage(
 }
 
 async function validateAutoSendAccepter(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   context: LineageContext,
   operationIds: unknown[],
 ): Promise<ReservationAdjustment[] | null> {
@@ -224,7 +225,7 @@ async function validateAutoSendAccepter(
 }
 
 async function validateAcceptedAccepter(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   context: LineageContext,
   operationIds: unknown[],
 ): Promise<ReservationAdjustment[] | null> {
@@ -285,7 +286,7 @@ async function validateAcceptedAccepter(
 }
 
 async function validateAccepterLineage(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   context: LineageContext,
 ): Promise<{
   adjustments: ReservationAdjustment[];
@@ -346,7 +347,7 @@ function validateStoredAdjustments(
 }
 
 async function expectedReservationAdjustments(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   wagerKey: WagerKey,
   agreement: WagerAgreement | null,
   agreementOperation: Record<string, unknown>,
@@ -383,17 +384,17 @@ async function expectedReservationAdjustments(
 }
 
 async function markWagerAgreementLineageReady(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagers" | "wagerWriter">,
   wagerKey: WagerKey,
   operationId: string,
   fingerprint: string,
 ): Promise<void> {
   let value: unknown;
   try {
-    const result = await requireWagerWriter(repository).markLineageReady(
-      wagerKey,
-      { operationId, fingerprint },
-    );
+    const result = await repository.wagerWriter.markLineageReady(wagerKey, {
+      operationId,
+      fingerprint,
+    });
     value = result.value;
   } catch {
     value = await repository.wagers.readWager(wagerKey);
@@ -404,7 +405,10 @@ async function markWagerAgreementLineageReady(
 }
 
 export async function ensureWagerAgreementLineageReady(
-  repository: GameplayRepository,
+  repository: Pick<
+    WagerWriteRepository,
+    "wagers" | "wagerWriter" | "wagerFrozen"
+  >,
   wagerKey: WagerKey,
   now: () => number,
   assertMutationAllowed?: () => Promise<void>,

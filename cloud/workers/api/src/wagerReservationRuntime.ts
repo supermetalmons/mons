@@ -2,7 +2,10 @@ import {
   WAGER_STORAGE_VERSION,
   WAGER_STORAGE_VERSION_HEADER,
 } from "@mons/shared/wagers";
-import type { GameplayRepository } from "./gameplayRepository.ts";
+import type {
+  GameplayRepository,
+  WagerWriteRepository,
+} from "./gameplayRepository.ts";
 import { assertProfileMutationAllowed } from "./profileCanonicalActivation.ts";
 import {
   createWagerFrozenD1Store,
@@ -38,7 +41,7 @@ export type WagerReservationRuntime = {
   run: <T>(
     kind: string,
     work: (
-      repository: GameplayRepository,
+      repository: WagerWriteRepository,
       assertMutationAllowed: () => Promise<void>,
     ) => Promise<T>,
   ) => Promise<T>;
@@ -78,15 +81,13 @@ export function createWagerReservationRuntime(
             ),
         });
         await assertAdmission(admission);
-        return await work(
-          {
-            ...repository,
-            wagerFrozen: store,
-            wagers: wagerState,
-            wagerWriter: wagerState,
-          },
-          () => assertAdmission(admission),
-        );
+        const admittedRepository: WagerWriteRepository = {
+          ...repository,
+          wagerFrozen: store,
+          wagers: wagerState,
+          wagerWriter: wagerState,
+        };
+        return await work(admittedRepository, () => assertAdmission(admission));
       } finally {
         await releaseWagerReservationAdmission(db, admission).catch(() => {
           logFailure({

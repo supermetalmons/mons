@@ -12,6 +12,8 @@ The invite Durable Object owns active match records and timer claims. Gameplay D
 
 Worker and portable-runtime callers use typed domain repositories for matches, sessions, wagers, events, leases, Telegram delivery, and prize withdrawals. Event and session plans preserve their existing guarded commit stages. Compatibility codecs retain the exact persisted path encodings, server-value markers, and replay digests; legacy-shaped test adapters live only with the tests.
 
+Wager mutations require a `WagerWriteRepository` supplied inside the reservation runtime's admitted callback. Base gameplay repositories expose wager reads; required write capabilities supplement the existing runtime admission and SQL guards.
+
 Rematch preparation reads both participants through the existing match-record batch API, sharing routing, authority checks, and room reads. Join and ensure-match operations retain their scalar reads so an existing participant match can return without reading the opponent.
 
 Preserve existing login IDs, applied SQL migrations, immutable snapshots, imported legacy match records, rating completions, source digests, and both event receipt stages. Stored compatibility formats are not permission to restart a completed migration or rewrite historical data.
@@ -33,6 +35,8 @@ The five-minute auth cleanup sweep processes at most 1,000 rows per deletion or 
 ### Auth recovery quarantine
 
 The recovery sweep quarantines malformed jobs by their raw profile ID and `CAST(revision AS TEXT)` token in `PROFILE_DB.profile_auth_recovery_quarantine`. It retains the canonical job unchanged and skips that revision on later sweeps; a changed revision is eligible again. Raw identifiers and snapshot comparisons preserve database bytes, including BLOBs and invalid UTF-8. Quarantine logs identify jobs using `profileIdHex` and `revisionHex`. Deleting a completed canonical job also removes its quarantine marker.
+
+Healthy scan rows carry only their ordinary fields and raw key metadata. Malformed rows receive a primary reread with a full byte-preserving observation before quarantine. A row repaired before that reread waits until the next sweep; a repair after it prevents the stale quarantine write.
 
 Inspect retained jobs with this read-only query against `PROFILE_DB`:
 

@@ -17,6 +17,12 @@ import {
   commitCanonicalPlan,
   materializeCanonicalProfile,
 } from "../src/profileCanonicalD1.ts";
+import {
+  inspectCanonicalAuthRecoverySweepRow,
+  listCanonicalAuthRecoverySweepRows,
+  quarantineCanonicalAuthRecoveryJob,
+  readCanonicalAuthRecoveryQuarantineEntry,
+} from "../src/profileCanonical/recovery.ts";
 import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
 
 const testEnv = env as Env & { TEST_PROFILE_D1_MIGRATIONS: D1Migration[] };
@@ -166,8 +172,41 @@ function sweep(profileDb = testEnv.PROFILE_DB, currentTime = nowMs) {
   });
 }
 
-function afterSweepRead(afterRead: () => Promise<void>): D1Database {
-  let intercepted = false;
+type RecoveryReadStage = "scan" | "observation";
+
+function checkValueSize(value: unknown): void {
+  const maxBytes = 2_000_000;
+  if (typeof value === "string") {
+    if (new TextEncoder().encode(value).byteLength > maxBytes)
+      throw new Error("d1-value-size-limit");
+  } else if (ArrayBuffer.isView(value)) {
+    if (value.byteLength > maxBytes) throw new Error("d1-value-size-limit");
+  } else if (value instanceof ArrayBuffer) {
+    if (value.byteLength > maxBytes) throw new Error("d1-value-size-limit");
+  } else if (Array.isArray(value)) {
+    if (value.length && typeof value[0] === "number") {
+      if (value.length > maxBytes) throw new Error("d1-value-size-limit");
+    } else {
+      value.forEach(checkValueSize);
+    }
+  } else if (value && typeof value === "object") {
+    Object.values(value).forEach(checkValueSize);
+  }
+}
+
+function observedDatabase({
+  queries = [],
+  sessions = [],
+  beforeRead,
+  afterRead,
+  checkSizes = false,
+}: {
+  queries?: string[];
+  sessions?: Array<string | undefined>;
+  beforeRead?: (stage: RecoveryReadStage) => Promise<void>;
+  afterRead?: (stage: RecoveryReadStage) => Promise<void>;
+  checkSizes?: boolean;
+} = {}): D1Database {
   const wrap = (
     statement: D1PreparedStatement,
     query: string,
@@ -175,19 +214,29 @@ function afterSweepRead(afterRead: () => Promise<void>): D1Database {
     new Proxy(statement, {
       get(target, property) {
         if (property === "bind") {
-          return (...values: unknown[]) => wrap(target.bind(...values), query);
+          return (...values: unknown[]) => {
+            if (checkSizes) values.forEach(checkValueSize);
+            return wrap(target.bind(...values), query);
+          };
         }
-        if (
-          property === "all" &&
-          query.includes("profile_auth_recovery_jobs") &&
-          /\bLIMIT\b/i.test(query)
-        ) {
-          return async () => {
-            const result = await target.all();
-            if (!intercepted) {
-              intercepted = true;
-              await afterRead();
-            }
+        if (property === "all" || property === "first") {
+          return async (column?: string) => {
+            const stage = query.includes("profile_auth_recovery_jobs")
+              ? /\bLIMIT\b/i.test(query)
+                ? "scan"
+                : query.includes("recovery_type_0")
+                  ? "observation"
+                  : null
+              : null;
+            if (stage) await beforeRead?.(stage);
+            const result =
+              property === "all"
+                ? await target.all()
+                : column === undefined
+                  ? await target.first()
+                  : await target.first(column);
+            if (checkSizes) checkValueSize(result);
+            if (stage) await afterRead?.(stage);
             return result;
           };
         }
@@ -195,15 +244,50 @@ function afterSweepRead(afterRead: () => Promise<void>): D1Database {
         return typeof member === "function" ? member.bind(target) : member;
       },
     });
-  return new Proxy(testEnv.PROFILE_DB, {
-    get(target, property) {
-      if (property === "prepare") {
-        return (query: string) => wrap(target.prepare(query), query);
-      }
-      const member = Reflect.get(target, property, target);
-      return typeof member === "function" ? member.bind(target) : member;
+  const database = <T extends D1Database | D1DatabaseSession>(db: T): T =>
+    new Proxy(db, {
+      get(target, property) {
+        if (property === "prepare") {
+          return (query: string) => {
+            queries.push(query);
+            return wrap(target.prepare(query), query);
+          };
+        }
+        if (property === "withSession" && "withSession" in target) {
+          return (constraint?: string) => {
+            sessions.push(constraint);
+            return database(target.withSession(constraint));
+          };
+        }
+        const member = Reflect.get(target, property, target);
+        return typeof member === "function" ? member.bind(target) : member;
+      },
+    });
+  return database(testEnv.PROFILE_DB);
+}
+
+function afterSweepRead(afterRead: () => Promise<void>): D1Database {
+  let intercepted = false;
+  return observedDatabase({
+    async afterRead(stage) {
+      if (stage !== "scan" || intercepted) return;
+      intercepted = true;
+      await afterRead();
     },
   });
+}
+
+async function observedInvalidJob(db = testEnv.PROFILE_DB) {
+  const [row] = await listCanonicalAuthRecoverySweepRows(db, 1_000, 10);
+  const inspected = inspectCanonicalAuthRecoverySweepRow(row);
+  expect(inspected.quarantineReason).not.toBeNull();
+  const entry = await readCanonicalAuthRecoveryQuarantineEntry(
+    db,
+    inspected.key,
+    1_000,
+  );
+  if (!entry) throw new Error("expected-invalid-auth-recovery-job");
+  return entry;
 }
 
 describe("canonical auth recovery sweep quarantine", () => {
@@ -234,6 +318,239 @@ describe("canonical auth recovery sweep quarantine", () => {
         "UPDATE profile_canonical_control SET state = 'active' WHERE singleton = 1 AND state = 'frozen'",
       ),
     ]);
+  });
+
+  it("scans healthy jobs without building or rereading full observations", async () => {
+    await seedJob({ lastEnqueuedAtMs: 0 });
+    await seedJob({ lastEnqueuedAtMs: 1 });
+    const queries: string[] = [];
+    const sessions: Array<string | undefined> = [];
+
+    await expect(sweep(observedDatabase({ queries, sessions }))).resolves.toBe(
+      2,
+    );
+    expect(sessions).toEqual([]);
+    const scans = queries.filter((query) => /\bLIMIT\b/i.test(query));
+    expect(scans).toHaveLength(1);
+    expect(scans[0]).toContain("AS recovery_key_bytes");
+    expect(scans[0]).toContain("AS recovery_key_type");
+    expect(scans[0]).not.toMatch(/hex\(|json_array\(|recovery_type_\d/i);
+    expect(queries.some((query) => query.includes("recovery_type_0"))).toBe(
+      false,
+    );
+  });
+
+  it("rereads only malformed jobs on the primary before quarantine", async () => {
+    const invalid = await seedJob({ loginUidsJson: "[false]" });
+    const healthy = await seedJob({ lastEnqueuedAtMs: 1 });
+    const queries: string[] = [];
+    const sessions: Array<string | undefined> = [];
+
+    await expect(sweep(observedDatabase({ queries, sessions }))).resolves.toBe(
+      1,
+    );
+    expect(sessions).toEqual(["first-primary"]);
+    expect(
+      queries.filter((query) => query.includes("recovery_type_0")),
+    ).toHaveLength(1);
+    expect(await readQuarantine(invalid)).not.toBeNull();
+    expect(send).toHaveBeenCalledExactlyOnceWith(
+      { kind: "auth-profile-recovery", profileId: healthy },
+      { delaySeconds: 60 },
+    );
+  });
+
+  it.each(["deleted", "rescheduled", "quarantined"] as const)(
+    "skips a malformed job %s before its primary reread",
+    async (change) => {
+      const invalid = await seedJob({ loginUidsJson: "[false]" });
+      const healthy = await seedJob({ lastEnqueuedAtMs: 1 });
+      const database = afterSweepRead(async () => {
+        const statement = {
+          deleted:
+            "DELETE FROM profile_auth_recovery_jobs WHERE profile_id = ?",
+          rescheduled: `UPDATE profile_auth_recovery_jobs
+            SET last_enqueued_at_ms = ${nowMs} WHERE profile_id = ?`,
+          quarantined: `INSERT INTO profile_auth_recovery_quarantine (
+            profile_id, revision_token, reason, quarantined_at_ms
+          ) VALUES (?, '1', 'invalid-record', 1000)`,
+        }[change];
+        await testEnv.PROFILE_DB.prepare(statement).bind(invalid).run();
+      });
+
+      await expect(sweep(database)).resolves.toBe(1);
+      expect(send).toHaveBeenCalledExactlyOnceWith(
+        { kind: "auth-profile-recovery", profileId: healthy },
+        { delaySeconds: 60 },
+      );
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(await readQuarantine(invalid)).toEqual(
+        change === "quarantined"
+          ? {
+              profile_id: invalid,
+              revision_token: "1",
+              reason: "invalid-record",
+              quarantined_at_ms: 1000,
+            }
+          : null,
+      );
+    },
+  );
+
+  it.each([
+    "same-revision",
+    "new-revision",
+    "deleted",
+    "rescheduled",
+    "blob-to-text",
+    "frozen",
+  ] as const)(
+    "preserves a %s change after the raw observation",
+    async (change) => {
+      const invalid = await seedJob({ loginUidsJson: "[false]" });
+      if (change === "blob-to-text") {
+        await testEnv.PROFILE_DB.prepare(
+          "UPDATE profile_auth_recovery_jobs SET prize_cursor = x'61' WHERE profile_id = ?",
+        )
+          .bind(invalid)
+          .run();
+      }
+      const entry = await observedInvalidJob();
+      if (change === "frozen") {
+        await testEnv.PROFILE_DB.prepare(
+          "UPDATE profile_canonical_control SET state = 'frozen' WHERE singleton = 1",
+        ).run();
+      } else {
+        const statement = {
+          "same-revision": `UPDATE profile_auth_recovery_jobs
+            SET login_uids_json = '[]' WHERE profile_id = ?`,
+          "new-revision": `UPDATE profile_auth_recovery_jobs
+            SET login_uids_json = '[]', revision = revision + 1 WHERE profile_id = ?`,
+          deleted:
+            "DELETE FROM profile_auth_recovery_jobs WHERE profile_id = ?",
+          rescheduled: `UPDATE profile_auth_recovery_jobs
+            SET last_enqueued_at_ms = ${nowMs} WHERE profile_id = ?`,
+          "blob-to-text": `UPDATE profile_auth_recovery_jobs
+            SET prize_cursor = 'a' WHERE profile_id = ?`,
+        }[change];
+        await testEnv.PROFILE_DB.prepare(statement).bind(invalid).run();
+      }
+      const current = await readJob(invalid);
+
+      await expect(
+        quarantineCanonicalAuthRecoveryJob(testEnv.PROFILE_DB, entry, nowMs),
+      ).resolves.toBeNull();
+      expect(await readQuarantine(invalid)).toBeNull();
+      expect(await readJob(invalid)).toEqual(current);
+    },
+  );
+
+  it("isolates a primary observation failure while later healthy jobs dispatch", async () => {
+    const invalid = await seedJob({ loginUidsJson: "[false]" });
+    const healthy = await seedJob({ lastEnqueuedAtMs: 1 });
+    const failure = new Error("auth-recovery-primary-read-unavailable");
+    const database = observedDatabase({
+      async beforeRead(stage) {
+        if (stage === "observation") throw failure;
+      },
+    });
+
+    await expect(sweep(database)).rejects.toBe(failure);
+    expect(await readQuarantine(invalid)).toBeNull();
+    expect(await readJob(invalid)).toMatchObject({ last_enqueued_at_ms: 0 });
+    expect(send).toHaveBeenCalledExactlyOnceWith(
+      { kind: "auth-profile-recovery", profileId: healthy },
+      { delaySeconds: 60 },
+    );
+    expect(JSON.parse(logger.error.mock.calls[0][0])).toMatchObject({
+      event: "auth_recovery_quarantine_failure",
+      phase: "inspect",
+      profileId: invalid,
+      itemIndex: 0,
+    });
+  });
+
+  it("reads a large valid job without constructing an oversized snapshot value", async () => {
+    const sources = JSON.stringify(["source".repeat(180_000)]);
+    const large = await seedJob({ sourceProfileIdsJson: sources });
+    const healthy = await seedJob({ lastEnqueuedAtMs: 1 });
+    const queries: string[] = [];
+    const sessions: Array<string | undefined> = [];
+    const database = observedDatabase({ queries, sessions, checkSizes: true });
+
+    const rows = await listCanonicalAuthRecoverySweepRows(database, 1_000, 10);
+    expect(
+      rows.map((row) => inspectCanonicalAuthRecoverySweepRow(row)),
+    ).toMatchObject([
+      { profileId: large, quarantineReason: null },
+      { profileId: healthy, quarantineReason: null },
+    ]);
+    expect(queries).toHaveLength(1);
+    expect(sessions).toEqual([]);
+  });
+
+  it.each(["json", "blob"] as const)(
+    "quarantines a large malformed %s value without expansion or data changes",
+    async (kind) => {
+      const sources = JSON.stringify(["source".repeat(180_000), false]);
+      const invalid = await seedJob({
+        ...(kind === "json" ? { sourceProfileIdsJson: sources } : {}),
+      });
+      if (kind === "blob") {
+        await testEnv.PROFILE_DB.prepare(
+          "UPDATE profile_auth_recovery_jobs SET prize_cursor = ? WHERE profile_id = ?",
+        )
+          .bind(new Uint8Array(550_000).fill(255), invalid)
+          .run();
+      }
+      const original = await readJob(invalid);
+      const healthy = await seedJob({ lastEnqueuedAtMs: 1 });
+
+      await expect(sweep(observedDatabase({ checkSizes: true }))).resolves.toBe(
+        1,
+      );
+      expect(await readQuarantine(invalid)).toMatchObject({
+        revision_token: "1",
+        reason: "invalid-record",
+      });
+      expect(await readJob(invalid)).toEqual(original);
+      expect(send).toHaveBeenCalledExactlyOnceWith(
+        { kind: "auth-profile-recovery", profileId: healthy },
+        { delaySeconds: 60 },
+      );
+    },
+  );
+
+  it("distinguishes adjacent REAL revisions when guarding a stale observation", async () => {
+    const profileId = await seedJob();
+    await testEnv.PROFILE_DB.prepare(
+      "UPDATE profile_auth_recovery_jobs SET revision = ? WHERE profile_id = ?",
+    )
+      .bind(1.0000000000000002, profileId)
+      .run();
+    const entry = await observedInvalidJob();
+    await testEnv.PROFILE_DB.prepare(
+      "UPDATE profile_auth_recovery_jobs SET revision = ? WHERE profile_id = ?",
+    )
+      .bind(1.0000000000000004, profileId)
+      .run();
+
+    await expect(
+      quarantineCanonicalAuthRecoveryJob(testEnv.PROFILE_DB, entry, nowMs),
+    ).resolves.toBeNull();
+    expect(await readQuarantine(profileId)).toBeNull();
+    const current = await observedInvalidJob();
+    const token = await testEnv.PROFILE_DB.prepare(
+      "SELECT CAST(revision AS TEXT) AS revision_token FROM profile_auth_recovery_jobs WHERE profile_id = ?",
+    )
+      .bind(profileId)
+      .first<string>("revision_token");
+    await expect(
+      quarantineCanonicalAuthRecoveryJob(testEnv.PROFILE_DB, current, nowMs),
+    ).resolves.not.toBeNull();
+    expect(await readQuarantine(profileId)).toMatchObject({
+      revision_token: token,
+    });
   });
 
   it("advances beyond a full malformed page on the next bounded sweep", async () => {

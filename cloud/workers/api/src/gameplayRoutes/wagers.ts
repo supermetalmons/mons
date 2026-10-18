@@ -7,7 +7,7 @@ import {
   isWagerProposalSendRequest,
 } from "@mons/shared/wagers";
 import { AuthApiFailure } from "../authErrors.ts";
-import type { GameplayRepository } from "../gameplayRepository.ts";
+import type { WagerWriteRepository } from "../gameplayRepository.ts";
 import {
   getLoginProfileId,
   requireProfileOwnershipSnapshot,
@@ -99,7 +99,7 @@ function parseWagerProposalIds(body: Record<string, unknown>) {
 function runWager<T>(
   runtime: ReturnType<typeof createWagerRuntime>,
   work: (
-    admittedRepository: GameplayRepository,
+    admittedRepository: WagerWriteRepository,
     guard: () => Promise<void>,
   ) => Promise<T>,
 ): Promise<T> {

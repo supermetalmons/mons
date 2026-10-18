@@ -53,9 +53,7 @@ export type GameplayRepository = ProfileOwnershipReader &
   GameSessionPort &
   MatchStatePort & {
     wagers: WagerReader;
-    wagerWriter?: WagerWriter;
     automatchPersistence: AutomatchPersistence;
-    wagerFrozen?: WagerFrozenStore;
     applyWagerTransferOnce: (
       input: WagerTransferInput,
     ) => Promise<WagerTransferResult>;
@@ -71,8 +69,12 @@ export type GameplayRepository = ProfileOwnershipReader &
     getMiningSnapshot: (profileId: string) => Promise<MiningSnapshot | null>;
   };
 
+export type WagerWriteRepository = GameplayRepository & {
+  wagerWriter: WagerWriter;
+  wagerFrozen: WagerFrozenStore;
+};
+
 type GameplayRepositoryDependencies = {
-  wagerFrozen?: WagerFrozenStore;
   d1?: D1Database;
   now?: () => number;
   stateClient?: MatchStatePort;
@@ -82,7 +84,6 @@ export function createGameplayRepository(
   env: Env,
   {
     d1 = env.PROFILE_GAMES_DB,
-    wagerFrozen,
     now = Date.now,
     stateClient,
   }: GameplayRepositoryDependencies = {},
@@ -106,7 +107,6 @@ export function createGameplayRepository(
     ...matchSource,
     ...automatchPersistence.client,
     wagers: createWagerStateReader(env.PROFILE_DB),
-    wagerFrozen,
     automatchPersistence,
   };
 }

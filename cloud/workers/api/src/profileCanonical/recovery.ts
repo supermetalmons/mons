@@ -1,8 +1,19 @@
 import { isSafeRecordKey } from "../recordKeys.ts";
+import {
+  parseRecoveryKey,
+  parseRecoveryObservation,
+  recoveryKeyHex,
+  recoveryKeyMatches,
+  recoveryObservationColumns,
+  recoveryObservationGuard,
+  type RecoveryKeyObservation,
+  type RecoveryKeyRow,
+  type RecoveryRowObservation,
+} from "../recoveryObservation.ts";
 import { parseCanonicalAuthRecoveryRow } from "./auth.ts";
-import { CanonicalProfileCorruption } from "./types.ts";
+import { CanonicalProfileCorruption, type RecoveryRow } from "./types.ts";
 
-const AUTH_RECOVERY_JOB_SNAPSHOT_SQL = `hex(json_array(${[
+const JOB_COLUMNS = [
   "profile_id",
   "login_uids_json",
   "source_profile_ids_json",
@@ -13,38 +24,26 @@ const AUTH_RECOVERY_JOB_SNAPSHOT_SQL = `hex(json_array(${[
   "created_at_ms",
   "updated_at_ms",
   "revision",
-]
-  .map(
-    (column) =>
-      `typeof(job.${column}), CASE WHEN typeof(job.${column}) = 'blob'
-       THEN hex(job.${column}) ELSE job.${column} END`,
-  )
-  .join(", ")}))`;
+] as const;
+const JOB_EXPRESSIONS = JOB_COLUMNS.map((column) => `job.${column}`);
+const JOB_REVISION_INDEX = 9;
 
-type AuthRecoverySweepRow = {
-  profile_id: unknown;
-  sweep_profile_id_bytes: number[];
-  sweep_profile_id_type: "text" | "blob";
-  sweep_revision_hex: string;
-  sweep_snapshot_token: string;
-};
+type AuthRecoverySweepRow = RecoveryRow & RecoveryKeyRow;
 
 export type AuthRecoveryQuarantineReason =
   "invalid-record" | "invalid-profile-id";
 
+type AuthRecoveryQuarantineEntry = {
+  observation: RecoveryRowObservation;
+  reason: AuthRecoveryQuarantineReason;
+};
+
 function authRecoveryQuarantineReason(
-  row: AuthRecoverySweepRow,
+  row: RecoveryRow,
   profileId: string,
+  key: RecoveryKeyObservation,
 ): AuthRecoveryQuarantineReason | null {
-  const encodedId = new TextEncoder().encode(profileId);
-  if (
-    !profileId ||
-    row.sweep_profile_id_type !== "text" ||
-    encodedId.length !== row.sweep_profile_id_bytes.length ||
-    !encodedId.every(
-      (byte, index) => byte === row.sweep_profile_id_bytes[index],
-    )
-  ) {
+  if (!profileId || !recoveryKeyMatches(key, profileId)) {
     return "invalid-profile-id";
   }
   try {
@@ -58,15 +57,15 @@ function authRecoveryQuarantineReason(
 
 export async function quarantineCanonicalAuthRecoveryJob(
   db: D1Database,
-  row: AuthRecoverySweepRow,
-  reason: AuthRecoveryQuarantineReason,
+  { observation, reason }: AuthRecoveryQuarantineEntry,
   nowMs: number,
 ): Promise<{
   profileIdHex: string;
   revisionHex: string;
   reason: AuthRecoveryQuarantineReason;
 } | null> {
-  const profileIdBytes = Uint8Array.from(row.sweep_profile_id_bytes);
+  const profileIdBytes = observation.keyBytes;
+  const guard = recoveryObservationGuard(JOB_EXPRESSIONS, observation);
   const result = await db
     .prepare(
       `INSERT INTO profile_auth_recovery_quarantine (
@@ -75,7 +74,7 @@ export async function quarantineCanonicalAuthRecoveryJob(
        SELECT job.profile_id, CAST(job.revision AS TEXT), ?, ?
        FROM profile_auth_recovery_jobs AS job
        WHERE job.profile_id = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
-         AND ${AUTH_RECOVERY_JOB_SNAPSHOT_SQL} = ?
+         AND ${guard.sql}
          AND EXISTS (
            SELECT 1 FROM profile_canonical_control
            WHERE singleton = 1 AND state = 'active'
@@ -89,18 +88,16 @@ export async function quarantineCanonicalAuthRecoveryJob(
     .bind(
       reason,
       nowMs,
-      row.sweep_profile_id_type,
+      observation.keyType,
       profileIdBytes,
       profileIdBytes,
-      row.sweep_snapshot_token,
+      ...guard.bindings,
     )
     .run();
   if (result.meta.changes !== 1) return null;
   return {
-    profileIdHex: row.sweep_profile_id_bytes
-      .map((byte) => byte.toString(16).padStart(2, "0"))
-      .join(""),
-    revisionHex: row.sweep_revision_hex,
+    profileIdHex: recoveryKeyHex(observation),
+    revisionHex: observation.revisionHex,
     reason,
   };
 }
@@ -112,10 +109,9 @@ export async function listCanonicalAuthRecoverySweepRows(
 ): Promise<AuthRecoverySweepRow[]> {
   const page = await db
     .prepare(
-      `SELECT job.*, CAST(job.profile_id AS BLOB) AS sweep_profile_id_bytes,
-              typeof(job.profile_id) AS sweep_profile_id_type,
-              hex(CAST(job.revision AS TEXT)) AS sweep_revision_hex,
-              ${AUTH_RECOVERY_JOB_SNAPSHOT_SQL} AS sweep_snapshot_token
+      `SELECT ${JOB_EXPRESSIONS.join(", ")},
+              CAST(job.profile_id AS BLOB) AS recovery_key_bytes,
+              typeof(job.profile_id) AS recovery_key_type
        FROM profile_auth_recovery_jobs AS job
        WHERE job.last_enqueued_at_ms <= ?
          AND NOT EXISTS (
@@ -136,24 +132,53 @@ export function inspectCanonicalAuthRecoverySweepRow(
 ): {
   profileId: string;
   quarantineReason: AuthRecoveryQuarantineReason | null;
+  key: RecoveryKeyObservation;
 } {
-  if (
-    !Array.isArray(row.sweep_profile_id_bytes) ||
-    (row.sweep_profile_id_type !== "text" &&
-      row.sweep_profile_id_type !== "blob") ||
-    typeof row.sweep_revision_hex !== "string" ||
-    typeof row.sweep_snapshot_token !== "string"
-  ) {
-    throw new Error("auth-recovery-sweep-row-invalid");
-  }
-  const profileId =
-    typeof row.profile_id === "string" &&
-    row.profile_id.trim() === row.profile_id &&
-    isSafeRecordKey(row.profile_id)
-      ? row.profile_id
-      : "";
+  const key = parseRecoveryKey(row);
+  const profileId = safeProfileId(row.profile_id);
   return {
     profileId,
-    quarantineReason: authRecoveryQuarantineReason(row, profileId),
+    quarantineReason: authRecoveryQuarantineReason(row, profileId, key),
+    key,
   };
+}
+
+function safeProfileId(value: unknown): string {
+  return typeof value === "string" &&
+    value.trim() === value &&
+    isSafeRecordKey(value)
+    ? value
+    : "";
+}
+
+export async function readCanonicalAuthRecoveryQuarantineEntry(
+  db: D1Database,
+  key: RecoveryKeyObservation,
+  beforeMs: number,
+): Promise<AuthRecoveryQuarantineEntry | null> {
+  const fresh = await db
+    .withSession("first-primary")
+    .prepare(
+      `SELECT ${recoveryObservationColumns(JOB_EXPRESSIONS, JOB_REVISION_INDEX)}
+       FROM profile_auth_recovery_jobs AS job
+       WHERE job.profile_id = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
+         AND job.last_enqueued_at_ms <= ?
+         AND NOT EXISTS (
+           SELECT 1 FROM profile_auth_recovery_quarantine AS quarantine
+           WHERE quarantine.profile_id = job.profile_id
+             AND quarantine.revision_token = CAST(job.revision AS TEXT)
+         )`,
+    )
+    .bind(key.keyType, key.keyBytes, key.keyBytes, beforeMs)
+    .first<Record<string, unknown>>();
+  if (!fresh) return null;
+  const { observation, value } = parseRecoveryObservation(
+    fresh,
+    JOB_COLUMNS,
+    JOB_REVISION_INDEX,
+  );
+  const row = value as RecoveryRow;
+  const profileId = safeProfileId(row.profile_id);
+  const reason = authRecoveryQuarantineReason(row, profileId, observation);
+  return reason ? { observation, reason } : null;
 }

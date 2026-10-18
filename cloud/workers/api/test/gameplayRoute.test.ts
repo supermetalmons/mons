@@ -91,7 +91,10 @@ function handleGameplayRoute(
   request: Parameters<typeof handleGameplayRouteImpl>[0],
   env: Parameters<typeof handleGameplayRouteImpl>[1],
   ctx: Parameters<typeof handleGameplayRouteImpl>[2],
-  dependencies: Parameters<typeof handleGameplayRouteImpl>[3] = {},
+  dependencies: Omit<
+    NonNullable<Parameters<typeof handleGameplayRouteImpl>[3]>,
+    "repository"
+  > & { repository?: GameplayRepository } = {},
 ) {
   const coordination =
     dependencies.coordination ||

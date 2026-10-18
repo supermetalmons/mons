@@ -5,7 +5,7 @@ import {
   type EventLockManager,
 } from "./events/lockManagerCore.js";
 import type { EventCommand, EventCommitPlan } from "./eventCommands.js";
-import type { EventPrizeAssignmentRecord, EventStatus } from "./eventReads.js";
+import type { EventPrizeAssignmentRecord } from "./eventReads.js";
 import type { EventRuntimeStore } from "./eventCommands.js";
 import type { EventMatchPairRequest } from "./events/bracket.js";
 import type { EventOwnershipSnapshot } from "./events/ownership.js";
@@ -26,6 +26,10 @@ import {
   resolveEventTelegramAnnouncements,
 } from "@mons/shared/events";
 import { createEventBracketRuntime } from "./events/bracket.js";
+import {
+  buildActiveEventSyncPlan,
+  buildEndedEventSyncPlan,
+} from "./events/syncTransitions.js";
 import { getEventParticipantIds } from "./events/participants.js";
 import {
   assertScheduledStartWindow,
@@ -137,36 +141,40 @@ const createEventRuntime: Signature_createEventRuntime = (dependencies) => {
   const readEventPrizeWithdrawals = dependencies.readEventPrizeWithdrawals;
   const lockManager = dependencies.eventLockManager;
   const { acquireEventLockWithRetry, isEventLockStillOwned } = lockManager;
-  const {
-    addEventPrizeAssignmentUpdates,
-    applyMatchResolution,
-    buildScheduledEventDueUpdates,
-    getSortedRoundIndexes,
-    hasThirdPlaceMatchField,
-    isMatchResolved,
-    isMatchWinnerDisqualified,
-    rebuildParticipantStatesFromRounds,
-    recomputeRoundStatuses,
-    reconcileBracketMatchReadiness,
-    reconcileProfileEventPrizeAssignments,
-    reconcileThirdPlaceMatchReadiness,
-    removeCompletedEventPrizeProjections,
-    resolveEventPrizeAssignments,
-    resolveRoundMatchState,
-    resolveRoundMatchesWithConcurrency,
-  } = createEventBracketRuntime({
+  const bracket = createEventBracketRuntime({
     state,
     readEventPrizeWithdrawals,
     readMatchPair: dependencies.readMatchPair,
     readMatchPairs: dependencies.readMatchPairs,
   });
+  const {
+    buildScheduledEventDueUpdates,
+    isMatchWinnerDisqualified,
+    reconcileProfileEventPrizeAssignments,
+    removeCompletedEventPrizeProjections,
+  } = bracket;
+  const syncPlanningDependencies = {
+    addEventPrizeAssignmentUpdates: bracket.addEventPrizeAssignmentUpdates,
+    applyMatchResolution: bracket.applyMatchResolution,
+    getSortedRoundIndexes: bracket.getSortedRoundIndexes,
+    hasThirdPlaceMatchField: bracket.hasThirdPlaceMatchField,
+    isMatchResolved: bracket.isMatchResolved,
+    rebuildParticipantStatesFromRounds:
+      bracket.rebuildParticipantStatesFromRounds,
+    recomputeRoundStatuses: bracket.recomputeRoundStatuses,
+    reconcileBracketMatchReadiness: bracket.reconcileBracketMatchReadiness,
+    reconcileThirdPlaceMatchReadiness:
+      bracket.reconcileThirdPlaceMatchReadiness,
+    resolveEventPrizeAssignments: bracket.resolveEventPrizeAssignments,
+    resolveRoundMatchState: bracket.resolveRoundMatchState,
+    resolveRoundMatchesWithConcurrency:
+      bracket.resolveRoundMatchesWithConcurrency,
+  };
   const HttpsError = EventRuntimeError;
   const EVENT_SYNC_THROTTLE_WINDOW_MS = 500;
 
   const normalizeString = (value: unknown) =>
     typeof value === "string" && value.trim() !== "" ? value.trim() : "";
-  const normalizeStringOrNull = (value: unknown) =>
-    normalizeString(value) || null;
   const normalizeUsername = (value: unknown) =>
     normalizeString(value).toLowerCase();
   const getNowMs = dependencies.now || Date.now;
@@ -898,7 +906,7 @@ const createEventRuntime: Signature_createEventRuntime = (dependencies) => {
         if (!(lockedEventValue !== null && lockedEventValue !== undefined)) {
           throw new HttpsError("not-found", "Event not found.");
         }
-        const event = cloneValue<EventData>(lockedEventValue || {});
+        let event = cloneValue<EventData>(lockedEventValue || {});
         const nowMs = getNowMs();
         let prizeSelections;
         if (
@@ -976,393 +984,20 @@ const createEventRuntime: Signature_createEventRuntime = (dependencies) => {
           });
           updates.push(...dueTransition.updates);
           didChange = dueTransition.didChange;
-        } else if (event.status === "active") {
-          const normalizedOriginalCurrentRoundIndex = toFiniteInteger(
-            event.currentRoundIndex,
-            NaN,
+        } else if (event.status === "active" || event.status === "ended") {
+          const transition = await (
+            event.status === "active"
+              ? buildActiveEventSyncPlan
+              : buildEndedEventSyncPlan
+          )(
+            { eventId, event, nowMs, ownershipSnapshot, prizeSelections },
+            syncPlanningDependencies,
           );
-          const originalCurrentRoundIndex = Number.isFinite(
-            normalizedOriginalCurrentRoundIndex,
-          )
-            ? normalizedOriginalCurrentRoundIndex
-            : null;
-          const originalStatus = normalizeString(event.status) || "active";
-          const originalEndedAtMs =
-            typeof event.endedAtMs === "number"
-              ? Math.floor(event.endedAtMs)
-              : null;
-          const originalWinnerProfileId = normalizeStringOrNull(
-            event.winnerProfileId,
-          );
-          const originalWinnerDisplayName = normalizeStringOrNull(
-            event.winnerDisplayName,
-          );
-          const rounds = cloneValue(
-            event.rounds && typeof event.rounds === "object"
-              ? event.rounds
-              : {},
-          );
-          let participants = cloneValue(
-            event.participants && typeof event.participants === "object"
-              ? event.participants
-              : {},
-          );
-          const supportsThirdPlaceMatch = hasThirdPlaceMatchField(event);
-          let thirdPlaceMatch =
-            supportsThirdPlaceMatch &&
-            event.thirdPlaceMatch &&
-            typeof event.thirdPlaceMatch === "object"
-              ? cloneValue(event.thirdPlaceMatch)
-              : null;
-          const inviteUpdates: EventCommitPlan = [];
-          let roundsChanged = false;
-          let participantsChanged = false;
-          let thirdPlaceMatchChanged = false;
-          const sortedRoundIndexes = getSortedRoundIndexes(rounds);
-          for (const roundIndex of sortedRoundIndexes) {
-            const round = rounds[String(roundIndex)];
-            if (!round || !round.matches || typeof round.matches !== "object") {
-              continue;
-            }
-            const resolvedEntries = await resolveRoundMatchesWithConcurrency(
-              round.matches,
-            );
-            for (const entry of resolvedEntries) {
-              const { matchRecord, resolved } = entry;
-              if (!resolved) {
-                continue;
-              }
-              if (applyMatchResolution(matchRecord, resolved, nowMs)) {
-                roundsChanged = true;
-              }
-            }
-          }
-
-          if (thirdPlaceMatch) {
-            const resolvedThirdPlace =
-              await resolveRoundMatchState(thirdPlaceMatch);
-            if (
-              resolvedThirdPlace &&
-              applyMatchResolution(thirdPlaceMatch, resolvedThirdPlace, nowMs)
-            ) {
-              thirdPlaceMatchChanged = true;
-            }
-          }
-
-          if (
-            await reconcileBracketMatchReadiness({
-              eventId,
-              rounds,
-              nowMs,
-              participantsById: participants,
-              inviteUpdates,
-              ownershipSnapshot,
-            })
-          ) {
-            roundsChanged = true;
-          }
-
-          if (supportsThirdPlaceMatch) {
-            const thirdPlaceResult = await reconcileThirdPlaceMatchReadiness({
-              eventId,
-              rounds,
-              nowMs,
-              participantsById: participants,
-              inviteUpdates,
-              thirdPlaceMatch,
-              ownershipSnapshot,
-            });
-            thirdPlaceMatch = thirdPlaceResult.thirdPlaceMatch;
-            if (thirdPlaceResult.didChange) {
-              thirdPlaceMatchChanged = true;
-            }
-          }
-
-          const {
-            didChange: roundStatusChanged,
-            finalRoundIndex,
-            earliestUnresolvedRoundIndex,
-            finalRoundWinnerProfileId,
-          } = recomputeRoundStatuses({
-            rounds,
-            nowMs,
-          });
-          if (roundStatusChanged) {
-            roundsChanged = true;
-          }
-
-          const finalRoundCompleted =
-            finalRoundIndex !== null && earliestUnresolvedRoundIndex === null;
-          const thirdPlaceResolved =
-            !supportsThirdPlaceMatch ||
-            !thirdPlaceMatch ||
-            isMatchResolved(thirdPlaceMatch);
-          const eventShouldEnd = finalRoundCompleted && thirdPlaceResolved;
-          const winnerProfileId =
-            normalizeString(finalRoundWinnerProfileId) || null;
-          const nextCurrentRoundIndex =
-            earliestUnresolvedRoundIndex !== null
-              ? earliestUnresolvedRoundIndex
-              : finalRoundIndex;
-          event.currentRoundIndex = nextCurrentRoundIndex;
-
-          const participantStateResult = rebuildParticipantStatesFromRounds({
-            participantsById: participants,
-            rounds,
-            winnerProfileId,
-            eventEnded: eventShouldEnd,
-          });
-          if (participantStateResult.didChange) {
-            participants = participantStateResult.participantsById;
-            participantsChanged = true;
-          }
-
-          if (eventShouldEnd) {
-            const winnerParticipant =
-              (winnerProfileId && participants[winnerProfileId]) || null;
-            event.status = "ended";
-            if (typeof event.endedAtMs !== "number") {
-              event.endedAtMs = nowMs;
-            }
-            event.winnerProfileId = winnerProfileId;
-            event.winnerDisplayName = winnerParticipant
-              ? winnerParticipant.displayName
-              : null;
-            if (isEventPrizeEvent(eventId)) {
-              if (typeof event.prizeSelectionsLockedAtMs !== "number") {
-                event.prizeSelectionsLockedAtMs = nowMs;
-                updates.push(
-                  eventField(eventId, "prizeSelectionsLockedAtMs", nowMs),
-                );
-              }
-              const prizeAssignmentResult = await resolveEventPrizeAssignments({
-                eventId,
-                event,
-                rounds,
-                participantsById: participants,
-                thirdPlaceMatch,
-                assignedAtMs: event.endedAtMs,
-                ownershipSnapshot,
-                prizeSelections,
-              });
-              if (Object.keys(prizeAssignmentResult.assignments).length > 0) {
-                eventPrizeAssignmentsForProjectionCleanup =
-                  prizeAssignmentResult.assignments;
-                event.prizeAssignments = prizeAssignmentResult.assignments;
-                await addEventPrizeAssignmentUpdates({
-                  updates,
-                  eventId,
-                  assignments: prizeAssignmentResult.assignments,
-                  includeEventAssignments: true,
-                });
-              }
-            }
-          } else {
-            event.status = "active";
-            event.endedAtMs = null;
-            event.winnerProfileId = null;
-            event.winnerDisplayName = null;
-          }
-
-          let eventChanged = false;
-          const normalizedCurrentRoundIndex =
-            typeof event.currentRoundIndex === "number"
-              ? Math.floor(event.currentRoundIndex)
-              : null;
-          if (normalizedCurrentRoundIndex !== originalCurrentRoundIndex) {
-            updates.push(
-              eventField(
-                eventId,
-                "currentRoundIndex",
-                normalizedCurrentRoundIndex,
-              ),
-            );
-            eventChanged = true;
-          }
-
-          const normalizedStatus = normalizeString(event.status) || "active";
-          if (normalizedStatus !== originalStatus) {
-            updates.push(
-              eventField(eventId, "status", normalizedStatus as EventStatus),
-            );
-            eventChanged = true;
-          }
-
-          const normalizedEndedAtMs =
-            typeof event.endedAtMs === "number"
-              ? Math.floor(event.endedAtMs)
-              : null;
-          if (normalizedEndedAtMs !== originalEndedAtMs) {
-            updates.push(eventField(eventId, "endedAtMs", normalizedEndedAtMs));
-            eventChanged = true;
-          }
-
-          const normalizedWinnerProfileId = normalizeStringOrNull(
-            event.winnerProfileId,
-          );
-          if (normalizedWinnerProfileId !== originalWinnerProfileId) {
-            updates.push(
-              eventField(eventId, "winnerProfileId", normalizedWinnerProfileId),
-            );
-            eventChanged = true;
-          }
-
-          const normalizedWinnerDisplayName = normalizeStringOrNull(
-            event.winnerDisplayName,
-          );
-          if (normalizedWinnerDisplayName !== originalWinnerDisplayName) {
-            updates.push(
-              eventField(
-                eventId,
-                "winnerDisplayName",
-                normalizedWinnerDisplayName,
-              ),
-            );
-            eventChanged = true;
-          }
-          if (supportsThirdPlaceMatch && thirdPlaceMatchChanged) {
-            updates.push(
-              eventField(eventId, "thirdPlaceMatch", thirdPlaceMatch),
-            );
-            eventChanged = true;
-          }
-
-          if (roundsChanged) {
-            updates.push(eventField(eventId, "rounds", rounds));
-          }
-          if (participantsChanged) {
-            updates.push(eventField(eventId, "participants", participants));
-          }
-          if (inviteUpdates.length > 0) {
-            updates.push(...inviteUpdates);
-          }
-          if (
-            roundsChanged ||
-            participantsChanged ||
-            inviteUpdates.length > 0 ||
-            eventChanged
-          ) {
-            updates.push(eventField(eventId, "updatedAtMs", nowMs));
-            didChange = true;
-          }
-        } else if (event.status === "ended") {
-          const rounds = cloneValue(
-            event.rounds && typeof event.rounds === "object"
-              ? event.rounds
-              : {},
-          );
-          const supportsThirdPlaceMatch = hasThirdPlaceMatchField(event);
-          let thirdPlaceMatch =
-            supportsThirdPlaceMatch &&
-            event.thirdPlaceMatch &&
-            typeof event.thirdPlaceMatch === "object"
-              ? cloneValue(event.thirdPlaceMatch)
-              : null;
-          let roundsChanged = false;
-          let thirdPlaceMatchChanged = false;
-          let prizeStateChanged = false;
-          const sortedRoundIndexes = getSortedRoundIndexes(rounds);
-          for (const roundIndex of sortedRoundIndexes) {
-            const round = rounds[String(roundIndex)];
-            if (!round || !round.matches || typeof round.matches !== "object") {
-              continue;
-            }
-            const resolvedEntries = await resolveRoundMatchesWithConcurrency(
-              round.matches,
-            );
-            for (const entry of resolvedEntries) {
-              const { matchRecord, resolved } = entry;
-              if (!resolved) {
-                continue;
-              }
-              if (applyMatchResolution(matchRecord, resolved, nowMs)) {
-                roundsChanged = true;
-              }
-            }
-          }
-
-          if (thirdPlaceMatch) {
-            const resolvedThirdPlace =
-              await resolveRoundMatchState(thirdPlaceMatch);
-            if (
-              resolvedThirdPlace &&
-              applyMatchResolution(thirdPlaceMatch, resolvedThirdPlace, nowMs)
-            ) {
-              thirdPlaceMatchChanged = true;
-            }
-          }
-
-          if (supportsThirdPlaceMatch) {
-            const thirdPlaceResult = await reconcileThirdPlaceMatchReadiness({
-              eventId,
-              rounds,
-              nowMs,
-              participantsById:
-                event.participants && typeof event.participants === "object"
-                  ? event.participants
-                  : {},
-              inviteUpdates: [],
-              thirdPlaceMatch,
-              allowInviteCreation: false,
-            });
-            thirdPlaceMatch = thirdPlaceResult.thirdPlaceMatch;
-            if (thirdPlaceResult.didChange) {
-              thirdPlaceMatchChanged = true;
-            }
-          }
-
-          if (isEventPrizeEvent(eventId)) {
-            if (typeof event.prizeSelectionsLockedAtMs !== "number") {
-              updates.push(
-                eventField(
-                  eventId,
-                  "prizeSelectionsLockedAtMs",
-                  typeof event.endedAtMs === "number" ? event.endedAtMs : nowMs,
-                ),
-              );
-              prizeStateChanged = true;
-            }
-            const prizeAssignmentResult = await resolveEventPrizeAssignments({
-              eventId,
-              event,
-              rounds,
-              participantsById:
-                event.participants && typeof event.participants === "object"
-                  ? event.participants
-                  : {},
-              thirdPlaceMatch,
-              assignedAtMs:
-                typeof event.endedAtMs === "number" ? event.endedAtMs : nowMs,
-              ownershipSnapshot,
-              prizeSelections,
-            });
-            if (Object.keys(prizeAssignmentResult.assignments).length > 0) {
-              eventPrizeAssignmentsForProjectionCleanup =
-                prizeAssignmentResult.assignments;
-              if (prizeAssignmentResult.didCreate) {
-                await addEventPrizeAssignmentUpdates({
-                  updates,
-                  eventId,
-                  assignments: prizeAssignmentResult.assignments,
-                  includeEventAssignments: true,
-                });
-                prizeStateChanged = true;
-              }
-            }
-          }
-
-          if (roundsChanged || thirdPlaceMatchChanged) {
-            updates.push(eventField(eventId, "rounds", rounds));
-            if (supportsThirdPlaceMatch) {
-              updates.push(
-                eventField(eventId, "thirdPlaceMatch", thirdPlaceMatch),
-              );
-            }
-          }
-          if (roundsChanged || thirdPlaceMatchChanged || prizeStateChanged) {
-            updates.push(eventField(eventId, "updatedAtMs", nowMs));
-            didChange = true;
-          }
+          updates.push(...transition.updates);
+          didChange = transition.didChange;
+          event = transition.eventForProjection;
+          eventPrizeAssignmentsForProjectionCleanup =
+            transition.prizeAssignmentsForProjection;
         }
 
         if (didChange) {

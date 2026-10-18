@@ -1,8 +1,16 @@
-import { createTestWagerReservationRuntime } from "./wagerFrozenTestUtils.ts";
+import {
+  createMemoryWagerFrozenStore,
+  createTestWagerReservationRuntime,
+} from "./wagerFrozenTestUtils.ts";
+import { createMemoryWagerState } from "./wagerStateTestUtils.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { MAX_RECORD_KEY_BYTES } from "../src/recordKeys.ts";
-import type { GameplayRepository } from "../src/gameplayRepository.ts";
+import type {
+  GameplayRepository,
+  WagerWriteRepository,
+} from "../src/gameplayRepository.ts";
+import type { WagerSettlementRetryTask } from "../src/wagerOutcome.ts";
 import {
   handleWagerSettlementQueueMessage as handleWagerSettlementQueueMessageImpl,
   parseWagerSettlementRetryTask,
@@ -18,8 +26,22 @@ function handleWagerSettlementQueueMessage(
   >[2] = {},
 ) {
   return handleWagerSettlementQueueMessageImpl(message, env, {
-    createWagerReservations: (_env, repository) =>
-      createTestWagerReservationRuntime(repository),
+    createWagerReservations: (_env, repository) => {
+      const unexpected = async () => {
+        throw new Error("unexpected-wager-operation");
+      };
+      const wagerState = createMemoryWagerState({
+        readState: unexpected,
+        transactState: unexpected,
+        patchStateRoot: unexpected,
+      });
+      return createTestWagerReservationRuntime({
+        ...repository,
+        wagers: wagerState,
+        wagerWriter: wagerState,
+        wagerFrozen: createMemoryWagerFrozenStore(),
+      });
+    },
     ...dependencies,
   });
 }
@@ -141,7 +163,10 @@ test("validates and processes durable wager settlement retries without Telegram 
     throw new Error("unexpected-telegram-pacing");
   });
   const queued = queueMessage(recoverableWagerTask);
-  const resumed: unknown[] = [];
+  const resumed: Array<{
+    input: WagerSettlementRetryTask;
+    repository: WagerWriteRepository;
+  }> = [];
   await handleWagerSettlementQueueMessage(
     queued.message,
     envWithQueue(TELEGRAM_TEST_ENV.WAGER_SETTLEMENT_QUEUE.send),
@@ -149,17 +174,18 @@ test("validates and processes durable wager settlement retries without Telegram 
       createGameplay: () => unusedGameplayRepository,
       logger: { error() {}, info() {} },
       resumeSettlement: async (input, repository) => {
-        resumed.push(input, repository);
+        resumed.push({ input, repository });
         return "completed";
       },
     },
   );
   assert.equal(queued.acknowledgements(), 1);
   assert.deepEqual(queued.retries, []);
-  assert.equal(resumed.length, 2);
-  assert.deepEqual(resumed[0], recoverableWagerTask);
+  assert.equal(resumed.length, 1);
+  assert.deepEqual(resumed[0].input, recoverableWagerTask);
+  assert.equal(typeof resumed[0].repository.wagerFrozen.transact, "function");
   assert.equal(
-    typeof (resumed[1] as GameplayRepository).wagerFrozen?.transact,
+    typeof resumed[0].repository.wagerWriter.completeSettlement,
     "function",
   );
 });

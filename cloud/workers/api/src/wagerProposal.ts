@@ -1,9 +1,8 @@
-import {
-  requireWagerWriter,
-  type WagerKey,
-  type ModernProposalLineage,
+import type {
+  WagerKey,
+  ModernProposalLineage,
 } from "./wagerStateRepository.ts";
-import { requireWagerFrozenStore } from "./wagerFrozenStore.ts";
+import type { WagerFrozenReadRepository } from "./wagerFrozenStore.ts";
 import { isMaterialName, normalizeCount } from "@mons/shared/mining";
 import {
   isWagerAgreement,
@@ -18,7 +17,10 @@ import { AuthApiFailure } from "./authErrors.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
 import type { GameSessionMutationLockStore } from "./gameplayCoordinationD1.ts";
-import type { GameplayRepository } from "./gameplayRepository.ts";
+import type {
+  GameplayRepository,
+  WagerWriteRepository,
+} from "./gameplayRepository.ts";
 import { withGameSessionMutationLease } from "./gameSessionMutationRunner.ts";
 import { ensureWagerAgreementLineageReady } from "./wagerAgreementLineage.ts";
 import {
@@ -49,6 +51,11 @@ export type WagerProposalDependencies = {
   now?: () => number;
   wait?: (milliseconds: number) => Promise<void>;
 };
+
+type WagerParticipantReader = Pick<
+  GameplayRepository,
+  "readInviteMetadata" | "readProfileOwnershipSnapshot"
+>;
 
 type WagerParticipants = {
   opponentProfileId: string;
@@ -87,7 +94,7 @@ function validOperationId(value: unknown): value is string {
 }
 
 async function readModernProposalLineage(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   input: {
     inviteId: string;
     matchId: string;
@@ -134,7 +141,7 @@ async function readModernProposalLineage(
 export async function resolveWagerParticipantUids(
   identity: RequestIdentity,
   inviteId: string,
-  repository: GameplayRepository,
+  repository: WagerParticipantReader,
 ): Promise<WagerParticipantUids | WagerParticipants | WagerParticipantFailure> {
   const invite = toRecord(await repository.readInviteMetadata(inviteId));
   if (!invite) {
@@ -199,7 +206,7 @@ export async function resolveWagerParticipantUids(
 
 export async function resolveWagerParticipantProfiles(
   participants: WagerParticipantUids | WagerParticipants,
-  repository: GameplayRepository,
+  repository: Pick<GameplayRepository, "readProfileOwnershipSnapshot">,
 ): Promise<WagerParticipants | WagerParticipantFailure> {
   if ("playerProfileId" in participants) {
     return participants;
@@ -224,7 +231,7 @@ export async function resolveWagerParticipantProfiles(
 async function resolveWagerParticipants(
   identity: RequestIdentity,
   inviteId: string,
-  repository: GameplayRepository,
+  repository: WagerParticipantReader,
 ): Promise<WagerParticipants | WagerParticipantFailure> {
   const participants = await resolveWagerParticipantUids(
     identity,
@@ -292,7 +299,7 @@ async function runWagerMutationWithLease<T>(
 export async function sendWagerProposal(
   identity: RequestIdentity,
   request: WagerProposalSendRequest,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerProposalDependencies,
 ): Promise<WagerProposalSendResponse> {
   const authorization = await resolveWagerParticipantUids(
@@ -320,7 +327,7 @@ export async function sendWagerProposal(
 async function sendWagerProposalUnlocked(
   identity: RequestIdentity,
   request: WagerProposalSendRequest,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerProposalDependencies,
   mutation: WagerMutationContext,
 ): Promise<WagerProposalSendResponse> {
@@ -374,7 +381,7 @@ async function sendWagerProposalUnlocked(
     return { ok: false, reason: "proposal-unavailable" };
   }
   const existingReservationState = (
-    await requireWagerFrozenStore(repository).read(
+    await repository.wagerFrozen.read(
       participants.playerUid,
       reservationOperationId,
     )
@@ -468,7 +475,7 @@ async function sendWagerProposalUnlocked(
   let wagerAfter: Record<string, unknown> | null = null;
   await mutation.refreshLease();
   try {
-    const result = await requireWagerWriter(repository).sendProposal(
+    const result = await repository.wagerWriter.sendProposal(
       wagerKey,
       {
         playerUid: participants.playerUid,
@@ -544,7 +551,7 @@ async function sendWagerProposalUnlocked(
 export async function acceptWagerProposal(
   identity: RequestIdentity,
   request: WagerProposalAcceptRequest,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerProposalDependencies,
 ): Promise<WagerProposalAcceptResponse> {
   const authorization = await resolveWagerParticipantUids(
@@ -572,7 +579,7 @@ export async function acceptWagerProposal(
 async function acceptWagerProposalUnlocked(
   identity: RequestIdentity,
   request: WagerProposalAcceptRequest,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerProposalDependencies,
   mutation: WagerMutationContext,
 ): Promise<WagerProposalAcceptResponse> {
@@ -693,7 +700,7 @@ async function acceptWagerProposalUnlocked(
   let wagerAfter: Record<string, unknown> | null = null;
   await mutation.refreshLease();
   try {
-    const result = await requireWagerWriter(repository).acceptProposal(
+    const result = await repository.wagerWriter.acceptProposal(
       wagerKey,
       {
         playerUid: participants.playerUid,
@@ -743,7 +750,7 @@ async function acceptWagerProposalUnlocked(
 }
 
 async function removeProposal(
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   inviteId: string,
   matchId: string,
   proposalUid: string,
@@ -773,7 +780,7 @@ async function removeProposal(
   let wagerAfter: unknown;
   await mutation.refreshLease();
   try {
-    const result = await requireWagerWriter(repository).removeProposal(
+    const result = await repository.wagerWriter.removeProposal(
       wagerKey,
       {
         proposalUid,
@@ -805,7 +812,7 @@ export async function removeWagerProposal(
   identity: RequestIdentity,
   request: WagerProposalRemovalRequest,
   action: WagerProposalAction,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerProposalDependencies,
 ): Promise<WagerProposalRemovalResponse> {
   const authorization = await resolveWagerParticipantUids(
@@ -835,7 +842,7 @@ async function removeWagerProposalUnlocked(
   identity: RequestIdentity,
   request: WagerProposalRemovalRequest,
   action: WagerProposalAction,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerProposalDependencies,
   mutation: WagerMutationContext,
 ): Promise<WagerProposalRemovalResponse> {

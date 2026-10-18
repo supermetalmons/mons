@@ -2,6 +2,7 @@ import {
   inspectCanonicalAuthRecoverySweepRow,
   listCanonicalAuthRecoverySweepRows,
   quarantineCanonicalAuthRecoveryJob,
+  readCanonicalAuthRecoveryQuarantineEntry,
   type AuthRecoveryQuarantineReason,
 } from "../profileCanonical/recovery.ts";
 import { PROFILE_BACKGROUND_SWEEP_LIMIT } from "../profileBackgroundLimits.ts";
@@ -43,11 +44,17 @@ async function sweepCanonicalAuthRecoveryJobs(
         profileId = inspected.profileId;
         quarantineReason = inspected.quarantineReason;
         if (quarantineReason) {
+          const entry = await readCanonicalAuthRecoveryQuarantineEntry(
+            db,
+            inspected.key,
+            threshold,
+          );
+          if (!entry) return false;
+          quarantineReason = entry.reason;
           phase = "quarantine";
           const quarantined = await quarantineCanonicalAuthRecoveryJob(
             db,
-            row,
-            quarantineReason,
+            entry,
             now(),
           );
           if (quarantined) {

@@ -13,12 +13,17 @@ function createRuntime({
   lockedEvent,
   prizeSelections = {},
   lockOwned = true,
+  trackLeaseChecks = false,
   readMatchPairs = () => assert.fail("unexpected match batch read"),
   readProfileOwnershipSnapshot = () => assert.fail("unexpected ownership read"),
+  readEventPrizeWithdrawals = () => assert.fail("unexpected withdrawal read"),
+  projectedPrizes = {},
 }) {
   const calls = [];
   let event = { status: "scheduled", startAtMs: 10_000 };
   const patches = [];
+  const plans = [];
+  let leaseChecks = 0;
   const runtime = createEventRuntime({
     state: {
       read: () => assert.fail("unexpected generic event read"),
@@ -43,11 +48,25 @@ function createRuntime({
         const updates = encodeEventUpdates(plan);
         calls.push("write");
         patches.push(updates);
+        plans.push(structuredClone(plan));
         for (const [key, value] of Object.entries(updates)) {
           const parts = key.split("/");
           if (parts[0] === "events") event[parts[2]] = value;
         }
         event.persistedRevision = 2;
+      },
+      transactProfileEventPrize: async (
+        profileId,
+        candidateEventId,
+        update,
+      ) => {
+        assert.equal(candidateEventId, eventId);
+        calls.push(`project:${profileId}`);
+        const current = projectedPrizes[profileId] ?? null;
+        const decision = update(current);
+        const committed = decision.commit !== false;
+        if (committed) projectedPrizes[profileId] = decision.value;
+        return { committed, value: committed ? decision.value : current };
       },
     },
     eventLockManager: {
@@ -56,7 +75,13 @@ function createRuntime({
         event = structuredClone(lockedEvent);
         return { eventId };
       },
-      isEventLockStillOwned: async () => lockOwned,
+      isEventLockStillOwned: async () => {
+        leaseChecks += 1;
+        if (trackLeaseChecks) calls.push("check");
+        return typeof lockOwned === "function"
+          ? lockOwned(leaseChecks)
+          : lockOwned;
+      },
       releaseEventLock: async () => {
         calls.push("release");
         return true;
@@ -66,12 +91,15 @@ function createRuntime({
     readMatchPair: () => assert.fail("unexpected single match read"),
     readMatchPairs,
     readProfileOwnershipSnapshot,
-    readEventPrizeWithdrawals: () => assert.fail("unexpected withdrawal read"),
+    readEventPrizeWithdrawals: async (candidateEventId) => {
+      calls.push("withdrawals");
+      return readEventPrizeWithdrawals(candidateEventId);
+    },
     enqueueEventProgressTask: () => assert.fail("unexpected progress task"),
     now: () => 1_000,
     sleep: () => assert.fail("unexpected retry"),
   });
-  return { runtime, calls, patches };
+  return { runtime, calls, patches, plans };
 }
 
 test("sync uses the locked event and selections snapshot and rereads after committing", async () => {
@@ -167,5 +195,197 @@ for (const status of ["active", "ended"]) {
     assert.equal(batches, 1);
     assert.deepEqual(patches, []);
     assert.deepEqual(calls, ["read", "lock", "snapshot", "release"]);
+  });
+}
+
+function completedFinalEvent(status) {
+  const ended = status === "ended";
+  return {
+    eventId,
+    status,
+    currentRoundIndex: 0,
+    endedAtMs: ended ? 500 : null,
+    winnerProfileId: ended ? "p1" : null,
+    winnerDisplayName: ended ? "P1" : null,
+    prizeSelectionsLockedAtMs: ended ? 500 : null,
+    participants: Object.fromEntries(
+      ["p1", "p2"].map((profileId, index) => [
+        profileId,
+        {
+          profileId,
+          loginUid: `${profileId}-login`,
+          displayName: profileId.toUpperCase(),
+          joinedAtMs: index,
+          state: "active",
+        },
+      ]),
+    ),
+    rounds: {
+      0: {
+        status: ended ? "completed" : "active",
+        completedAtMs: ended ? 500 : null,
+        matches: {
+          "0_0": {
+            status: "host",
+            resolvedAtMs: 500,
+            hostProfileId: "p1",
+            guestProfileId: "p2",
+            winnerProfileId: "p1",
+            loserProfileId: "p2",
+          },
+        },
+      },
+    },
+  };
+}
+
+function prizeAssignments(assignedAtMs) {
+  return Object.fromEntries(
+    ["p1", "p2"].map((profileId, index) => [
+      String(index + 1),
+      {
+        eventId,
+        profileId,
+        place: index + 1,
+        prizeId: index === 0 ? "1514" : "1092",
+        assignedAtMs,
+      },
+    ]),
+  );
+}
+
+function prizeRuntime(lockedEvent, options = {}) {
+  const profileIds = Object.keys(lockedEvent.participants);
+  return createRuntime({
+    lockedEvent,
+    prizeSelections: { p1: "1514", p2: "1092" },
+    trackLeaseChecks: true,
+    readEventPrizeWithdrawals: async () => ({}),
+    readProfileOwnershipSnapshot: async () => ({
+      canonicalProfileIdByProfileId: new Map(profileIds.map((id) => [id, id])),
+      loginOwnerByUid: new Map(
+        profileIds.map((id) => [`${id}-login`, { profileId: id, revision: 1 }]),
+      ),
+      loginUidsByProfileId: new Map(
+        profileIds.map((id) => [id, [`${id}-login`]]),
+      ),
+      profileById: new Map(),
+    }),
+    ...options,
+  });
+}
+
+const synchronize = (runtime) =>
+  runtime.runEventSyncState({
+    eventId,
+    requesterUid: "worker",
+    enforceParticipantGate: false,
+    enforceThrottle: false,
+    syncLog: {},
+  });
+
+test("active completion preserves command order before prize projection and cleanup", async () => {
+  const memory = prizeRuntime(completedFinalEvent("active"));
+  const result = await synchronize(memory.runtime);
+  assert.deepEqual(
+    memory.plans[0].map((command) => command.field),
+    [
+      "prizeSelectionsLockedAtMs",
+      "prizeAssignments",
+      "status",
+      "endedAtMs",
+      "winnerProfileId",
+      "winnerDisplayName",
+      "rounds",
+      "participants",
+      "updatedAtMs",
+    ],
+  );
+  assert.equal(result.event.status, "ended");
+  assert.equal(result.event.endedAtMs, 1_000);
+  assert.deepEqual(result.event.prizeAssignments, prizeAssignments(1_000));
+  assert.equal(Object.hasOwn(result.event, "thirdPlaceMatch"), false);
+  assert.deepEqual(memory.calls, [
+    "read",
+    "lock",
+    "snapshot",
+    "check",
+    "write",
+    "check",
+    "withdrawals",
+    "project:p1",
+    "project:p2",
+    "check",
+    "withdrawals",
+    "read",
+    "release",
+  ]);
+});
+
+test("unchanged ended events still repair prize projections without rewriting assignments", async () => {
+  const event = completedFinalEvent("ended");
+  event.prizeAssignments = prizeAssignments(500);
+  const memory = prizeRuntime(event);
+  const result = await synchronize(memory.runtime);
+  assert.equal(result.didChange, true);
+  assert.deepEqual(memory.plans, []);
+  assert.deepEqual(result.event, event);
+  assert.deepEqual(memory.calls, [
+    "read",
+    "lock",
+    "snapshot",
+    "check",
+    "withdrawals",
+    "project:p1",
+    "project:p2",
+    "check",
+    "withdrawals",
+    "read",
+    "release",
+  ]);
+});
+
+test("ended prize repair preserves the original completion time and terminal fields", async () => {
+  const event = completedFinalEvent("ended");
+  event.prizeSelectionsLockedAtMs = null;
+  const memory = prizeRuntime(event);
+  const result = await synchronize(memory.runtime);
+  assert.deepEqual(
+    memory.plans[0].map((command) => command.field),
+    ["prizeSelectionsLockedAtMs", "prizeAssignments", "updatedAtMs"],
+  );
+  assert.equal(result.event.prizeSelectionsLockedAtMs, 500);
+  assert.deepEqual(result.event.prizeAssignments, prizeAssignments(500));
+  assert.deepEqual(result.event.participants, event.participants);
+  assert.deepEqual(result.event.rounds, event.rounds);
+});
+
+for (const failedCheck of [1, 2, 3]) {
+  test(`active sync stops after losing its lease at write stage ${failedCheck}`, async () => {
+    const memory = prizeRuntime(completedFinalEvent("active"), {
+      lockOwned: (check) => check !== failedCheck,
+    });
+    if (failedCheck === 1) {
+      const result = await synchronize(memory.runtime);
+      assert.equal(result.reason, "locked");
+      assert.equal(memory.plans.length, 0);
+    } else {
+      await assert.rejects(
+        synchronize(memory.runtime),
+        failedCheck === 2
+          ? /Event lock expired while projecting prizes/
+          : /Event lock expired while cleaning prize projections/,
+      );
+      assert.equal(memory.plans.length, 1);
+    }
+    assert.equal(
+      memory.calls.filter((call) => call === "withdrawals").length,
+      failedCheck === 3 ? 1 : 0,
+    );
+    assert.equal(
+      memory.calls.filter((call) => call.startsWith("project:")).length,
+      failedCheck === 3 ? 2 : 0,
+    );
+    assert.equal(memory.calls.at(-1), "release");
   });
 }

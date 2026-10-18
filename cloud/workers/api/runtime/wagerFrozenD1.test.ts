@@ -3,7 +3,7 @@ import type { D1Migration } from "cloudflare:test";
 import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { createEmptyMaterials } from "@mons/shared/mining";
-import type { GameplayRepository } from "../src/gameplayRepository.ts";
+import type { WagerWriteRepository } from "../src/gameplayRepository.ts";
 import { createWagerFrozenD1Store } from "../src/wagerFrozenD1.ts";
 import { classifyD1Failure } from "../src/d1Failure.ts";
 import { observeD1FailureDatabase } from "./d1FailureTestUtils.ts";
@@ -21,10 +21,9 @@ const materials = (dust = 0) => ({ ...createEmptyMaterials(), dust });
 const signal = () => new AbortController().signal;
 const store = () =>
   createWagerFrozenD1Store(db, { writeGuards: () => [], now: () => 100 });
-const repository = (value = store()) =>
-  ({ wagerFrozen: value }) as GameplayRepository;
+const repository = (value = store()) => ({ wagerFrozen: value });
 const reserve = (
-  repo: GameplayRepository,
+  repo: Pick<WagerWriteRepository, "wagerFrozen">,
   operationId: string,
   count = 3,
   uid = "host",
@@ -94,7 +93,7 @@ describe("D1 wager frozen reservations", () => {
 
   it("preserves UID isolation, replay fences, and permanent settlement tombstones", async () => {
     const repo = repository();
-    expect(await repo.wagerFrozen!.readBalance("host")).toEqual({
+    expect(await repo.wagerFrozen.readBalance("host")).toEqual({
       frozen: materials(),
       revision: 0,
     });
@@ -103,7 +102,7 @@ describe("D1 wager frozen reservations", () => {
     expect(await readFrozenOperationForUid(repo, "host", "send")).toMatchObject(
       { appliedAtMs: 101, count: 3 },
     );
-    expect(await repo.wagerFrozen!.readBalance("host")).toEqual({
+    expect(await repo.wagerFrozen.readBalance("host")).toEqual({
       frozen: materials(3),
       revision: 2,
     });
@@ -112,14 +111,14 @@ describe("D1 wager frozen reservations", () => {
       await consumeWagerReservationOperation(repo, "host", "send", true),
     ).toBe("released");
     expect(await reserve(repo, "send")).toBe(0);
-    expect(await repo.wagerFrozen!.readBalance("host")).toEqual({
+    expect(await repo.wagerFrozen.readBalance("host")).toEqual({
       frozen: materials(),
       revision: 3,
     });
-    expect((await repo.wagerFrozen!.read("host", "send")).operation).toEqual({
+    expect((await repo.wagerFrozen.read("host", "send")).operation).toEqual({
       status: "consumed",
     });
-    expect(await repo.wagerFrozen!.readBalance("other-login")).toEqual({
+    expect(await repo.wagerFrozen.readBalance("other-login")).toEqual({
       frozen: materials(2),
       revision: 1,
     });
@@ -143,15 +142,15 @@ describe("D1 wager frozen reservations", () => {
     expect(await consumeWagerReservationOperation(repo, "host", "send")).toBe(
       "released",
     );
-    expect(await repo.wagerFrozen!.readBalance("host")).toEqual({
+    expect(await repo.wagerFrozen.readBalance("host")).toEqual({
       frozen: materials(),
       revision: 2,
     });
-    expect((await repo.wagerFrozen!.read("host", "send")).operation).toEqual({
+    expect((await repo.wagerFrozen.read("host", "send")).operation).toEqual({
       status: "absent",
     });
     await reserve(repo, "send");
-    expect(await repo.wagerFrozen!.readBalance("host")).toEqual({
+    expect(await repo.wagerFrozen.readBalance("host")).toEqual({
       frozen: materials(3),
       revision: 3,
     });
@@ -419,14 +418,11 @@ describe("D1 wager frozen reservations", () => {
     });
   });
 
-  it("tombstones an absent reservation and rejects missing production store admission", async () => {
+  it("tombstones an absent reservation and prevents replay", async () => {
     const repo = repository();
     expect(
       await consumeWagerReservationOperation(repo, "host", "absent", true),
     ).toBe("released");
     expect(await reserve(repo, "absent")).toBe(0);
-    await expect(
-      reserve({} as GameplayRepository, "missing-store"),
-    ).rejects.toThrow("wager-operation-unavailable");
   });
 });

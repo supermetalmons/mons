@@ -1,4 +1,4 @@
-import { requireWagerWriter, type WagerKey } from "./wagerStateRepository.ts";
+import type { WagerKey } from "./wagerStateRepository.ts";
 import {
   readStoredSettlement,
   WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON,
@@ -24,7 +24,10 @@ import { MATCH_TIMER_TERMINAL } from "@mons/shared/timers";
 import { resolveMatch } from "mons-rules";
 import { AuthApiFailure } from "./authErrors.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
-import type { GameplayRepository } from "./gameplayRepository.ts";
+import type {
+  GameplayRepository,
+  WagerWriteRepository,
+} from "./gameplayRepository.ts";
 import {
   consumeWagerReservationOperation,
   createWagerReservationOperationId,
@@ -217,7 +220,7 @@ async function claimSettlement(
   operationId: string,
   nowMs: number,
   acceptReservationOperationIdByUid: Readonly<Record<string, string>>,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   signal?: AbortSignal,
   assertMutationAllowed?: () => Promise<void>,
 ): Promise<
@@ -226,7 +229,7 @@ async function claimSettlement(
   let current: unknown;
   await assertMutationAllowed?.();
   try {
-    const transaction = await requireWagerWriter(repository).claimSettlement(
+    const transaction = await repository.wagerWriter.claimSettlement(
       wagerKey,
       {
         resolution,
@@ -276,7 +279,7 @@ async function completeSettlement(
   inviteId: string,
   matchId: string,
   settlement: WagerSettlement,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   now: () => number,
   signal?: AbortSignal,
   assertMutationAllowed?: () => Promise<void>,
@@ -313,7 +316,7 @@ async function completeSettlement(
 
   const completedAtMs = now();
   await assertMutationAllowed?.();
-  await requireWagerWriter(repository).completeSettlement(
+  await repository.wagerWriter.completeSettlement(
     wagerKey,
     {
       settlement,
@@ -371,7 +374,7 @@ export async function classifyWagerSettlementRetry(
 
 export async function resumeWagerSettlement(
   task: WagerSettlementRetryTask,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   now: () => number = Date.now,
   assertMutationAllowed?: () => Promise<void>,
 ): Promise<"completed" | "stale"> {
@@ -445,7 +448,7 @@ export async function enforceWagerOutcomeRateLimit(
 export async function resolveWagerOutcome(
   identity: RequestIdentity,
   request: WagerOutcomeResolveRequest,
-  repository: GameplayRepository,
+  repository: WagerWriteRepository,
   dependencies: WagerOutcomeDependencies = {},
 ): Promise<WagerOutcomeResolveResponse> {
   if (parseInviteMatchIndex(request.inviteId, request.matchId) === null) {

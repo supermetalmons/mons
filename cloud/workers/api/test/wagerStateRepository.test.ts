@@ -3,7 +3,6 @@ import test from "node:test";
 import {
   createWagerStateReader,
   createWagerStateRepository,
-  requireWagerWriter,
 } from "../src/wagerStateRepository.ts";
 import type { SendWagerProposalCommand } from "../src/wagerStateCommands.ts";
 
@@ -39,7 +38,6 @@ test("read-only wager capability exposes no writer or generic state operations",
     "readResolutionMarker",
     "readWager",
   ]);
-  assert.throws(() => requireWagerWriter({}), /wager-state-read-only/);
   assert.equal(f.accesses(), 0);
 });
 

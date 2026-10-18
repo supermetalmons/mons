@@ -81,13 +81,6 @@ export type WagerWriter = WagerReader & {
 export type WagerStateRepositoryOptions = WagerStateD1Options & {
   notify?: (inviteId: string, committed: boolean) => Promise<void>;
 };
-export function requireWagerWriter(repository: {
-  wagerWriter?: WagerWriter;
-}): WagerWriter {
-  if (!repository.wagerWriter)
-    throw new WagerStateD1Failure("wager-state-read-only");
-  return repository.wagerWriter;
-}
 function normalizeJson(value: unknown): unknown {
   const active = new Set<object>();
   const normalize = (entry: unknown, depth: number): unknown => {

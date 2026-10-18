@@ -9,8 +9,8 @@ import {
   type MiningMaterialName,
   type MiningMaterials,
 } from "@mons/shared/mining";
-import type { GameplayRepository } from "./gameplayRepository.ts";
-import { requireWagerFrozenStore } from "./wagerFrozenStore.ts";
+import type { WagerWriteRepository } from "./gameplayRepository.ts";
+import type { WagerFrozenReadRepository } from "./wagerFrozenStore.ts";
 import {
   operationFingerprint,
   parseFrozenOperation,
@@ -46,7 +46,7 @@ function normalizeString(value: unknown): string {
 }
 
 async function applyFrozenOperation(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagerFrozen">,
   uid: string,
   operationId: string,
   fingerprint: string,
@@ -58,7 +58,7 @@ async function applyFrozenOperation(
   now: () => number,
   signal?: AbortSignal,
 ): Promise<ParsedFrozenOperation | null> {
-  const store = requireWagerFrozenStore(repository);
+  const store = repository.wagerFrozen;
   let expectedAppliedAtMs: number | null = null;
   let result;
   try {
@@ -173,13 +173,13 @@ function invertFrozenDeltas(
 }
 
 export async function consumeWagerReservationOperation(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagerFrozen">,
   uid: string,
   operationId: string,
   retainTombstone = false,
   signal?: AbortSignal,
 ): Promise<"missing" | "released"> {
-  const store = requireWagerFrozenStore(repository);
+  const store = repository.wagerFrozen;
   try {
     const result = await store.transact(
       uid,
@@ -247,7 +247,7 @@ export async function consumeWagerReservationOperation(
 }
 
 export async function updateFrozenMaterialsOnce(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagerFrozen">,
   uid: string,
   operationId: string,
   kind: FrozenDeltaOperationKind,
@@ -274,13 +274,11 @@ export async function updateFrozenMaterialsOnce(
 }
 
 export async function readFrozenOperationForUid(
-  repository: GameplayRepository,
+  repository: WagerFrozenReadRepository,
   uid: string,
   operationId: string,
 ): Promise<ParsedFrozenOperation | null> {
-  const state = (
-    await requireWagerFrozenStore(repository).read(uid, operationId)
-  ).operation;
+  const state = (await repository.wagerFrozen.read(uid, operationId)).operation;
   if (state.status === "malformed") {
     throw new Error("wager-operation-unavailable");
   }
@@ -331,7 +329,7 @@ export function wagerReferencesReservationOperation(
 }
 
 export async function releaseUnreferencedWagerReservation(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagers" | "wagerFrozen">,
   input: {
     mutation: WagerMutationContext;
     playerUid: string;
@@ -359,7 +357,7 @@ export async function releaseUnreferencedWagerReservation(
 }
 
 export async function recoverUnreferencedWagerReservation(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagers" | "wagerFrozen">,
   input: {
     mutation: WagerMutationContext;
     playerUid: string;
@@ -381,7 +379,7 @@ export async function recoverUnreferencedWagerReservation(
 }
 
 export async function reserveFrozenMaterialsOnce(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagerFrozen">,
   uid: string,
   operationId: string,
   material: MiningMaterialName,
@@ -417,7 +415,7 @@ export async function reserveFrozenMaterialsOnce(
 }
 
 export async function reserveAcceptedMaterialsOnce(
-  repository: GameplayRepository,
+  repository: Pick<WagerWriteRepository, "wagerFrozen">,
   uid: string,
   operationId: string,
   material: MiningMaterialName,

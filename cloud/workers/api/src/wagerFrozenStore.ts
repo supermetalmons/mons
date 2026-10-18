@@ -35,12 +35,9 @@ export type WagerFrozenStore = {
   ) => Promise<WagerFrozenTransactionResult>;
 };
 
-export function requireWagerFrozenStore(repository: {
-  wagerFrozen?: WagerFrozenStore;
-}): WagerFrozenStore {
-  if (!repository.wagerFrozen) throw new Error("wager-operation-unavailable");
-  return repository.wagerFrozen;
-}
+export type WagerFrozenReadRepository = {
+  wagerFrozen: Pick<WagerFrozenStore, "read">;
+};
 
 export function assertWagerFrozenKey(value: string): void {
   if (
