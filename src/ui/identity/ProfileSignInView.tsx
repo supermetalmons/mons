@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import styled from "styled-components";
+import type { EmojiId } from "../../content/emojis";
 import { storage } from "../../utils/storage";
 import { connection } from "../../connection/connection";
 import { ModalOverlay, ModalPopup, ModalTitle } from "../SharedModalComponents";
@@ -225,7 +226,7 @@ const STALE_PENDING_X_SIGNIN_DELAY_MS = 20 * 1000;
 interface NotificationState {
   title: string;
   subtitle: string;
-  emojiId: string;
+  emojiId: EmojiId;
   successHandler: () => void;
 }
 
@@ -672,7 +673,7 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
     async (
       title: string,
       subtitle: string,
-      emojiId: string,
+      emojiId: EmojiId,
       successHandler: () => void,
     ) => {
       if (notificationTimeoutRef.current) {

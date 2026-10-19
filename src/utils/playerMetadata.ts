@@ -1,4 +1,5 @@
 import type { PlayerProfile } from "../connection/connectionModels";
+import type { EmojiId } from "../content/emojis";
 import glicko2 from "glicko2";
 import { createRatingUpdater } from "@mons/shared/ratings";
 import { storage } from "./storage";
@@ -31,7 +32,7 @@ export type PlayerMetadata = {
   ethAddress: string | undefined;
   solAddress: string | undefined;
   ens: string | undefined;
-  emojiId: string;
+  emojiId: EmojiId;
   aura?: string;
   voiceReactionText: string;
   voiceReactionDate: number | undefined;

@@ -19,6 +19,7 @@ registerHooks({
 const {
   ProfileScopedUndoHistory,
   getNextRegularId,
+  getShinyCardUndoEntry,
   getShinyCardUndoUpdateSource,
   isInventoryEmojiId,
   parseStickerMap,
@@ -80,15 +81,74 @@ test("shiny card UI port exposes state and forwards every public command", async
 test("profile scoped undo history clears entries across identities", () => {
   const history = new ProfileScopedUndoHistory();
   history.synchronize("one");
-  history.enqueue("one", "one", ["bg", 7]);
-  history.enqueue("two", "one", ["bg", 8]);
+  history.enqueue("one", "one", { contentType: "bg", value: 7 });
+  history.enqueue("two", "one", { contentType: "bg", value: 8 });
   assert.equal(history.size, 1);
-  assert.deepEqual(history.pop("one"), ["bg", 7]);
+  assert.deepEqual(history.pop("one"), { contentType: "bg", value: 7 });
 
-  history.enqueue("one", "one", ["subtitle", 4]);
+  history.enqueue("one", "one", { contentType: "subtitle", value: 4 });
   history.synchronize("two");
   assert.equal(history.size, 0);
   assert.equal(history.pop("two"), undefined);
+});
+
+test("card history retains absent sticker values and rejects anonymous or stale owners", () => {
+  const history = new ProfileScopedUndoHistory();
+  history.enqueue(null, null, { contentType: "bg", value: 7 });
+  assert.equal(history.size, 0);
+
+  history.enqueue("one", "one", { contentType: "mana", value: undefined });
+  history.enqueue("one", "one", {
+    contentType: "profileCounter",
+    value: "legacy-counter",
+  });
+  assert.deepEqual(history.pop("one"), {
+    contentType: "profileCounter",
+    value: "legacy-counter",
+  });
+  assert.deepEqual(history.pop("one"), {
+    contentType: "mana",
+    value: undefined,
+  });
+  assert.equal(history.pop("one"), undefined);
+
+  history.enqueue("one", "one", { contentType: "bg", value: 7 });
+  history.enqueue("one", "two", { contentType: "subtitle", value: 4 });
+  assert.equal(history.size, 0);
+  history.enqueue("two", "two", { contentType: "bg", value: 9 });
+  history.synchronize(null);
+  assert.equal(history.pop("two"), undefined);
+  assert.equal(history.pop("one"), undefined);
+});
+
+test("explicit undo intent distinguishes recorded absence from skipped history", () => {
+  const oldEmoji = { emojiId: 1009, aura: "rainbow" };
+  const restoredEmoji = getShinyCardUndoEntry({
+    contentType: "emojiAndAura",
+    value: { emojiId: "1", aura: "" },
+    undo: { kind: "record", value: oldEmoji },
+  });
+  assert.deepEqual(restoredEmoji, {
+    contentType: "emojiAndAura",
+    value: oldEmoji,
+  });
+  assert.strictEqual(restoredEmoji.value, oldEmoji);
+  assert.deepEqual(
+    getShinyCardUndoEntry({
+      contentType: "mana",
+      value: "blue-mana",
+      undo: { kind: "record", value: undefined },
+    }),
+    { contentType: "mana", value: undefined },
+  );
+  assert.equal(
+    getShinyCardUndoEntry({
+      contentType: "mana",
+      value: undefined,
+      undo: { kind: "skip" },
+    }),
+    null,
+  );
 });
 
 test("shiny card selectors preserve inventory and cyclic rules", () => {
@@ -112,14 +172,47 @@ test("shiny card selectors preserve inventory and cyclic rules", () => {
   };
   assert.equal(
     getShinyCardUndoUpdateSource(
-      "emojiAndAura",
-      { emojiId: 1001, aura: "" },
+      { contentType: "emojiAndAura", value: { emojiId: 1001, aura: "" } },
       options,
     ),
     "inventory",
   );
-  assert.equal(getShinyCardUndoUpdateSource("bg", 100, options), "inventory");
-  assert.equal(getShinyCardUndoUpdateSource("bg", 4, options), "default");
+  assert.equal(
+    getShinyCardUndoUpdateSource({ contentType: "bg", value: 100 }, options),
+    "inventory",
+  );
+  assert.equal(
+    getShinyCardUndoUpdateSource({ contentType: "bg", value: 4 }, options),
+    "default",
+  );
+});
+
+test("card undo permission preserves inventory coercions and restoration values", () => {
+  const options = {
+    inventoryEmojiStartId: 1000,
+    inventoryBackgroundId: 100,
+    inventoryDrainerId: 5,
+    inventoryStickerType: "big-mon-top-right",
+    inventoryStickerName: "gate",
+  };
+  for (const [contentType, value, expected] of [
+    ["emojiAndAura", { emojiId: "1009", aura: "" }, "inventory"],
+    ["emojiAndAura", { emojiId: 1009, aura: "" }, "inventory"],
+    ["emojiAndAura", { emojiId: "1", aura: "rainbow" }, "inventory"],
+    ["emojiAndAura", { emojiId: "1", aura: "legacy-aura" }, "default"],
+    ["bg", "100", "inventory"],
+    ["drainer", "5", "inventory"],
+    ["drainer", 0, "default"],
+    ["big-mon-top-right", "gate", "inventory"],
+    ["big-mon-top-right", undefined, "default"],
+    ["mana", "gate", "default"],
+    ["profileCounter", "legacy-counter", "default"],
+  ]) {
+    assert.equal(
+      getShinyCardUndoUpdateSource({ contentType, value }, options),
+      expected,
+    );
+  }
 });
 
 test("leaderboard models preserve defaults and display-name priority", () => {

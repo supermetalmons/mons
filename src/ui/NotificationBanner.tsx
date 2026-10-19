@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import type { EmojiId } from "../content/emojis";
 import { isMobile } from "../utils/misc";
 import { didDismissSomethingWithOutsideTapJustNow } from "./controls/outsideTapState";
 
@@ -179,7 +180,7 @@ interface NotificationBannerComponentProps {
   onClick: () => void;
   title: string;
   subtitle: string;
-  emojiId: string;
+  emojiId: EmojiId;
   dismissType?: "click" | "close" | null;
 }
 

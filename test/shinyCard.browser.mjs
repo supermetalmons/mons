@@ -293,6 +293,594 @@ const noResources = {
   observed: 0,
 };
 
+const openEditing = async (page, values = {}) => {
+  await page.evaluate(async (values) => {
+    window.harness.reset(values);
+    await window.harness.own();
+  }, values);
+  await waitForMons(page);
+  await page.evaluate(() => window.harness.edit());
+};
+
+const editState = (page) =>
+  page.evaluate(() => ({
+    values: window.harness.environment.values,
+    writes: window.harness.environment.writes,
+    presentation: window.harness.snapshot(),
+  }));
+
+const emojiWrite = (id, aura = "") => [
+  "emoji",
+  id,
+  `https://cdn.lil.org/mons/emojipack/thumbs/${id}.webp`,
+  aura,
+];
+
+test(
+  "counter, background, and subtitle edits persist, present, and undo once",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      const cases = [
+        {
+          action: "clickCounter",
+          field: "ProfileCounter",
+          old: "gp",
+          next: "mp",
+          write: "counter",
+          presentation: "counter",
+          shown: "mp: 7",
+        },
+        {
+          action: "clickBackground",
+          field: "CardBackgroundId",
+          old: 30,
+          next: 31,
+          write: "background",
+          presentation: "background",
+          shown: "https://cdn.lil.org/mons/id_cards/backgrounds/31.webp",
+        },
+        {
+          action: "clickSubtitle",
+          field: "CardSubtitleId",
+          old: 0,
+          next: 1,
+          write: "subtitle",
+          presentation: "subtitle",
+        },
+      ];
+      for (const entry of cases) {
+        await openEditing(page);
+        const before = await editState(page);
+        await page.evaluate((action) => window.harness[action](), entry.action);
+        const changed = await editState(page);
+        const shown =
+          entry.shown ??
+          (await page.evaluate(() => window.harness.subtitleForId(1)));
+        assert.equal(changed.values[entry.field], entry.next, entry.action);
+        assert.equal(
+          changed.presentation[entry.presentation],
+          shown,
+          entry.action,
+        );
+        assert.equal(changed.presentation.undoDisabled, false, entry.action);
+        assert.deepEqual(
+          changed.writes,
+          [[entry.write, entry.next]],
+          entry.action,
+        );
+        await page.evaluate(() => window.harness.undo());
+        const restored = await editState(page);
+        assert.equal(restored.values[entry.field], entry.old, entry.action);
+        assert.equal(
+          restored.presentation[entry.presentation],
+          before.presentation[entry.presentation],
+          entry.action,
+        );
+        assert.equal(restored.presentation.undoDisabled, true, entry.action);
+        assert.deepEqual(
+          restored.writes,
+          [
+            [entry.write, entry.next],
+            [entry.write, entry.old],
+          ],
+          entry.action,
+        );
+        await page.evaluate(() => window.harness.undo());
+        assert.deepEqual(
+          (await editState(page)).writes,
+          restored.writes,
+          entry.action,
+        );
+      }
+    });
+  },
+);
+
+test(
+  "ordinary emoji edits and undo preserve numeric and legacy string baselines through storage",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      const baselines = [
+        { label: "numeric", input: 1, read: 1, restored: 1 },
+        { label: "numeric string", input: "1", read: 1, restored: 1 },
+        { label: "quoted legacy string", input: '"1"', read: "1", restored: 1 },
+        {
+          label: "non-JSON legacy string",
+          input: "001",
+          read: "001",
+          restored: "001",
+        },
+      ];
+      for (const baseline of baselines) {
+        await page.evaluate(async (input) => {
+          const h = window.harness;
+          h.reset();
+          h.storeEmoji(input);
+          await h.own();
+        }, baseline.input);
+        await waitForMons(page);
+        await page.evaluate(() => window.harness.edit());
+        const before = await editState(page);
+        assert.equal(
+          before.values.PlayerEmojiId,
+          baseline.read,
+          baseline.label,
+        );
+        await page.evaluate(() => window.harness.clickEmoji());
+        const changed = await editState(page);
+        assert.equal(changed.values.PlayerEmojiId, 2, baseline.label);
+        assert.deepEqual(changed.writes, [emojiWrite("2")], baseline.label);
+        assert.equal(
+          changed.presentation.emoji,
+          "https://cdn.lil.org/mons/emojipack/regular/2.webp",
+          baseline.label,
+        );
+        assert.equal(changed.presentation.undoDisabled, false, baseline.label);
+        await page.evaluate(() => window.harness.undo());
+        const restored = await editState(page);
+        assert.equal(
+          restored.values.PlayerEmojiId,
+          baseline.restored,
+          baseline.label,
+        );
+        assert.deepEqual(
+          restored.writes,
+          [emojiWrite("2"), emojiWrite(baseline.read)],
+          baseline.label,
+        );
+        assert.equal(
+          typeof restored.writes[1][1],
+          typeof baseline.read,
+          baseline.label,
+        );
+        assert.equal(
+          restored.presentation.emoji,
+          before.presentation.emoji,
+          baseline.label,
+        );
+        assert.equal(restored.presentation.undoDisabled, true, baseline.label);
+        await page.evaluate(() => window.harness.undo());
+        assert.deepEqual(
+          (await editState(page)).writes,
+          restored.writes,
+          baseline.label,
+        );
+      }
+    });
+  },
+);
+
+test(
+  "all five monster edits preserve other slots and undo without another mons notification",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      const nextKeys = [
+        "notchur_demon",
+        "gerp_angel",
+        "greenseech_drainer",
+        "omenstatue_spirit",
+        "dart_mystic",
+      ];
+      for (const [index, key] of nextKeys.entries()) {
+        await openEditing(page);
+        const before = await editState(page);
+        await page.evaluate((index) => window.harness.clickMon(index), index);
+        await page.waitForFunction(
+          ({ index, key }) =>
+            window.harness.snapshot().mons[index] ===
+            `data:image/webp;base64,${window.harness.spriteForKey(key)}`,
+          { index, key },
+        );
+        const changed = await editState(page);
+        const indexes = [0, 0, 0, 0, 0];
+        indexes[index] = 1;
+        assert.equal(changed.values.ProfileMons, indexes.join(","), key);
+        assert.deepEqual(
+          changed.writes,
+          [["mons", indexes.join(",")], ["monsChanged"]],
+          key,
+        );
+        for (const other of indexes.keys()) {
+          if (other !== index)
+            assert.equal(
+              changed.presentation.mons[other],
+              before.presentation.mons[other],
+              key,
+            );
+        }
+        await page.evaluate(() => window.harness.undo());
+        await page.waitForFunction(
+          (mons) =>
+            JSON.stringify(window.harness.snapshot().mons) ===
+            JSON.stringify(mons),
+          before.presentation.mons,
+        );
+        const restored = await editState(page);
+        assert.equal(restored.values.ProfileMons, "0,0,0,0,0", key);
+        assert.deepEqual(
+          restored.writes,
+          [["mons", indexes.join(",")], ["monsChanged"], ["mons", "0,0,0,0,0"]],
+          key,
+        );
+        assert.equal(restored.presentation.undoDisabled, true, key);
+      }
+    });
+  },
+);
+
+test(
+  "all eight sticker slots preserve unrelated stickers and undo additions and removals",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      const namesByType = await page.evaluate(
+        () => window.harness.stickerNames,
+      );
+      assert.equal(Object.keys(namesByType).length, 8);
+      for (const [type, names] of Object.entries(namesByType)) {
+        const untouched =
+          type === "mana" ? { "bottom-left": "heart" } : { mana: "blue-mana" };
+        for (const previous of [undefined, names.at(-1)]) {
+          const original = {
+            ...untouched,
+            ...(previous === undefined ? {} : { [type]: previous }),
+          };
+          const next = previous === undefined ? names[0] : undefined;
+          const updated = {
+            ...untouched,
+            ...(next === undefined ? {} : { [type]: next }),
+          };
+          await openEditing(page, { CardStickers: JSON.stringify(original) });
+          await page.evaluate(
+            (type) => window.harness.clickSticker(type),
+            type,
+          );
+          const changed = await editState(page);
+          assert.equal(
+            changed.values.CardStickers,
+            JSON.stringify(updated),
+            type,
+          );
+          assert.deepEqual(
+            changed.writes,
+            [["stickers", JSON.stringify(updated)]],
+            type,
+          );
+          assert.deepEqual(changed.presentation.stickers, updated, type);
+          assert.equal(changed.presentation.undoDisabled, false, type);
+          await page.evaluate(() => window.harness.undo());
+          const restored = await editState(page);
+          assert.equal(
+            restored.values.CardStickers,
+            JSON.stringify(original),
+            type,
+          );
+          assert.deepEqual(restored.presentation.stickers, original, type);
+          assert.deepEqual(
+            restored.writes,
+            [
+              ["stickers", JSON.stringify(updated)],
+              ["stickers", JSON.stringify(original)],
+            ],
+            type,
+          );
+          assert.equal(restored.presentation.undoDisabled, true, type);
+          await page.evaluate(() => window.harness.undo());
+          assert.deepEqual(
+            (await editState(page)).writes,
+            restored.writes,
+            type,
+          );
+        }
+      }
+      await openEditing(page, {
+        CardStickers: '{"mana":"","bottom-left":"heart"}',
+      });
+      await page.evaluate(() => {
+        window.harness.clickSticker("mana");
+        window.harness.undo();
+      });
+      const empty = await editState(page);
+      assert.equal(empty.values.CardStickers, '{"bottom-left":"heart"}');
+      assert.deepEqual(empty.presentation.stickers, { "bottom-left": "heart" });
+      assert.deepEqual(empty.writes, [
+        ["stickers", '{"mana":"blue-mana","bottom-left":"heart"}'],
+        ["stickers", '{"bottom-left":"heart"}'],
+      ]);
+      assert.equal(empty.presentation.undoDisabled, true);
+    });
+  },
+);
+
+test(
+  "inventory grants restore through regular edits and undo with numeric and string emoji payloads",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      for (const kind of ["emoji", "background", "drainer", "sticker"]) {
+        await openEditing(page);
+        const original = await editState(page);
+        await page.evaluate((kind) => {
+          const h = window.harness;
+          if (kind === "emoji") h.inventoryEmoji(1009, "rainbow");
+          else
+            h.inventorySpecial({ background: 1, drainer: 0, sticker: 2 }[kind]);
+        }, kind);
+        if (kind === "drainer")
+          await page.waitForFunction(
+            () =>
+              window.harness.snapshot().mons[2] ===
+              `data:image/webp;base64,${window.harness.spriteForKey("royal_aguapwoshi_drainer")}`,
+          );
+        const granted = await editState(page);
+        await page.evaluate((kind) => {
+          const h = window.harness;
+          if (kind === "emoji") h.clickEmoji();
+          else if (kind === "background") h.clickBackground();
+          else if (kind === "drainer") h.clickMon(2);
+          else h.clickSticker("big-mon-top-right");
+        }, kind);
+        const changed = await editState(page);
+        await page.evaluate(() => window.harness.undo());
+        if (kind === "drainer")
+          await page.waitForFunction(
+            () =>
+              window.harness.snapshot().mons[2] ===
+              `data:image/webp;base64,${window.harness.spriteForKey("royal_aguapwoshi_drainer")}`,
+          );
+        const restoredGrant = await editState(page);
+        const field = {
+          emoji: "PlayerEmojiId",
+          background: "CardBackgroundId",
+          drainer: "ProfileMons",
+          sticker: "CardStickers",
+        }[kind];
+        const presentation = {
+          emoji: "emoji",
+          background: "background",
+          drainer: "mons",
+          sticker: "stickers",
+        }[kind];
+        assert.equal(restoredGrant.values[field], granted.values[field], kind);
+        assert.deepEqual(
+          restoredGrant.presentation[presentation],
+          granted.presentation[presentation],
+          kind,
+        );
+        assert.equal(restoredGrant.presentation.undoDisabled, false, kind);
+        await page.evaluate(() => window.harness.undo());
+        if (kind === "drainer")
+          await page.waitForFunction(
+            (mons) =>
+              JSON.stringify(window.harness.snapshot().mons) ===
+              JSON.stringify(mons),
+            original.presentation.mons,
+          );
+        const restored = await editState(page);
+        assert.equal(
+          restored.values[field],
+          kind === "sticker"
+            ? "{}"
+            : kind === "emoji"
+              ? 1
+              : original.values[field],
+          kind,
+        );
+        assert.deepEqual(
+          restored.presentation[presentation],
+          original.presentation[presentation],
+          kind,
+        );
+        assert.equal(restored.presentation.undoDisabled, true, kind);
+        if (kind === "emoji") {
+          assert.equal(granted.values.PlayerEmojiId, 1009);
+          assert.equal(typeof changed.values.PlayerEmojiId, "number");
+          assert.equal(restoredGrant.values.PlayerEmojiId, 1009);
+          assert.equal(granted.values.PlayerEmojiAura, "rainbow");
+          assert.equal(granted.presentation.aura, "visible");
+          assert.equal(changed.values.PlayerEmojiAura, "");
+          assert.equal(changed.presentation.aura, "hidden");
+          assert.equal(restoredGrant.values.PlayerEmojiAura, "rainbow");
+          assert.equal(restoredGrant.presentation.aura, "visible");
+          assert.equal(restored.values.PlayerEmojiAura, "");
+          assert.equal(restored.presentation.aura, "hidden");
+          assert.deepEqual(restored.writes, [
+            emojiWrite(1009, "rainbow"),
+            emojiWrite(String(changed.values.PlayerEmojiId)),
+            emojiWrite(1009, "rainbow"),
+            emojiWrite("1"),
+          ]);
+          assert.equal(typeof restored.writes[0][1], "number");
+          assert.equal(typeof restored.writes[1][1], "string");
+          assert.equal(typeof restored.writes[2][1], "number");
+          assert.equal(typeof restored.writes[3][1], "string");
+        } else if (kind === "background") {
+          assert.deepEqual(restored.writes, [
+            ["background", 100],
+            ["background", 0],
+            ["background", 100],
+            ["background", 30],
+          ]);
+        } else if (kind === "drainer") {
+          assert.deepEqual(restored.writes, [
+            ["mons", "0,0,5,0,0"],
+            ["monsChanged"],
+            ["mons", "0,0,0,0,0"],
+            ["monsChanged"],
+            ["mons", "0,0,5,0,0"],
+            ["mons", "0,0,0,0,0"],
+          ]);
+        } else {
+          assert.deepEqual(restored.writes, [
+            ["stickers", '{"big-mon-top-right":"gate"}'],
+            ["stickers", '{"big-mon-top-right":"crystal-owg"}'],
+            ["stickers", '{"big-mon-top-right":"gate"}'],
+            ["stickers", "{}"],
+          ]);
+        }
+      }
+    });
+  },
+);
+
+test(
+  "ordinary cycling skips exclusive cosmetics and invalid inventory commands do nothing",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      await openEditing(page, {
+        CardBackgroundId: 36,
+        ProfileMons: "0,0,4,0,0",
+        CardStickers: '{"big-mon-top-right":"crystal-gummy-deino"}',
+      });
+      await page.evaluate(() => {
+        const h = window.harness;
+        h.clickBackground();
+        h.clickMon(2);
+        h.clickSticker("big-mon-top-right");
+      });
+      const cycled = await editState(page);
+      assert.equal(cycled.values.CardBackgroundId, 0);
+      assert.equal(cycled.values.ProfileMons, "0,0,0,0,0");
+      assert.equal(
+        cycled.values.CardStickers,
+        '{"big-mon-top-right":"crystal-owg"}',
+      );
+      await page.evaluate(() => {
+        window.harness.inventoryEmoji(999, "rainbow");
+        window.harness.inventorySpecial(99);
+      });
+      const ignored = await editState(page);
+      assert.deepEqual(ignored.values, cycled.values);
+      assert.deepEqual(ignored.writes, cycled.writes);
+      await page.evaluate(() =>
+        window.harness.inventoryEmoji(1009, "unsupported"),
+      );
+      const normalized = await editState(page);
+      assert.equal(normalized.values.PlayerEmojiAura, "");
+      assert.deepEqual(normalized.writes.at(-1), emojiWrite(1009));
+    });
+  },
+);
+
+test(
+  "a mounted card rejects edit and undo callbacks after its owner changes",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      await openEditing(page);
+      await page.evaluate(() => window.harness.clickBackground());
+      const before = await editState(page);
+      await page.evaluate(() => {
+        const h = window.harness;
+        h.environment.values.ProfileId = "replacement-owner";
+        h.clickBackground();
+        h.clickEmoji();
+        h.clickCounter();
+        h.clickSubtitle();
+        h.clickMon(0);
+        h.clickSticker("mana");
+        h.undo();
+      });
+      const stale = await editState(page);
+      assert.deepEqual(stale.writes, before.writes);
+      assert.deepEqual(stale.values, {
+        ...before.values,
+        ProfileId: "replacement-owner",
+      });
+      for (const key of [
+        "background",
+        "emoji",
+        "counter",
+        "subtitle",
+        "mons",
+        "stickers",
+      ])
+        assert.deepEqual(
+          stale.presentation[key],
+          before.presentation[key],
+          key,
+        );
+      await page.evaluate(() => window.harness.own());
+      await waitForMons(page);
+      await page.evaluate(() => window.harness.edit());
+      assert.equal((await editState(page)).presentation.undoDisabled, true);
+    });
+  },
+);
+
+test(
+  "synchronous persistence callbacks cannot enqueue for a new owner or change a replacement card",
+  { timeout: 60_000 },
+  async (t) => {
+    await fixture(t, async ({ page }) => {
+      for (const replacement of ["owner", "session"]) {
+        await openEditing(page);
+        await page.evaluate((replacement) => {
+          const h = window.harness;
+          h.environment.onWrite = () => {
+            h.environment.onWrite = null;
+            if (replacement === "owner") {
+              h.environment.values.ProfileId = "reentrant-owner";
+              h.environment.values.CardBackgroundId = 7;
+              void h.own();
+            } else {
+              void h.other("replacement-card");
+            }
+          };
+          h.clickBackground();
+        }, replacement);
+        await waitForMons(page);
+        const replaced = await editState(page);
+        assert.match(replaced.presentation.background, /\/7\.webp$/);
+        assert.deepEqual(replaced.writes, [["background", 31]]);
+        if (replacement === "owner") {
+          await page.evaluate(() => window.harness.edit());
+          assert.equal((await editState(page)).presentation.undoDisabled, true);
+        } else {
+          assert.match(replaced.presentation.text, /replacement-card/);
+          await page.evaluate(() => window.harness.own());
+          await waitForMons(page);
+          await page.evaluate(() => {
+            window.harness.edit();
+            window.harness.undo();
+          });
+          const undone = await editState(page);
+          assert.equal(undone.values.CardBackgroundId, 30);
+          assert.deepEqual(undone.writes, [
+            ["background", 31],
+            ["background", 30],
+          ]);
+          assert.equal(undone.presentation.undoDisabled, true);
+        }
+      }
+    });
+  },
+);
+
 test(
   "closing editing cards cancels resources immediately and repeatedly",
   { timeout: 60_000 },

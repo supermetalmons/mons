@@ -96,3 +96,19 @@ test("authoritative cosmetics persist zero and empty values and remove omitted f
     assert.equal(values.get("playerRating"), "1777");
   }
 });
+
+test("emoji storage preserves numeric and string representations without normalization", () => {
+  assert.equal(storage.getPlayerEmojiId("missing"), "missing");
+  for (const [input, serialized, restored] of [
+    [1009, "1009", 1009],
+    ["1009", "1009", 1009],
+    ["001", "001", "001"],
+    ["legacy-emoji", "legacy-emoji", "legacy-emoji"],
+  ]) {
+    storage.setPlayerEmojiId(input);
+    assert.equal(values.get("playerEmojiId"), serialized);
+    assert.equal(storage.getPlayerEmojiId("missing"), restored);
+  }
+  values.set("playerEmojiId", JSON.stringify("1009"));
+  assert.equal(storage.getPlayerEmojiId("missing"), "1009");
+});

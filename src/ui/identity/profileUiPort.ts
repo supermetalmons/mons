@@ -1,4 +1,5 @@
 import { cropAddress } from "@mons/shared/profiles";
+import type { EmojiId } from "../../content/emojis";
 
 export type ProfileSignInPopupMode = "inline" | "event";
 
@@ -11,7 +12,7 @@ export type ProfileSignInApi = {
   showNotificationBanner: (
     title: string,
     subtitle: string,
-    emojiId: string,
+    emojiId: EmojiId,
     successHandler: () => void,
   ) => void;
   openSignInPopup: (mode?: ProfileSignInPopupMode) => void;
@@ -51,7 +52,7 @@ export const hideNotificationBanner = () => {
 export const showNotificationBanner = (
   title: string,
   subtitle: string,
-  emojiId: string,
+  emojiId: EmojiId,
   successHandler: () => void,
 ) => {
   profileSignInApi?.showNotificationBanner(

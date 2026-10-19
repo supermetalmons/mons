@@ -3,8 +3,18 @@ import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./identity/profileUiPort";
-import { getNextRegularId, parseStickerMap } from "./shinyCardModels";
-import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
+import {
+  getNextRegularId,
+  parseStickerMap,
+  type ShinyCardChange,
+  type ShinyCardEdit,
+} from "./shinyCardModels";
+import {
+  STICKER_ADD_PROMPTS_FRAMES,
+  STICKER_PATHS,
+  isStickerType,
+  type StickerType,
+} from "../utils/stickers";
 import type { PlayerProfile } from "../connection/connectionModels";
 import { normalizeProfileEmojiId } from "@mons/shared/profiles";
 import {
@@ -98,7 +108,7 @@ type ShinyCardSessionOptions = {
   displayName: string;
   isOtherPlayer: boolean;
   ownerProfileId: string | null;
-  onUpdateContent: (contentType: string, newId: any, oldId: any | null) => void;
+  onUpdateContent: (edit: ShinyCardEdit) => void;
   onUndo: () => void;
   getUndoSize: () => number;
   onMonsChanged: () => void;
@@ -185,13 +195,9 @@ export class ShinyCardSession {
     );
   }
 
-  private updateContent(
-    contentType: string,
-    newId: any,
-    oldId: any | null,
-  ): void {
+  private updateContent(edit: ShinyCardEdit): void {
     if (this.isLive() && !this.isOtherPlayer) {
-      this.options.onUpdateContent(contentType, newId, oldId);
+      this.options.onUpdateContent(edit);
     }
   }
 
@@ -556,11 +562,14 @@ export class ShinyCardSession {
       const oldEmojiId = storage.getPlayerEmojiId("1");
       const oldAura = storage.getPlayerEmojiAura("");
       const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
-      this.updateContent(
-        "emojiAndAura",
-        { emojiId: playerEmojiId, aura: "" },
-        { emojiId: oldEmojiId, aura: oldAura },
-      );
+      this.updateContent({
+        contentType: "emojiAndAura",
+        value: { emojiId: playerEmojiId, aura: "" },
+        undo: {
+          kind: "record",
+          value: { emojiId: oldEmojiId, aura: oldAura },
+        },
+      });
     });
     this.ownEmojiImg = emojiImg;
 
@@ -973,11 +982,11 @@ export class ShinyCardSession {
         this.enterEditingMode();
         return;
       }
-      this.updateContent(
-        "bg",
-        getNextRegularCardBackgroundId(this.cardIndex),
-        this.cardIndex,
-      );
+      this.updateContent({
+        contentType: "bg",
+        value: getNextRegularCardBackgroundId(this.cardIndex),
+        undo: { kind: "record", value: this.cardIndex },
+      });
     });
     this.ownBgImg = img;
 
@@ -1046,11 +1055,11 @@ export class ShinyCardSession {
         if (isOtherPlayer) {
           return;
         }
-        this.updateContent(
-          "subtitle",
-          (this.asciimojiIndex + 1) % asciimojisCount,
-          this.asciimojiIndex,
-        );
+        this.updateContent({
+          contentType: "subtitle",
+          value: (this.asciimojiIndex + 1) % asciimojisCount,
+          undo: { kind: "record", value: this.asciimojiIndex },
+        });
       },
     );
 
@@ -1086,7 +1095,11 @@ export class ShinyCardSession {
         }
         const currentCounter = storage.getProfileCounter("gp");
         const newCounter = currentCounter === "gp" ? "mp" : "gp";
-        this.updateContent("profileCounter", newCounter, currentCounter);
+        this.updateContent({
+          contentType: "profileCounter",
+          value: newCounter,
+          undo: { kind: "record", value: currentCounter },
+        });
       },
       isOtherPlayer,
     );
@@ -1119,7 +1132,7 @@ export class ShinyCardSession {
   }
 
   private didUpdateSticker(
-    stickerType: string,
+    stickerType: StickerType,
     nextSticker: string | undefined,
   ) {
     if (nextSticker) {
@@ -1340,7 +1353,13 @@ export class ShinyCardSession {
       }
     }
 
-    this.updateContent(type, nextSticker, currentSticker);
+    if (isStickerType(type)) {
+      this.updateContent({
+        contentType: type,
+        value: nextSticker,
+        undo: { kind: "record", value: currentSticker },
+      });
+    }
   }
 
   private appendStickerLayer(to: HTMLElement, type: string, name: string) {
@@ -1675,11 +1694,11 @@ export class ShinyCardSession {
   private didClickMonImage(monType: MonType) {
     const { index, regularCount } = CARD_MONS[monType];
     const currentIndex = this.displayedMonsIndexes[index];
-    void this.updateContent(
-      monType,
-      getNextRegularId(currentIndex, regularCount),
-      currentIndex,
-    );
+    void this.updateContent({
+      contentType: monType,
+      value: getNextRegularId(currentIndex, regularCount),
+      undo: { kind: "record", value: currentIndex },
+    });
     this.options.onMonsChanged();
   }
 
@@ -1695,42 +1714,43 @@ export class ShinyCardSession {
     }
   }
 
-  applyPresentationChange(contentType: string, newId: any): void {
+  applyPresentationChange(change: ShinyCardChange): void {
     if (!this.isLive() || this.isOtherPlayer) return;
+    const { contentType, value } = change;
     switch (contentType) {
       case "profileCounter": {
         const gpValue = storage.getPlayerNonce(-1) + 1;
         const mpValue = storage.getPlayerTotalManaPoints(0);
         if (this.ownCounterElement) {
           this.ownCounterElement.textContent =
-            newId === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
+            value === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
         }
         break;
       }
       case "emojiAndAura": {
-        const url = `https://cdn.lil.org/mons/emojipack/regular/${newId?.emojiId}.webp`;
+        const url = `https://cdn.lil.org/mons/emojipack/regular/${value?.emojiId}.webp`;
         if (this.ownEmojiImg) this.ownEmojiImg.src = url;
         if (this.ownEmojiAuraInner)
           setRainbowAuraMask(this.ownEmojiAuraInner, url);
         if (this.ownEmojiAuraBackground) {
-          if (newId?.aura === "rainbow")
+          if (value?.aura === "rainbow")
             showRainbowAura(this.ownEmojiAuraBackground);
           else hideRainbowAura(this.ownEmojiAuraBackground);
         }
         break;
       }
       case "bg": {
-        this.cardIndex = newId;
+        this.cardIndex = value;
         if (this.ownBgImg) {
           this.ownBgImg.style.visibility = "hidden";
-          this.ownBgImg.src = `https://cdn.lil.org/mons/id_cards/backgrounds/${newId}.webp`;
+          this.ownBgImg.src = `https://cdn.lil.org/mons/id_cards/backgrounds/${value}.webp`;
         }
         break;
       }
       case "subtitle": {
-        this.asciimojiIndex = newId;
+        this.asciimojiIndex = value;
         if (this.ownSubtitleElement)
-          this.ownSubtitleElement.textContent = getAsciimojiAtIndex(newId);
+          this.ownSubtitleElement.textContent = getAsciimojiAtIndex(value);
         break;
       }
       case MonType.DEMON:
@@ -1745,7 +1765,7 @@ export class ShinyCardSession {
         this.monRevisions[contentType] = revision;
         const image = this.ownMonImages[contentType];
         if (image)
-          void this.updateMonImage(contentType, newId, image, revision).catch(
+          void this.updateMonImage(contentType, value, image, revision).catch(
             () => {},
           );
         break;
@@ -1755,7 +1775,7 @@ export class ShinyCardSession {
         this.currentlySelectedStickers = parseStickerMap(
           storage.getCardStickers(""),
         );
-        this.didUpdateSticker(contentType, newId);
+        this.didUpdateSticker(contentType, value);
       }
     }
   }

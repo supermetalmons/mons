@@ -3,6 +3,8 @@ import {
   PROFILE_FALLBACK_EMOJI_COUNT,
 } from "@mons/shared/profiles";
 
+export type EmojiId = string | number;
+
 export const emojipackSize = PROFILE_FALLBACK_EMOJI_COUNT;
 export const swagpackStart = 1000;
 export const swagpackEnd = 1466;
@@ -28,7 +30,7 @@ export const emojis = {
   },
 
   getRandomEmojiUrlOtherThan: function (
-    id: string,
+    id: EmojiId,
     includingSwagPack: boolean,
   ) {
     return getRandomEmojiUrlOtherThan(id, includingSwagPack);
@@ -38,13 +40,13 @@ export const emojis = {
     return getProfileFallbackEmojiId(str);
   },
 
-  getEmojiUrl: function (id: string) {
+  getEmojiUrl: function (id: EmojiId) {
     return `https://cdn.lil.org/mons/emojipack/thumbs/${id}.webp`;
   },
 };
 
 function getRandomEmojiUrlOtherThan(
-  id: string,
+  id: EmojiId,
   includingSwagPack: boolean,
 ): [string, string] {
   let newId;
@@ -76,8 +78,8 @@ function getRandomEmojiId(includingSwagPack: boolean): string {
   return swagId.toString();
 }
 
-export function getIncrementedEmojiId(currentId: string): string {
-  const currentIndex = parseInt(currentId);
+export function getIncrementedEmojiId(currentId: EmojiId): string {
+  const currentIndex = parseInt(String(currentId));
   if (isNaN(currentIndex)) {
     return getRandomEmojiId(false);
   }

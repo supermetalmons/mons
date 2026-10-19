@@ -6,7 +6,7 @@ interface Sticker {
   h: number;
 }
 
-export const STICKER_PATHS: Record<string, Sticker[]> = {
+const stickerPaths = {
   "big-mon-top-right": [
     { name: "applecreme", x: 0.653497, y: 0.250265, w: 0.258024, h: 0.290031 },
     {
@@ -118,7 +118,14 @@ export const STICKER_PATHS: Record<string, Sticker[]> = {
     { name: "mystic", x: 0.509053, y: 0.591198, w: 0.053909, h: 0.093319 },
     { name: "spirit", x: 0.505761, y: 0.612407, w: 0.057201, h: 0.085896 },
   ],
-};
+} satisfies Record<string, Sticker[]>;
+
+export type StickerType = keyof typeof stickerPaths;
+
+export const STICKER_PATHS: Record<string, Sticker[]> = stickerPaths;
+
+export const isStickerType = (type: string): type is StickerType =>
+  Object.hasOwn(STICKER_PATHS, type);
 
 export const STICKER_ADD_PROMPTS_FRAMES: Record<
   string,
@@ -132,4 +139,4 @@ export const STICKER_ADD_PROMPTS_FRAMES: Record<
   "middle-right": { x: 0.655, y: 0.61, w: 0.07 },
   "mini-logo": { x: 0.41, y: 0.63, w: 0.07 },
   "type-logo": { x: 0.535, y: 0.645, w: 0.07 },
-};
+} satisfies Record<StickerType, { x: number; y: number; w: number }>;

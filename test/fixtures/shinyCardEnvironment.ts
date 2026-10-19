@@ -1,18 +1,21 @@
+export const initialValues = {
+  ProfileId: "owner-a",
+  PlayerEmojiId: "1",
+  PlayerEmojiAura: "",
+  CardBackgroundId: 30,
+  CardSubtitleId: 0,
+  CardStickers: "",
+  ProfileMons: "0,0,0,0,0",
+  ProfileCounter: "gp",
+  PlayerRating: 1500,
+  PlayerNonce: 3,
+  PlayerTotalManaPoints: 7,
+} as Record<string, unknown>;
+
 export const environment = {
-  values: {
-    ProfileId: "owner-a",
-    PlayerEmojiId: "1",
-    PlayerEmojiAura: "",
-    CardBackgroundId: 30,
-    CardSubtitleId: 0,
-    CardStickers: "",
-    ProfileMons: "0,0,0,0,0",
-    ProfileCounter: "gp",
-    PlayerRating: 1500,
-    PlayerNonce: 3,
-    PlayerTotalManaPoints: 7,
-  } as Record<string, unknown>,
+  values: { ...initialValues },
   writes: [] as unknown[][],
+  onWrite: null as ((write: unknown[]) => void) | null,
   spriteRequests: [] as string[],
   releaseSprites: () => {},
 };
@@ -32,6 +35,15 @@ export const storage = new Proxy(
       }
       if (name.startsWith("set")) {
         return (value: unknown) => {
+          if (name === "setPlayerEmojiId") {
+            const serialized = String(value);
+            try {
+              environment.values.PlayerEmojiId = JSON.parse(serialized);
+            } catch {
+              environment.values.PlayerEmojiId = serialized;
+            }
+            return;
+          }
           environment.values[name.slice(3)] = value;
         };
       }

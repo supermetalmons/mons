@@ -22,9 +22,12 @@ import {
 } from "./shinyCardUiPort";
 import {
   ProfileScopedUndoHistory,
+  getShinyCardUndoEntry,
   getShinyCardUndoUpdateSource,
   isInventoryEmojiId,
   parseStickerMap,
+  type ShinyCardEdit,
+  type ShinyCardUndoEntry,
   type ShinyCardUpdateSource,
 } from "./shinyCardModels";
 import { CARD_MONS, ShinyCardSession } from "./shinyCardSession";
@@ -65,7 +68,10 @@ const isInventoryOnlyEmojiId = (
 
 export const getActiveInventoryItemSelection =
   (): ActiveInventoryItemSelection => {
-    const storedEmojiId = Number.parseInt(storage.getPlayerEmojiId(""), 10);
+    const storedEmojiId = Number.parseInt(
+      String(storage.getPlayerEmojiId("")),
+      10,
+    );
     const specialIds = new Set<number>();
 
     if (
@@ -95,8 +101,8 @@ export const getActiveInventoryItemSelection =
     };
   };
 
-const getUndoUpdateSource = (contentType: string, oldId: any): UpdateSource => {
-  return getShinyCardUndoUpdateSource(contentType, oldId, {
+const getUndoUpdateSource = (entry: ShinyCardUndoEntry): UpdateSource => {
+  return getShinyCardUndoUpdateSource(entry, {
     inventoryEmojiStartId: swagpackStart,
     inventoryBackgroundId: INVENTORY_ONLY_BG_ID,
     inventoryDrainerId: royalAguapwoshiDrainerIndex,
@@ -129,8 +135,8 @@ export const showShinyCard = async (
     displayName,
     isOtherPlayer,
     ownerProfileId: getCurrentProfileId(),
-    onUpdateContent: (contentType, newId, oldId) => {
-      if (getOwnSession() === session) updateContent(contentType, newId, oldId);
+    onUpdateContent: (edit) => {
+      if (getOwnSession() === session) updateContent(edit);
     },
     onUndo: () => {
       if (getOwnSession() === session) undoLastEdit();
@@ -168,13 +174,12 @@ export const updateShinyCardDisplayName = (displayName: string): void => {
 };
 
 function updateContent(
-  contentType: string,
-  newId: any,
-  oldId: any | null,
+  edit: ShinyCardEdit,
   source: UpdateSource = "default",
 ): void {
   const updateProfileId = getCurrentProfileId();
   const session = getOwnSession();
+  const { contentType, value: newId } = edit;
   switch (contentType) {
     case "profileCounter":
       storage.setProfileCounter(newId);
@@ -248,19 +253,22 @@ function updateContent(
       updateShinyCardStickers(currentJson);
       break;
     }
-    default:
-      return;
+    default: {
+      const unhandled: never = contentType;
+      return void unhandled;
+    }
   }
 
-  if (oldId !== null) {
+  const undoEntry = getShinyCardUndoEntry(edit);
+  if (undoEntry !== null) {
     undoHistory.enqueue(
       updateProfileId,
       synchronizeUndoQueueWithCurrentProfile(),
-      [contentType, oldId],
+      undoEntry,
     );
   }
   if (session && getOwnSession() === session) {
-    session.applyPresentationChange(contentType, newId);
+    session.applyPresentationChange(edit);
   }
   updateUndoButton();
 }
@@ -273,12 +281,9 @@ function updateUndoButton(): void {
 function undoLastEdit(): void {
   const entry = undoHistory.pop(synchronizeUndoQueueWithCurrentProfile());
   if (entry) {
-    const [contentType, oldId] = entry;
     updateContent(
-      contentType,
-      oldId,
-      null,
-      getUndoUpdateSource(contentType, oldId),
+      { ...entry, undo: { kind: "skip" } },
+      getUndoUpdateSource(entry),
     );
   }
   updateUndoButton();
@@ -294,9 +299,11 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
         CARD_MONS[MonType.DRAINER].index
       ];
       updateContent(
-        "drainer",
-        royalAguapwoshiDrainerIndex,
-        ownDrainerIndex,
+        {
+          contentType: MonType.DRAINER,
+          value: royalAguapwoshiDrainerIndex,
+          undo: { kind: "record", value: ownDrainerIndex },
+        },
         "inventory",
       );
       void notifyShinyCardMonsChange();
@@ -304,9 +311,14 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
     }
     case 1:
       updateContent(
-        "bg",
-        INVENTORY_ONLY_BG_ID,
-        storage.getCardBackgroundId(defaultCardBgIndex),
+        {
+          contentType: "bg",
+          value: INVENTORY_ONLY_BG_ID,
+          undo: {
+            kind: "record",
+            value: storage.getCardBackgroundId(defaultCardBgIndex),
+          },
+        },
         "inventory",
       );
       break;
@@ -314,9 +326,11 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
       const type = INVENTORY_ONLY_STICKER_TYPE;
       const currentSticker = getStoredOwnStickers()[type];
       updateContent(
-        type,
-        INVENTORY_ONLY_STICKER_NAME,
-        currentSticker,
+        {
+          contentType: type,
+          value: INVENTORY_ONLY_STICKER_NAME,
+          undo: { kind: "record", value: currentSticker },
+        },
         "inventory",
       );
       break;
@@ -331,9 +345,11 @@ export function setOwnershipVerifiedIdCardEmoji(id: number, aura: string) {
   const oldEmojiId = storage.getPlayerEmojiId("1");
   const oldAura = storage.getPlayerEmojiAura("");
   updateContent(
-    "emojiAndAura",
-    { emojiId: id, aura: aura === "rainbow" ? "rainbow" : "" },
-    { emojiId: oldEmojiId, aura: oldAura },
+    {
+      contentType: "emojiAndAura",
+      value: { emojiId: id, aura: aura === "rainbow" ? "rainbow" : "" },
+      undo: { kind: "record", value: { emojiId: oldEmojiId, aura: oldAura } },
+    },
     "inventory",
   );
 }

@@ -1,4 +1,5 @@
 import type { AssetsSet, BoardStyleSet } from "../content/boardStyleModels";
+import type { EmojiId } from "../content/emojis";
 import { GAME_SESSION_OPERATION_ID_PATTERN } from "@mons/shared/game-sessions";
 import { isSafeRecordKey } from "@mons/shared/ids";
 import { isRetiredSessionStorageKey } from "./sessionStorageCompatibility.js";
@@ -252,11 +253,11 @@ export const storage = {
     setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
   },
 
-  getPlayerEmojiId: (defaultValue: string): string => {
+  getPlayerEmojiId: (defaultValue: string): EmojiId => {
     return getItem(STORAGE_KEYS.PLAYER_EMOJI_ID, defaultValue);
   },
 
-  setPlayerEmojiId: (value: string): void => {
+  setPlayerEmojiId: (value: EmojiId): void => {
     setItem(STORAGE_KEYS.PLAYER_EMOJI_ID, value);
   },
 

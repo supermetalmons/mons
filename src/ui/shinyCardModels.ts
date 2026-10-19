@@ -1,5 +1,71 @@
+import type { EmojiId } from "../content/emojis";
+import type { MonType } from "../utils/namedMons";
+import type { StickerType } from "../utils/stickers";
+
 export type ShinyCardUpdateSource = "default" | "inventory";
-export type ShinyCardUndoEntry = readonly [contentType: string, oldId: unknown];
+
+export type UndoIntent<T> =
+  { readonly kind: "record"; readonly value: T } | { readonly kind: "skip" };
+
+type ShinyCardValues = {
+  profileCounter: string;
+  emojiAndAura: { emojiId: EmojiId; aura: string };
+  bg: number;
+  subtitle: number;
+} & Record<MonType, number> &
+  Record<StickerType, string | undefined>;
+
+export type ShinyCardChange = {
+  [Type in keyof ShinyCardValues]: {
+    readonly contentType: Type;
+    readonly value: ShinyCardValues[Type];
+  };
+}[keyof ShinyCardValues];
+
+export type ShinyCardEdit = {
+  [Type in keyof ShinyCardValues]: {
+    readonly contentType: Type;
+    readonly value: ShinyCardValues[Type];
+    readonly undo: UndoIntent<ShinyCardValues[Type]>;
+  };
+}[keyof ShinyCardValues];
+
+export type ShinyCardUndoEntry = ShinyCardChange;
+
+export const getShinyCardUndoEntry = (
+  edit: ShinyCardEdit,
+): ShinyCardUndoEntry | null => {
+  if (edit.undo.kind === "skip") return null;
+
+  switch (edit.contentType) {
+    case "profileCounter":
+      return { contentType: edit.contentType, value: edit.undo.value };
+    case "emojiAndAura":
+      return { contentType: edit.contentType, value: edit.undo.value };
+    case "bg":
+    case "subtitle":
+    case "demon":
+    case "angel":
+    case "drainer":
+    case "spirit":
+    case "mystic":
+      return { contentType: edit.contentType, value: edit.undo.value };
+    case "big-mon-top-right":
+    case "bottom-left":
+    case "bottom-right":
+    case "mana":
+    case "middle-left":
+    case "middle-right":
+    case "mini-logo":
+    case "type-logo":
+      return { contentType: edit.contentType, value: edit.undo.value };
+    default: {
+      const unhandled: never = edit;
+      void unhandled;
+      return null;
+    }
+  }
+};
 
 export class ProfileScopedUndoHistory {
   private profileId: string | null = null;
@@ -75,8 +141,7 @@ export const getNextRegularId = (
 };
 
 export const getShinyCardUndoUpdateSource = (
-  contentType: string,
-  oldId: unknown,
+  entry: ShinyCardUndoEntry,
   options: {
     inventoryEmojiStartId: number;
     inventoryBackgroundId: number;
@@ -85,9 +150,8 @@ export const getShinyCardUndoUpdateSource = (
     inventoryStickerName: string;
   },
 ): ShinyCardUpdateSource => {
-  if (contentType === "emojiAndAura") {
-    const emojiAndAura = oldId as
-      { emojiId?: string | number; aura?: string } | null | undefined;
+  if (entry.contentType === "emojiAndAura") {
+    const emojiAndAura = entry.value;
     return isInventoryEmojiId(
       emojiAndAura?.emojiId,
       options.inventoryEmojiStartId,
@@ -95,18 +159,20 @@ export const getShinyCardUndoUpdateSource = (
       ? "inventory"
       : "default";
   }
-  if (contentType === "bg") {
-    return Number(oldId) === options.inventoryBackgroundId
+  if (entry.contentType === "bg") {
+    return Number(entry.value) === options.inventoryBackgroundId
       ? "inventory"
       : "default";
   }
-  if (contentType === "drainer") {
-    return Number(oldId) === options.inventoryDrainerId
+  if (entry.contentType === "drainer") {
+    return Number(entry.value) === options.inventoryDrainerId
       ? "inventory"
       : "default";
   }
-  if (contentType === options.inventoryStickerType) {
-    return oldId === options.inventoryStickerName ? "inventory" : "default";
+  if (entry.contentType === options.inventoryStickerType) {
+    return entry.value === options.inventoryStickerName
+      ? "inventory"
+      : "default";
   }
   return "default";
 };

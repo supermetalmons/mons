@@ -43,7 +43,8 @@ export const useLeaderboard = ({
     const storedUsername = storage.getUsername("");
     const storedEth = storage.getEthAddress("");
     const storedSol = storage.getSolAddress("");
-    const storedEmoji = parseInt(storage.getPlayerEmojiId("1"), 10) || 1;
+    const storedEmoji =
+      parseInt(String(storage.getPlayerEmojiId("1")), 10) || 1;
     const storedAura = storage.getPlayerEmojiAura("") || undefined;
     const storedMaterials = storage.getMiningMaterials(
       createEmptyMaterials(),

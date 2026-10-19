@@ -2,21 +2,35 @@ import "../../src/ui/ShinyCard";
 import "../../src/index.css";
 import * as cardUi from "../../src/ui/shinyCardUiPort";
 import { bindShinyCardRuntime } from "../../src/ui/shinyCardRuntimePort";
-import { environment, spriteForKey } from "./shinyCardEnvironment";
+import {
+  STICKER_ADD_PROMPTS_FRAMES,
+  STICKER_PATHS,
+} from "../../src/utils/stickers";
+import { getAsciimojiAtIndex } from "../../src/utils/asciimoji";
+import {
+  environment,
+  initialValues,
+  spriteForKey,
+  storage,
+} from "./shinyCardEnvironment";
+
+const recordWrite = (write: unknown[]) => {
+  environment.writes.push(write);
+  environment.onWrite?.(write);
+};
 
 bindShinyCardRuntime({
-  updateProfileCounter: (value) => environment.writes.push(["counter", value]),
-  updateCardBackgroundId: (value) =>
-    environment.writes.push(["background", value]),
-  updateCardSubtitleId: (value) => environment.writes.push(["subtitle", value]),
-  updateProfileMons: (value) => environment.writes.push(["mons", value]),
-  updateCardStickers: (value) => environment.writes.push(["stickers", value]),
+  updateProfileCounter: (value) => recordWrite(["counter", value]),
+  updateCardBackgroundId: (value) => recordWrite(["background", value]),
+  updateCardSubtitleId: (value) => recordWrite(["subtitle", value]),
+  updateProfileMons: (value) => recordWrite(["mons", value]),
+  updateCardStickers: (value) => recordWrite(["stickers", value]),
   didClickAndChangePlayerEmoji: (value, url, aura) => {
-    environment.values.PlayerEmojiId = String(value);
-    environment.writes.push(["emoji", value, url, aura]);
+    storage.setPlayerEmojiId(value);
+    recordWrite(["emoji", value, url, aura]);
   },
   didUpdateIdCardMons: async () => {
-    environment.writes.push(["monsChanged"]);
+    recordWrite(["monsChanged"]);
   },
 });
 
@@ -24,6 +38,28 @@ const card = () =>
   document.querySelector<HTMLElement>('[data-shiny-card="true"]');
 const background = () =>
   card()?.querySelector<HTMLImageElement>('img[src*="/backgrounds/"]');
+const textBubble = (top: string) =>
+  Array.from(card()?.querySelectorAll<HTMLElement>("div") ?? []).find(
+    (element) => element.style.top === top && element.querySelector("span"),
+  );
+const stickerTarget = (type: string) => {
+  const selected = JSON.parse(String(environment.values.CardStickers || "{}"));
+  const sticker = STICKER_PATHS[type].find(
+    ({ name }) => name === selected[type],
+  );
+  const prompt = STICKER_ADD_PROMPTS_FRAMES[type];
+  const left = sticker ? sticker.x * 100 : (prompt.x - prompt.w / 2) * 100;
+  const top = sticker
+    ? sticker.y * 100
+    : (prompt.y - (prompt.w * (2430 / 1886)) / 2) * 100;
+  return Array.from(card()?.querySelectorAll<HTMLElement>("div") ?? []).find(
+    ({ style }) =>
+      style.pointerEvents === "auto" &&
+      Math.abs(Number.parseFloat(style.left) - left) < 0.0001 &&
+      Math.abs(Number.parseFloat(style.top) - top) < 0.0001,
+  );
+};
+let resetCount = 0;
 const click = (element: Element | null | undefined) => {
   if (!element) throw new Error("Missing fixture click target");
   element.dispatchEvent(
@@ -37,6 +73,24 @@ let retiredObserver: MutationObserver | null = null;
 (window as any).harness = {
   environment,
   spriteForKey,
+  storeEmoji: storage.setPlayerEmojiId,
+  subtitleForId: getAsciimojiAtIndex,
+  stickerNames: Object.fromEntries(
+    Object.entries(STICKER_PATHS).map(([type, stickers]) => [
+      type,
+      stickers.map(({ name }) => name),
+    ]),
+  ),
+  reset(values: Record<string, unknown> = {}) {
+    cardUi.hideShinyCard();
+    environment.values = {
+      ...initialValues,
+      ProfileId: `fixture-${++resetCount}`,
+      ...values,
+    };
+    environment.writes = [];
+    environment.onWrite = null;
+  },
   show: cardUi.showShinyCard,
   own: () => cardUi.showShinyCard(null, "Owner A", false),
   other: (id = "other-b") =>
@@ -66,6 +120,9 @@ let retiredObserver: MutationObserver | null = null;
   clickBackground: () => click(background()),
   clickEmoji: () =>
     click(card()?.querySelector('img[src*="/emojipack/regular/"]')),
+  clickCounter: () => click(textBubble("58.7%")),
+  clickSubtitle: () => click(textBubble("47.5%")),
+  clickSticker: (type: string) => click(stickerTarget(type)),
   clickMon(index = 0) {
     click(card()?.querySelectorAll('img[src^="data:image/"]')[index]);
   },
@@ -76,6 +133,24 @@ let retiredObserver: MutationObserver | null = null;
       count: document.querySelectorAll('[data-shiny-card="true"]').length,
       visible: cardUi.showsShinyCardSomewhere,
       text: card()?.textContent ?? null,
+      counter: textBubble("58.7%")?.textContent ?? null,
+      subtitle: textBubble("47.5%")?.textContent ?? null,
+      stickers: Object.fromEntries(
+        Array.from(
+          card()?.querySelectorAll<HTMLImageElement>(
+            'img[src*="/stickers_overlays/"]',
+          ) ?? [],
+        ).map((image) => {
+          const [type, name] = image.src
+            .split("/stickers_overlays/")[1]
+            .split("/");
+          return [type, name.replace(/\.webp$/, "")];
+        }),
+      ),
+      aura:
+        card()?.querySelector<HTMLElement>(".mons-rainbow-rotator")
+          ?.parentElement?.parentElement?.parentElement?.style.visibility ??
+        null,
       background: background()?.getAttribute("src") ?? null,
       emoji:
         card()

@@ -1,3 +1,5 @@
+import type { EmojiId } from "../content/emojis";
+
 export type ShinyCardRuntime = {
   updateProfileCounter(counter: string): void;
   updateCardBackgroundId(id: number): void;
@@ -5,7 +7,7 @@ export type ShinyCardRuntime = {
   updateProfileMons(mons: string): void;
   updateCardStickers(stickers: string): void;
   didClickAndChangePlayerEmoji(
-    newId: string,
+    newId: EmojiId,
     newEmojiUrl: string,
     aura?: string,
   ): void;
@@ -41,7 +43,7 @@ export const updateShinyCardStickers = (stickers: string): void =>
   getRuntime().updateCardStickers(stickers);
 
 export const notifyShinyCardPlayerEmojiChange = (
-  newId: string,
+  newId: EmojiId,
   newEmojiUrl: string,
   aura?: string,
 ): void => getRuntime().didClickAndChangePlayerEmoji(newId, newEmojiUrl, aura);

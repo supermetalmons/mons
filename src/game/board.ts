@@ -1,5 +1,6 @@
 import * as MonsRules from "mons-rules";
 import { cropAddress } from "@mons/shared/profiles";
+import type { EmojiId } from "../content/emojis";
 import * as SVG from "../utils/svg";
 import { gameInputRuntime } from "./gameInputPort";
 import {
@@ -312,7 +313,7 @@ let opponentAvatarPlaceholder: SVGElement | undefined;
 let playerAvatarPlaceholder: SVGElement | undefined;
 let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
-let localHumanSeriesOpponentEmojiId: string | null = null;
+let localHumanSeriesOpponentEmojiId: EmojiId | null = null;
 let talkingDude: SVGElement | null = null;
 let talkingDudeTextDiv: HTMLElement | null;
 let instructionsContainerElement: SVGElement | undefined;
@@ -1523,7 +1524,7 @@ export function resetForNewGame() {
 }
 
 export function updateEmojiAndAuraIfNeeded(
-  newEmojiId: string,
+  newEmojiId: EmojiId,
   aura: string | undefined,
   isOpponentSide: boolean,
 ) {
@@ -1577,7 +1578,9 @@ export function showOpponentAsBotPlayer() {
 
 export function getPlayersEmojiId(): number {
   return parseInt(
-    playerSideMetadata.emojiId !== "" ? playerSideMetadata.emojiId : "1",
+    String(
+      playerSideMetadata.emojiId !== "" ? playerSideMetadata.emojiId : "1",
+    ),
   );
 }
 
@@ -2216,7 +2219,7 @@ function redirectToAddressOnExplorer(opponent: boolean) {
   if (displayName !== undefined) {
     const profile = getStashedPlayerProfile(metadata.uid);
     if (profile) {
-      profile.emoji = parseInt(metadata.emojiId, 10);
+      profile.emoji = parseInt(String(metadata.emojiId), 10);
     }
     showShinyCard(profile ?? null, displayName, true);
   }
@@ -3845,7 +3848,7 @@ function pickAndDisplayDifferentEmoji(metadataIsOpponent: boolean) {
 }
 
 export function didClickAndChangePlayerEmoji(
-  newId: string,
+  newId: EmojiId,
   _newEmojiUrl: string,
   aura?: string,
 ) {
@@ -3853,7 +3856,7 @@ export function didClickAndChangePlayerEmoji(
   if (aura !== undefined) {
     storage.setPlayerEmojiAura(aura);
   }
-  gameInputRuntime.sendPlayerEmojiUpdate(parseInt(newId), aura);
+  gameInputRuntime.sendPlayerEmojiUpdate(parseInt(String(newId)), aura);
 
   if (!gameInputRuntime.isWatchOnly) {
     updateEmojiAndAuraIfNeeded(newId, aura, false);
