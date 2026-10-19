@@ -313,3 +313,38 @@ test("C9 surfaces depend on neutral ports and contain no production stub path", 
   assert.doesNotMatch(islandView, /from ["']\.\.\/ProfileSignIn["']/);
   assert.doesNotMatch(nftService, /USE_STUB_RESPONSE|generateStubResponse/);
 });
+
+test("top-right controls own their surfaces independently of the main menu", () => {
+  const mainMenu = readSource("../src/ui/MainMenu.tsx");
+  const topRightControls = readSource("../src/ui/TopRightControls.tsx");
+  const popoverHook = readSource("../src/ui/controls/useTopRightPopover.ts");
+  const topRightPort = readSource("../src/ui/controls/topRightControlsPort.ts");
+
+  assert.match(
+    topRightControls,
+    /from ["']\.\/controls\/useTopRightPopover["']/,
+  );
+  assert.match(topRightControls, /useTopRightPopover\(/);
+  assert.doesNotMatch(
+    mainMenu,
+    /activeTopRightPopover|TOP_RIGHT_CONTROL_IDS|TOP_RIGHT_POPOVER_IDS|FOCUS_CLAIMING_TARGET_SELECTOR/,
+  );
+  assert.doesNotMatch(
+    mainMenu,
+    /const (?:TopRightPopover|MorePopover|MoreHelpContent|MoreActions|MoreActionButton|MusicPopover|MusicControlsContainer|MusicControlsSeparator|MusicControlButton)\b/,
+  );
+  assert.doesNotMatch(
+    mainMenu,
+    /from ["']\.\/(?:TopRightControls|InventoryModal|InfoPopover|TopRightPopoverBase)["']/,
+  );
+  for (const source of [topRightControls, popoverHook]) {
+    assert.doesNotMatch(source, /from ["'][^"']*MainMenu["']/);
+    assert.doesNotMatch(source, /from ["'][^"']*connection\/connection["']/);
+    assert.doesNotMatch(
+      source,
+      /from ["'][^"']*game\/(?:board|gameController)["']/,
+    );
+  }
+  assert.doesNotMatch(topRightPort, /\bimport\s*(?:[\s{*"']|\()/);
+  assert.doesNotMatch(topRightPort, /\bexport\s+[^;]*\bfrom\s*["']/);
+});

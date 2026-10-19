@@ -514,6 +514,8 @@ test("control domains use neutral ports and contain no disabled badge path", () 
   const bottomControlsStyles = readSource("../src/ui/BottomControlsStyles.tsx");
   const boardComponent = readSource("../src/ui/BoardComponent.tsx");
   const mainMenu = readSource("../src/ui/MainMenu.tsx");
+  const app = readSource("../src/index.tsx");
+  const topRightControls = readSource("../src/ui/TopRightControls.tsx");
   const problems = readSource("../src/content/problems.ts");
 
   assert.doesNotMatch(
@@ -527,6 +529,21 @@ test("control domains use neutral ports and contain no disabled badge path", () 
   );
   assert.doesNotMatch(boardComponent, /\.\/BottomControls["']/);
   assert.doesNotMatch(mainMenu, /\.\/BottomControls["']/);
+  assert.match(mainMenu, /from ["']\.\/controls\/topRightControlsPort["']/);
+  assert.match(
+    topRightControls,
+    /from ["']\.\/controls\/topRightControlsPort["']/,
+  );
+  assert.match(topRightControls, /registerTopRightControlsApi\(/);
+  assert.match(
+    app,
+    /import\s+\{\s*TopRightControls\s*\}\s+from ["']\.\/ui\/TopRightControls["']/,
+  );
+  assert.match(
+    app,
+    /import\s+\{\s*closeAllKindsOfPopups\s*\}\s+from ["']\.\/ui\/controls\/menuPort["']/,
+  );
+  assert.match(app, /import MainMenu from ["']\.\/ui\/MainMenu["']/);
   assert.doesNotMatch(problems, /game\/gameController["']/);
   assert.match(
     bottomControls,

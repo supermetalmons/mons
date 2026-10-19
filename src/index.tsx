@@ -11,10 +11,9 @@ import React, {
 
 import "./ui/ShinyCard";
 import BoardComponent from "./ui/BoardComponent";
-import MainMenu, {
-  closeAllKindsOfPopups,
-  TopRightControls,
-} from "./ui/MainMenu";
+import MainMenu from "./ui/MainMenu";
+import { TopRightControls } from "./ui/TopRightControls";
+import { closeAllKindsOfPopups } from "./ui/controls/menuPort";
 import { useAuthStatus } from "./connection/authentication";
 import { connection } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
