@@ -7,8 +7,6 @@ import React, {
   useSyncExternalStore,
 } from "react";
 import { FIXED_STICKER_IDS } from "@mons/shared/reactions";
-import { useAvailableMaterials } from "../hooks/useAvailableMaterials";
-import { useMaterialImages } from "../hooks/useMaterialImages";
 import {
   FaUndo,
   FaFlag,
@@ -47,10 +45,6 @@ import { connection } from "../connection/connection";
 import type { AuthState } from "../connection/authModels";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
-import {
-  getPlayerReactionUid,
-  getOpponentReactionUid,
-} from "./controls/boardReactionPort";
 import NavigationPicker from "./NavigationPicker";
 import { useNavigationGames } from "./controls/useNavigationGames";
 import {
@@ -58,6 +52,8 @@ import {
   useEventNavigationControls,
 } from "./controls/useEventNavigationControls";
 import { useReactionActions } from "./controls/useReactionActions";
+import { useWagerProposal } from "./controls/useWagerProposal";
+import { WagerPicker } from "./controls/WagerPicker";
 import { useAutomatchControls } from "./controls/useAutomatchControls";
 import { useRematchSeries } from "./controls/useRematchSeries";
 import { useMatchControlTimers } from "./controls/useMatchControlTimers";
@@ -80,29 +76,15 @@ import {
   ReactionPill,
   StickerPill,
   WagerBetButton,
-  WagerMaterialsGrid,
-  WagerMaterialItem,
-  WagerMaterialIcon,
-  WagerMaterialAmount,
-  WagerButtonBadge,
-  WagerButtonIcon,
-  WagerButtonAmount,
   ShimmerText,
 } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./controls/menuPort";
 import BoardStylePickerComponent from "./BoardStylePicker";
 import MoveHistoryPopup from "./MoveHistoryPopup";
-import { MATERIALS, MaterialName } from "../services/rocksMiningService";
 import {
-  MatchWagerState,
   NavigationGameStatus,
   NavigationItem,
 } from "../connection/connectionModels";
-import {
-  hasConfirmedWagerSnapshot,
-  subscribeToWagerState,
-} from "../game/wagerState";
-import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import {
   getCurrentTarget,
   transitionToHome,
@@ -318,7 +300,6 @@ interface BottomControlsProps {
 
 const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
   const { authStatus, profileId } = authState;
-  const isAuthenticated = authStatus === "authenticated";
   const controlsSnapshot = useSyncExternalStore(
     subscribeGameControls,
     getGameControlsSnapshot,
@@ -445,24 +426,20 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     undefined,
   );
 
-  const materialUrls = useMaterialImages(
-    isWagerMode && isReactionPickerVisible,
-  );
-  const hasConfirmedInviteWagers = useSyncExternalStore(
-    subscribeToWagerState,
-    hasConfirmedWagerSnapshot,
-    hasConfirmedWagerSnapshot,
-  );
   const {
-    availableMaterials: materialAmounts,
-    frozenMaterialsStatus,
-    hasConfirmedSnapshot: hasFrozenSnapshot,
-  } = useAvailableMaterials();
+    canSubmitWager,
+    handleWagerModeToggle,
+    pickerProps: wagerPickerProps,
+  } = useWagerProposal({
+    authState,
+    canWagerInCurrentGame: controlsView.canWagerInCurrentGame,
+    reactionPicker: popups.reaction,
+    dispatchControlsUi,
+  });
   const navigationSelectionEpochRef = useRef(0);
   const beginInviteFlowRef = useRef<
     (options?: { skipSoundInit?: boolean }) => void
   >(() => {});
-  const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const bottomControlsRef = useRef<HTMLDivElement>(null);
@@ -521,6 +498,7 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
       if (
         (pickerRef.current &&
           !pickerRef.current.contains(event.target as Node) &&
+          !event.composedPath().includes(pickerRef.current) &&
           !voiceReactionButtonRef.current?.contains(event.target as Node)) ||
         (resignConfirmRef.current &&
           !resignConfirmRef.current.contains(event.target as Node) &&
@@ -620,13 +598,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     triggerRef: claimVictoryButtonRef,
     containerRef: controlsContainerRef,
   });
-
-  useEffect(() => {
-    const unsubscribe = subscribeToWagerState((state) => {
-      setWagerState(state);
-    });
-    return unsubscribe;
-  }, []);
 
   useEffect(() => {
     navigationSelectionEpochRef.current += 1;
@@ -852,28 +823,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     setMatchScopedTimeout,
   });
 
-  const playerUid = getPlayerReactionUid();
-  const opponentUid = getOpponentReactionUid();
-  const opponentProfile = opponentUid
-    ? getStashedPlayerProfile(opponentUid)
-    : undefined;
-  const playerHasProfile = isAuthenticated && profileId !== "";
-  const opponentHasProfile = !!(opponentProfile && opponentProfile.id);
-  const hasAgreedWager = !!wagerState?.agreed;
-  const hasResolvedWager = !!wagerState?.resolved;
-  const playerHasProposed =
-    !!(
-      playerUid &&
-      wagerState?.proposedBy &&
-      wagerState.proposedBy[playerUid]
-    ) ||
-    !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
-  const hasPlayers = !!playerUid && !!opponentUid;
-  const isEligibleForWager =
-    controlsView.canWagerInCurrentGame &&
-    playerHasProfile &&
-    opponentHasProfile &&
-    hasPlayers;
   const { isWatchOnlyMatchFinished } = controlsView;
   const isEndMatchPillVisible =
     (isEndMatchButtonVisible && !isEndMatchTemporarilyDisabled) ||
@@ -884,44 +833,6 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
     isCancelAutomatchVisible && isCancelAutomatchDisabled;
   const isAutomatchPillVisible =
     isAutomatchButtonVisible && !isCancelAutomatchInFlight;
-  const canSubmitWager =
-    hasConfirmedInviteWagers &&
-    isEligibleForWager &&
-    !hasAgreedWager &&
-    !hasResolvedWager &&
-    !playerHasProposed;
-  const wagerMaterial = wagerSelection.name;
-  const wagerCount = wagerSelection.count;
-  const wagerReady =
-    canSubmitWager &&
-    frozenMaterialsStatus === "ready" &&
-    !!wagerMaterial &&
-    wagerCount > 0;
-
-  const handleWagerModeToggle = useCallback(() => {
-    dispatchControlsUi({ type: "enterWager" });
-  }, [dispatchControlsUi]);
-
-  const handleMaterialSelect = useCallback(
-    (name: MaterialName) => {
-      if (frozenMaterialsStatus !== "ready") return;
-      const total = materialAmounts[name] ?? 0;
-      if (total <= 0) return;
-      dispatchControlsUi({ type: "selectWagerMaterial", name, total });
-    },
-    [dispatchControlsUi, materialAmounts, frozenMaterialsStatus],
-  );
-
-  const handleWagerSubmit = useCallback(() => {
-    if (!wagerMaterial || !wagerReady) {
-      return;
-    }
-    dispatchControlsUi({ type: "dismissPopups", reaction: true });
-    const material = wagerMaterial;
-    const count = wagerCount;
-    connection.sendWagerProposal(material, count).catch(() => {});
-  }, [dispatchControlsUi, wagerReady, wagerCount, wagerMaterial]);
-
   const handleUndo = (
     event:
       React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
@@ -1381,75 +1292,7 @@ const BottomControls: React.FC<BottomControlsProps> = ({ authState }) => {
             $animatedMaxHeight={pickerMaxHeight}
           >
             {isWagerMode ? (
-              <>
-                <WagerBetButton
-                  $ready={wagerReady}
-                  onClick={
-                    wagerReady && !isMobile ? handleWagerSubmit : undefined
-                  }
-                  onTouchStart={
-                    wagerReady && isMobile ? handleWagerSubmit : undefined
-                  }
-                  disabled={!wagerReady}
-                  style={{
-                    cursor: wagerReady ? "pointer" : "default",
-                    opacity: wagerReady ? 1 : 0.6,
-                  }}
-                >
-                  {frozenMaterialsStatus !== "ready" ? (
-                    frozenMaterialsStatus === "unavailable" ? (
-                      "Balance unavailable"
-                    ) : (
-                      "Checking balance"
-                    )
-                  ) : wagerMaterial && wagerCount > 0 ? (
-                    <>
-                      <span>Propose</span>
-                      <WagerButtonBadge>
-                        {materialUrls[wagerMaterial] && (
-                          <WagerButtonIcon
-                            src={materialUrls[wagerMaterial] || ""}
-                            alt=""
-                            draggable={false}
-                          />
-                        )}
-                        <WagerButtonAmount>{wagerCount}</WagerButtonAmount>
-                      </WagerButtonBadge>
-                    </>
-                  ) : (
-                    "Select a Material"
-                  )}
-                </WagerBetButton>
-                <WagerMaterialsGrid>
-                  {MATERIALS.map((name) => (
-                    <WagerMaterialItem
-                      key={name}
-                      onClick={
-                        !isMobile ? () => handleMaterialSelect(name) : undefined
-                      }
-                      onTouchStart={
-                        isMobile ? () => handleMaterialSelect(name) : undefined
-                      }
-                      disabled={
-                        frozenMaterialsStatus !== "ready" ||
-                        materialAmounts[name] <= 0
-                      }
-                      style={{ opacity: materialAmounts[name] > 0 ? 1 : 0.4 }}
-                    >
-                      {materialUrls[name] && (
-                        <WagerMaterialIcon
-                          src={materialUrls[name] || ""}
-                          alt=""
-                          draggable={false}
-                        />
-                      )}
-                      <WagerMaterialAmount>
-                        {hasFrozenSnapshot ? materialAmounts[name] : "—"}
-                      </WagerMaterialAmount>
-                    </WagerMaterialItem>
-                  ))}
-                </WagerMaterialsGrid>
-              </>
+              <WagerPicker {...wagerPickerProps} />
             ) : (
               <>
                 {canSubmitWager && (

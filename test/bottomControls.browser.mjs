@@ -47,6 +47,13 @@ export const environment = {
   navigationListeners: new Set(),
   transientHandlers: new Set(),
   wagerEligible: false,
+  wagerPlayers: { playerUid: 'player', opponentUid: 'opponent', opponentProfileId: 'opponent-profile' },
+  wagerState: null,
+  wagerConfirmed: true,
+  wagerListeners: new Set(),
+  materialSnapshot: { availableMaterials: { dust: 3, slime: 2 }, frozenMaterialsStatus: 'ready', hasConfirmedSnapshot: true },
+  materialListeners: new Set(),
+  wagerSendGate: null,
   homeTransitionGate: null,
   rematchItems: [],
   rematchPreloads: [],
@@ -118,7 +125,10 @@ export const connection = {
   },
   rematchSeriesEndIsIndicated: () => false,
   sendVoiceReaction: reaction => environment.calls.push(['reaction', reaction]),
-  sendWagerProposal: async (material, count) => { environment.calls.push(['wager', material, count]); },
+  sendWagerProposal: async (material, count) => {
+    environment.calls.push(['wager', material, count]);
+    if (environment.wagerSendGate) await environment.wagerSendGate.promise;
+  },
 };
 `;
 const appNavigationSource = `
@@ -178,6 +188,28 @@ export const registerBottomControlsTransientUiHandler = (close, clear) => {
   return () => environment.transientHandlers.delete(handlers);
 };
 `;
+const wagerSource = `
+import { environment } from 'bottom-environment';
+export const hasConfirmedWagerSnapshot = () => environment.wagerConfirmed;
+export const subscribeToWagerState = listener => {
+  environment.wagerListeners.add(listener);
+  listener(environment.wagerState);
+  return () => environment.wagerListeners.delete(listener);
+};
+`;
+const materialSource = `
+import { useEffect, useState } from 'react';
+import { environment } from 'bottom-environment';
+export const useAvailableMaterials = () => {
+  const [snapshot, setSnapshot] = useState(() => environment.materialSnapshot);
+  useEffect(() => {
+    environment.materialListeners.add(setSnapshot);
+    setSnapshot(environment.materialSnapshot);
+    return () => environment.materialListeners.delete(setSnapshot);
+  }, []);
+  return snapshot;
+};
+`;
 const navigationSource = `
 import React from 'react';
 export default function NavigationPicker({ topGames, selectedNavigationItemId, onSelectGame, onSelectProblem }) {
@@ -217,10 +249,10 @@ const settle = async callback => {
 };
 window.harness = {
   environment, port, run, controlsStore, applyRouteControlsPreset, applyDisposedControlsPreset, applyGameplayControlsPreset,
-  render(profileId = 'a') {
+  render(profileId = 'a', authStatus = 'authenticated') {
     run(() => root.render(React.createElement(React.StrictMode, null,
       React.createElement(BottomControls, {
-        authState: { profileId, authStatus: 'authenticated', solAddress: '', ethAddress: '' },
+        authState: { profileId, authStatus, solAddress: '', ethAddress: '' },
       }))));
   },
   async respondAutomatch(index, response, enterWaiting = true) {
@@ -292,6 +324,37 @@ window.harness = {
   resetMatch() {
     run(() => environment.transientHandlers.forEach(({ close, clear }) => { close(); clear(); }));
   },
+  publishWager(state, confirmed = environment.wagerConfirmed) {
+    run(() => {
+      environment.wagerState = state;
+      environment.wagerConfirmed = confirmed;
+      environment.wagerListeners.forEach(listener => listener(state));
+    });
+  },
+  holdWagerSend() { environment.wagerSendGate = Promise.withResolvers(); },
+  async respondWagerSend(reject = false) {
+    await settle(async () => {
+      const pending = environment.wagerSendGate;
+      environment.wagerSendGate = null;
+      if (reject) pending.reject(new Error('temporary wager failure'));
+      else pending.resolve();
+    });
+  },
+  publishMaterials(updates) {
+    run(() => {
+      environment.materialSnapshot = { ...environment.materialSnapshot, ...updates };
+      environment.materialListeners.forEach(listener => listener(environment.materialSnapshot));
+    });
+  },
+  setWagerEligibility({ context = {}, playerUid = 'player', opponentUid = 'opponent', opponentProfileId = 'opponent-profile', profileId = 'a', authStatus = 'authenticated' } = {}) {
+    run(() => {
+      environment.wagerEligible = true;
+      environment.wagerPlayers = { playerUid, opponentUid, opponentProfileId };
+      controlsStore.updateGameControlsContext({ isOnlineGame: true, isWatchOnly: false, isGameWithBot: false, isGameOver: false, boardViewMode: 'activeLive', ...context });
+    });
+    window.harness.render(profileId, authStatus);
+  },
+  wagerSubscriptions: () => ({ wager: environment.wagerListeners.size, materials: environment.materialListeners.size }),
   updateConnection({ inviteId = null, eventId = null, eventOwned = false, online = false } = {}) {
     environment.activeContext = inviteId ? { inviteId, matchId: inviteId, canWrite: false, contextId: 1 } : null;
     environment.inviteEventId = eventId;
@@ -402,10 +465,7 @@ async function fixture(
     ["./eventModalController", "bottom-event-modal"],
   ]);
   const stubs = new Map([
-    [
-      "../hooks/useAvailableMaterials",
-      "export const useAvailableMaterials = () => ({ availableMaterials: { dust: 3, slime: 2 }, frozenMaterialsStatus: 'ready', hasConfirmedSnapshot: true });",
-    ],
+    ["../hooks/useAvailableMaterials", materialSource],
     [
       "../hooks/useMaterialImages",
       "export const useMaterialImages = () => ({});",
@@ -424,7 +484,7 @@ async function fixture(
     ],
     [
       "./controls/boardReactionPort",
-      "import { environment } from 'bottom-environment'; export const showVoiceReactionText = () => {}; export const showVideoReaction = () => {}; export const isMetadataSideDisplayedAtOpponentSlot = () => false; export const getPlayerReactionUid = () => environment.wagerEligible ? 'player' : null; export const getOpponentReactionUid = () => environment.wagerEligible ? 'opponent' : null;",
+      "import { environment } from 'bottom-environment'; export const showVoiceReactionText = () => {}; export const showVideoReaction = () => {}; export const isMetadataSideDisplayedAtOpponentSlot = () => false; export const getPlayerReactionUid = () => environment.wagerEligible ? environment.wagerPlayers.playerUid : null; export const getOpponentReactionUid = () => environment.wagerEligible ? environment.wagerPlayers.opponentUid : null;",
     ],
     [
       "./controls/useReactionPicker",
@@ -444,13 +504,10 @@ async function fixture(
       "../services/rocksMiningService",
       "export const MATERIALS = ['dust', 'slime'];",
     ],
-    [
-      "../game/wagerState",
-      "export const subscribeToWagerState = () => () => {}; export const hasConfirmedWagerSnapshot = () => true;",
-    ],
+    ["../game/wagerState", wagerSource],
     [
       "../utils/playerMetadata",
-      "import { environment } from 'bottom-environment'; export const getStashedPlayerProfile = () => environment.wagerEligible ? { id: 'opponent-profile' } : undefined;",
+      "import { environment } from 'bottom-environment'; export const getStashedPlayerProfile = () => environment.wagerEligible ? { id: environment.wagerPlayers.opponentProfileId } : undefined;",
     ],
     [
       "../navigation/routeState",
@@ -570,21 +627,23 @@ export const teardownProfileScope = () => {};
               return "\0bottom-lifecycle";
             if (id === "../game/mainGameLoadState") return "\0bottom-main-load";
           }
-          const isControlsHook =
+          const isControlsModule =
             importer?.endsWith("/useAutomatchControls.ts") ||
             importer?.endsWith("/useEventNavigationControls.ts") ||
             importer?.endsWith("/useRematchSeries.ts") ||
-            importer?.endsWith("/useReactionActions.ts");
+            importer?.endsWith("/useReactionActions.ts") ||
+            importer?.endsWith("/useWagerProposal.ts") ||
+            importer?.endsWith("/WagerPicker.tsx");
           const replacementId =
-            isControlsHook && id.startsWith("../../")
+            isControlsModule && id.startsWith("../../")
               ? id.slice(3)
-              : isControlsHook && id === "./boardReactionPort"
+              : isControlsModule && id === "./boardReactionPort"
                 ? "./controls/boardReactionPort"
-                : isControlsHook && id === "../eventModalController"
+                : isControlsModule && id === "../eventModalController"
                   ? "./eventModalController"
                   : id;
           if (
-            (importer?.endsWith("/BottomControls.tsx") || isControlsHook) &&
+            (importer?.endsWith("/BottomControls.tsx") || isControlsModule) &&
             replacements.has(replacementId)
           ) {
             return "\0" + replacements.get(replacementId);
@@ -1559,6 +1618,327 @@ test(
       assert.equal(await count(page, "yo"), 0);
       assert.equal(await count(page, "Resign"), 2);
       assert.equal(await page.getByTestId("history-popup").count(), 1);
+    });
+  },
+);
+
+test(
+  "wager eligibility follows live confirmation, match, profile, and proposal updates",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await page.evaluate(() => {
+        window.harness.setWagerEligibility();
+        window.harness.publishWager(null, false);
+      });
+      await showPopupControls(page);
+      await click(page, "Voice Reaction");
+      assert.equal(await count(page, "Propose a Wager"), 0);
+      await click(page, "Voice Reaction");
+      await page.evaluate(() => window.harness.publishWager(null, true));
+      await click(page, "Voice Reaction");
+      assert.equal(await count(page, "Propose a Wager"), 1);
+      for (const confirmed of [false, true]) {
+        await page.evaluate(
+          (confirmed) => window.harness.publishWager(null, confirmed),
+          confirmed,
+        );
+        assert.equal(await count(page, "Propose a Wager"), Number(confirmed));
+      }
+      for (const state of [
+        { proposedBy: { player: true } },
+        { proposals: { player: { material: "dust", count: 1 } } },
+        { agreed: {} },
+        { resolved: {} },
+      ]) {
+        await page.evaluate(
+          (state) => window.harness.publishWager(state),
+          state,
+        );
+        assert.equal(
+          await count(page, "Propose a Wager"),
+          0,
+          JSON.stringify(state),
+        );
+      }
+      await page.evaluate(() =>
+        window.harness.publishWager({
+          proposals: { opponent: { material: "dust", count: 1 } },
+        }),
+      );
+      assert.equal(await count(page, "Propose a Wager"), 1);
+      await page.evaluate(() => window.harness.publishWager(null));
+      for (const eligibility of [
+        { context: { isOnlineGame: false } },
+        { context: { isWatchOnly: true } },
+        { context: { isGameWithBot: true } },
+        { context: { isGameOver: true } },
+        { context: { boardViewMode: "historicalView" } },
+        { context: { boardViewMode: "waitingLive" } },
+        { authStatus: "unauthenticated" },
+        { authStatus: "loading" },
+        { profileId: "" },
+        { playerUid: null },
+        { opponentUid: null },
+        { opponentProfileId: "" },
+      ]) {
+        await page.evaluate(
+          (eligibility) => window.harness.setWagerEligibility(eligibility),
+          eligibility,
+        );
+        assert.equal(
+          await count(page, "Propose a Wager"),
+          0,
+          JSON.stringify(eligibility),
+        );
+        await page.evaluate(() => window.harness.setWagerEligibility());
+        assert.equal(await count(page, "Propose a Wager"), 1);
+      }
+      await click(page, "Propose a Wager");
+      await click(page, "3");
+      await click(page, "3");
+      await page.evaluate(() => {
+        window.harness.publishWager(null, false);
+        window.harness.publishMaterials({
+          availableMaterials: { dust: 1, slime: 2 },
+        });
+      });
+      assert.equal(await button(page, "Propose 2").isDisabled(), true);
+      assert.equal(await button(page, "1").isDisabled(), false);
+      assert.equal(await button(page, "2").isDisabled(), false);
+      await click(page, "Propose 2");
+      assert.deepEqual(
+        await page.evaluate(() => window.harness.environment.calls),
+        [],
+      );
+      await page.evaluate(() => window.harness.publishWager(null, true));
+      assert.equal(await button(page, "Propose 2").isDisabled(), false);
+      assert.equal(await count(page, "1"), 1);
+    });
+  },
+);
+
+test(
+  "wager balance status and confirmation update independently without resetting selection",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await page.evaluate(() => {
+        window.harness.setWagerEligibility();
+        window.harness.publishMaterials({
+          availableMaterials: { dust: 4, slime: 0 },
+          hasConfirmedSnapshot: false,
+        });
+      });
+      await showPopupControls(page);
+      await click(page, "Voice Reaction");
+      for (const frozenMaterialsStatus of ["loading", "unavailable"]) {
+        await page.evaluate(
+          (frozenMaterialsStatus) =>
+            window.harness.publishMaterials({ frozenMaterialsStatus }),
+          frozenMaterialsStatus,
+        );
+        assert.equal(await count(page, "Propose a Wager"), 1);
+      }
+      await click(page, "Propose a Wager");
+      assert.equal(
+        await button(page, "Balance unavailable").isDisabled(),
+        true,
+      );
+      await page.evaluate(() =>
+        window.harness.publishMaterials({ frozenMaterialsStatus: "ready" }),
+      );
+      const picker = button(page, "Select a Material").locator("..");
+      const materials = picker.locator(":scope > div > button");
+      assert.deepEqual(await materials.allTextContents(), ["—", "—"]);
+      assert.equal(await materials.nth(0).isDisabled(), false);
+      assert.equal(await materials.nth(1).isDisabled(), true);
+      await page.evaluate(() =>
+        window.harness.publishMaterials({ hasConfirmedSnapshot: true }),
+      );
+      assert.deepEqual(await materials.allTextContents(), ["4", "0"]);
+      await click(page, "4");
+      for (const status of [
+        "idle",
+        "loading",
+        "updating",
+        "unavailable",
+        "ready",
+      ]) {
+        await page.evaluate(
+          (frozenMaterialsStatus) =>
+            window.harness.publishMaterials({ frozenMaterialsStatus }),
+          status,
+        );
+        const label =
+          status === "ready"
+            ? "Propose 1"
+            : status === "unavailable"
+              ? "Balance unavailable"
+              : "Checking balance";
+        const action = button(page, label);
+        assert.equal(await action.isDisabled(), status !== "ready");
+        const currentMaterials = action
+          .locator("..")
+          .locator(":scope > div > button");
+        assert.equal(
+          await currentMaterials.nth(0).isDisabled(),
+          status !== "ready",
+        );
+        assert.equal(await currentMaterials.nth(1).isDisabled(), true);
+        assert.deepEqual(await currentMaterials.allTextContents(), ["4", "0"]);
+        if (status !== "ready") {
+          await click(page, "4");
+          await click(page, label);
+        }
+      }
+      await page.evaluate(() =>
+        window.harness.publishMaterials({ hasConfirmedSnapshot: false }),
+      );
+      assert.equal(await button(page, "Propose 1").isDisabled(), false);
+      assert.deepEqual(
+        await button(page, "Propose 1")
+          .locator("..")
+          .locator(":scope > div > button")
+          .allTextContents(),
+        ["—", "—"],
+      );
+      assert.deepEqual(
+        await page.evaluate(() => window.harness.environment.calls),
+        [],
+      );
+    });
+  },
+);
+
+for (const mobile of [false, true]) {
+  test(
+    `wager ${mobile ? "touch" : "mouse"} submission preserves direct children, selection, dismissal, and caught rejection`,
+    { timeout: 60000 },
+    async () => {
+      await fixture(
+        async (page) => {
+          await page.evaluate(() => window.harness.setWagerEligibility());
+          await showPopupControls(page);
+          const activate = (name) =>
+            mobile
+              ? button(page, name).tap({ force: true })
+              : button(page, name).click({ force: true });
+          for (const reject of [false, true]) {
+            await activate("Voice Reaction");
+            await activate("Propose a Wager");
+            assert.equal(
+              await button(page, "Select a Material").isDisabled(),
+              true,
+            );
+            assert.deepEqual(
+              await button(page, "Select a Material").evaluate((action) => {
+                const picker = action.parentElement;
+                const grid = picker.lastElementChild;
+                return {
+                  children: [...picker.children].map(
+                    (element) => element.tagName,
+                  ),
+                  gridChildren: [...grid.children].map(
+                    (element) => element.tagName,
+                  ),
+                  pickerDisplay: getComputedStyle(picker).display,
+                  gridDisplay: getComputedStyle(grid).display,
+                };
+              }),
+              {
+                children: ["BUTTON", "DIV"],
+                gridChildren: ["BUTTON", "BUTTON"],
+                pickerDisplay: "flex",
+                gridDisplay: "flex",
+              },
+            );
+            await activate("3");
+            await activate("3");
+            await activate("2");
+            await activate("2");
+            await activate("2");
+            assert.equal(await count(page, "Propose 2"), 1);
+            await page.evaluate(() => window.harness.holdWagerSend());
+            await activate("Propose 2");
+            assert.equal(await count(page, "Propose 2"), 0);
+            assert.equal(
+              await page.evaluate(
+                () => window.harness.environment.wagerSendGate !== null,
+              ),
+              true,
+            );
+            await activate("Voice Reaction");
+            assert.equal(await count(page, "yo"), 1);
+            await activate("Propose a Wager");
+            assert.equal(
+              await button(page, "Select a Material").isDisabled(),
+              true,
+            );
+            const outside = page.locator("#monsboard");
+            if (mobile) await outside.tap({ force: true });
+            else await outside.click({ force: true });
+            assert.equal(await count(page, "Select a Material"), 0);
+            await page.evaluate(
+              (reject) => window.harness.respondWagerSend(reject),
+              reject,
+            );
+            assert.equal(await count(page, "yo"), 0);
+            assert.equal(await count(page, "Select a Material"), 0);
+            assert.deepEqual(
+              await page.evaluate(() => window.harness.environment.calls),
+              Array.from({ length: reject ? 2 : 1 }, () => [
+                "wager",
+                "slime",
+                2,
+              ]),
+            );
+          }
+        },
+        { mobile, productionStyles: true },
+      );
+    },
+  );
+}
+
+test(
+  "wager subscriptions stay active while closed and clean up through StrictMode and remounts",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      const subscriptions = () =>
+        page.evaluate(() => window.harness.wagerSubscriptions());
+      assert.deepEqual(await subscriptions(), { wager: 2, materials: 1 });
+      await page.evaluate(() => {
+        window.harness.setWagerEligibility();
+        window.harness.publishWager({ agreed: {} });
+        window.harness.publishMaterials({
+          availableMaterials: { dust: 5, slime: 0 },
+        });
+      });
+      assert.deepEqual(await subscriptions(), { wager: 2, materials: 1 });
+      await showPopupControls(page);
+      await click(page, "Voice Reaction");
+      assert.equal(await count(page, "Propose a Wager"), 0);
+      await page.evaluate(() => window.harness.publishWager(null));
+      await click(page, "Propose a Wager");
+      assert.equal(await count(page, "5"), 1);
+      await click(page, "Voice Reaction");
+      assert.deepEqual(await subscriptions(), { wager: 2, materials: 1 });
+      await page.evaluate(() => window.harness.remount());
+      assert.deepEqual(await subscriptions(), { wager: 2, materials: 1 });
+      await showPopupControls(page);
+      await click(page, "Voice Reaction");
+      await click(page, "Propose a Wager");
+      assert.equal(await count(page, "5"), 1);
+      await page.evaluate(() => window.harness.dispose());
+      assert.deepEqual(await subscriptions(), { wager: 0, materials: 0 });
+      await page.evaluate(() => {
+        window.harness.publishWager(null, false);
+        window.harness.publishMaterials({
+          frozenMaterialsStatus: "unavailable",
+        });
+      });
     });
   },
 );
