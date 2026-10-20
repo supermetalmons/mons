@@ -13,7 +13,7 @@ import type {
 } from "../game/boardWagerModels";
 import { BOARD_WIDTH_UNITS, BOARD_HEIGHT_UNITS } from "./boardOverlayGeometry";
 
-type BotStrengthControlOverlayState = {
+export type BotStrengthControlOverlayState = {
   visible: boolean;
   mode: BotAutomoveMode;
   x: number;

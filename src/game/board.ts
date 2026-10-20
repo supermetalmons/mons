@@ -501,7 +501,7 @@ const emojis = (await import("../content/emojis")).emojis;
 let currentTextAnimation: {
   isAnimating: boolean;
   fastForwardCallback: (() => void) | null;
-  timer: NodeJS.Timeout | null;
+  timer: number | null;
 } = {
   isAnimating: false,
   fastForwardCallback: null,
@@ -755,11 +755,8 @@ export function showInstructionsText(text: string) {
 function startTextAnimation(text: string) {
   if (!talkingDudeTextDiv) return;
 
-  if (currentTextAnimation.timer) {
-    clearTimeout(currentTextAnimation.timer);
-    decrementLifecycleCounter("boardTimeouts");
-    currentTextAnimation.timer = null;
-  }
+  cancelManagedBoardTimeout(currentTextAnimation.timer);
+  currentTextAnimation.timer = null;
 
   const chars = Array.from(text);
   let currentIndex = 0;
@@ -767,11 +764,8 @@ function startTextAnimation(text: string) {
   talkingDudeTextDiv.textContent = "";
   currentTextAnimation.isAnimating = true;
   currentTextAnimation.fastForwardCallback = () => {
-    if (currentTextAnimation.timer) {
-      clearTimeout(currentTextAnimation.timer);
-      decrementLifecycleCounter("boardTimeouts");
-      currentTextAnimation.timer = null;
-    }
+    cancelManagedBoardTimeout(currentTextAnimation.timer);
+    currentTextAnimation.timer = null;
     isFastForwarding = true;
     if (talkingDudeTextDiv) {
       talkingDudeTextDiv.textContent = text;
@@ -793,12 +787,10 @@ function startTextAnimation(text: string) {
       const delay = currentChar === " " ? 55 : 23;
       currentIndex += 1;
 
-      currentTextAnimation.timer = setTimeout(() => {
+      currentTextAnimation.timer = setManagedBoardTimeout(() => {
         currentTextAnimation.timer = null;
-        decrementLifecycleCounter("boardTimeouts");
         animateStep();
       }, delay);
-      incrementLifecycleCounter("boardTimeouts");
     } else {
       currentTextAnimation.isAnimating = false;
       currentTextAnimation.fastForwardCallback = null;
@@ -2891,18 +2883,12 @@ function updateWagerLayout({
 
 function clearDisappearingPile(side: "player" | "opponent") {
   if (side === "player") {
-    if (disappearingPileTimers.player !== null) {
-      window.clearTimeout(disappearingPileTimers.player);
-      decrementLifecycleCounter("boardTimeouts");
-      disappearingPileTimers.player = null;
-    }
+    cancelManagedBoardTimeout(disappearingPileTimers.player);
+    disappearingPileTimers.player = null;
     disappearingPlayerPile = null;
   } else {
-    if (disappearingPileTimers.opponent !== null) {
-      window.clearTimeout(disappearingPileTimers.opponent);
-      decrementLifecycleCounter("boardTimeouts");
-      disappearingPileTimers.opponent = null;
-    }
+    cancelManagedBoardTimeout(disappearingPileTimers.opponent);
+    disappearingPileTimers.opponent = null;
     disappearingOpponentPile = null;
   }
 }
@@ -2953,14 +2939,12 @@ function emitWagerRenderState() {
       lastVisiblePlayerPileState
     ) {
       clearDisappearingPile("player");
-      incrementLifecycleCounter("boardTimeouts");
       disappearingPlayerPile = {
         ...lastVisiblePlayerPileState,
         animation: "disappear",
         isPending: false,
       };
-      disappearingPileTimers.player = window.setTimeout(() => {
-        decrementLifecycleCounter("boardTimeouts");
+      disappearingPileTimers.player = setManagedBoardTimeout(() => {
         disappearingPlayerPile = null;
         disappearingPileTimers.player = null;
         emitWagerRenderState();
@@ -2978,14 +2962,12 @@ function emitWagerRenderState() {
       lastVisibleOpponentPileState
     ) {
       clearDisappearingPile("opponent");
-      incrementLifecycleCounter("boardTimeouts");
       disappearingOpponentPile = {
         ...lastVisibleOpponentPileState,
         animation: "disappear",
         isPending: false,
       };
-      disappearingPileTimers.opponent = window.setTimeout(() => {
-        decrementLifecycleCounter("boardTimeouts");
+      disappearingPileTimers.opponent = setManagedBoardTimeout(() => {
         disappearingOpponentPile = null;
         disappearingPileTimers.opponent = null;
         emitWagerRenderState();
@@ -3962,26 +3944,13 @@ export function disposeBoardRuntime() {
   talkingDudeIsTalking = true;
   currentTextAnimation.isAnimating = false;
   currentTextAnimation.fastForwardCallback = null;
+  cancelManagedBoardTimeout(currentTextAnimation.timer);
+  currentTextAnimation.timer = null;
   clearWagerPilesForNewMatch();
   clearWavesIntervals();
   clearSparkleIntervals();
   clearTrackedBoardTimeouts();
   clearTrackedBoardRafs();
-  if (currentTextAnimation.timer) {
-    clearTimeout(currentTextAnimation.timer);
-    currentTextAnimation.timer = null;
-    decrementLifecycleCounter("boardTimeouts");
-  }
-  if (disappearingPileTimers.player !== null) {
-    clearTimeout(disappearingPileTimers.player);
-    disappearingPileTimers.player = null;
-    decrementLifecycleCounter("boardTimeouts");
-  }
-  if (disappearingPileTimers.opponent !== null) {
-    clearTimeout(disappearingPileTimers.opponent);
-    disappearingPileTimers.opponent = null;
-    decrementLifecycleCounter("boardTimeouts");
-  }
   if (cleanupInviteBotButtonThemeListener) {
     cleanupInviteBotButtonThemeListener();
     cleanupInviteBotButtonThemeListener = null;

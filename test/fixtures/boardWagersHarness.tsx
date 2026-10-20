@@ -2,7 +2,11 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import BoardComponent, * as boardUi from "../../src/ui/BoardComponent";
-import { createEmptyPlayerInfoOverlayState } from "../../src/game/boardUiPort";
+import {
+  createEmptyPlayerInfoOverlayState,
+  getBoardPlayerInfoOverlayState,
+  type BoardPlayerInfoOverlayState,
+} from "../../src/game/boardUiPort";
 import { showVideoReaction } from "../../src/ui/controls/boardReactionPort";
 import {
   createWagerPile,
@@ -112,6 +116,25 @@ const harness = {
   run,
   names,
   pile,
+  botStrength({
+    visible = true,
+    mode,
+    topControlSlot,
+  }: {
+    visible?: boolean;
+    mode?: BoardPlayerInfoOverlayState["botStrengthControlMode"];
+    topControlSlot?: BoardPlayerInfoOverlayState["topControlSlot"];
+  } = {}) {
+    const value = getBoardPlayerInfoOverlayState();
+    run(() =>
+      boardUi.setBoardPlayerInfoOverlayState({
+        ...value,
+        botStrengthControlVisible: visible,
+        botStrengthControlMode: mode ?? value.botStrengthControlMode,
+        topControlSlot: topControlSlot ?? value.topControlSlot,
+      }),
+    );
+  },
   bridge(playerUid: string, opponentUid: string) {
     playerSideMetadata.uid = playerUid;
     opponentSideMetadata.uid = opponentUid;

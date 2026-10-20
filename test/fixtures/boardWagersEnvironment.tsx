@@ -2,6 +2,8 @@ import { useSyncExternalStore } from "react";
 import { wagerSlotLayoutsEqual } from "../../src/game/boardWagerModels";
 export const environment = {
   calls: [] as string[],
+  botStrengthActivations: 0,
+  boardPatternRenders: 0,
   subscribers: new Set<Function>(),
   watchSubscribers: new Set<Function>(),
   styleSubscribers: new Set<Function>(),
@@ -62,7 +64,9 @@ export const subscribeToDisplayedBoardSquareTypes = (cb: Function) => {
   cb(getCurrentDisplayedBoardSquareTypes());
   return unsubscribe;
 };
-export const didClickBotStrengthControlButton = () => {};
+export const didClickBotStrengthControlButton = () => {
+  environment.botStrengthActivations++;
+};
 export { WAGER_WIN_PILE_SCALE } from "../../src/game/boardWagerModels";
 export const playerSideMetadata = { uid: "p" };
 export const opponentSideMetadata = { uid: "o" };

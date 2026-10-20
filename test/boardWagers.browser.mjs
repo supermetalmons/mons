@@ -18,6 +18,7 @@ const fixturePath = path.join(
   repository,
   "test/fixtures/boardWagersEnvironment.tsx",
 );
+const boardPatternWrapperId = "\0board-pattern-fixture";
 const stubbedModules = new Set(
   [
     "game/gameController",
@@ -66,9 +67,23 @@ async function fixture(sourcePath, run) {
               .resolve(path.dirname(importer), id)
               .replace(/\.(ts|tsx)$/, "");
             if (stubbedModules.has(resolved)) return fixturePath;
+            if (
+              resolved ===
+              path.join(repository, "src/utils/boardPatternGenerator")
+            )
+              return boardPatternWrapperId;
           }
         },
         load(id) {
+          if (id === boardPatternWrapperId)
+            return `
+              import { generateBoardPattern as generate } from "/src/utils/boardPatternGenerator.tsx?original";
+              import { environment } from "/test/fixtures/boardWagersEnvironment.tsx";
+              export function generateBoardPattern(props) {
+                environment.boardPatternRenders++;
+                return generate(props);
+              }
+            `;
           if (
             sourcePath &&
             id === path.join(repository, "src/ui/BoardComponent.tsx")
@@ -96,14 +111,14 @@ async function fixture(sourcePath, run) {
   }
 }
 
-async function openPage(browser, origin, mobile, dark) {
+async function openPage(browser, origin, mobile, dark, input = {}) {
   const context = await browser.newContext({
     viewport: mobile
       ? { width: 390, height: 844 }
       : { width: 1200, height: 900 },
     deviceScaleFactor: 1,
     isMobile: mobile,
-    hasTouch: mobile,
+    hasTouch: input.hasTouch ?? mobile,
     colorScheme: dark ? "dark" : "light",
   });
   const page = await context.newPage();
@@ -122,7 +137,42 @@ async function openPage(browser, origin, mobile, dark) {
   const start = new Date("2026-01-01T00:00:00Z");
   await page.clock.install({ time: start });
   await page.clock.pauseAt(start);
-  await page.addInitScript(() => {
+  await page.addInitScript(({ finePointer }) => {
+    if (finePointer !== undefined) {
+      const matchMedia = window.matchMedia.bind(window);
+      window.matchMedia = (query) => {
+        const result = matchMedia(query);
+        if (query === "(hover: hover) and (pointer: fine)")
+          Object.defineProperty(result, "matches", { value: finePointer });
+        return result;
+      };
+    }
+    const addEventListener = window.addEventListener.bind(window);
+    const removeEventListener = window.removeEventListener.bind(window);
+    const botListeners = new Map(
+      ["touchend", "touchcancel", "mouseup", "blur"].map((name) => [
+        name,
+        new Set(),
+      ]),
+    );
+    window.addEventListener = (type, listener, options) => {
+      if (
+        botListeners.has(type) &&
+        /\/src\/ui\/(?:BoardComponent|BotStrengthControl)\.tsx/.test(
+          new Error().stack,
+        )
+      )
+        botListeners.get(type).add(listener);
+      addEventListener(type, listener, options);
+    };
+    window.removeEventListener = (type, listener, options) => {
+      botListeners.get(type)?.delete(listener);
+      removeEventListener(type, listener, options);
+    };
+    window.botStrengthWindowListeners = () =>
+      Object.fromEntries(
+        Array.from(botListeners, ([name, listeners]) => [name, listeners.size]),
+      );
     const timeout = window.setTimeout.bind(window);
     const clearTimeout = window.clearTimeout.bind(window);
     const raf = window.requestAnimationFrame.bind(window);
@@ -161,7 +211,7 @@ async function openPage(browser, origin, mobile, dark) {
     });
     HTMLMediaElement.prototype.play = async () => {};
     HTMLMediaElement.prototype.pause = () => {};
-  });
+  }, input);
   await page.goto(origin + "/__wagers?" + (mobile ? "mobile=1" : "desktop=1"));
   await page
     .waitForFunction(() => !!window.harness?.e.layouts?.player, null, {
@@ -278,6 +328,22 @@ async function capture(page, label, mode, snapshots, animationTime = 2000) {
           "[data-wager-pile], [data-wager-pile] img, [data-wager-panel]",
         ),
         measure,
+      ),
+      botStrength: Array.from(
+        document.querySelectorAll('g[aria-label^="Bot strength:"]'),
+        (element) => ({
+          ...measure(element),
+          shapes: [element, ...element.querySelectorAll("rect, g, path")].map(
+            (shape) => ({
+              tag: shape.tagName,
+              attributes: Object.fromEntries(
+                shape
+                  .getAttributeNames()
+                  .map((name) => [name, shape.getAttribute(name)]),
+              ),
+            }),
+          ),
+        }),
       ),
     };
   });
@@ -893,6 +959,334 @@ test(
         "Compared " +
           snapshots.size +
           " before/after screenshots and geometry/style snapshots with zero differences.",
+      );
+  },
+);
+
+const botControl = (page) =>
+  page.locator('g[role="button"][aria-label^="Bot strength:"]');
+const botFill = (page) =>
+  botControl(page).locator("rect").first().getAttribute("fill");
+const botActivations = (page) =>
+  page.evaluate(() => window.harness.e.botStrengthActivations);
+const botListenerCounts = (page) =>
+  page.evaluate(() => window.botStrengthWindowListeners());
+const expectedBotListeners = (count) => ({
+  touchend: count,
+  touchcancel: count,
+  mouseup: count,
+  blur: count,
+});
+
+async function botInput(
+  page,
+  type,
+  { windowTarget = false, cancelable = true } = {},
+) {
+  return page.evaluate(
+    ({ type, windowTarget, cancelable }) => {
+      const target = windowTarget
+        ? window
+        : document.querySelector('g[aria-label^="Bot strength:"]');
+      const options = {
+        bubbles: true,
+        cancelable,
+        relatedTarget: document.body,
+      };
+      const event = /^(mouse|click)/.test(type)
+        ? new MouseEvent(type, options)
+        : new Event(type, options);
+      let propagated = false;
+      const onDocument = () => {
+        propagated = true;
+      };
+      document.addEventListener(type, onDocument);
+      try {
+        window.harness.run(() => target.dispatchEvent(event));
+        return { defaultPrevented: event.defaultPrevented, propagated };
+      } finally {
+        document.removeEventListener(type, onDocument);
+      }
+    },
+    { type, windowTarget, cancelable },
+  );
+}
+
+async function botStrengthVisuals(browser, origin, mode, snapshots) {
+  for (const dark of [false, true]) {
+    const { context, page, errors } = await openPage(
+      browser,
+      origin,
+      false,
+      dark,
+    );
+    try {
+      for (const style of ["grid", "pangchiu"]) {
+        await invoke(page, "style", style);
+        for (const strength of ["fast", "normal", "pro"]) {
+          await invoke(page, "botStrength", {
+            mode: strength,
+            topControlSlot: strength === "normal" ? "player" : "opponent",
+          });
+          assert.equal(
+            await botControl(page).getAttribute("aria-label"),
+            "Bot strength: " + strength[0].toUpperCase() + strength.slice(1),
+          );
+          assert.equal(
+            await botControl(page).locator("path").count(),
+            { fast: 8, normal: 9, pro: 10 }[strength],
+          );
+          await capture(
+            page,
+            `bot-${dark ? "dark" : "light"}-${style}-${strength}`,
+            mode,
+            snapshots,
+          );
+        }
+      }
+      assert.deepEqual(errors, []);
+    } finally {
+      await context.close();
+    }
+  }
+}
+
+async function botStrengthDesktopLifecycle(browser, origin, mode) {
+  const { context, page, errors } = await openPage(
+    browser,
+    origin,
+    false,
+    false,
+    { finePointer: true },
+  );
+  const base = "var(--color-gray-f0)";
+  const hovered = "var(--color-gray-e0)";
+  const pressed = "var(--color-gray-d0)";
+  try {
+    await invoke(page, "botStrength", { mode: "normal" });
+    await page.clock.runFor(80);
+    const renders = await page.evaluate(
+      () => window.harness.e.boardPatternRenders,
+    );
+    await botInput(page, "mouseover");
+    assert.equal(await botFill(page), hovered);
+    for (const type of ["mouseup", "touchend", "touchcancel", "blur"]) {
+      await botInput(page, "mousedown");
+      assert.equal(await botFill(page), pressed);
+      assert.deepEqual(await botListenerCounts(page), expectedBotListeners(1));
+      await botInput(page, type, { windowTarget: true });
+      assert.equal(await botFill(page), hovered);
+      assert.deepEqual(await botListenerCounts(page), expectedBotListeners(0));
+    }
+    const nextRenders = await page.evaluate(
+      () => window.harness.e.boardPatternRenders,
+    );
+    if (mode === "current")
+      assert.equal(
+        nextRenders,
+        renders,
+        "Bot hover/press must not regenerate the board",
+      );
+
+    assert.deepEqual(await botInput(page, "click"), {
+      defaultPrevented: true,
+      propagated: false,
+    });
+    assert.equal(await botActivations(page), 1);
+    await invoke(page, "botStrength", { mode: "pro" });
+    assert.equal(await botFill(page), hovered, "Mode changes preserve hover");
+    await invoke(page, "reset");
+    assert.equal(
+      await botFill(page),
+      hovered,
+      "Transient reset preserves bot hover",
+    );
+    await botInput(page, "mousedown");
+    await invoke(page, "reset");
+    assert.equal(
+      await botFill(page),
+      pressed,
+      "Transient reset preserves bot press",
+    );
+    await invoke(page, "botStrength", { visible: false });
+    assert.equal(await botControl(page).count(), 0);
+    assert.deepEqual(await botListenerCounts(page), expectedBotListeners(0));
+    await invoke(page, "botStrength");
+    assert.equal(await botFill(page), base, "Hiding clears hover and press");
+    assert.equal(
+      await botControl(page).getAttribute("aria-label"),
+      "Bot strength: Pro",
+    );
+
+    await botInput(page, "mousedown");
+    await botInput(page, "mouseout");
+    assert.equal(await botFill(page), base);
+    assert.deepEqual(await botListenerCounts(page), expectedBotListeners(0));
+    await botInput(page, "mousedown");
+    await invoke(page, "dispose");
+    assert.deepEqual(await botListenerCounts(page), expectedBotListeners(0));
+    await botInput(page, "mouseup", { windowTarget: true });
+    await invoke(page, "mount", { seedNames: false });
+    assert.equal(await botFill(page), base);
+    await botInput(page, "mousedown");
+    assert.deepEqual(await botListenerCounts(page), expectedBotListeners(1));
+    assert.deepEqual(await botInput(page, "click", { cancelable: false }), {
+      defaultPrevented: false,
+      propagated: false,
+    });
+    assert.equal(
+      await botActivations(page),
+      2,
+      "Remount activates exactly once",
+    );
+    await invoke(page, "dispose");
+    assert.deepEqual(await botListenerCounts(page), expectedBotListeners(0));
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+}
+
+async function botStrengthTouchInputs(browser, origin) {
+  const base = "var(--color-gray-f0)";
+  const hovered = "var(--color-gray-e0)";
+  for (const input of [
+    {
+      name: "coarse desktop",
+      mobile: false,
+      hasTouch: false,
+      finePointer: false,
+    },
+    { name: "hybrid", mobile: false, hasTouch: true, finePointer: true },
+    { name: "mobile", mobile: true, hasTouch: true, finePointer: false },
+    {
+      name: "mobile with mouse",
+      mobile: true,
+      hasTouch: true,
+      finePointer: true,
+    },
+  ]) {
+    const { context, page, errors } = await openPage(
+      browser,
+      origin,
+      input.mobile,
+      false,
+      input,
+    );
+    try {
+      await invoke(page, "botStrength");
+      if (input.mobile && input.finePointer) {
+        await botInput(page, "mouseover");
+        await botInput(page, "mousedown");
+        assert.equal(
+          await botFill(page),
+          base,
+          "Mobile mouse input has no highlight",
+        );
+        await botInput(page, "mouseup");
+      }
+      if (!input.hasTouch) {
+        await botInput(page, "mouseover");
+        await botInput(page, "mousedown");
+        assert.equal(await botFill(page), base, input.name);
+        await botInput(page, "mouseup");
+        await botInput(page, "click");
+        assert.equal(await botActivations(page), 1, input.name);
+      } else {
+        await botInput(page, "touchstart");
+        assert.equal(await botFill(page), base, input.name);
+        await page.clock.runFor(100);
+        assert.deepEqual(await botInput(page, "touchend"), {
+          defaultPrevented: input.mobile,
+          propagated: false,
+        });
+        await botInput(page, "mouseover");
+        await botInput(page, "mousedown");
+        await botInput(page, "mouseup");
+        assert.equal(await botFill(page), base, input.name);
+        await botInput(page, "click");
+        assert.equal(
+          await botActivations(page),
+          1,
+          input.name + " activates once",
+        );
+        await invoke(page, "botStrength", { visible: false });
+        await invoke(page, "botStrength", { mode: "fast" });
+        if (!input.mobile) {
+          await page.clock.runFor(699);
+          await botInput(page, "mouseover");
+          await botInput(page, "mousedown");
+          assert.equal(
+            await botFill(page),
+            base,
+            "Hide/show retains the touch deadline",
+          );
+          await botInput(page, "click");
+          assert.equal(
+            await botActivations(page),
+            2,
+            "Suppression does not block activation",
+          );
+          await page.clock.runFor(1);
+          await botInput(page, "mouseover");
+          assert.equal(
+            await botFill(page),
+            hovered,
+            "Mouse hover resumes at 700 ms",
+          );
+          await botInput(page, "touchcancel");
+          assert.equal(await botFill(page), base);
+          await botInput(page, "mouseover");
+          assert.equal(
+            await botFill(page),
+            base,
+            "Touch cancellation suppresses hover",
+          );
+        }
+        const activations = await botActivations(page);
+        const box = await botControl(page).boundingBox();
+        await page.touchscreen.tap(
+          box.x + box.width / 2,
+          box.y + box.height / 2,
+        );
+        assert.equal(
+          await botActivations(page),
+          activations + 1,
+          input.name + " native tap activates exactly once",
+        );
+        assert.equal(
+          await botFill(page),
+          base,
+          input.name + " native tap has no hover fill",
+        );
+      }
+      assert.deepEqual(await botListenerCounts(page), expectedBotListeners(0));
+      assert.deepEqual(errors, []);
+    } finally {
+      await context.close();
+    }
+  }
+}
+
+test(
+  "bot strength preserves visuals, input timing and lifecycle while isolating board renders",
+  { timeout: 180000 },
+  async (t) => {
+    mkdirSync(outputDirectory, { recursive: true });
+    const snapshots = new Map();
+    for (const [mode, source] of [
+      ...(baselinePath ? [["baseline", baselinePath]] : []),
+      ["current", null],
+    ]) {
+      await fixture(source, async ({ browser, origin }) => {
+        await botStrengthVisuals(browser, origin, mode, snapshots);
+        await botStrengthDesktopLifecycle(browser, origin, mode);
+        await botStrengthTouchInputs(browser, origin);
+      });
+    }
+    if (baselinePath)
+      t.diagnostic(
+        `Compared ${snapshots.size} bot-control screenshots and geometry snapshots with zero differences.`,
       );
   },
 );
