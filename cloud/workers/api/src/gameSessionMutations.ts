@@ -1,4 +1,8 @@
 import {
+  emptyAutomatchEntryFields,
+  type AutomatchEntryFields,
+} from "../../../runtime/automatchRecords.js";
+import {
   isCreateInviteResponse,
   isEndRematchResponse,
   isEnsureMatchResponse,
@@ -210,18 +214,18 @@ function joiningProfile(
 function automatchJoinChanges(
   inviteId: string,
   operationId: string,
-  automatch: Record<string, unknown>,
+  automatch: AutomatchEntryFields,
   profile: GameplayProfile,
 ): GameSessionChange[] {
   if (automatch.telegramDeliveryVersion !== TELEGRAM_AUTOMATCH_VERSION) {
     return [{ kind: "automatch-entry", inviteId, value: null }];
   }
   const existingName = getDisplayNameFromAddress(
-    automatch.username,
-    automatch.ethAddress,
-    automatch.solAddress,
-    automatch.rating,
-    automatch.emojiId,
+    automatch.display.username,
+    automatch.display.ethAddress,
+    automatch.display.solAddress,
+    automatch.display.rating,
+    automatch.display.emojiId,
   );
   const joiningName = getDisplayNameFromAddress(
     profile.username,
@@ -321,11 +325,11 @@ export async function joinInvite(
           },
         };
       }
-      let pendingAutomatch: Record<string, unknown> | null = null;
+      let pendingAutomatch: AutomatchEntryFields | null = null;
       if (isAutoInviteId(request.inviteId) && !currentGuestUid) {
-        pendingAutomatch = toRecord(
-          await repository.readAutomatchEntry(request.inviteId),
-        );
+        pendingAutomatch = (
+          await repository.readAutomatchEntry(request.inviteId)
+        ).record;
         if (readStoredString(pendingAutomatch?.uid) !== hostUid) {
           throw failedPrecondition("automatch-not-pending");
         }
@@ -378,8 +382,8 @@ export async function joinInvite(
       if (isAutoInviteId(request.inviteId)) {
         const automatch =
           pendingAutomatch ||
-          toRecord(await repository.readAutomatchEntry(request.inviteId)) ||
-          {};
+          (await repository.readAutomatchEntry(request.inviteId)).record ||
+          emptyAutomatchEntryFields();
         const profile = joiningProfile(
           identity,
           request,

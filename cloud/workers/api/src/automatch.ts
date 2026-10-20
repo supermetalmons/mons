@@ -1,3 +1,7 @@
+import {
+  emptyAutomatchEntryFields,
+  type AutomatchEntryRead,
+} from "../../../runtime/automatchRecords.js";
 import type { RandomSource } from "@mons/shared/ids";
 import type { StartAutomatchResponse } from "@mons/shared/navigation";
 import {
@@ -21,7 +25,6 @@ import {
   buildAutomatchReceiptChanges,
   buildAutomatchReplayTasks,
   matchesAutomatchReceiptRequest,
-  parseAutomatchReceipt,
 } from "./automatch/receipts.ts";
 import type {
   AutomatchDependencies,
@@ -87,18 +90,17 @@ async function readAutomatchReceipt(
   repository: AutomatchRepository,
   signal?: AbortSignal,
 ): Promise<AutomatchReceipt | null> {
-  const rawReceipt = await measureAutomatchPhase("receipt", () =>
-    repository.readMutationReceipt(request.operationId, signal),
+  const result = await measureAutomatchPhase("receipt", () =>
+    repository.readAutomatchReceipt(request.operationId, signal),
   );
-  if (rawReceipt === null || rawReceipt === undefined) return null;
-  const receipt = parseAutomatchReceipt(rawReceipt);
+  if (result.kind === "missing") return null;
   if (
-    !receipt ||
-    !matchesAutomatchReceiptRequest(receipt, requesterUid, request)
+    result.kind === "invalid" ||
+    !matchesAutomatchReceiptRequest(result.value, requesterUid, request)
   ) {
     throw new AuthApiFailure(409, "failed-precondition", "operation-conflict");
   }
-  return receipt;
+  return result.value;
 }
 
 function finiteNumber(value: unknown): number {
@@ -122,9 +124,9 @@ function compareQueuedAutomatches(
 }
 
 export function getFirstQueuedAutomatch(
-  value: unknown,
+  value: Record<string, AutomatchEntryRead> | null,
 ): QueuedAutomatch | null {
-  const queue = toRecord(value);
+  const queue = value;
   if (!queue) {
     return null;
   }
@@ -133,20 +135,23 @@ export function getFirstQueuedAutomatch(
     return null;
   }
   const [inviteId, data] = first;
-  return { inviteId, data: toRecord(data) || {} };
+  return { inviteId, data: data.record || emptyAutomatchEntryFields() };
 }
 
 function getQueuedAutomatchesForUid(
-  value: unknown,
+  value: Record<string, AutomatchEntryRead> | null,
   expectedUid: string,
 ): QueuedAutomatch[] {
-  const queue = toRecord(value);
+  const queue = value;
   if (!queue) return [];
   return Object.entries(queue)
-    .filter(([, data]) => normalizeString(toRecord(data)?.uid) === expectedUid)
+    .filter(([, data]) => normalizeString(data.record?.uid) === expectedUid)
     .sort(([left], [right]) => compareStrings(left, right))
     .slice(0, AUTOMATCH_UID_LOOKUP_LIMIT)
-    .map(([inviteId, data]) => ({ inviteId, data: toRecord(data) || {} }));
+    .map(([inviteId, data]) => ({
+      inviteId,
+      data: data.record || emptyAutomatchEntryFields(),
+    }));
 }
 
 async function readQueuedAutomatchesByUid(
@@ -516,7 +521,7 @@ async function persistExistingAutomatchReceipt(
           repository.readAutomatchEntry(inviteId, signal),
           repository.readInviteMetadata(inviteId, signal),
         ]);
-        const queueUid = normalizeString(toRecord(queueValue)?.uid);
+        const queueUid = normalizeString(queueValue.record?.uid);
         const invite = toRecord(inviteValue);
         const hostId = normalizeString(invite?.hostId);
         const guestId = normalizeString(invite?.guestId);
@@ -796,7 +801,7 @@ async function attemptAutomatch(
         ]);
         const currentInvite = toRecord(currentInviteValue);
         if (
-          normalizeString(toRecord(currentQueueValue)?.uid) !== existingUid ||
+          normalizeString(currentQueueValue.record?.uid) !== existingUid ||
           normalizeString(currentInvite?.hostId) !== existingUid ||
           normalizeString(currentInvite?.guestId)
         ) {

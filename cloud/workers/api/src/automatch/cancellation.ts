@@ -71,13 +71,13 @@ async function readAutomatchCancellationProof(
     ]);
     const invite = toRecord(inviteValue);
     return Boolean(
-      queueValue === null &&
+      queueValue.isNull &&
       normalizeString(invite?.hostId) === expectedUid &&
       !normalizeString(invite?.guestId) &&
       invite?.automatchStateHint === "canceled" &&
       typeof invite.automatchCanceledAt === "number" &&
       Number.isFinite(invite.automatchCanceledAt) &&
-      normalizeString(toRecord(outboxRequestId)?.requestId) === requestId,
+      normalizeString(toRecord(outboxRequestId.raw)?.requestId) === requestId,
     );
   } catch {
     return false;
@@ -161,7 +161,7 @@ export async function cancelQueuedAutomatch(
         ]);
         const currentGuestId = currentInvite?.guestId;
         const currentHostId = currentInvite?.hostId;
-        const currentQueue = toRecord(currentQueueValue);
+        const currentQueue = currentQueueValue.record;
         const currentUid = normalizeString(currentQueue?.uid);
         if (
           !currentQueue ||

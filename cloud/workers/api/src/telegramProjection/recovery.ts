@@ -1,4 +1,7 @@
-import type { GameSessionPort } from "../gameSessionContracts.ts";
+import type {
+  GameSessionPort,
+  GameSessionRecoveryContext,
+} from "../gameSessionContracts.ts";
 import { createEventGameplayRepository } from "../eventRepository.ts";
 import { createGameplayRepository } from "../gameplayRepository.ts";
 import { createRatingRepository } from "../ratingRepository.ts";
@@ -22,7 +25,10 @@ import {
   sendQueueTasks,
 } from "../projectionSweep.ts";
 import { PROJECTION_SWEEP_LIMIT } from "./policy.ts";
-import type { ProjectionDependencies, ProjectionLogger } from "./types.ts";
+import type {
+  ProjectionRecoveryDependencies,
+  ProjectionLogger,
+} from "./types.ts";
 
 function toRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -87,33 +93,36 @@ export async function claimAutomatchSweepCandidate(
 }
 
 async function markInvalidAutomatchSweepEntry(
-  state: GameSessionPort,
+  state: GameSessionRecoveryContext,
   inviteId: string,
   nowMs: number,
 ): Promise<void> {
-  await state.transactAutomatchTelegramOutbox(inviteId, (current) => {
-    const record = toRecord(current);
-    const updatedAtMs = record?.updatedAtMs;
-    if (
-      !record ||
-      (parseOutbox(current) && isSafeRecordKey(inviteId)) ||
-      typeof updatedAtMs !== "number" ||
-      !Number.isFinite(updatedAtMs) ||
-      updatedAtMs > nowMs
-    ) {
-      return { commit: false, decision: "changed" };
-    }
-    return {
-      value: {
-        ...record,
-        status: "dead",
-        reason: "invalid-record",
-        updatedAtMs: null,
-        deadAtMs: nowMs,
-      },
-      decision: "dead",
-    };
-  });
+  await state.projectionRecovery.transactRawAutomatchTelegramOutbox(
+    inviteId,
+    (current) => {
+      const record = toRecord(current);
+      const updatedAtMs = record?.updatedAtMs;
+      if (
+        !record ||
+        (parseOutbox(current) && isSafeRecordKey(inviteId)) ||
+        typeof updatedAtMs !== "number" ||
+        !Number.isFinite(updatedAtMs) ||
+        updatedAtMs > nowMs
+      ) {
+        return { commit: false, decision: "changed" };
+      }
+      return {
+        value: {
+          ...record,
+          status: "dead",
+          reason: "invalid-record",
+          updatedAtMs: null,
+          deadAtMs: nowMs,
+        },
+        decision: "dead",
+      };
+    },
+  );
 }
 
 export async function sendTaskBatches(
@@ -125,15 +134,16 @@ export async function sendTaskBatches(
 
 export async function sweepAutomatchProjections(
   env: Env,
-  state: GameSessionPort,
+  state: GameSessionPort & GameSessionRecoveryContext,
   logger: ProjectionLogger,
   nowMs: number,
 ): Promise<number> {
   try {
-    const value = await state.listDueAutomatchTelegramOutboxes(
-      nowMs,
-      PROJECTION_SWEEP_LIMIT,
-    );
+    const value =
+      await state.projectionRecovery.listDueAutomatchTelegramOutboxes(
+        nowMs,
+        PROJECTION_SWEEP_LIMIT,
+      );
     const entries = automatchSweepEntries(value);
     const candidates = entries.flatMap((entry) =>
       entry.kind === "candidate" ? [entry.value] : [],
@@ -283,7 +293,7 @@ export async function sweepRatingProjections(
 
 export async function sweepTelegramProjections(
   env: Env,
-  dependencies: ProjectionDependencies = {},
+  dependencies: ProjectionRecoveryDependencies = {},
 ): Promise<{ automatch: number; event: number; rating: number }> {
   const logger = dependencies.logger || console;
   const now = dependencies.now || Date.now;

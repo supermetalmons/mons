@@ -1,4 +1,5 @@
 import type { GameplayRepository } from "../gameplayRepository.ts";
+import type { GameSessionRecoveryContext } from "../gameSessionContracts.ts";
 import type { RatingProfileGameProjectionRepository } from "../ratingContracts.ts";
 import type { EventStore } from "../eventStoreContracts.ts";
 import type { EventOutboxReads } from "../eventOutboxReadRepository.ts";
@@ -22,12 +23,10 @@ export type ProfileGameProjectionState = Pick<
   | "readMatchPair"
   | "readMatchRecord"
   | "readAutomatchProfileOutbox"
-  | "transactAutomatchProfileOutbox"
+  | "settleAutomatchHistoricalDescriptor"
   | "claimAutomatchProfileOutbox"
   | "acknowledgeAutomatchProfileOutbox"
   | "finishAutomatchProfileOutbox"
-  | "listDueAutomatchProfileOutboxes"
-  | "listMalformedAutomatchProfileOutboxes"
 >;
 
 export type EventProfileProjectionState = Pick<
@@ -82,18 +81,16 @@ export type AutomatchProjectionState = Pick<
   ProfileGameProjectionState,
   | "readMatchPair"
   | "readAutomatchProfileOutbox"
-  | "transactAutomatchProfileOutbox"
+  | "settleAutomatchHistoricalDescriptor"
   | "acknowledgeAutomatchProfileOutbox"
   | "finishAutomatchProfileOutbox"
 >;
 
 export type AutomatchRecoveryState = Pick<
   ProfileGameProjectionState,
-  | "transactAutomatchProfileOutbox"
-  | "claimAutomatchProfileOutbox"
-  | "listDueAutomatchProfileOutboxes"
-  | "listMalformedAutomatchProfileOutboxes"
->;
+  "claimAutomatchProfileOutbox"
+> &
+  GameSessionRecoveryContext;
 
 export type EventProjectionRecoveryState = Pick<
   EventProfileProjectionState,

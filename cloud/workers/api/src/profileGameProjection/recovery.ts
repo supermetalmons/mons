@@ -223,63 +223,64 @@ export async function repairInvalidAutomatchSweepEntry(
 ): Promise<InvalidAutomatchSweepResult> {
   const safeInviteId = isSafeRecordKey(inviteId);
   const requestId = safeInviteId ? createRequestId() : "";
-  const result = await state.transactAutomatchProfileOutbox(
-    inviteId,
-    (current) => {
-      const record = toRecord(current);
-      if (
-        current === null ||
-        current === undefined ||
-        (record &&
-          parseAutomatchProfileGameProjectionOutbox(current) &&
-          isSafeRecordKey(inviteId))
-      ) {
-        return { commit: false, decision: "changed" };
-      }
-      if (!safeInviteId) {
-        return { value: null, decision: "removed-invalid" };
-      }
-      const sourceUpdatedAtMs = record?.sourceUpdatedAtMs;
-      const historicalMatches = salvageHistoricalMatchDescriptors(current);
-      return {
-        value: {
-          schemaVersion: PROFILE_GAME_PROJECTION_SCHEMA_VERSION,
-          status: "pending",
-          requestId,
-          reason:
-            typeof record?.reason === "string" && record.reason.trim()
-              ? record.reason.trim()
-              : "automatch-queue",
-          sourceUpdatedAtMs:
-            typeof sourceUpdatedAtMs === "number" &&
-            Number.isFinite(sourceUpdatedAtMs) &&
-            sourceUpdatedAtMs >= 0
-              ? Math.floor(sourceUpdatedAtMs)
-              : nowMs,
-          lastQueuedAtMs: nowMs,
-          ...(historicalMatches.length > 0
-            ? {
-                historicalMatches: Object.fromEntries(
-                  historicalMatches.map((descriptor) => [
-                    descriptor.matchId,
-                    {
-                      finalizedAtMs: descriptor.finalizedAtMs,
-                      guestPlayerId: descriptor.guestPlayerId,
-                      hostPlayerId: descriptor.hostPlayerId,
-                      source: descriptor.source,
-                      ...(descriptor.retryNotBeforeMs === undefined
-                        ? {}
-                        : { retryNotBeforeMs: descriptor.retryNotBeforeMs }),
-                    },
-                  ]),
-                ),
-              }
-            : {}),
-        },
-        decision: "repaired-invalid",
-      };
-    },
-  );
+  const result =
+    await state.projectionRecovery.transactRawAutomatchProfileOutbox(
+      inviteId,
+      (current) => {
+        const record = toRecord(current);
+        if (
+          current === null ||
+          current === undefined ||
+          (record &&
+            parseAutomatchProfileGameProjectionOutbox(current) &&
+            isSafeRecordKey(inviteId))
+        ) {
+          return { commit: false, decision: "changed" };
+        }
+        if (!safeInviteId) {
+          return { value: null, decision: "removed-invalid" };
+        }
+        const sourceUpdatedAtMs = record?.sourceUpdatedAtMs;
+        const historicalMatches = salvageHistoricalMatchDescriptors(current);
+        return {
+          value: {
+            schemaVersion: PROFILE_GAME_PROJECTION_SCHEMA_VERSION,
+            status: "pending",
+            requestId,
+            reason:
+              typeof record?.reason === "string" && record.reason.trim()
+                ? record.reason.trim()
+                : "automatch-queue",
+            sourceUpdatedAtMs:
+              typeof sourceUpdatedAtMs === "number" &&
+              Number.isFinite(sourceUpdatedAtMs) &&
+              sourceUpdatedAtMs >= 0
+                ? Math.floor(sourceUpdatedAtMs)
+                : nowMs,
+            lastQueuedAtMs: nowMs,
+            ...(historicalMatches.length > 0
+              ? {
+                  historicalMatches: Object.fromEntries(
+                    historicalMatches.map((descriptor) => [
+                      descriptor.matchId,
+                      {
+                        finalizedAtMs: descriptor.finalizedAtMs,
+                        guestPlayerId: descriptor.guestPlayerId,
+                        hostPlayerId: descriptor.hostPlayerId,
+                        source: descriptor.source,
+                        ...(descriptor.retryNotBeforeMs === undefined
+                          ? {}
+                          : { retryNotBeforeMs: descriptor.retryNotBeforeMs }),
+                      },
+                    ]),
+                  ),
+                }
+              : {}),
+          },
+          decision: "repaired-invalid",
+        };
+      },
+    );
   if (!result.committed) {
     return { kind: "changed" };
   }
@@ -405,11 +406,11 @@ export async function sweepAutomatchProfileGameProjections(
     ((workerEnv: Env) => createGameplayRepository(workerEnv))
   )(env);
   const [dueValue, malformedValue] = await Promise.all([
-    state.listDueAutomatchProfileOutboxes(
+    state.projectionRecovery.listDueAutomatchProfileOutboxes(
       dueBeforeMs,
       PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
     ),
-    state.listMalformedAutomatchProfileOutboxes(
+    state.projectionRecovery.listMalformedAutomatchProfileOutboxes(
       PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
     ),
   ]);

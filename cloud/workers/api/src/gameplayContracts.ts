@@ -9,7 +9,9 @@ export type InviteAccessRepository = ProfileOwnershipReader &
 export type GameSessionRepository = InviteAccessRepository &
   Pick<
     GameSessionPort,
-    "readAutomatchEntry" | "readMutationReceipt" | "commitSessionChanges"
+    | "readAutomatchEntry"
+    | "readGameSessionMutationReceipt"
+    | "commitSessionChanges"
   > &
   Pick<MatchStatePort, "readMatchRecord" | "readMatchRecords">;
 
@@ -20,7 +22,7 @@ export type AutomatchRepository = ProfileOwnershipReader &
     | "readAutomatchEntry"
     | "listAutomatchEntriesByLogin"
     | "readFirstAutomatchEntry"
-    | "readMutationReceipt"
+    | "readAutomatchReceipt"
     | "commitSessionChanges"
     | "readAutomatchProfileOutbox"
   > & {

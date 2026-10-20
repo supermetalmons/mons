@@ -1,3 +1,7 @@
+import type {
+  AutomatchEntryFields,
+  AutomatchReceiptView,
+} from "../../../../runtime/automatchRecords.js";
 import type { RandomSource } from "@mons/shared/ids";
 import type {
   StartAutomatchRequest,
@@ -39,7 +43,7 @@ export type StartAutomatchOperationRequest = StartAutomatchRequest & {
 };
 
 export type QueuedAutomatch = {
-  data: Record<string, unknown>;
+  data: AutomatchEntryFields;
   inviteId: string;
 };
 
@@ -77,16 +81,4 @@ export type MatchedAutomatchPlan = AutomatchPlan & {
   inviteChange: Extract<GameSessionChange, { kind: "invite-merge" }>;
 };
 
-export type AutomatchReceipt = {
-  aura: string;
-  completedAtMs: number;
-  emojiId: number;
-  inviteId: string;
-  kind: "automatch-start";
-  operationId: string;
-  profileProjectionRequestId: string | null;
-  requesterUid: string;
-  response: SuccessfulStartAutomatchResponse;
-  schemaVersion: 1;
-  telegramProjection: boolean;
-};
+export type AutomatchReceipt = AutomatchReceiptView;

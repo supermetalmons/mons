@@ -82,7 +82,7 @@ function persistence(
   return {
     ...persistence,
     typedClient: persistence.client,
-    client: legacySessionClient(persistence.client),
+    client: legacySessionClient(persistence.rawClient),
   };
 }
 
@@ -432,7 +432,7 @@ describe("automatch persistence integration", () => {
         runtime.client.patchRoot({ "automatch/invite-one": { uid: "host" } }),
       ).rejects.toThrow("backend-retired");
       await expect(
-        runtime.typedClient.transactAutomatchProfileOutbox(
+        runtime.typedClient.projectionRecovery.transactRawAutomatchProfileOutbox(
           "invite-one",
           () => ({
             value: null,

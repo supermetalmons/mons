@@ -4,19 +4,10 @@ import {
   classifyTransitionHistoricalMatchPair,
   type HistoricalMatchDescriptor,
 } from "../historicalMatches.ts";
-import {
-  parseAutomatchProfileGameProjectionOutbox,
-  type AutomatchProfileGameProjectionOutbox,
-} from "../profileGameProjectionOutbox.ts";
+import type { AutomatchProfileGameProjectionOutbox } from "../profileGameProjectionOutbox.ts";
 import type { AutomatchProfileGameProjectionTask } from "../profileGameProjectionTasks.ts";
 import type { ProfileGameProjectionRuntime } from "../profileGameProjectionRepository.ts";
 import type { AutomatchProjectionState } from "./types.ts";
-
-function toRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-}
 
 export async function archiveHistoricalDescriptor(
   descriptor: HistoricalMatchDescriptor,
@@ -74,50 +65,12 @@ export async function settleHistoricalDescriptor(
   state: AutomatchProjectionState,
   retryNotBeforeMs?: number,
 ): Promise<boolean> {
-  const result = await state.transactAutomatchProfileOutbox(
+  return state.settleAutomatchHistoricalDescriptor(
     task.inviteId,
-    (current) => {
-      const record = toRecord(current);
-      const outbox = parseAutomatchProfileGameProjectionOutbox(current);
-      if (!record || !outbox || outbox.requestId !== task.requestId) {
-        return { commit: false, decision: "superseded" };
-      }
-      const historicalMatches = {
-        ...(toRecord(record.historicalMatches) || {}),
-      };
-      const stored = outbox.historicalMatches?.find(
-        ({ matchId }) => matchId === descriptor.matchId,
-      );
-      if (
-        !stored ||
-        stored.finalizedAtMs !== descriptor.finalizedAtMs ||
-        stored.hostPlayerId !== descriptor.hostPlayerId ||
-        stored.guestPlayerId !== descriptor.guestPlayerId ||
-        stored.source !== descriptor.source ||
-        stored.retryNotBeforeMs !== descriptor.retryNotBeforeMs
-      ) {
-        return { commit: false, decision: "changed" };
-      }
-      if (retryNotBeforeMs === undefined)
-        delete historicalMatches[descriptor.matchId];
-      else
-        historicalMatches[descriptor.matchId] = {
-          ...toRecord(historicalMatches[descriptor.matchId]),
-          retryNotBeforeMs,
-        };
-      const next = { ...record };
-      if (Object.keys(historicalMatches).length > 0) {
-        next.historicalMatches = historicalMatches;
-      } else {
-        delete next.historicalMatches;
-      }
-      return {
-        value: next,
-        decision: retryNotBeforeMs === undefined ? "settled" : "deferred",
-      };
-    },
+    task.requestId,
+    descriptor,
+    retryNotBeforeMs,
   );
-  return result.committed;
 }
 
 export function archiveRetryIsPending(

@@ -20,7 +20,12 @@ import type {
   MatchStatePort,
   TransactionDecision,
 } from "./repositoryContracts.ts";
-import type { GameSessionPort } from "./gameSessionContracts.ts";
+import type { RawGameSessionPort } from "./gameSessionContracts.ts";
+import { createTypedGameSessionPort } from "./gameSessionRecordAdapter.ts";
+import {
+  decodeAutomatchEntry,
+  type AutomatchEntryRead,
+} from "../../../runtime/automatchRecords.js";
 import type { PrepareMatchPresentations } from "./matchPresentationRegistry.ts";
 import {
   InviteSourceFailure,
@@ -216,7 +221,7 @@ export function createAutomatchPersistence(
     withProjectionWrite(inviteId, (guarded) =>
       guarded[method](inviteId, update, signal),
     );
-  const client: GameSessionPort = {
+  const rawClient: RawGameSessionPort = {
     claimAutomatchProfileOutbox: (
       inviteId,
       requestId,
@@ -411,7 +416,8 @@ export function createAutomatchPersistence(
   };
 
   return {
-    client,
+    client: createTypedGameSessionPort(rawClient),
+    rawClient,
     async recoverLogins(loginUids: readonly string[], signal?: AbortSignal) {
       await recoverResources(
         loginUids.map((uid) => `automatch-login:${uid}`),
@@ -435,10 +441,12 @@ export function createAutomatchPersistence(
     async readQueuedByLogins(
       loginUids: readonly string[],
       signal?: AbortSignal,
-    ): Promise<Record<string, unknown>> {
+    ): Promise<Record<string, AutomatchEntryRead>> {
       await control();
       const rows = await store.listEntriesByLogins(loginUids, 2, signal);
-      return Object.fromEntries(rows.map((row) => [row.key, row.value]));
+      return Object.fromEntries(
+        rows.map((row) => [row.key, decodeAutomatchEntry(row.value)]),
+      );
     },
     async expireReceipts(cutoffMs: number, limit: number): Promise<number> {
       const mode = await control();

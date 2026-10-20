@@ -53,9 +53,9 @@ describe("batched automatch coordination", () => {
           );
           expect(
             await measureAutomatchPhase("receipt", () =>
-              persistence.client.readMutationReceipt(crypto.randomUUID()),
+              persistence.client.readAutomatchReceipt(crypto.randomUUID()),
             ),
-          ).toBeNull();
+          ).toEqual({ kind: "missing" });
           return new Response("ok");
         },
         { sample: () => true, log: (record) => records.push(record) },

@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import {
+  decodeAutomatchEntries,
+  decodeAutomatchEntry,
+} from "../../../runtime/automatchRecords.js";
 import { AuthApiFailure } from "../src/authErrors.ts";
+import { createAutomatchProfileOutboxSnapshot } from "../src/automatchProjectionRecords.ts";
 import {
   AUTOMATCH_TOTAL_TIMEOUT_MS,
   cancelQueuedAutomatch as cancelQueuedAutomatchImpl,
@@ -78,13 +83,15 @@ function startAutomatch(
 }
 
 function cancelQueuedAutomatch(
-  queued: Parameters<typeof cancelQueuedAutomatchImpl>[0],
+  queued: { inviteId: string; data: Record<string, unknown> },
   repository: AutomatchRepository,
   dependencies: Partial<AutomatchDependencies> = {},
   signal?: AbortSignal,
 ) {
+  const data = decodeAutomatchEntry(queued.data).record;
+  assert.ok(data);
   return cancelQueuedAutomatchImpl(
-    queued,
+    { inviteId: queued.inviteId, data },
     repository,
     automatchDependencies(repository, dependencies),
     signal,
@@ -325,13 +332,14 @@ function repository(
     ...remainingOverrides,
   };
   const result = attachGameplayTestPorts(source);
-  result.readAutomatchProfileOutbox = async (inviteId, signal) => ({
-    requestId: await getStatePath?.(
-      `profileGameProjectionOutbox/automatch/${inviteId}/requestId`,
-      undefined,
-      signal,
-    ),
-  });
+  result.readAutomatchProfileOutbox = async (inviteId, signal) =>
+    createAutomatchProfileOutboxSnapshot({
+      requestId: await getStatePath?.(
+        `profileGameProjectionOutbox/automatch/${inviteId}/requestId`,
+        undefined,
+        signal,
+      ),
+    });
   return result;
 }
 
@@ -408,10 +416,15 @@ test("selection retries keep the original cancellation signal", async () => {
 });
 
 test("normalizes the first bounded queue result", () => {
-  assert.deepEqual(getFirstQueuedAutomatch({ auto_one: { uid: "host" } }), {
-    inviteId: "auto_one",
-    data: { uid: "host" },
-  });
+  assert.deepEqual(
+    getFirstQueuedAutomatch(
+      decodeAutomatchEntries({ auto_one: { uid: "host" } }),
+    ),
+    {
+      inviteId: "auto_one",
+      data: decodeAutomatchEntry({ uid: "host" }).record,
+    },
+  );
   assert.equal(getFirstQueuedAutomatch(null), null);
   assert.equal(getFirstQueuedAutomatch({}), null);
   assert.deepEqual(emptyAutomatchProfile(), {
@@ -1552,7 +1565,8 @@ test("cancellation rejects stale queue and invite snapshots", async (t) => {
     await t.test(name, async () => {
       const value = repository();
       const dispatched: string[] = [];
-      value.readAutomatchEntry = async () => ({ ...queued.data, ...queue });
+      value.readAutomatchEntry = async () =>
+        decodeAutomatchEntry({ ...queued.data, ...queue });
       value.readInviteMetadata = async () => ({
         hostId: identity.uid,
         guestId: null,
@@ -1589,7 +1603,7 @@ test("non-v2 cancellations request only the profile projection", async (t) => {
       let committed: Parameters<
         AutomatchRepository["commitSessionChanges"]
       >[0] = [];
-      value.readAutomatchEntry = async () => queued.data;
+      value.readAutomatchEntry = async () => decodeAutomatchEntry(queued.data);
       value.readInviteMetadata = async () => ({ hostId: identity.uid });
       value.commitSessionChanges = async (changes) => {
         events.push("commit");
@@ -1651,7 +1665,8 @@ test("cancellation requires the matching outbox request to prove an ambiguous co
   let proofReads = 0;
   const dispatched: string[] = [];
   const patchError = new Error("cancel-response-lost");
-  value.readAutomatchEntry = async () => (attempted ? null : queued.data);
+  value.readAutomatchEntry = async () =>
+    decodeAutomatchEntry(attempted ? null : queued.data);
   value.readInviteMetadata = async () => ({
     hostId: identity.uid,
     guestId: null,
@@ -1660,7 +1675,9 @@ test("cancellation requires the matching outbox request to prove an ambiguous co
   });
   value.readAutomatchProfileOutbox = async () => {
     proofReads += 1;
-    return { requestId: "another-cancellation" };
+    return createAutomatchProfileOutboxSnapshot({
+      requestId: "another-cancellation",
+    });
   };
   value.commitSessionChanges = async () => {
     attempted = true;
@@ -1698,7 +1715,7 @@ test("a committed cancellation dispatches in order despite a release-only failur
   const dispatched: unknown[] = [];
   value.readAutomatchEntry = async () => {
     assert.deepEqual(events, []);
-    return queued.data;
+    return decodeAutomatchEntry(queued.data);
   };
   value.readInviteMetadata = async () => {
     assert.deepEqual(events, []);

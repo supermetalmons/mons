@@ -1,4 +1,5 @@
 import type { MatchPresentationSnapshot } from "@mons/shared/match-presentation";
+import type { AutomatchEntryRead } from "./automatchRecords.js";
 
 import { PROFILE_GAME_PROJECTION_SOURCE } from "./stateCompatibility.js";
 
@@ -44,7 +45,7 @@ export type ProfileGamesProjectionRepository = {
     profileIds: readonly string[],
     inviteId: string,
   ): Promise<Map<string, ProjectionRecord>>;
-  readAutomatchEntry(inviteId: string): Promise<unknown>;
+  readAutomatchEntry(inviteId: string): Promise<AutomatchEntryRead>;
   readInviteMetadata(inviteId: string): Promise<Record<string, unknown> | null>;
   readMatchPresentation?(
     inviteId: string,
@@ -477,7 +478,7 @@ const createProfileGamesProjectionCore: Signature_createProfileGamesProjectionCo
           );
         const automatchStateHint = inferAutomatchStateHint({
           inviteId: normalizedInviteId,
-          queueValue: automatchData,
+          queueValue: automatchData.isTruthy,
           hasGuest: !!guestLoginId,
           storedStateHint: inviteData ? inviteData.automatchStateHint : null,
         });
@@ -724,7 +725,10 @@ const createProfileGamesProjectionCore: Signature_createProfileGamesProjectionCo
           const nextListSortMs = pickListSortMillis({
             options,
             status,
-            automatchData: automatchData as { timestamp?: number } | null,
+            automatchData:
+              automatchData.record?.numericTimestamp == null
+                ? null
+                : { timestamp: automatchData.record.numericTimestamp },
             nowMs,
             existingListSortMs,
           });

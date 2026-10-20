@@ -5,10 +5,7 @@ import {
 import { HISTORICAL_MATCH_ARCHIVE_VERSION } from "../historicalMatches.ts";
 import type { RatingProfileGameProjectionRepository } from "../ratingContracts.ts";
 import { isSafeRecordKey } from "../recordKeys.ts";
-import {
-  parseAutomatchProfileGameProjectionOutbox,
-  parseEventProfileGameProjectionOutbox,
-} from "../profileGameProjectionOutbox.ts";
+import { parseEventProfileGameProjectionOutbox } from "../profileGameProjectionOutbox.ts";
 import type {
   EventProfileGameProjectionRuntime,
   ProfileGameProjectionRuntime,
@@ -76,9 +73,8 @@ export async function processAutomatchProfileGameProjection(
   now: () => number = Date.now,
   logger: ProfileGameProjectionLogger = console,
 ): Promise<"continued" | "deferred" | "projected" | "stale" | "superseded"> {
-  const initialOutbox = parseAutomatchProfileGameProjectionOutbox(
-    await state.readAutomatchProfileOutbox(task.inviteId),
-  );
+  const initialOutbox = (await state.readAutomatchProfileOutbox(task.inviteId))
+    .value;
   if (!initialOutbox || initialOutbox.requestId !== task.requestId)
     return "stale";
   if (archiveRetryIsPending(initialOutbox, now())) return "deferred";
@@ -93,9 +89,8 @@ export async function processAutomatchProfileGameProjection(
     ownerId,
     now(),
     async () => {
-      const outbox = parseAutomatchProfileGameProjectionOutbox(
-        await state.readAutomatchProfileOutbox(task.inviteId),
-      );
+      const outbox = (await state.readAutomatchProfileOutbox(task.inviteId))
+        .value;
       if (!outbox || outbox.requestId !== task.requestId) return "stale";
       if (archiveRetryIsPending(outbox, now())) return "deferred";
       await runtime.recomputeInviteProjection(task.inviteId, outbox.reason, {

@@ -3,6 +3,7 @@ import type {
   SessionTimestamp,
   SessionCounter,
 } from "../gameSessionChanges.js";
+import type { AutomatchTelegramSourceWrite } from "../automatchRecords.js";
 export interface AutomatchTelegramSourceInput {
   inviteId: string;
   timestamp: SessionTimestamp;
@@ -31,7 +32,7 @@ const buildPendingAutomatchTelegramSource: (
     waitingText: string;
     canceledText: string;
   },
-) => Record<string, unknown> = ({
+) => AutomatchTelegramSourceWrite = ({
   inviteId,
   waitingText,
   canceledText,

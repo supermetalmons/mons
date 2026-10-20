@@ -62,7 +62,7 @@ export async function removeNavigationGame(
   if (
     inferAutomatchStateHint({
       inviteId,
-      queueValue: automatchValue,
+      queueValue: automatchValue.isTruthy,
       hasGuest: false,
       storedStateHint: invite.automatchStateHint,
     }) === "pending"

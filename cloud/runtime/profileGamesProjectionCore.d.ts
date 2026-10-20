@@ -1,5 +1,6 @@
 // Generated from src/profileGamesProjectionCore.ts. Run npm run generate:runtime.
 import type { MatchPresentationSnapshot } from "@mons/shared/match-presentation";
+import type { AutomatchEntryRead } from "./automatchRecords.js";
 export type ProjectionRecord = {
   data: Record<string, unknown>;
   version: number;
@@ -21,7 +22,7 @@ export type ProfileGamesProjectionRepository = {
     profileIds: readonly string[],
     inviteId: string,
   ): Promise<Map<string, ProjectionRecord>>;
-  readAutomatchEntry(inviteId: string): Promise<unknown>;
+  readAutomatchEntry(inviteId: string): Promise<AutomatchEntryRead>;
   readInviteMetadata(inviteId: string): Promise<Record<string, unknown> | null>;
   readMatchPresentation?(
     inviteId: string,

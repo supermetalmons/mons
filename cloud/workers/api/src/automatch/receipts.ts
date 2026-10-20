@@ -1,5 +1,3 @@
-import { isStartAutomatchResponse } from "@mons/shared/navigation";
-import { isSafeRecordKey } from "../recordKeys.ts";
 import { STATE_SERVER_TIMESTAMP } from "../stateCompatibility.ts";
 import type { GameSessionChange } from "../gameSessionContracts.ts";
 import type {
@@ -9,59 +7,9 @@ import type {
   SuccessfulStartAutomatchResponse,
 } from "./types.ts";
 
+export { parseAutomatchReceipt } from "../gameSessionReceiptRecords.ts";
+
 const AUTOMATCH_RECEIPT_KIND = "automatch-start";
-
-function toRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-}
-
-export function parseAutomatchReceipt(value: unknown): AutomatchReceipt | null {
-  const receipt = toRecord(value);
-  const response = receipt?.response;
-  const profileProjectionRequestId =
-    receipt?.profileProjectionRequestId ?? null;
-  if (
-    receipt?.schemaVersion !== 1 ||
-    receipt.kind !== AUTOMATCH_RECEIPT_KIND ||
-    typeof receipt.completedAtMs !== "number" ||
-    !Number.isFinite(receipt.completedAtMs) ||
-    typeof receipt.emojiId !== "number" ||
-    !Number.isSafeInteger(receipt.emojiId) ||
-    typeof receipt.aura !== "string" ||
-    typeof receipt.operationId !== "string" ||
-    !isSafeRecordKey(receipt.operationId) ||
-    typeof receipt.requesterUid !== "string" ||
-    !receipt.requesterUid ||
-    typeof receipt.inviteId !== "string" ||
-    !isSafeRecordKey(receipt.inviteId) ||
-    !(
-      profileProjectionRequestId === null ||
-      (typeof profileProjectionRequestId === "string" &&
-        isSafeRecordKey(profileProjectionRequestId))
-    ) ||
-    typeof receipt.telegramProjection !== "boolean" ||
-    !isStartAutomatchResponse(response) ||
-    !response.ok ||
-    response.inviteId !== receipt.inviteId
-  ) {
-    return null;
-  }
-  return {
-    schemaVersion: 1,
-    aura: receipt.aura,
-    completedAtMs: Math.floor(receipt.completedAtMs),
-    emojiId: receipt.emojiId,
-    inviteId: receipt.inviteId,
-    kind: AUTOMATCH_RECEIPT_KIND,
-    operationId: receipt.operationId,
-    profileProjectionRequestId,
-    requesterUid: receipt.requesterUid,
-    response,
-    telegramProjection: receipt.telegramProjection,
-  };
-}
 
 export function buildAutomatchReceiptChanges(
   requesterUid: string,

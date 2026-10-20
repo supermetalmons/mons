@@ -1,20 +1,14 @@
-import {
-  isCreateInviteResponse,
-  isEndRematchResponse,
-  isEnsureMatchResponse,
-  isJoinInviteResponse,
-  isProposeRematchResponse,
-  type CreateInviteRequest,
-  type CreateInviteResponse,
-  type EndRematchRequest,
-  type EndRematchResponse,
-  type EnsureMatchRequest,
-  type EnsureMatchResponse,
-  type JoinInviteRequest,
-  type JoinInviteResponse,
-  type ProposeRematchRequest,
-  type ProposeRematchResponse,
+import type {
+  CreateInviteRequest,
+  EndRematchRequest,
+  EnsureMatchRequest,
+  JoinInviteRequest,
+  ProposeRematchRequest,
 } from "@mons/shared/game-sessions";
+import type {
+  GameSessionMutationKind,
+  GameSessionResponse,
+} from "../../../runtime/automatchRecords.js";
 import { AuthApiFailure } from "./authErrors.ts";
 import type { AutomatchPersistence } from "./automatchPersistence.ts";
 import type { GameSessionChange } from "./gameSessionContracts.ts";
@@ -37,38 +31,12 @@ const GAME_SESSION_MUTATION_RECEIPT_EXPIRATION_ROOT =
 const GAME_SESSION_MUTATION_RECEIPT_RETENTION_MS = 7 * 24 * 60 * 60 * 1_000;
 const GAME_SESSION_MUTATION_RECEIPT_SWEEP_LIMIT = 1000;
 
-type GameSessionMutationKind =
-  | "invite-create"
-  | "invite-join"
-  | "match-ensure"
-  | "rematch-end"
-  | "rematch-propose";
-
-type GameSessionResponse =
-  | CreateInviteResponse
-  | EndRematchResponse
-  | EnsureMatchResponse
-  | JoinInviteResponse
-  | ProposeRematchResponse;
-
 type GameSessionRequest =
   | CreateInviteRequest
   | EndRematchRequest
   | EnsureMatchRequest
   | JoinInviteRequest
   | ProposeRematchRequest;
-
-type GameSessionMutationReceipt = {
-  completedAtMs: number;
-  fingerprint: string;
-  inviteId: string;
-  kind: GameSessionMutationKind;
-  operationId: string;
-  projectionRequestId: string | null;
-  requesterUid: string;
-  response: GameSessionResponse;
-  schemaVersion: 1;
-};
 
 type GameSessionMutationOutcome<T extends GameSessionResponse> = {
   historicalMatches?: HistoricalMatchDescriptor[];
@@ -88,12 +56,6 @@ export type GameSessionMutationRunnerDependencies = {
   now?: () => number;
   wait?: (milliseconds: number) => Promise<void>;
 };
-
-function toRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-}
 
 function failedPrecondition(message: string): AuthApiFailure {
   return new AuthApiFailure(409, "failed-precondition", message);
@@ -123,46 +85,6 @@ async function mutationFingerprint(
   return Array.from(new Uint8Array(digest), (byte) =>
     byte.toString(16).padStart(2, "0"),
   ).join("");
-}
-
-function parseReceipt(value: unknown): GameSessionMutationReceipt | null {
-  const record = toRecord(value);
-  const response = record?.response;
-  if (
-    record?.schemaVersion !== 1 ||
-    typeof record.completedAtMs !== "number" ||
-    !Number.isFinite(record.completedAtMs) ||
-    typeof record.fingerprint !== "string" ||
-    typeof record.inviteId !== "string" ||
-    typeof record.kind !== "string" ||
-    typeof record.operationId !== "string" ||
-    typeof record.requesterUid !== "string" ||
-    !record.requesterUid ||
-    !(
-      record.projectionRequestId === null ||
-      typeof record.projectionRequestId === "string"
-    ) ||
-    !(
-      isCreateInviteResponse(response) ||
-      isJoinInviteResponse(response) ||
-      isProposeRematchResponse(response) ||
-      isEndRematchResponse(response) ||
-      isEnsureMatchResponse(response)
-    )
-  ) {
-    return null;
-  }
-  return {
-    schemaVersion: 1,
-    completedAtMs: Math.floor(record.completedAtMs),
-    fingerprint: record.fingerprint,
-    inviteId: record.inviteId,
-    kind: record.kind as GameSessionMutationKind,
-    operationId: record.operationId,
-    projectionRequestId: record.projectionRequestId,
-    requesterUid: record.requesterUid,
-    response,
-  };
 }
 
 async function dispatchProjection(
@@ -377,7 +299,7 @@ export async function runGameSessionMutation<T extends GameSessionResponse>(
   request: GameSessionRequest,
   repository: Pick<
     GameSessionRepository,
-    "readMutationReceipt" | "commitSessionChanges"
+    "readGameSessionMutationReceipt" | "commitSessionChanges"
   >,
   validateResponse: (value: unknown) => value is T,
   build: () => Promise<GameSessionMutationOutcome<T>>,
@@ -390,14 +312,14 @@ export async function runGameSessionMutation<T extends GameSessionResponse>(
     request.operationId,
     dependencies.mutationLocks,
     async (refresh) => {
-      const rawReceipt = await repository.readMutationReceipt(
+      const receipt = await repository.readGameSessionMutationReceipt(
         request.operationId,
       );
-      const existing = parseReceipt(rawReceipt);
-      if (rawReceipt !== null && rawReceipt !== undefined && !existing) {
+      if (receipt.kind === "invalid") {
         throw failedPrecondition("operation-conflict");
       }
-      if (existing) {
+      if (receipt.kind === "valid") {
+        const existing = receipt.value;
         if (
           existing.kind !== kind ||
           existing.inviteId !== request.inviteId ||

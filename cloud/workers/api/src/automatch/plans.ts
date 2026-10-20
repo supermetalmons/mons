@@ -257,11 +257,11 @@ export function buildMatchedAutomatchPlan(
   );
   const hostColor = normalizeString(queued.data.hostColor);
   const existingPlayerName = getDisplayNameFromAddress(
-    queued.data.username,
-    queued.data.ethAddress,
-    queued.data.solAddress,
+    queued.data.display.username,
+    queued.data.display.ethAddress,
+    queued.data.display.solAddress,
     finiteNumber(queued.data.rating),
-    queued.data.emojiId,
+    queued.data.display.emojiId,
   );
   const usesTelegramDeliveryV2 =
     queued.data.telegramDeliveryVersion === TELEGRAM_AUTOMATCH_VERSION;

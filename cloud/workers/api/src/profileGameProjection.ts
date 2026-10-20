@@ -1,7 +1,9 @@
 import * as queue from "./profileGameProjection/queue.ts";
 import * as recovery from "./profileGameProjection/recovery.ts";
 import type {
+  AutomatchRecoveryDependencies,
   ProfileGameProjectionDependencies,
+  ProfileGameProjectionRecoveryDependencies,
   ProfileGameProjectionSweepResult,
 } from "./profileGameProjection/types.ts";
 
@@ -58,7 +60,7 @@ export function sweepRatingProfileGameProjections(
 
 export function sweepAutomatchProfileGameProjections(
   env: Env,
-  dependencies: ProfileGameProjectionDependencies = {},
+  dependencies: AutomatchRecoveryDependencies = {},
 ): Promise<number> {
   return recovery.sweepAutomatchProfileGameProjections(env, dependencies);
 }
@@ -79,7 +81,7 @@ export function sweepProfileLinkProfileGameProjections(
 
 export function sweepProfileGameProjections(
   env: Env,
-  dependencies: ProfileGameProjectionDependencies = {},
+  dependencies: ProfileGameProjectionRecoveryDependencies = {},
 ): Promise<ProfileGameProjectionSweepResult> {
   return recovery.sweepProfileGameProjections(env, dependencies);
 }

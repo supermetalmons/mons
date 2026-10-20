@@ -6,7 +6,7 @@ declare const normalizeString: (value: unknown) => string | null;
 declare const normalizeFiniteNumberOrNull: (value: unknown) => number | null;
 declare const mapEventStatusToNavigationStatus: (
   status: unknown,
-) => "active" | "ended" | "dismissed" | "waiting";
+) => "waiting" | "active" | "ended" | "dismissed";
 declare const getListSortAtMs: (eventData: EventData, status: string) => number;
 declare const buildPreviewParticipants: (
   participants: Record<string, EventParticipant> | null | undefined,

@@ -8,6 +8,7 @@ import { composeInviteWagerSource } from "../src/inviteWagerSource.ts";
 import type { MatchStatePort } from "../src/repositoryContracts.ts";
 import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
 import { applyStrictMatchStateTestMigrations } from "./strictMatchStateTestFixture.ts";
+import { legacySessionChanges } from "../test/gameSessionTestPorts.ts";
 
 const testEnv = env as Env & {
   TEST_D1_MIGRATIONS: D1Migration[];
@@ -245,14 +246,15 @@ describe("gameplay invite metadata reads", () => {
     const lock = { lockId: inviteId, operationId: "notification-operation" };
     await locks.acquire(lock, "notification-owner", Date.now());
     try {
-      await gameplay.commitSessionChanges([
-        { kind: "invite-merge", inviteId, value: source },
-        {
-          kind: "automatch-entry",
-          inviteId,
-          value: { uid: source.hostId, timestamp: Date.now() },
-        },
-      ]);
+      await gameplay.commitSessionChanges(
+        legacySessionChanges({
+          [`invites/${inviteId}`]: source,
+          [`automatch/${inviteId}`]: {
+            uid: source.hostId,
+            timestamp: Date.now(),
+          },
+        }),
+      );
       expect(notifications).toEqual([]);
     } finally {
       await locks.release(lock, "notification-owner");

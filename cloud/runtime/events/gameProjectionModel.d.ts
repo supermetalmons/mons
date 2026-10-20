@@ -32,7 +32,7 @@ declare const deriveProjectionStatus: ({
   inviteData,
   automatchStateHint,
   latestMatchRatingCompleted,
-}: InviteProjectionInput) => "active" | "ended" | "pending" | "waiting";
+}: InviteProjectionInput) => "pending" | "waiting" | "active" | "ended";
 declare const shouldProjectInvite: ({
   inviteId,
   inviteData,

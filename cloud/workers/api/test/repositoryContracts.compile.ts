@@ -26,6 +26,26 @@ import type { sweepGameSessionMutationReceipts } from "../src/gameSessionMutatio
 import type { MatchStatePort } from "../src/repositoryContracts.ts";
 import type { WagerKey } from "../src/wagerStateRepository.ts";
 import type { TelegramStorage } from "../../../runtime/telegram/repositoryCore.js";
+import type {
+  AutomatchEntryFields,
+  AutomatchEntryRead,
+  AutomatchEntryWrite,
+  AutomatchReceiptView,
+  AutomatchReceiptWrite,
+  AutomatchTelegramSourceWrite,
+  GameSessionMutationReceiptView,
+  GameSessionMutationReceiptWrite,
+  HistoricalMatchDescriptorWrite,
+  MutationReceiptWrite,
+  SessionTimestamp,
+} from "../../../runtime/automatchRecords.js";
+import type {
+  ProfileProjectionRequest,
+  TelegramProjectionRequest,
+  TelegramSourceChanges,
+} from "../../../runtime/gameSessionChanges.js";
+import type { GameSessionPort } from "../src/gameSessionContracts.ts";
+import type { ReceiptRead } from "../src/gameSessionReceiptRecords.ts";
 
 type Assert<T extends true> = T;
 type Rejects<Value, Contract> = Value extends Contract ? false : true;
@@ -195,4 +215,200 @@ export type ProjectionRecordsRejectStringVersions = Assert<
   | Rejects<string, ProjectionRecord["version"]>
   | Rejects<string, ProjectionWrite["expectedVersion"]>
   | Rejects<string, D1ProjectionWrite["expectedVersion"]>
+>;
+
+type ReplacedField<T, Key extends keyof T, Value> = Omit<T, Key> &
+  Record<Key, Value>;
+type HistoricalDescriptorMap = NonNullable<
+  Extract<
+    GameSessionChange,
+    { kind: "profile-outbox-merge" }
+  >["historicalMatches"]
+>;
+type StoredTimestampMarker = { readonly ".sv": "timestamp" };
+type IncrementMarker = { readonly ".sv": { increment: number } };
+
+export type AutomatchEntryReadIsRequired = Assert<
+  Awaited<
+    ReturnType<GameSessionPort["readAutomatchEntry"]>
+  > extends AutomatchEntryRead
+    ? true
+    : false
+>;
+export type AutomatchEntryReadsRejectRawRecords = Assert<
+  | Rejects<
+      { uid: string },
+      Awaited<ReturnType<GameSessionPort["readAutomatchEntry"]>>
+    >
+  | Rejects<
+      Record<string, unknown>,
+      NonNullable<
+        Awaited<ReturnType<GameSessionPort["readFirstAutomatchEntry"]>>
+      >
+    >
+>;
+export type AutomatchReadNumbersAreResolved = Assert<
+  | (
+      | AutomatchEntryFields["timestamp"]
+      | AutomatchEntryFields["rating"] extends number
+      ? true
+      : false)
+  | (AutomatchReceiptView["completedAtMs"] extends number ? true : false)
+  | (GameSessionMutationReceiptView["completedAtMs"] extends number
+      ? true
+      : false)
+  | Rejects<StoredTimestampMarker, AutomatchEntryFields["timestamp"]>
+  | Rejects<StoredTimestampMarker, AutomatchReceiptView["completedAtMs"]>
+  | Rejects<
+      StoredTimestampMarker,
+      GameSessionMutationReceiptView["completedAtMs"]
+    >
+>;
+export type AutomatchReceiptReadsDistinguishInvalidRecords = Assert<
+  | (Awaited<
+      ReturnType<GameSessionPort["readAutomatchReceipt"]>
+    > extends ReceiptRead<AutomatchReceiptView>
+      ? true
+      : false)
+  | (Awaited<
+      ReturnType<GameSessionPort["readGameSessionMutationReceipt"]>
+    > extends ReceiptRead<GameSessionMutationReceiptView>
+      ? true
+      : false)
+  | Rejects<
+      { kind: "valid"; value: {} },
+      Awaited<ReturnType<GameSessionPort["readAutomatchReceipt"]>>
+    >
+>;
+export type AutomatchProducersHaveKnownFields = Assert<
+  | Rejects<"arbitrary", keyof AutomatchEntryWrite>
+  | Rejects<"arbitrary", keyof AutomatchTelegramSourceWrite>
+  | Rejects<"arbitrary", keyof AutomatchReceiptWrite>
+  | Rejects<"arbitrary", keyof GameSessionMutationReceiptWrite>
+  | Rejects<"arbitrary", keyof HistoricalMatchDescriptorWrite>
+>;
+export type AutomatchEntriesRejectWrongProducerFields = Assert<
+  | Rejects<
+      ReplacedField<AutomatchEntryWrite, "uid", number>,
+      AutomatchEntryWrite
+    >
+  | Rejects<
+      ReplacedField<AutomatchEntryWrite, "rating", string>,
+      AutomatchEntryWrite
+    >
+  | Rejects<
+      ReplacedField<AutomatchEntryWrite, "hostColor", "green">,
+      AutomatchEntryWrite
+    >
+  | Rejects<
+      ReplacedField<AutomatchEntryWrite, "telegramDeliveryVersion", string>,
+      AutomatchEntryWrite
+    >
+>;
+export type AutomatchReceiptsRequireIdentityAndResponse = Assert<
+  | Rejects<Omit<AutomatchReceiptWrite, "operationId">, MutationReceiptWrite>
+  | Rejects<
+      Omit<GameSessionMutationReceiptWrite, "requesterUid">,
+      MutationReceiptWrite
+    >
+  | Rejects<
+      ReplacedField<AutomatchReceiptWrite, "response", { ok: false }>,
+      MutationReceiptWrite
+    >
+  | Rejects<
+      ReplacedField<GameSessionMutationReceiptWrite, "kind", "other">,
+      MutationReceiptWrite
+    >
+  | Rejects<
+      ReplacedField<GameSessionMutationReceiptWrite, "fingerprint", number>,
+      MutationReceiptWrite
+    >
+>;
+export type AutomatchChangesAcceptNamedProducers = Assert<
+  | ({
+      kind: "automatch-entry";
+      inviteId: string;
+      value: AutomatchEntryWrite;
+    } extends GameSessionChange
+      ? true
+      : false)
+  | ({
+      kind: "telegram-source";
+      inviteId: string;
+      value: AutomatchTelegramSourceWrite;
+    } extends GameSessionChange
+      ? true
+      : false)
+  | ({
+      kind: "mutation-receipt";
+      operationId: string;
+      value: MutationReceiptWrite;
+      expiration: { completedAtMs: StoredTimestampMarker };
+    } extends GameSessionChange
+      ? true
+      : false)
+>;
+export type AutomatchWritesAcceptServerTimestamps = Assert<
+  | (StoredTimestampMarker extends AutomatchEntryWrite["timestamp"]
+      ? true
+      : false)
+  | (StoredTimestampMarker extends AutomatchReceiptWrite["completedAtMs"]
+      ? true
+      : false)
+  | (StoredTimestampMarker extends GameSessionMutationReceiptWrite["completedAtMs"]
+      ? true
+      : false)
+  | (StoredTimestampMarker extends TelegramProjectionRequest["updatedAtMs"]
+      ? true
+      : false)
+  | (StoredTimestampMarker extends ProfileProjectionRequest["lastQueuedAtMs"]
+      ? true
+      : false)
+  | (IncrementMarker extends TelegramSourceChanges["generation"] ? true : false)
+>;
+export type AutomatchWritesRejectWrongServerMarkers = Assert<
+  | Rejects<IncrementMarker, SessionTimestamp>
+  | Rejects<{ ".sv": "invalid" }, SessionTimestamp>
+  | Rejects<StoredTimestampMarker, TelegramSourceChanges["generation"]>
+>;
+export type AutomatchProjectionWritesRejectInvalidShapes = Assert<
+  | Rejects<
+      ReplacedField<AutomatchTelegramSourceWrite, "lifecycle", "active">,
+      AutomatchTelegramSourceWrite
+    >
+  | Rejects<
+      ReplacedField<TelegramProjectionRequest, "status", "dead">,
+      TelegramProjectionRequest
+    >
+  | Rejects<
+      ReplacedField<ProfileProjectionRequest, "requestId", number>,
+      ProfileProjectionRequest
+    >
+  | Rejects<
+      ReplacedField<HistoricalMatchDescriptorWrite, "source", "other">,
+      HistoricalMatchDescriptorWrite
+    >
+  | Rejects<HistoricalMatchDescriptorWrite[], HistoricalDescriptorMap>
+>;
+export type AutomatchHistoricalWritesUseDescriptorMaps = Assert<
+  Record<string, HistoricalMatchDescriptorWrite> extends HistoricalDescriptorMap
+    ? true
+    : false
+>;
+export type AutomatchSessionPortExcludesRawRecoveryAccess = Assert<
+  Extract<
+    keyof GameSessionPort,
+    | "readMutationReceipt"
+    | "transactAutomatchTelegramSource"
+    | "transactAutomatchTelegramOutbox"
+    | "transactAutomatchProfileOutbox"
+    | "transactRawAutomatchTelegramOutbox"
+    | "transactRawAutomatchProfileOutbox"
+    | "listDueAutomatchTelegramOutboxes"
+    | "listDueAutomatchProfileOutboxes"
+    | "listMalformedAutomatchProfileOutboxes"
+    | "projectionRecovery"
+  > extends never
+    ? true
+    : false
 >;

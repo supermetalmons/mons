@@ -2,6 +2,7 @@
 
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { decodeAutomatchEntry } = require("../runtime/automatchRecords");
 const {
   createEventProfileGameProjectionCore,
 } = require("../runtime/eventProfileGameProjectionCore");
@@ -259,11 +260,11 @@ const runInviteProjection = async ({
       },
       async readAutomatchEntry(inviteId) {
         const path = `automatch/${inviteId}`;
-        if (path === `automatch/${inviteId}`) return null;
+        if (path === `automatch/${inviteId}`) return decodeAutomatchEntry(null);
         if (/^players\/.+\/profile$/.test(path)) {
           throw new Error("unexpected-state-profile-owner-read");
         }
-        if (path.startsWith("players/")) return null;
+        if (path.startsWith("players/")) return decodeAutomatchEntry(null);
         throw new Error(`unexpected-path:${path}`);
       },
       async readProfileOwnershipSnapshot({ loginUids }) {
@@ -435,12 +436,12 @@ test("invite projection ignores an legacy profile shadow when D1 has no owner", 
       },
       async readAutomatchEntry(inviteId) {
         const path = `automatch/${inviteId}`;
-        if (path === `automatch/${inviteId}`) return null;
+        if (path === `automatch/${inviteId}`) return decodeAutomatchEntry(null);
         if (path === "players/host-login/profile") {
           legacyProfileReads += 1;
-          return "shadow-profile";
+          return decodeAutomatchEntry("shadow-profile");
         }
-        return null;
+        return decodeAutomatchEntry(null);
       },
       readProfileOwnershipSnapshot: async ({ loginUids }) =>
         projectionOwnership(loginUids.map((loginUid) => [loginUid, null])),
@@ -478,11 +479,11 @@ test("invite projection retries D1 ownership failures without writing", async ()
       },
       async readAutomatchEntry(inviteId) {
         const path = `automatch/${inviteId}`;
-        if (path === `automatch/${inviteId}`) return null;
+        if (path === `automatch/${inviteId}`) return decodeAutomatchEntry(null);
         if (/^players\/.+\/profile$/.test(path)) {
           throw new Error("unexpected-state-profile-owner-read");
         }
-        return null;
+        return decodeAutomatchEntry(null);
       },
     },
     wait: async () => undefined,
@@ -961,7 +962,7 @@ test("projection cleanup rejects a failed bulk read without writing", async () =
         throw new Error("projection-read-failed");
       },
       readInviteMetadata: async () => ({ hostId: "host-login" }),
-      readAutomatchEntry: async () => null,
+      readAutomatchEntry: async () => decodeAutomatchEntry(null),
       hasCompletedRatingUpdate: async () => false,
       readProfileOwnershipSnapshot: async () =>
         projectionOwnership([["host-login", "target"]]),

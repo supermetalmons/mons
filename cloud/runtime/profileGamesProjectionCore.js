@@ -375,7 +375,7 @@ const createProfileGamesProjectionCore = ({
       );
     const automatchStateHint = (0, navigation_1.inferAutomatchStateHint)({
       inviteId: normalizedInviteId,
-      queueValue: automatchData,
+      queueValue: automatchData.isTruthy,
       hasGuest: !!guestLoginId,
       storedStateHint: inviteData ? inviteData.automatchStateHint : null,
     });
@@ -615,7 +615,10 @@ const createProfileGamesProjectionCore = ({
       const nextListSortMs = (0, gameProjectionModel_js_1.pickListSortMillis)({
         options,
         status,
-        automatchData: automatchData,
+        automatchData:
+          automatchData.record?.numericTimestamp == null
+            ? null
+            : { timestamp: automatchData.record.numericTimestamp },
         nowMs,
         existingListSortMs,
       });

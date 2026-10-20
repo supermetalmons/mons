@@ -8,7 +8,10 @@ import {
   type AutomatchPersistence,
 } from "./automatchPersistence.ts";
 import { measureAutomatchPhase } from "./automatchTelemetry.ts";
-import type { GameSessionPort } from "./gameSessionContracts.ts";
+import type {
+  GameSessionPort,
+  GameSessionRecoveryContext,
+} from "./gameSessionContracts.ts";
 import { createCanonicalGameplayRepository } from "./gameplayCanonicalRepository.ts";
 import { createGameplayRepositoryFailure } from "./gameplayRepositoryPolicy.ts";
 import { notifyInviteSessionCommitted } from "./inviteWagersNotifications.ts";
@@ -51,6 +54,7 @@ export type GameplayProfile = ProfileOwnershipProfile;
 
 export type GameplayRepository = ProfileOwnershipReader &
   GameSessionPort &
+  GameSessionRecoveryContext &
   MatchStatePort & {
     wagers: WagerReader;
     automatchPersistence: AutomatchPersistence;

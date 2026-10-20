@@ -3,6 +3,7 @@ import { applyD1Migrations, type D1Migration } from "cloudflare:test";
 import { env } from "cloudflare:workers";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { loadEndedMatchResults } from "../../../runtime/telegram/eventProjectionCore.js";
+import { decodeAutomatchEntry } from "../../../runtime/automatchRecords.js";
 import { ProfileWritesDisabledFailure } from "../src/authErrors.ts";
 import { createEventProgressOutboxWriter } from "../src/eventRepository.ts";
 import {
@@ -4267,7 +4268,9 @@ describe("canonical gameplay repositories", () => {
             unknown
           > | null,
         readAutomatchEntry: async (inviteId) =>
-          stateValues.get(`automatch/${inviteId}`) ?? null,
+          decodeAutomatchEntry(
+            stateValues.get(`automatch/${inviteId}`) ?? null,
+          ),
       },
       wait: async () => undefined,
     });

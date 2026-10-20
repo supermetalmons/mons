@@ -2,6 +2,7 @@
 
 const assert = require("node:assert/strict");
 const test = require("node:test");
+const { decodeAutomatchEntry } = require("../runtime/automatchRecords");
 const {
   createProfileGamesProjectionCore,
 } = require("../runtime/profileGamesProjectionCore");
@@ -82,8 +83,9 @@ function fixture({
       async readAutomatchEntry(inviteId) {
         const path = `automatch/${inviteId}`;
         reads.push(path);
-        if (path === `automatch/${inviteId}`) return null;
-        if (path === guestMatchPath) return { emojiId: 1, aura: "" };
+        if (path === `automatch/${inviteId}`) return decodeAutomatchEntry(null);
+        if (path === guestMatchPath)
+          return decodeAutomatchEntry({ emojiId: 1, aura: "" });
         throw new Error(`unexpected-state-read:${path}`);
       },
       async readMatchPresentation(...args) {

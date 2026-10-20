@@ -498,7 +498,7 @@ describe("canonical invite source", () => {
     };
     const coordinator = createAutomatchPersistence(db, matchTestPort(raw));
     await expect(
-      legacySessionClient(coordinator.client).getPath("invites/one"),
+      legacySessionClient(coordinator.rawClient).getPath("invites/one"),
     ).rejects.toThrow("invite-source-backend-retired");
     expect(sourceReads).toBe(0);
     await activate();
@@ -519,7 +519,7 @@ describe("canonical invite source", () => {
       ),
     );
     expect(
-      await legacySessionClient(coordinator.client).getPath(
+      await legacySessionClient(coordinator.rawClient).getPath(
         "invites/one/hostId",
       ),
     ).toBe("canonical");
@@ -531,14 +531,16 @@ describe("canonical invite source", () => {
       ),
     ).toEqual({ hostId: true, password: true, settings: true });
     expect(
-      await legacySessionClient(coordinator.client).getPath("invites/missing"),
+      await legacySessionClient(coordinator.rawClient).getPath(
+        "invites/missing",
+      ),
     ).toBeNull();
     expect(sourceReads).toBe(0);
     await db
       .prepare("DELETE FROM invite_source_control WHERE singleton = 1")
       .run();
     await expect(
-      legacySessionClient(coordinator.client).getPath("invites/one"),
+      legacySessionClient(coordinator.rawClient).getPath("invites/one"),
     ).rejects.toThrow("invite-source-control-unavailable");
     expect(sourceReads).toBe(0);
     await db
@@ -681,11 +683,11 @@ describe("canonical invite source", () => {
       );
       for (let attempt = 0; attempt < 2; attempt++) {
         if (operation === "patch") {
-          await legacySessionClient(coordinator.client).patchRoot({
+          await legacySessionClient(coordinator.rawClient).patchRoot({
             "automatch/one": { uid: "host" },
           });
           expect(
-            await legacySessionClient(coordinator.client).getPath(
+            await legacySessionClient(coordinator.rawClient).getPath(
               "automatch/one",
             ),
           ).toEqual({

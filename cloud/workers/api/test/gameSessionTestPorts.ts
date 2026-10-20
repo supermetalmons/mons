@@ -1,9 +1,12 @@
 import type {
   GameSessionPort,
   GameSessionChange,
+  GameSessionRecoveryContext,
+  RawGameSessionPort,
 } from "../src/gameSessionContracts.ts";
 import type { MatchStatePort } from "../src/repositoryContracts.ts";
 import type { StateRepository } from "../test/stateRepositoryTestTypes.ts";
+import { createTypedGameSessionPort } from "../src/gameSessionRecordAdapter.ts";
 import { encodeSessionChanges } from "../src/gameSessionCodec.ts";
 import {
   decideAutomatchProfileOutboxCompletion,
@@ -16,7 +19,7 @@ export function legacySessionChanges(
 ): GameSessionChange[] {
   const changes: GameSessionChange[] = [];
   for (const [path, value] of Object.entries(updates)) {
-    const [root, id, field, key] = path.split("/");
+    const [root, id, field, key, nestedKey] = path.split("/");
     if (root === "gameplayMutationReceiptExpirations") continue;
     if (root === "gameplayMutationReceipts")
       changes.push({
@@ -70,6 +73,18 @@ export function legacySessionChanges(
         kind: "telegram-outbox",
         inviteId: field,
         value,
+      } as GameSessionChange);
+    else if (
+      root === "profileGameProjectionOutbox" &&
+      id === "automatch" &&
+      key === "historicalMatches" &&
+      nestedKey
+    )
+      changes.push({
+        kind: "profile-outbox-merge",
+        inviteId: field,
+        value: {},
+        historicalMatches: { [nestedKey]: value },
       } as GameSessionChange);
     else if (root === "profileGameProjectionOutbox" && id === "automatch")
       changes.push({
@@ -148,9 +163,9 @@ export function matchTestPort(
   };
 }
 
-export function gameplayTestPort(
+export function rawGameplayTestPort(
   state: StateRepository,
-): GameSessionPort & MatchStatePort {
+): RawGameSessionPort & MatchStatePort {
   return {
     ...matchTestPort(state),
     readInviteMetadata: async (id, signal) =>
@@ -352,7 +367,14 @@ export function gameplayTestPort(
   };
 }
 
-export function legacySessionClient(port: GameSessionPort): StateRepository {
+export function gameplayTestPort(
+  state: StateRepository,
+): GameSessionPort & GameSessionRecoveryContext & MatchStatePort {
+  const raw = rawGameplayTestPort(state);
+  return { ...matchTestPort(state), ...createTypedGameSessionPort(raw) };
+}
+
+export function legacySessionClient(port: RawGameSessionPort): StateRepository {
   return {
     async getPath(path, query, signal) {
       const [root, id, field, ...nested] = path.split("/");
@@ -427,7 +449,9 @@ export function attachGameplayTestPorts<
       signal?: AbortSignal,
     ): Promise<Record<string, unknown> | null>;
   },
->(source: T): T & GameSessionPort & MatchStatePort {
+>(
+  source: T,
+): T & GameSessionPort & GameSessionRecoveryContext & MatchStatePort {
   const port = gameplayTestPort({
     getPath: (path, query, signal) =>
       /^invites\/[^/]+$/.test(path)

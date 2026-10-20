@@ -19,6 +19,7 @@ import {
 import { isInviteSourceRevisionConflict } from "../src/inviteSourceD1.ts";
 import { classifyD1Failure } from "../src/d1Failure.ts";
 import { observeD1FailureDatabase } from "./d1FailureTestUtils.ts";
+import { legacySessionChanges } from "../test/gameSessionTestPorts.ts";
 
 const testEnv = env as Env & { TEST_D1_MIGRATIONS: D1Migration[] };
 const db = env.PROFILE_GAMES_DB;
@@ -463,8 +464,11 @@ describe("D1 automatch state", () => {
             sourceUpdatedAtMs: { ".sv": "timestamp" },
             lastQueuedAtMs: { ".sv": "timestamp" },
           },
-          historicalMatches: { second: { finalizedAtMs: 2 } },
         },
+        ...legacySessionChanges({
+          "profileGameProjectionOutbox/automatch/invite/historicalMatches/second":
+            { finalizedAtMs: 2 },
+        }),
       ],
       500,
     );
@@ -507,25 +511,18 @@ describe("D1 automatch state", () => {
   it("preloads each physical record once in one primary batch and preserves mutation order", async () => {
     const observed = observeMutationReads();
     const prepared = await observed.store.prepareChanges(
-      [
-        {
-          kind: "telegram-source",
-          inviteId: "shared",
-          value: { generation: 2 },
+      legacySessionChanges({
+        "telegramAutomatches/shared": { generation: 2 },
+        "gameplayMutationReceipts/shared": {
+          completedAtMs: { ".sv": "timestamp" },
         },
-        {
-          kind: "mutation-receipt",
-          operationId: "shared",
-          value: { completedAtMs: { ".sv": "timestamp" } },
-          expiration: { completedAtMs: { ".sv": "timestamp" } },
+        "gameplayMutationReceiptExpirations/shared": {
+          completedAtMs: { ".sv": "timestamp" },
         },
-        { kind: "automatch-entry", inviteId: "shared", value: { uid: "host" } },
-        {
-          kind: "telegram-source-merge",
-          inviteId: "shared",
-          value: { lifecycle: "pending", updatedAtMs: { ".sv": "timestamp" } },
-        },
-      ],
+        "automatch/shared": { uid: "host" },
+        "telegramAutomatches/shared/lifecycle": "pending",
+        "telegramAutomatches/shared/updatedAtMs": { ".sv": "timestamp" },
+      }),
       500,
     );
     expect(observed.sessions).toEqual(["first-primary"]);
@@ -578,14 +575,12 @@ describe("D1 automatch state", () => {
       "gameplayMutationReceiptExpirations/operation": { completedAtMs: 10 },
     });
     await store.patchRoot({ "gameplayMutationReceipts/operation": null });
-    const prepared = await store.prepareChanges([
-      {
-        kind: "mutation-receipt",
-        operationId: "operation",
-        value: { completedAtMs: 20 },
-        expiration: { completedAtMs: 20 },
-      },
-    ]);
+    const prepared = await store.prepareChanges(
+      legacySessionChanges({
+        "gameplayMutationReceipts/operation": { completedAtMs: 20 },
+        "gameplayMutationReceiptExpirations/operation": { completedAtMs: 20 },
+      }),
+    );
     expect(prepared.map(({ current }) => current)).toEqual([
       {
         root: "gameplayMutationReceipts",
@@ -626,15 +621,13 @@ describe("D1 automatch state", () => {
         "gameplayMutationReceipts/operation": { completedAtMs: 10 },
         "gameplayMutationReceiptExpirations/operation": { completedAtMs: 10 },
       });
-      const prepared = await store.prepareChanges([
-        { kind: "automatch-entry", inviteId: "invite", value: { uid: "host" } },
-        {
-          kind: "mutation-receipt",
-          operationId: "operation",
-          value: { completedAtMs: 20 },
-          expiration: { completedAtMs: 20 },
-        },
-      ]);
+      const prepared = await store.prepareChanges(
+        legacySessionChanges({
+          "automatch/invite": { uid: "host" },
+          "gameplayMutationReceipts/operation": { completedAtMs: 20 },
+          "gameplayMutationReceiptExpirations/operation": { completedAtMs: 20 },
+        }),
+      );
       await store.patchRoot({ [`${root}/operation`]: { completedAtMs: 30 } });
       expect(await store.commit(prepared)).toBe(false);
       expect(await store.read("automatch", "invite")).toMatchObject({
@@ -677,13 +670,7 @@ describe("D1 automatch state", () => {
     const observed = observeMutationReads(() => controller.abort(reason));
     await expect(
       observed.store.prepareChanges(
-        [
-          {
-            kind: "automatch-entry",
-            inviteId: "invite",
-            value: { uid: "host" },
-          },
-        ],
+        legacySessionChanges({ "automatch/invite": { uid: "host" } }),
         nowMs,
         controller.signal,
       ),

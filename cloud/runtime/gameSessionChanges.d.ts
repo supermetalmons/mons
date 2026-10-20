@@ -1,16 +1,14 @@
 // Generated from src/gameSessionChanges.ts. Run npm run generate:runtime.
-export type SessionTimestamp =
-  | number
-  | {
-      readonly ".sv": "timestamp";
-    };
-export type SessionCounter =
-  | number
-  | {
-      readonly ".sv": {
-        increment: number;
-      };
-    };
+import type {
+  AutomatchEntryWrite,
+  AutomatchTelegramSourceWrite,
+  HistoricalMatchDescriptorWrite,
+  MutationReceiptExpirationWrite,
+  MutationReceiptWrite,
+  SessionCounter,
+  SessionTimestamp,
+} from "./automatchRecords.js";
+export type { SessionCounter, SessionTimestamp } from "./automatchRecords.js";
 export type InviteFieldChanges = {
   guestId?: string | null;
   hostId?: string;
@@ -74,12 +72,12 @@ export type GameSessionChange =
   | {
       kind: "automatch-entry";
       inviteId: string;
-      value: SessionRecord | null;
+      value: AutomatchEntryWrite | null;
     }
   | {
       kind: "telegram-source";
       inviteId: string;
-      value: SessionRecord;
+      value: AutomatchTelegramSourceWrite;
     }
   | {
       kind: "telegram-source-merge";
@@ -100,11 +98,11 @@ export type GameSessionChange =
       kind: "profile-outbox-merge";
       inviteId: string;
       value: ProfileProjectionRequest;
-      historicalMatches?: Record<string, SessionRecord>;
+      historicalMatches?: Record<string, HistoricalMatchDescriptorWrite>;
     }
   | {
       kind: "mutation-receipt";
       operationId: string;
-      value: SessionRecord;
-      expiration: SessionRecord;
+      value: MutationReceiptWrite;
+      expiration: MutationReceiptExpirationWrite;
     };

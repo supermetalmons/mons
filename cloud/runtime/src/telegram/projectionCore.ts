@@ -24,7 +24,7 @@ export type ProjectionDecision = {
 export type RatingProjectionMerge = {
   changed: boolean;
   source: unknown;
-  reason: string;
+  reason: "inserted" | "duplicate" | "skipped";
 };
 
 const AUTOMATCH_PROJECTION_GUARD_VERSION = 1;

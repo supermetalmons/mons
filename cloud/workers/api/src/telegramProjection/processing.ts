@@ -6,13 +6,12 @@ import {
 import {
   asObject,
   buildAutomatchProjectionGuard,
-  buildAutomatchTelegramProjection,
   evaluateAutomatchProjectionUpdate,
-  mergeRatingResultFragment,
   shouldProjectRatingTelegramUpdate,
   type AutomatchTelegramProjection,
 } from "../../../../runtime/telegram/projectionCore.js";
 import type { TelegramRepository } from "../../../../runtime/telegram/deliveryEngine.js";
+import type { AutomatchTelegramSourceSnapshot } from "../automatchProjectionRecords.ts";
 import type { GameSessionPort } from "../gameSessionContracts.ts";
 import type { RatingProjectionRepository } from "../ratingContracts.ts";
 import {
@@ -20,7 +19,6 @@ import {
   type AutomatchTelegramProjectionTask,
   type RatingTelegramProjectionTask,
 } from "../telegramProjectionTasks.ts";
-import { parseAutomatchTelegramProjectionOutbox as parseOutbox } from "../telegramProjectionOutbox.ts";
 import type { InitialTelegramDelivery } from "../telegramDeliveryTasks.ts";
 import { PROJECTION_INPUT_RETRIES } from "./policy.ts";
 
@@ -37,12 +35,9 @@ function toRecord(value: unknown): Record<string, unknown> | null {
 
 function inputFingerprint(input: {
   inviteData: unknown;
-  source: unknown;
+  source: AutomatchTelegramSourceSnapshot;
 }): string {
-  return JSON.stringify({
-    source: input.source,
-    guestId: toRecord(input.inviteData)?.guestId || null,
-  });
+  return input.source.fingerprint(toRecord(input.inviteData)?.guestId);
 }
 
 function projectionDesired(projection: AutomatchTelegramProjection) {
@@ -54,7 +49,10 @@ function projectionDesired(projection: AutomatchTelegramProjection) {
 async function readAutomatchInputs(
   inviteId: string,
   state: GameSessionPort,
-): Promise<{ inviteData: unknown; source: unknown }> {
+): Promise<{
+  inviteData: unknown;
+  source: AutomatchTelegramSourceSnapshot;
+}> {
   const [source, inviteData] = await Promise.all([
     state.readAutomatchTelegramSource(inviteId),
     state.readInviteMetadata(inviteId),
@@ -69,11 +67,9 @@ export async function projectAutomatchSource(
 ): Promise<AutomatchProjectionResult> {
   let input = await readAutomatchInputs(inviteId, state);
   for (let attempt = 0; attempt < PROJECTION_INPUT_RETRIES; attempt += 1) {
-    const projection = buildAutomatchTelegramProjection({
-      inviteId,
-      source: toRecord(input.source),
-      inviteData: toRecord(input.inviteData),
-    });
+    const projection = input.source.project(
+      toRecord(input.inviteData)?.guestId,
+    );
     if (!projection) {
       return { status: "invalid" };
     }
@@ -125,26 +121,12 @@ async function settleAutomatchOutbox(
       task.requestId,
     );
   }
-  const result = await state.transactAutomatchTelegramOutbox(
+  return state.markAutomatchTelegramOutboxDead(
     task.inviteId,
-    (current) => {
-      const record = toRecord(current);
-      if (record?.requestId !== task.requestId) {
-        return { commit: false, decision: "stale" };
-      }
-      return {
-        value: {
-          ...record,
-          status: "dead",
-          reason,
-          updatedAtMs: null,
-          deadAtMs: now(),
-        },
-        decision: "dead",
-      };
-    },
+    task.requestId,
+    reason,
+    now,
   );
-  return result.committed;
 }
 
 export async function processAutomatchTask(
@@ -154,9 +136,7 @@ export async function processAutomatchTask(
   now: () => number,
   telegram: TelegramRepository,
 ): Promise<string> {
-  const outbox = parseOutbox(
-    await state.readAutomatchTelegramOutbox(task.inviteId),
-  );
+  const outbox = (await state.readAutomatchTelegramOutbox(task.inviteId)).value;
   if (!outbox || outbox.requestId !== task.requestId) {
     return "stale";
   }
@@ -204,14 +184,10 @@ export async function processRatingTask(
     );
     return "dead";
   }
-  let mergeReason = "skipped";
-  await state.transactAutomatchTelegramSource(update.inviteId, (source) => {
-    const merged = mergeRatingResultFragment(source, update);
-    mergeReason = merged.reason;
-    return merged.changed
-      ? { value: merged.source, decision: merged.reason }
-      : { commit: false, decision: merged.reason };
-  });
+  const mergeReason = await state.mergeAutomatchTelegramRatingResult(
+    update.inviteId,
+    update,
+  );
   if (mergeReason === "skipped") {
     await rating.markRatingTelegramProjection(
       task.operationId,

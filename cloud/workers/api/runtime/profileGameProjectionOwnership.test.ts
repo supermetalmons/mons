@@ -1,4 +1,5 @@
 import type { CompletePlayerProfile } from "@mons/shared/profiles";
+import { decodeAutomatchEntry } from "../../../runtime/automatchRecords.js";
 import { applyD1Migrations, type D1Migration } from "cloudflare:test";
 import { env } from "cloudflare:workers";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -366,8 +367,9 @@ describe("D1-authoritative profile game projection ownership", () => {
           }
           if (path.startsWith("invites/"))
             throw new Error("unexpected-invite-aggregate-read");
-          if (path === `automatch/${inviteId}`) return null;
-          return null;
+          if (path === `automatch/${inviteId}`)
+            return decodeAutomatchEntry(null);
+          return decodeAutomatchEntry(null);
         },
       },
       wait: async () => undefined,
@@ -431,7 +433,8 @@ describe("D1-authoritative profile game projection ownership", () => {
         },
         async readAutomatchEntry(id) {
           const path = `automatch/${id}`;
-          if (path === `automatch/${inviteId}`) return null;
+          if (path === `automatch/${inviteId}`)
+            return decodeAutomatchEntry(null);
           throw new Error(`unexpected-source-read:${path}`);
         },
       },
@@ -519,7 +522,8 @@ describe("D1-authoritative profile game projection ownership", () => {
         async readAutomatchEntry(id) {
           const path = `automatch/${id}`;
           reads.push(path);
-          if (path === `automatch/${inviteId}`) return null;
+          if (path === `automatch/${inviteId}`)
+            return decodeAutomatchEntry(null);
           throw new Error(`unexpected-source-read:${path}`);
         },
       },
@@ -592,7 +596,7 @@ describe("D1-authoritative profile game projection ownership", () => {
               guestRematches: "x",
             };
           },
-          readAutomatchEntry: async () => null,
+          readAutomatchEntry: async () => decodeAutomatchEntry(null),
         },
         wait: async () => undefined,
       });
@@ -668,7 +672,8 @@ describe("D1-authoritative profile game projection ownership", () => {
           },
           async readAutomatchEntry(id) {
             const path = `automatch/${id}`;
-            if (path === `automatch/${entry.inviteId}`) return null;
+            if (path === `automatch/${entry.inviteId}`)
+              return decodeAutomatchEntry(null);
             throw new Error(`unexpected-source-read:${path}`);
           },
         },
@@ -895,7 +900,7 @@ describe("D1-authoritative profile game projection ownership", () => {
         async readAutomatchEntry(id) {
           const path = `automatch/${id}`;
           if (inviteIds.some((inviteId) => path === `automatch/${inviteId}`)) {
-            return null;
+            return decodeAutomatchEntry(null);
           }
           throw new Error(`unexpected-source-read:${path}`);
         },

@@ -1,7 +1,10 @@
 import type { EventReads } from "../../../../runtime/eventReads.js";
 import type { TelegramRepository } from "../../../../runtime/telegram/deliveryEngine.js";
 import type { EventStore } from "../eventStoreContracts.ts";
-import type { GameSessionPort } from "../gameSessionContracts.ts";
+import type {
+  GameSessionPort,
+  GameSessionRecoveryContext,
+} from "../gameSessionContracts.ts";
 import type { EventOutboxReads } from "../eventOutboxReadRepository.ts";
 import type { RatingProjectionRepository } from "../ratingContracts.ts";
 import type { InitialTelegramDelivery } from "../telegramDeliveryTasks.ts";
@@ -28,4 +31,16 @@ export type ProjectionDependencies = {
   logger?: ProjectionLogger;
   now?: () => number;
   readStorageMode?: (db: D1Database) => Promise<TelegramStorageMode>;
+};
+
+export type ProjectionRecoveryDependencies = Omit<
+  ProjectionDependencies,
+  "createStateRepository"
+> & {
+  createStateRepository?: (
+    env: Env,
+  ) => ReturnType<
+    NonNullable<ProjectionDependencies["createStateRepository"]>
+  > &
+    GameSessionRecoveryContext;
 };

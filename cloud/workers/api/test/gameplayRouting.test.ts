@@ -1,11 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { decodeAutomatchEntry } from "../../../runtime/automatchRecords.js";
 import {
   WAGER_FROZEN_READ_PATH,
   WAGER_STORAGE_VERSION,
   WAGER_STORAGE_VERSION_HEADER,
 } from "@mons/shared/wagers";
 import { AuthApiFailure } from "../src/authErrors.ts";
+import {
+  decodeAutomatchReceipt,
+  decodeGameSessionMutationReceipt,
+} from "../src/gameSessionReceiptRecords.ts";
 import type { GameplayRepository } from "../src/gameplayRepository.ts";
 import { type GameplayRouteDependencies } from "../src/gameplayRoute.ts";
 import { prepareGameplayRoute } from "../src/gameplayRoutes/definition.ts";
@@ -312,27 +317,30 @@ function fixture(route: RouteCase) {
     },
     readAutomatchEntry: async (inviteId) => {
       assert.equal(inviteId, "invite");
-      return null;
+      return decodeAutomatchEntry(null);
     },
-    readMutationReceipt: async (id) => {
+    readAutomatchReceipt: async (id) => {
       assert.equal(id, operationId);
       effects.push(route.effect);
-      if (route.path === "/automatch/start") {
-        return {
-          schemaVersion: 1,
-          kind: "automatch-start",
-          operationId,
-          requesterUid: uid,
-          inviteId: "auto_invite",
-          completedAtMs: 1,
-          ...presentation,
-          profileProjectionRequestId: null,
-          telegramProjection: false,
-          response: route.response,
-        };
-      }
+      assert.equal(route.path, "/automatch/start");
+      return decodeAutomatchReceipt({
+        schemaVersion: 1,
+        kind: "automatch-start",
+        operationId,
+        requesterUid: uid,
+        inviteId: "auto_invite",
+        completedAtMs: 1,
+        ...presentation,
+        profileProjectionRequestId: null,
+        telegramProjection: false,
+        response: route.response,
+      });
+    },
+    readGameSessionMutationReceipt: async (id) => {
+      assert.equal(id, operationId);
+      effects.push(route.effect);
       assert.ok(route.receipt);
-      return {
+      return decodeGameSessionMutationReceipt({
         schemaVersion: 1,
         ...operation,
         inviteId: route.body.inviteId,
@@ -341,7 +349,7 @@ function fixture(route: RouteCase) {
         completedAtMs: 1,
         projectionRequestId: null,
         response: route.response,
-      };
+      });
     },
     automatchPersistence: createAutomatchPersistenceStub(),
   };
@@ -935,7 +943,8 @@ for (const state of ["frozen", "draining", "unreadable"] as const) {
           },
           repository: {
             ...f.dependencies.repository!,
-            readMutationReceipt: async () => null,
+            readGameSessionMutationReceipt: async () =>
+              decodeGameSessionMutationReceipt(null),
             readMatchRecord: async () => match,
             commitSessionChanges: async () => {
               committed = true;
