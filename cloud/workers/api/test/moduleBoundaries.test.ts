@@ -9,6 +9,10 @@ import { handleFetch, handleRequest } from "../src/router.ts";
 import * as eventProgress from "../src/eventProgress.ts";
 import * as eventProgressDispatch from "../src/eventProgressDispatch.ts";
 import * as eventRepository from "../src/eventRepository.ts";
+import * as eventPrizeWithdrawal from "../src/eventPrizeWithdrawal.ts";
+import * as eventPrizeWithdrawalContracts from "../src/eventPrizeWithdrawal/contracts.ts";
+import * as eventPrizeWithdrawalRuntime from "../src/eventPrizeWithdrawal/runtime.ts";
+import * as eventPrizeWithdrawalRoute from "../src/eventPrizeWithdrawal/route.ts";
 import * as authRecovery from "../src/authRecovery.ts";
 import * as authRecoveryJobs from "../src/authRecovery/jobs.ts";
 import * as authRecoveryDispatch from "../src/authRecovery/dispatch.ts";
@@ -46,6 +50,38 @@ test("event repositories retain their public factory and recovery exports", () =
     "createEventStateRepository",
     "recoverEventTransitionIntents",
   ]);
+});
+
+test("prize withdrawal retains its exact public facade and function identities", () => {
+  const expected = {
+    buildEventPrizeWithdrawalOperationId:
+      eventPrizeWithdrawalContracts.buildEventPrizeWithdrawalOperationId,
+    parseEventPrizeWithdrawalWorkflowParams:
+      eventPrizeWithdrawalContracts.parseEventPrizeWithdrawalWorkflowParams,
+    toEventPrizeApiFailure:
+      eventPrizeWithdrawalContracts.toEventPrizeApiFailure,
+    createEventPrizeRuntimeDependencies:
+      eventPrizeWithdrawalRuntime.createEventPrizeRuntimeDependencies,
+    createEventPrizeExecutionProfileReader:
+      eventPrizeWithdrawalRuntime.createEventPrizeExecutionProfileReader,
+    executeEventPrizeWithdrawal:
+      eventPrizeWithdrawalRuntime.executeEventPrizeWithdrawal,
+    resolveEventPrizeWithdrawalExecutionParams:
+      eventPrizeWithdrawalRuntime.resolveEventPrizeWithdrawalExecutionParams,
+    EVENT_PRIZE_WITHDRAWAL_PATH:
+      eventPrizeWithdrawalRoute.EVENT_PRIZE_WITHDRAWAL_PATH,
+    EVENT_PRIZE_WITHDRAWAL_STATUS_PATH:
+      eventPrizeWithdrawalRoute.EVENT_PRIZE_WITHDRAWAL_STATUS_PATH,
+    handleEventPrizeWithdrawalRoute:
+      eventPrizeWithdrawalRoute.handleEventPrizeWithdrawalRoute,
+  };
+  assert.deepEqual(
+    Object.keys(eventPrizeWithdrawal).sort(),
+    Object.keys(expected).sort(),
+  );
+  for (const name of Object.keys(expected) as (keyof typeof expected)[]) {
+    assert.strictEqual(eventPrizeWithdrawal[name], expected[name], name);
+  }
 });
 
 test("event transition coordination stays independent of repository factories", () => {
@@ -280,6 +316,58 @@ test("withdrawal Workflows do not depend on HTTP or admission orchestration", ()
     "eventPrizeWithdrawal/admission.ts",
   ]) {
     assert.ok(!reachable.has(resolve(sourceRoot, dependency)), dependency);
+  }
+});
+
+test("prize request dependencies cannot reach withdrawal execution or Solana SDKs", () => {
+  const sourceRoot = resolve(import.meta.dirname, "../src");
+  const forbiddenWorkerModules = new Set(
+    [
+      "eventPrizeWithdrawal.ts",
+      "eventPrizeWithdrawal/runtime.ts",
+      "eventPrizeWithdrawalWorkflow.ts",
+    ].map((path) => resolve(sourceRoot, path)),
+  );
+  for (const entry of [
+    "router.ts",
+    "eventPrizeWithdrawal/route.ts",
+    "eventPrizeWithdrawal/admission.ts",
+    "eventPrizeWithdrawal/context.ts",
+  ]) {
+    for (const path of reachableRuntimeFiles(resolve(sourceRoot, entry))) {
+      const dependency = relative(repositoryRoot, path);
+      assert.ok(
+        !forbiddenWorkerModules.has(path),
+        `${entry} depends on ${dependency}`,
+      );
+      assert.doesNotMatch(
+        dependency,
+        /^cloud\/runtime\/(?:src\/)?eventPrizes\/(?:withdrawalOrchestrator|assets|solana|submittedTransactions|submissionRecovery)\.(?:ts|js)$/,
+        `${entry} depends on ${dependency}`,
+      );
+      for (const specifier of runtimeSpecifiers(path)) {
+        assert.doesNotMatch(
+          specifier,
+          /^@metaplex-foundation\//,
+          `${entry}: ${dependency} imports ${specifier}`,
+        );
+      }
+    }
+  }
+});
+
+test("prize request modules never access signing or RPC credentials", () => {
+  for (const module of ["route", "admission", "context"]) {
+    const path = resolve(
+      import.meta.dirname,
+      "../src/eventPrizeWithdrawal",
+      `${module}.ts`,
+    );
+    assert.doesNotMatch(
+      readFileSync(path, "utf8"),
+      /\b(?:EVENT_PRIZE_ADMIN_PRIVATE_KEY|HELIUS_RPC_API_KEY)\b/,
+      relative(repositoryRoot, path),
+    );
   }
 });
 

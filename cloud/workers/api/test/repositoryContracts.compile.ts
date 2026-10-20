@@ -46,9 +46,34 @@ import type {
 } from "../../../runtime/gameSessionChanges.js";
 import type { GameSessionPort } from "../src/gameSessionContracts.ts";
 import type { ReceiptRead } from "../src/gameSessionReceiptRecords.ts";
+import type {
+  createEventPrizeContext,
+  EventPrizeContext,
+  EventPrizeRequestDependencies,
+  EventPrizeStatusDependencies,
+} from "../src/eventPrizeWithdrawal/context.ts";
+import type {
+  getEventPrizeWithdrawalStatus,
+  startEventPrizeWithdrawal,
+} from "../src/eventPrizeWithdrawal/admission.ts";
+import type { createEventPrizeRuntimeDependencies } from "../src/eventPrizeWithdrawal/runtime.ts";
+import type { EventPrizeWithdrawalStore } from "../src/eventPrizeWithdrawalD1.ts";
+import type { EventGameplayRepository } from "../src/eventRepository.ts";
+import type { ProfileOwnershipReader } from "../src/profileOwnership.ts";
+import type { WithdrawalRuntimeDependencies } from "../../../runtime/eventPrizes/solanaTypes.js";
 
 type Assert<T extends true> = T;
 type Rejects<Value, Contract> = Value extends Contract ? false : true;
+type Equal<Left, Right> =
+  (<T>() => T extends Left ? 1 : 2) extends <T>() => T extends Right ? 1 : 2
+    ? true
+    : false;
+type IsAny<T> = 0 extends 1 & T ? true : false;
+type HasAnyDependencyResult<T> = {
+  [Key in keyof T]: T[Key] extends (...args: never[]) => infer Result
+    ? IsAny<Awaited<Result>>
+    : IsAny<T[Key]>;
+}[keyof T];
 type RetiredMethod =
   | "getPath"
   | "patchRoot"
@@ -411,4 +436,76 @@ export type AutomatchSessionPortExcludesRawRecoveryAccess = Assert<
   > extends never
     ? true
     : false
+>;
+
+type MinimalPrizeStatusDependencies = {
+  readWithdrawal: EventPrizeWithdrawalStore["get"];
+  readProfileOwnershipSnapshot: ProfileOwnershipReader["readProfileOwnershipSnapshot"];
+  readProfileEventPrizeAssignment: EventGameplayRepository["readProfileEventPrizeAssignment"];
+};
+type MinimalPrizeRequestDependencies = MinimalPrizeStatusDependencies & {
+  withdrawals: Pick<EventPrizeWithdrawalStore, "record">;
+  removeMatchingProfileEventPrizeAssignment(input: {
+    profileId: string;
+    eventId: string;
+    prizeId: string;
+  }): Promise<boolean>;
+  resolveCanonicalProfilePath(profileId: string): Promise<string[]>;
+};
+type PrizeStatusRuntime = Parameters<typeof getEventPrizeWithdrawalStatus>[2];
+type PrizeRequestRuntime = Parameters<typeof startEventPrizeWithdrawal>[2];
+
+export type PrizeRequestContractsRejectAny = Assert<
+  | Equal<IsAny<EventPrizeContext>, false>
+  | Equal<IsAny<EventPrizeStatusDependencies>, false>
+  | Equal<IsAny<EventPrizeRequestDependencies>, false>
+  | Equal<IsAny<PrizeStatusRuntime>, false>
+  | Equal<IsAny<PrizeRequestRuntime>, false>
+  | Equal<HasAnyDependencyResult<EventPrizeStatusDependencies>, false>
+  | Equal<HasAnyDependencyResult<EventPrizeRequestDependencies>, false>
+  | Equal<
+      IsAny<EventPrizeStatusDependencies[keyof EventPrizeStatusDependencies]>,
+      false
+    >
+  | Equal<
+      IsAny<EventPrizeRequestDependencies[keyof EventPrizeRequestDependencies]>,
+      false
+    >
+>;
+export type PrizeAdmissionAcceptsOnlyRequestCapabilities = Assert<
+  | Equal<PrizeRequestRuntime, EventPrizeRequestDependencies>
+  | Equal<
+      keyof EventPrizeRequestDependencies,
+      keyof MinimalPrizeRequestDependencies
+    >
+  | (MinimalPrizeRequestDependencies extends PrizeRequestRuntime ? true : false)
+>;
+export type PrizeStatusAcceptsOnlyReadCapabilities = Assert<
+  | Equal<PrizeStatusRuntime, EventPrizeStatusDependencies>
+  | Equal<
+      keyof EventPrizeStatusDependencies,
+      keyof MinimalPrizeStatusDependencies
+    >
+  | (MinimalPrizeStatusDependencies extends PrizeStatusRuntime ? true : false)
+>;
+export type PrizeRequestCannotReplaceCompletionRecords = Assert<
+  Equal<
+    EventPrizeRequestDependencies["withdrawals"],
+    Pick<EventPrizeWithdrawalStore, "record">
+  >
+>;
+export type PrizeContextHasNoSigner = Assert<
+  | Rejects<"createEventPrizeUmi", keyof EventPrizeContext>
+  | Rejects<
+      "createEventPrizeUmi",
+      keyof Awaited<ReturnType<typeof createEventPrizeContext>>
+    >
+>;
+export type PrizeExecutionRetainsItsSigner = Assert<
+  Equal<
+    Awaited<
+      ReturnType<typeof createEventPrizeRuntimeDependencies>
+    >["createEventPrizeUmi"],
+    WithdrawalRuntimeDependencies["createEventPrizeUmi"]
+  >
 >;

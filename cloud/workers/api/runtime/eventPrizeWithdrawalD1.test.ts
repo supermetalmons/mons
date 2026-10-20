@@ -10,6 +10,7 @@ import {
   readEventPrizeWithdrawalStorageMode,
 } from "../src/eventPrizeWithdrawalD1.ts";
 import { createEventPrizeRuntimeDependencies } from "../src/eventPrizeWithdrawal.ts";
+import { createEventPrizeContext } from "../src/eventPrizeWithdrawal/context.ts";
 
 const testEnv = env as Env & {
   TEST_EVENT_PRIZE_WITHDRAWAL_D1_MIGRATIONS: D1Migration[];
@@ -424,7 +425,7 @@ describe("event prize withdrawal D1 repository", () => {
     await expect(readEvent(eventId)).resolves.toEqual({ [prizeId]: current });
   });
 
-  it("routes withdrawal references only through D1 and fails closed while frozen", async () => {
+  it("routes the prize context through D1 and preserves execution freeze behavior", async () => {
     await testEnv.EVENT_PRIZE_WITHDRAWALS_DB.prepare(
       `UPDATE event_prize_withdrawal_runtime_control
        SET storage_mode = 'd1'
@@ -445,9 +446,10 @@ describe("event prize withdrawal D1 repository", () => {
         throw new Error("unexpected-profile-prize-transaction");
       },
     };
-    const runtime = await createEventPrizeRuntimeDependencies(testEnv, {
+    const runtime = await createEventPrizeContext(testEnv, {
       repository,
     });
+    expect("createEventPrizeUmi" in runtime).toBe(false);
     await runtime.withdrawals
       .record(eventId, prizeId)
       .transaction(() => ({ value: processing(500) }));
@@ -485,6 +487,13 @@ describe("event prize withdrawal D1 repository", () => {
     });
     expect(sourceValues.has(path)).toBe(false);
     expect(sourceWrites).toBe(0);
+    const execution = await createEventPrizeRuntimeDependencies(testEnv, {
+      repository,
+    });
+    expect(typeof execution.createEventPrizeUmi).toBe("function");
+    await expect(execution.readWithdrawal(eventId, prizeId)).resolves.toEqual(
+      await runtime.readWithdrawal(eventId, prizeId),
+    );
 
     await testEnv.EVENT_PRIZE_WITHDRAWALS_DB.prepare(
       `UPDATE event_prize_withdrawal_runtime_control
@@ -500,8 +509,19 @@ describe("event prize withdrawal D1 repository", () => {
       previousStorageMode: "d1",
     });
     await expect(
+      createEventPrizeContext(testEnv, { repository }),
+    ).rejects.toMatchObject({ code: "unavailable" });
+    await expect(
       createEventPrizeRuntimeDependencies(testEnv, { repository }),
     ).rejects.toMatchObject({ code: "unavailable" });
+    const preflight = await createEventPrizeRuntimeDependencies(testEnv, {
+      repository,
+      allowFrozen: true,
+    });
+    expect(typeof preflight.createEventPrizeUmi).toBe("function");
+    await expect(preflight.readWithdrawal(eventId, prizeId)).resolves.toEqual(
+      await runtime.readWithdrawal(eventId, prizeId),
+    );
   });
 
   it("applies the permanent D1 schema and rejects Firebase control state", async () => {

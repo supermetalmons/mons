@@ -25,9 +25,10 @@ import {
   type EventPrizeWithdrawalWorkflowInput,
 } from "./contracts.ts";
 import {
-  createEventPrizeRuntimeDependencies,
+  createEventPrizeContext,
+  type EventPrizeRequestDependencies,
   type RuntimeOptions,
-} from "./runtime.ts";
+} from "./context.ts";
 import {
   getEventPrizeWithdrawalStatus,
   startEventPrizeWithdrawal,
@@ -74,12 +75,13 @@ export async function handleEventPrizeWithdrawalRoute(
     }
     const repository =
       dependencies.repository || createEventGameplayRepository(env);
-    const runtime = await createEventPrizeRuntimeDependencies(env, {
-      now: dependencies.now,
-      profileDb: dependencies.profileDb,
-      repository,
-      withdrawalStore: dependencies.withdrawalStore,
-    });
+    const context: EventPrizeRequestDependencies =
+      await createEventPrizeContext(env, {
+        now: dependencies.now,
+        profileDb: dependencies.profileDb,
+        repository,
+        withdrawalStore: dependencies.withdrawalStore,
+      });
     const workflow =
       dependencies.workflow || env.EVENT_PRIZE_WITHDRAWAL_WORKFLOW;
 
@@ -90,8 +92,7 @@ export async function handleEventPrizeWithdrawalRoute(
       const result = await startEventPrizeWithdrawal(
         identity,
         body,
-        runtime,
-        repository,
+        context,
         workflow,
       );
       return authJsonResponse(
@@ -108,8 +109,7 @@ export async function handleEventPrizeWithdrawalRoute(
       const result = await getEventPrizeWithdrawalStatus(
         identity,
         body,
-        runtime,
-        repository,
+        context,
         workflow,
       );
       return authJsonResponse(

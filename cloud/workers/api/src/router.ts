@@ -38,7 +38,7 @@ import {
   EVENT_PRIZE_WITHDRAWAL_PATH,
   EVENT_PRIZE_WITHDRAWAL_STATUS_PATH,
   handleEventPrizeWithdrawalRoute,
-} from "./eventPrizeWithdrawal.ts";
+} from "./eventPrizeWithdrawal/route.ts";
 import {
   handleInviteReactionRoute,
   isInviteReactionPath,

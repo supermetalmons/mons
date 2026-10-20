@@ -18,7 +18,7 @@ import {
 } from "../../../../runtime/eventPrizeWithdrawalState.js";
 import { EventPrizeWithdrawalError } from "../../../../runtime/eventPrizes/errors.js";
 import { attemptCompletedWithdrawalProjectionReconciliation } from "../../../../runtime/eventPrizes/projectionReconciliation.js";
-import { validatePrizeAssignment } from "../../../../runtime/eventPrizes/withdrawalOrchestrator.js";
+import { validatePrizeAssignment } from "../../../../runtime/eventPrizes/assignmentValidation.js";
 import {
   acquireWithdrawalClaim,
   releaseProcessingClaim,
@@ -41,9 +41,9 @@ import {
   type EventPrizeWithdrawalWorkflowParams,
 } from "./contracts.ts";
 import type {
-  EventPrizeGameplayRepository,
-  EventPrizeRuntimeDependencies,
-} from "./runtime.ts";
+  EventPrizeRequestDependencies,
+  EventPrizeStatusDependencies,
+} from "./context.ts";
 
 type PendingWithdrawalAdmission = {
   leaseId: string;
@@ -110,7 +110,7 @@ function workflowCreateOptions(
 async function ensureAdmittedWithdrawalWorkflow(
   workflow: Workflow<EventPrizeWithdrawalWorkflowInput>,
   admission: PendingWithdrawalAdmission,
-  runtime: Pick<EventPrizeRuntimeDependencies, "withdrawals">,
+  runtime: Pick<EventPrizeRequestDependencies, "withdrawals">,
 ): Promise<void> {
   try {
     await ensureWorkflow(workflow, admission.params);
@@ -132,7 +132,7 @@ async function resolveOwnedWithdrawal(
   identity: RequestIdentity,
   eventId: string,
   prizeId: string,
-  runtime: EventPrizeRuntimeDependencies,
+  runtime: EventPrizeStatusDependencies,
 ): Promise<{
   canonicalRecordProfileId: string;
   profileId: string;
@@ -172,7 +172,7 @@ async function refreshOwnedWithdrawal(
   eventId: string,
   prizeId: string,
   owned: OwnedWithdrawal,
-  runtime: Pick<EventPrizeRuntimeDependencies, "readWithdrawal">,
+  runtime: Pick<EventPrizeStatusDependencies, "readWithdrawal">,
 ): Promise<OwnedWithdrawal> {
   const withdrawal = await runtime.readWithdrawal(eventId, prizeId);
   if (!withdrawal) return { ...owned, withdrawal: null };
@@ -199,8 +199,7 @@ async function admitWithdrawal(
     solanaAddress: string;
   },
   operationId: string,
-  runtime: EventPrizeRuntimeDependencies,
-  repository: EventPrizeGameplayRepository,
+  runtime: EventPrizeRequestDependencies,
 ): Promise<EventPrizeWithdrawalCompletedResponse | PendingWithdrawalAdmission> {
   const prize = getEventPrizeDefinition(request.eventId, request.prizeId);
   const assetAddress = normalizeSolanaAddress(prize?.assetAddress);
@@ -272,7 +271,7 @@ async function admitWithdrawal(
     [1, 2, 3].includes(Number(withdrawal.place));
   let place = Number(withdrawal?.place);
   if (!submittedRecordCanResume) {
-    const assignment = await repository.readProfileEventPrizeAssignment(
+    const assignment = await runtime.readProfileEventPrizeAssignment(
       profileId,
       request.eventId,
     );
@@ -422,8 +421,7 @@ async function resolveWithdrawalWorkflowRecovery(
 export async function startEventPrizeWithdrawal(
   identity: RequestIdentity,
   request: EventPrizeWithdrawalRequest,
-  runtime: EventPrizeRuntimeDependencies,
-  repository: EventPrizeGameplayRepository,
+  runtime: EventPrizeRequestDependencies,
   workflow: Workflow<EventPrizeWithdrawalWorkflowInput>,
 ): Promise<
   EventPrizeWithdrawalCompletedResponse | EventPrizeWithdrawalProcessingResponse
@@ -437,7 +435,6 @@ export async function startEventPrizeWithdrawal(
     request,
     operationId,
     runtime,
-    repository,
   );
   if ("status" in admission) {
     return admission;
@@ -456,8 +453,7 @@ export async function startEventPrizeWithdrawal(
 export async function getEventPrizeWithdrawalStatus(
   identity: RequestIdentity,
   request: EventPrizeWithdrawalStatusRequest,
-  runtime: EventPrizeRuntimeDependencies,
-  repository: EventPrizeGameplayRepository,
+  runtime: EventPrizeStatusDependencies,
   workflow: Workflow<EventPrizeWithdrawalWorkflowInput>,
 ): Promise<
   EventPrizeWithdrawalCompletedResponse | EventPrizeWithdrawalProcessingResponse
@@ -476,7 +472,7 @@ export async function getEventPrizeWithdrawalStatus(
     runtime,
   );
   if (!owned.withdrawal) {
-    const assignment = await repository.readProfileEventPrizeAssignment(
+    const assignment = await runtime.readProfileEventPrizeAssignment(
       owned.profileId,
       request.eventId,
     );

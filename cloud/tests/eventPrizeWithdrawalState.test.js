@@ -42,6 +42,7 @@ const {
   normalizeSolanaAddress,
 } = require("../runtime/eventPrizeWithdrawalState");
 const eventPrizeProjectionState = require("../runtime/eventPrizeProjectionState");
+const { EventPrizeWithdrawalError } = require("../runtime/eventPrizes/errors");
 const {
   buildCompressedTransferBuilder,
   loadPrizeAssetState,
@@ -1522,6 +1523,80 @@ test("requires the entitlement to match the canonical profile and requested priz
       }),
     (error) => error.code === "not-found",
   );
+});
+
+test("preserves prize assignment trimming and place coercion", () => {
+  for (const [place, expected] of [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [" 2 ", 2],
+    ["0x3", 3],
+    [true, 1],
+    [[2], 2],
+  ]) {
+    assert.equal(
+      validatePrizeAssignment({
+        assignment: {
+          eventId: ` ${eventId} `,
+          prizeId: `\t${prizeId}\n`,
+          profileId: ` ${profileId} `,
+          place,
+        },
+        eventId,
+        prizeId,
+        profileId,
+      }),
+      expected,
+    );
+  }
+});
+
+test("preserves prize assignment rejection errors and exact request identifiers", () => {
+  const assignment = { eventId, prizeId, profileId, place: 1 };
+  const requests = [
+    ...[undefined, null, {}].map((value) => ({
+      assignment: value,
+      eventId,
+      prizeId,
+      profileId,
+    })),
+    ...[undefined, null, false, "", "invalid", [], {}, 0, 4, 1.5].map(
+      (place) => ({
+        assignment: { ...assignment, place },
+        eventId,
+        prizeId,
+        profileId,
+      }),
+    ),
+  ];
+  for (const field of ["eventId", "prizeId", "profileId"]) {
+    for (const value of [undefined, null, false, 1, [], {}, "", "different"]) {
+      requests.push({
+        assignment: { ...assignment, [field]: value },
+        eventId,
+        prizeId,
+        profileId,
+      });
+    }
+    requests.push({
+      assignment,
+      eventId,
+      prizeId,
+      profileId,
+      [field]: ` ${assignment[field]} `,
+    });
+  }
+  for (const request of requests) {
+    assert.throws(
+      () => validatePrizeAssignment(request),
+      (error) =>
+        error instanceof EventPrizeWithdrawalError &&
+        error.name === "EventPrizeWithdrawalError" &&
+        error.code === "not-found" &&
+        error.message === "Event prize not found.",
+    );
+  }
 });
 
 test("recognizes a confirmed submitted transaction by its stored signature", async () => {

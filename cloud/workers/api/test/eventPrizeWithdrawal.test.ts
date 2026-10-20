@@ -10,6 +10,7 @@ import {
   resolveEventPrizeWithdrawalExecutionParams,
   type EventPrizeWithdrawalWorkflowInput,
 } from "../src/eventPrizeWithdrawal.ts";
+import { createEventPrizeContext } from "../src/eventPrizeWithdrawal/context.ts";
 import type { EventPrizeWithdrawalStore } from "../src/eventPrizeWithdrawalD1.ts";
 import type { EventGameplayRepository } from "../src/eventRepository.ts";
 import type { EventPrizeAssignmentRecord } from "../../../runtime/eventReads.js";
@@ -288,6 +289,83 @@ function setRecoverableWithdrawal(
   });
 }
 
+function completedWithdrawal() {
+  return {
+    assetAddress: "JEGmxy88eGv9vD4rWRtN5so9fMfMU6WA5djgrysDWKrU",
+    eventId,
+    place: 1,
+    prizeId,
+    profileId,
+    recipientAddress,
+    requesterUid: uid,
+    status: "completed",
+    transactionSignature: "signature",
+  };
+}
+
+function unavailablePrizeConfiguration() {
+  const reads: string[] = [];
+  const env = { ...TELEGRAM_TEST_ENV };
+  for (const key of [
+    "EVENT_PRIZE_ADMIN_PRIVATE_KEY",
+    "HELIUS_RPC_API_KEY",
+  ] as const) {
+    Object.defineProperty(env, key, {
+      get() {
+        reads.push(key);
+        throw new Error(`unexpected-${key}`);
+      },
+    });
+  }
+  return { env, reads };
+}
+
+test("request context provides data access without signing capability or secret reads", async () => {
+  const state = repository();
+  const { env, reads } = unavailablePrizeConfiguration();
+  const requestContext = await createEventPrizeContext(env, {
+    profileDb: canonicalProfileDb(),
+    repository: state.value,
+    withdrawalStore: state.withdrawalStore,
+  });
+
+  assert.equal("createEventPrizeUmi" in requestContext, false);
+  assert.equal(await requestContext.readWithdrawal(eventId, prizeId), null);
+  assert.deepEqual(
+    await requestContext.readProfileEventPrizeAssignment(profileId, eventId),
+    state.values.get(`profileEventPrizes/${profileId}/${eventId}`),
+  );
+  assert.deepEqual(reads, []);
+});
+
+for (const key of [
+  "EVENT_PRIZE_ADMIN_PRIVATE_KEY",
+  "HELIUS_RPC_API_KEY",
+] as const) {
+  test(`execution runtime defers reading ${key} until signing runtime creation`, async () => {
+    const state = repository();
+    let secretReads = 0;
+    const env = { ...TELEGRAM_TEST_ENV };
+    Object.defineProperty(env, key, {
+      get() {
+        secretReads++;
+        throw new Error(`unexpected-${key}`);
+      },
+    });
+    const runtime = await createEventPrizeRuntimeDependencies(env, {
+      repository: state.value,
+      withdrawalStore: state.withdrawalStore,
+    });
+
+    assert.equal(secretReads, 0);
+    assert.throws(
+      () => runtime.createEventPrizeUmi("core"),
+      new RegExp(`unexpected-${key}`),
+    );
+    assert.equal(secretReads, 1);
+  });
+}
+
 test("read-only prize runtime preflight can inspect frozen storage", async () => {
   const state = repository();
   const env = {
@@ -366,6 +444,83 @@ function request(path: string, body: unknown): Request {
 const context = { waitUntil: () => undefined };
 const verifyIdentity = async () => ({ idToken: "token", uid });
 
+test("start, recovery status, and completed routes never read signing configuration", async () => {
+  const state = repository();
+  const { env, reads } = unavailablePrizeConfiguration();
+  const operationId = await buildEventPrizeWithdrawalOperationId(
+    eventId,
+    prizeId,
+  );
+  const dependencies = {
+    profileDb: canonicalProfileDb(),
+    repository: state.value,
+    withdrawalStore: state.withdrawalStore,
+    verifyIdentity,
+    workflow: workflow(() => ({ status: "running" })),
+  };
+  const start = await handleEventPrizeWithdrawalRoute(
+    request("/events/prizes/withdrawals", {
+      eventId,
+      prizeId,
+      solanaAddress: recipientAddress,
+    }),
+    env,
+    context,
+    dependencies,
+  );
+  assert.equal(start.status, 202);
+
+  let recoveryCreates = 0;
+  const pending = await handleEventPrizeWithdrawalRoute(
+    request("/events/prizes/withdrawals/status", {
+      eventId,
+      operationId,
+      prizeId,
+    }),
+    env,
+    context,
+    {
+      ...dependencies,
+      workflow: workflow(() => ({ status: "running" }), {
+        getMissing: true,
+        onCreate: () => {
+          recoveryCreates++;
+        },
+      }),
+    },
+  );
+  assert.equal(pending.status, 202);
+  assert.equal(recoveryCreates, 1);
+
+  state.values.set(
+    `eventPrizeWithdrawals/${eventId}/${prizeId}`,
+    completedWithdrawal(),
+  );
+  const completedStart = await handleEventPrizeWithdrawalRoute(
+    request("/events/prizes/withdrawals", {
+      eventId,
+      prizeId,
+      solanaAddress: recipientAddress,
+    }),
+    env,
+    context,
+    dependencies,
+  );
+  assert.equal(completedStart.status, 200);
+  const completedStatus = await handleEventPrizeWithdrawalRoute(
+    request("/events/prizes/withdrawals/status", {
+      eventId,
+      operationId,
+      prizeId,
+    }),
+    env,
+    context,
+    dependencies,
+  );
+  assert.equal(completedStatus.status, 200);
+  assert.deepEqual(reads, []);
+});
+
 test("builds and validates deterministic withdrawal Workflow identities", async () => {
   const operationId = await buildEventPrizeWithdrawalOperationId(
     eventId,
@@ -422,6 +577,66 @@ test("returns invalid argument for malformed JSON", async () => {
   );
 });
 
+for (const path of [
+  "/events/prizes/withdrawals",
+  "/events/prizes/withdrawals/status",
+]) {
+  test(`${path} rejects malformed JSON before checking withdrawal storage`, async () => {
+    const requestValue = new Request(`https://api.mons.link${path}`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer token",
+        "Content-Type": "application/json",
+        Origin: "https://mons.link",
+      },
+      body: "{",
+    });
+    const response = await handleEventPrizeWithdrawalRoute(
+      requestValue,
+      {
+        ...TELEGRAM_TEST_ENV,
+        EVENT_PRIZE_WITHDRAWALS_DB: frozenWithdrawalDb(),
+      },
+      context,
+      { verifyIdentity },
+    );
+
+    assert.equal(response.status, 400);
+    assert.deepEqual(await response.json(), {
+      ok: false,
+      error: "invalid-argument",
+      message: "invalid-request",
+    });
+    assert.equal(requestValue.bodyUsed, true);
+  });
+
+  test(`${path} checks withdrawal storage before validating a parsed body`, async () => {
+    const state = repository();
+    const requestValue = request(path, {});
+    const response = await handleEventPrizeWithdrawalRoute(
+      requestValue,
+      {
+        ...TELEGRAM_TEST_ENV,
+        EVENT_PRIZE_WITHDRAWALS_DB: frozenWithdrawalDb(),
+      },
+      context,
+      {
+        repository: state.value,
+        withdrawalStore: state.withdrawalStore,
+        verifyIdentity,
+      },
+    );
+
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), {
+      ok: false,
+      error: "unavailable",
+      message: "Prize withdrawal service is unavailable.",
+    });
+    assert.equal(requestValue.bodyUsed, true);
+  });
+}
+
 test("freezes withdrawal creation before parsing", async () => {
   const requestValue = request("/events/prizes/withdrawals", {});
   const response = await handleEventPrizeWithdrawalRoute(
@@ -438,6 +653,35 @@ test("freezes withdrawal creation before parsing", async () => {
     message: "profile-writes-disabled",
   });
   assert.equal(requestValue.bodyUsed, false);
+});
+
+test("status still parses requests while profile writes are disabled", async () => {
+  const requestValue = new Request(
+    "https://api.mons.link/events/prizes/withdrawals/status",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer token",
+        "Content-Type": "application/json",
+        Origin: "https://mons.link",
+      },
+      body: "{",
+    },
+  );
+  const response = await handleEventPrizeWithdrawalRoute(
+    requestValue,
+    withProfileControl(TELEGRAM_TEST_ENV, "frozen"),
+    context,
+    { verifyIdentity },
+  );
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), {
+    ok: false,
+    error: "invalid-argument",
+    message: "invalid-request",
+  });
+  assert.equal(requestValue.bodyUsed, true);
 });
 
 test("withdrawal storage freeze prevents terminated Workflow recreation", async () => {
@@ -512,6 +756,180 @@ test("rejects an invalid completed record before projection cleanup", async () =
 
   assert.equal(response.status, 403);
   assert.deepEqual(state.values.get(assignmentPath), assignment);
+});
+
+for (const cleanupFails of [false, true]) {
+  test(`completed starts ${cleanupFails ? "tolerate failed" : "perform"} projection cleanup`, async () => {
+    const state = repository();
+    const withdrawalPath = `eventPrizeWithdrawals/${eventId}/${prizeId}`;
+    const assignmentPath = `profileEventPrizes/${profileId}/${eventId}`;
+    const assignment = state.values.get(assignmentPath);
+    const completed = completedWithdrawal();
+    state.values.set(withdrawalPath, completed);
+    let cleanupAttempts = 0;
+    const transact = state.value.transactProfileEventPrize;
+    state.value.transactProfileEventPrize = async (...args) => {
+      cleanupAttempts++;
+      if (cleanupFails) throw new Error("projection-cleanup-unavailable");
+      return transact(...args);
+    };
+    let workflowCalls = 0;
+    const binding = workflow(() => ({ status: "running" }), {
+      onCreate: () => {
+        workflowCalls++;
+      },
+      onGet: () => {
+        workflowCalls++;
+      },
+    });
+    const response = await handleEventPrizeWithdrawalRoute(
+      request("/events/prizes/withdrawals", {
+        eventId,
+        prizeId,
+        solanaAddress: recipientAddress,
+      }),
+      TELEGRAM_TEST_ENV,
+      context,
+      {
+        profileDb: canonicalProfileDb(),
+        repository: state.value,
+        withdrawalStore: state.withdrawalStore,
+        verifyIdentity,
+        workflow: binding,
+      },
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(
+      ((await response.json()) as { status: string }).status,
+      "completed",
+    );
+    assert.equal(cleanupAttempts, 1);
+    assert.equal(workflowCalls, 0);
+    assert.deepEqual(state.values.get(withdrawalPath), completed);
+    assert.deepEqual(
+      state.values.get(assignmentPath),
+      cleanupFails ? assignment : null,
+    );
+  });
+}
+
+test("completed status does not reconcile assignments or acquire claims", async () => {
+  const state = repository();
+  const operationId = await buildEventPrizeWithdrawalOperationId(
+    eventId,
+    prizeId,
+  );
+  const withdrawalPath = `eventPrizeWithdrawals/${eventId}/${prizeId}`;
+  const assignmentPath = `profileEventPrizes/${profileId}/${eventId}`;
+  const assignment = state.values.get(assignmentPath);
+  const completed = completedWithdrawal();
+  state.values.set(withdrawalPath, completed);
+  let cleanupAttempts = 0;
+  state.value.transactProfileEventPrize = async () => {
+    cleanupAttempts++;
+    throw new Error("unexpected-projection-cleanup");
+  };
+  let claimAttempts = 0;
+  state.withdrawalStore.record = () => {
+    claimAttempts++;
+    throw new Error("unexpected-withdrawal-claim");
+  };
+  let workflowReads = 0;
+  const binding = workflow(() => ({ status: "running" }), {
+    onGet: () => {
+      workflowReads++;
+    },
+  });
+  const response = await handleEventPrizeWithdrawalRoute(
+    request("/events/prizes/withdrawals/status", {
+      eventId,
+      operationId,
+      prizeId,
+    }),
+    TELEGRAM_TEST_ENV,
+    context,
+    {
+      profileDb: canonicalProfileDb(),
+      repository: state.value,
+      withdrawalStore: state.withdrawalStore,
+      verifyIdentity,
+      workflow: binding,
+    },
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(
+    ((await response.json()) as { status: string }).status,
+    "completed",
+  );
+  assert.equal(cleanupAttempts, 0);
+  assert.equal(claimAttempts, 0);
+  assert.equal(workflowReads, 0);
+  assert.deepEqual(state.values.get(assignmentPath), assignment);
+  assert.deepEqual(state.values.get(withdrawalPath), completed);
+});
+
+test("completion observed during claim acquisition returns without projection cleanup", async () => {
+  const state = repository();
+  const withdrawalPath = `eventPrizeWithdrawals/${eventId}/${prizeId}`;
+  const assignmentPath = `profileEventPrizes/${profileId}/${eventId}`;
+  const assignment = state.values.get(assignmentPath);
+  const completed = completedWithdrawal();
+  let cleanupAttempts = 0;
+  state.value.transactProfileEventPrize = async () => {
+    cleanupAttempts++;
+    throw new Error("unexpected-projection-cleanup");
+  };
+  const record = state.withdrawalStore.record;
+  let claimAttempts = 0;
+  state.withdrawalStore.record = (...args) => {
+    const withdrawalRecord = record(...args);
+    return {
+      ...withdrawalRecord,
+      async transaction(updater) {
+        claimAttempts++;
+        state.values.set(withdrawalPath, completed);
+        return withdrawalRecord.transaction(updater);
+      },
+    };
+  };
+  let workflowCalls = 0;
+  const binding = workflow(() => ({ status: "running" }), {
+    onCreate: () => {
+      workflowCalls++;
+    },
+    onGet: () => {
+      workflowCalls++;
+    },
+  });
+  const response = await handleEventPrizeWithdrawalRoute(
+    request("/events/prizes/withdrawals", {
+      eventId,
+      prizeId,
+      solanaAddress: recipientAddress,
+    }),
+    TELEGRAM_TEST_ENV,
+    context,
+    {
+      profileDb: canonicalProfileDb(),
+      repository: state.value,
+      withdrawalStore: state.withdrawalStore,
+      verifyIdentity,
+      workflow: binding,
+    },
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(
+    ((await response.json()) as { status: string }).status,
+    "completed",
+  );
+  assert.equal(claimAttempts, 1);
+  assert.equal(cleanupAttempts, 0);
+  assert.equal(workflowCalls, 0);
+  assert.deepEqual(state.values.get(assignmentPath), assignment);
+  assert.deepEqual(state.values.get(withdrawalPath), completed);
 });
 
 test("fails closed when stored withdrawal ownership cannot be canonicalized", async () => {
@@ -971,6 +1389,57 @@ for (const existingClaim of [false, true]) {
       state.values.get(withdrawalPath),
       existingClaim ? originalWithdrawal : undefined,
     );
+  });
+}
+
+for (const successor of ["processing", "submitted", "completed"] as const) {
+  test(`failed dispatch preserves a ${successor} successor to its processing claim`, async () => {
+    const state = repository();
+    const withdrawalPath = `eventPrizeWithdrawals/${eventId}/${prizeId}`;
+    let successorRecord: Record<string, unknown> | undefined;
+    const binding = workflow(() => ({ status: "running" }), {
+      getMissing: true,
+      onCreate: () => {
+        const claimed = state.values.get(withdrawalPath) as Record<
+          string,
+          unknown
+        >;
+        assert.equal(claimed.status, "processing");
+        assert.equal(typeof claimed.leaseId, "string");
+        successorRecord = {
+          ...claimed,
+          status: successor,
+          ...(successor === "processing"
+            ? { leaseId: "replacement-lease" }
+            : {
+                transactionSignature: "successor-signature",
+                signedTransactionBase64: "successor-signed-transaction",
+              }),
+        };
+        state.values.set(withdrawalPath, successorRecord);
+        throw new Error("workflow-create-unconfirmed");
+      },
+    });
+    const response = await handleEventPrizeWithdrawalRoute(
+      request("/events/prizes/withdrawals", {
+        eventId,
+        prizeId,
+        solanaAddress: recipientAddress,
+      }),
+      TELEGRAM_TEST_ENV,
+      context,
+      {
+        profileDb: canonicalProfileDb(),
+        repository: state.value,
+        withdrawalStore: state.withdrawalStore,
+        verifyIdentity,
+        workflow: binding,
+      },
+    );
+
+    assert.equal(response.status, 503);
+    assert.ok(successorRecord);
+    assert.deepEqual(state.values.get(withdrawalPath), successorRecord);
   });
 }
 

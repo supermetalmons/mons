@@ -3,6 +3,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatePrizeAssignment = exports.handleWithdrawEventPrize = void 0;
 const errors_js_1 = require("./errors.js");
+const assignmentValidation_js_1 = require("./assignmentValidation.js");
+Object.defineProperty(exports, "validatePrizeAssignment", {
+  enumerable: true,
+  get: function () {
+    return assignmentValidation_js_1.validatePrizeAssignment;
+  },
+});
 const event_prizes_1 = require("@mons/shared/event-prizes");
 const eventPrizeWithdrawalState_js_1 = require("../eventPrizeWithdrawalState.js");
 const assets_js_1 = require("./assets.js");
@@ -21,28 +28,6 @@ const buildCompletedResponse = (withdrawal) => ({
   recipientAddress: normalizeString(withdrawal.recipientAddress),
   transactionSignature: normalizeString(withdrawal.transactionSignature),
 });
-const validatePrizeAssignment = ({
-  assignment,
-  eventId,
-  prizeId,
-  profileId,
-}) => {
-  const place = Number(assignment?.place);
-  if (
-    !assignment ||
-    normalizeString(assignment.eventId) !== eventId ||
-    normalizeString(assignment.prizeId) !== prizeId ||
-    normalizeString(assignment.profileId) !== profileId ||
-    ![1, 2, 3].includes(place)
-  ) {
-    throw new errors_js_1.EventPrizeWithdrawalError(
-      "not-found",
-      "Event prize not found.",
-    );
-  }
-  return place;
-};
-exports.validatePrizeAssignment = validatePrizeAssignment;
 const handleWithdrawEventPrize = async (request, dependencies) => {
   if (!request.auth) {
     throw new errors_js_1.EventPrizeWithdrawalError(
@@ -192,7 +177,7 @@ const handleWithdrawEventPrize = async (request, dependencies) => {
       profileId,
       eventId,
     );
-    place = validatePrizeAssignment({
+    place = (0, assignmentValidation_js_1.validatePrizeAssignment)({
       assignment,
       eventId,
       prizeId,

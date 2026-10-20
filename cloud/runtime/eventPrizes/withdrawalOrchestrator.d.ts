@@ -1,6 +1,6 @@
 // Generated from src/eventPrizes/withdrawalOrchestrator.ts. Run npm run generate:runtime.
-import type { WithdrawalData } from "./types.js";
 import type { WithdrawalRuntimeDependencies } from "./solanaTypes.js";
+import { validatePrizeAssignment } from "./assignmentValidation.js";
 export type WithdrawalCompletedResponse = {
   ok: true;
   status: "completed";
@@ -10,17 +10,6 @@ export type WithdrawalCompletedResponse = {
   recipientAddress: string;
   transactionSignature: string;
 };
-declare const validatePrizeAssignment: ({
-  assignment,
-  eventId,
-  prizeId,
-  profileId,
-}: {
-  assignment: WithdrawalData | null | undefined;
-  eventId: string;
-  prizeId: string;
-  profileId: string;
-}) => number;
 declare const handleWithdrawEventPrize: (
   request: {
     auth?: {
