@@ -26,6 +26,7 @@ import {
   type RecoveryKeyObservation,
   type RecoveryKeyRow,
 } from "./recoveryObservation.ts";
+import { buildRecoveryQuarantineWrite } from "./recoveryQuarantine.ts";
 
 const EVENT_ID_BYTES_SQL = `(SELECT CASE WHEN type = 'text' THEN CAST(atom AS BLOB) ELSE NULL END
   FROM json_each(rating.payload_json)
@@ -327,9 +328,10 @@ export async function quarantineRatingRecoveryEntry(
     recoveryLane(projectionKind);
   const key = observation.keyBytes;
   const guard = recoveryObservationGuard(observationExpressions, observation);
-  const result = await db
-    .prepare(
-      `WITH observed AS MATERIALIZED (
+  const statement = buildRecoveryQuarantineWrite({
+    target: "rating",
+    beforeInsert: {
+      sql: `WITH observed AS MATERIALIZED (
          SELECT ${sourceColumns}
          FROM rating_updates AS rating
          WHERE rating.operation_id = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
@@ -338,28 +340,19 @@ export async function quarantineRatingRecoveryEntry(
              SELECT 1 FROM profile_canonical_control
              WHERE singleton = 1 AND state = 'active'
            )
-       )
-       INSERT INTO rating_projection_recovery_quarantine (
-         operation_id, projection_kind, revision_token, reason, quarantined_at_ms
-       )
-       SELECT observed.operation_id, ?, CAST(observed.revision AS TEXT), ?, ?
+       )`,
+      bindings: [observation.keyType, key, key],
+    },
+    select: {
+      sql: `SELECT observed.operation_id, ?, CAST(observed.revision AS TEXT), ?, ?
        FROM observed
-       WHERE ${guard.sql}
-       ON CONFLICT (operation_id, projection_kind) DO UPDATE SET
-         revision_token = excluded.revision_token,
-         reason = excluded.reason,
-         quarantined_at_ms = excluded.quarantined_at_ms
-       WHERE rating_projection_recovery_quarantine.revision_token != excluded.revision_token`,
-    )
-    .bind(
-      observation.keyType,
-      key,
-      key,
-      projectionKind,
-      reason,
-      nowMs,
-      ...guard.bindings,
-    )
+       WHERE ${guard.sql}`,
+      bindings: [projectionKind, reason, nowMs, ...guard.bindings],
+    },
+  });
+  const result = await db
+    .prepare(statement.sql)
+    .bind(...statement.bindings)
     .run();
   return result.meta.changes === 1
     ? {

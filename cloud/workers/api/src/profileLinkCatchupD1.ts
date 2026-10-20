@@ -14,6 +14,7 @@ import {
   type RecoveryKeyRow,
   type RecoveryRowObservation,
 } from "./recoveryObservation.ts";
+import { buildRecoveryQuarantineWrite } from "./recoveryQuarantine.ts";
 
 const ACTIVE_CONTROL = `EXISTS (
   SELECT 1 FROM profile_canonical_control
@@ -329,23 +330,27 @@ export function createProfileLinkCatchupStore(
       assertTimestamp(nowMs);
       const key = observation.keyBytes;
       const guard = recoveryObservationGuard(JOB_EXPRESSIONS, observation);
-      const result = await db
-        .prepare(
-          `INSERT INTO profile_link_catchup_quarantine (
-             login_uid, revision_token, reason, quarantined_at_ms
-           )
-           SELECT job.login_uid, CAST(job.revision AS TEXT), ?, ?
+      const statement = buildRecoveryQuarantineWrite({
+        target: "profile-link",
+        select: {
+          sql: `SELECT job.login_uid, CAST(job.revision AS TEXT), ?, ?
            FROM profile_link_catchup_jobs AS job
            WHERE job.login_uid = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
              AND ${guard.sql}
-             AND ${ACTIVE_CONTROL}
-           ON CONFLICT (login_uid) DO UPDATE SET
-             revision_token = excluded.revision_token,
-             reason = excluded.reason,
-             quarantined_at_ms = excluded.quarantined_at_ms
-           WHERE profile_link_catchup_quarantine.revision_token != excluded.revision_token`,
-        )
-        .bind(reason, nowMs, observation.keyType, key, key, ...guard.bindings)
+             AND ${ACTIVE_CONTROL}`,
+          bindings: [
+            reason,
+            nowMs,
+            observation.keyType,
+            key,
+            key,
+            ...guard.bindings,
+          ],
+        },
+      });
+      const result = await db
+        .prepare(statement.sql)
+        .bind(...statement.bindings)
         .run();
       return result.meta.changes === 1
         ? {

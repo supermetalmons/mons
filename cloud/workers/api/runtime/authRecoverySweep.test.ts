@@ -897,6 +897,112 @@ describe("canonical auth recovery sweep quarantine", () => {
     expect(await readQuarantine(profileId)).toBeNull();
   });
 
+  it("replaces an older marker but retains same-revision reason and timestamp", async () => {
+    const profileId = await seedJob({ loginUidsJson: "[false]" });
+    const entry = await observedInvalidJob();
+    await expect(
+      quarantineCanonicalAuthRecoveryJob(
+        testEnv.PROFILE_DB,
+        { ...entry, reason: "invalid-profile-id" },
+        nowMs,
+      ),
+    ).resolves.toMatchObject({
+      revisionHex: "31",
+      reason: "invalid-profile-id",
+    });
+    expect(await readQuarantine(profileId)).toEqual({
+      profile_id: profileId,
+      revision_token: "1",
+      reason: "invalid-profile-id",
+      quarantined_at_ms: nowMs,
+    });
+    await testEnv.PROFILE_DB.prepare(
+      "UPDATE profile_auth_recovery_jobs SET revision = revision + 1 WHERE profile_id = ?",
+    )
+      .bind(profileId)
+      .run();
+    const current = await observedInvalidJob();
+    const source = await readJob(profileId);
+
+    await expect(
+      quarantineCanonicalAuthRecoveryJob(
+        testEnv.PROFILE_DB,
+        current,
+        nowMs + 1_000,
+      ),
+    ).resolves.toMatchObject({ revisionHex: "32", reason: "invalid-record" });
+    const marker = await readQuarantine(profileId);
+    expect(marker).toEqual({
+      profile_id: profileId,
+      revision_token: "2",
+      reason: "invalid-record",
+      quarantined_at_ms: nowMs + 1_000,
+    });
+
+    await expect(
+      quarantineCanonicalAuthRecoveryJob(
+        testEnv.PROFILE_DB,
+        { ...current, reason: "invalid-profile-id" },
+        nowMs + 2_000,
+      ),
+    ).resolves.toBeNull();
+    expect(await readQuarantine(profileId)).toEqual(marker);
+    expect(await readJob(profileId)).toEqual(source);
+  });
+
+  it.each(
+    [-1, 0.5, Number.MAX_SAFE_INTEGER + 1].flatMap((timestamp) =>
+      (["deleted", "frozen"] as const).map((state) => ({ timestamp, state })),
+    ),
+  )(
+    "does not validate timestamp $timestamp when the source is $state",
+    async ({ timestamp, state }) => {
+      const profileId = await seedJob({ loginUidsJson: "[false]" });
+      const entry = await observedInvalidJob();
+      if (state === "deleted") {
+        await testEnv.PROFILE_DB.prepare(
+          "DELETE FROM profile_auth_recovery_jobs WHERE profile_id = ?",
+        )
+          .bind(profileId)
+          .run();
+      } else {
+        await testEnv.PROFILE_DB.prepare(
+          "UPDATE profile_canonical_control SET state = 'frozen' WHERE singleton = 1",
+        ).run();
+      }
+      const source = await readJob(profileId);
+
+      await expect(
+        quarantineCanonicalAuthRecoveryJob(
+          testEnv.PROFILE_DB,
+          entry,
+          timestamp,
+        ),
+      ).resolves.toBeNull();
+      expect(await readQuarantine(profileId)).toBeNull();
+      expect(await readJob(profileId)).toEqual(source);
+    },
+  );
+
+  it.each([-1, 0.5, Number.MAX_SAFE_INTEGER + 1])(
+    "lets D1 reject timestamp %s for an eligible quarantine write",
+    async (timestamp) => {
+      const profileId = await seedJob({ loginUidsJson: "[false]" });
+      const entry = await observedInvalidJob();
+      const source = await readJob(profileId);
+
+      await expect(
+        quarantineCanonicalAuthRecoveryJob(
+          testEnv.PROFILE_DB,
+          entry,
+          timestamp,
+        ),
+      ).rejects.toThrow("CHECK constraint failed");
+      expect(await readQuarantine(profileId)).toBeNull();
+      expect(await readJob(profileId)).toEqual(source);
+    },
+  );
+
   it("honors a freeze that occurs after reading the malformed job", async () => {
     const profileId = await seedJob({ loginUidsJson: "[false]" });
     const original = await readJob(profileId);

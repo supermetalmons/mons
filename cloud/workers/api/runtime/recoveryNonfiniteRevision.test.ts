@@ -2,6 +2,16 @@ import { env } from "cloudflare:workers";
 import type { D1Migration } from "cloudflare:test";
 import { beforeAll, beforeEach, expect, it } from "vitest";
 import {
+  commitCanonicalPlan,
+  materializeCanonicalProfile,
+} from "../src/profileCanonicalD1.ts";
+import {
+  inspectCanonicalAuthRecoverySweepRow,
+  listCanonicalAuthRecoverySweepRows,
+  quarantineCanonicalAuthRecoveryJob,
+  readCanonicalAuthRecoveryQuarantineEntry,
+} from "../src/profileCanonical/recovery.ts";
+import {
   createProfileLinkCatchupStore,
   type ProfileLinkCatchupInvalidEntry,
 } from "../src/profileLinkCatchupD1.ts";
@@ -22,12 +32,16 @@ const testEnv = env as Env & { TEST_PROFILE_D1_MIGRATIONS: D1Migration[] };
 const db = testEnv.PROFILE_DB;
 const profileLinks = createProfileLinkCatchupStore(db);
 const lanes = [
+  "auth",
   "profile-link",
   "event-progress",
   "profile-game",
   "telegram",
 ] as const;
 type Lane = (typeof lanes)[number];
+type InvalidAuthRecoveryEntry = NonNullable<
+  Awaited<ReturnType<typeof readCanonicalAuthRecoveryQuarantineEntry>>
+> & { kind: "invalid"; source: "auth" };
 const ratingScans = {
   "event-progress": scanDueRatingEventProgress,
   "profile-game": scanDueRatingProfileGameProjections,
@@ -35,6 +49,13 @@ const ratingScans = {
 };
 
 function source(lane: Lane) {
+  if (lane === "auth") {
+    return {
+      table: "profile_auth_recovery_jobs",
+      key: "profile_id",
+      quarantine: "profile_auth_recovery_quarantine",
+    };
+  }
   return lane === "profile-link"
     ? {
         table: "profile_link_catchup_jobs",
@@ -49,6 +70,19 @@ function source(lane: Lane) {
 }
 
 async function seed(lane: Lane, key: string, revision: "1" | "1.5" | "9e999") {
+  if (lane === "auth") {
+    await db
+      .prepare(
+        `INSERT INTO profile_auth_recovery_jobs (
+         profile_id, login_uids_json, source_profile_ids_json, source_phase,
+         prize_cursor, phase_started_at_ms, last_enqueued_at_ms,
+         created_at_ms, updated_at_ms, revision
+       ) VALUES (?, '[]', '[]', 'finalize', NULL, 100, 0, 100, 100, ${revision})`,
+      )
+      .bind(key)
+      .run();
+    return;
+  }
   if (lane === "profile-link") {
     await db
       .prepare(
@@ -79,15 +113,45 @@ async function seed(lane: Lane, key: string, revision: "1" | "1.5" | "9e999") {
     .run();
 }
 
-function scan(lane: Lane, limit = 1) {
+async function scan(lane: Lane, limit = 1) {
+  if (lane === "auth") {
+    const rows = await listCanonicalAuthRecoverySweepRows(db, 1_000, limit);
+    return Promise.all(
+      rows.map(async (row) => {
+        const inspected = inspectCanonicalAuthRecoverySweepRow(row);
+        if (!inspected.quarantineReason) {
+          return {
+            kind: "candidate" as const,
+            value: {
+              profileId: inspected.profileId,
+              revision: row.revision,
+            },
+          };
+        }
+        const entry = await readCanonicalAuthRecoveryQuarantineEntry(
+          db,
+          inspected.key,
+          1_000,
+        );
+        if (!entry) throw new Error("invalid-auth-entry-missing");
+        return { kind: "invalid" as const, source: "auth" as const, ...entry };
+      }),
+    );
+  }
   return lane === "profile-link"
     ? profileLinks.scanDue(1_000, limit)
     : ratingScans[lane](db, 1_000, limit);
 }
 
 function quarantine(
-  entry: ProfileLinkCatchupInvalidEntry | InvalidRatingRecoveryEntry,
+  entry:
+    | InvalidAuthRecoveryEntry
+    | ProfileLinkCatchupInvalidEntry
+    | InvalidRatingRecoveryEntry,
 ) {
+  if ("source" in entry) {
+    return quarantineCanonicalAuthRecoveryJob(db, entry, 2_000);
+  }
   return "projectionKind" in entry
     ? quarantineRatingRecoveryEntry(db, entry, 2_000)
     : profileLinks.quarantineInvalidEntry(entry, 2_000);
@@ -120,10 +184,38 @@ beforeAll(async () => {
     testEnv.TEST_PROFILE_D1_MIGRATIONS,
     "b".repeat(64),
   );
+  for (const profileId of ["bad", "healthy"]) {
+    const value = materializeCanonicalProfile({
+      profile: {
+        id: profileId,
+        nonce: 1,
+        rating: 1500,
+        totalManaPoints: 0,
+        win: false,
+        emoji: 1,
+        username: "",
+        eth: null,
+        sol: null,
+        completedProblemIds: [],
+        isTutorialCompleted: false,
+        mining: {
+          lastRockDate: null,
+          materials: { dust: 0, slime: 0, gum: 0, metal: 0, ice: 0 },
+        },
+      },
+      createdAtMs: 100,
+      updatedAtMs: 100,
+    });
+    await commitCanonicalPlan(db, {
+      expectations: [{ kind: "profile-absent", profileId }],
+      mutations: [{ kind: "insert-active-profile", value }],
+    });
+  }
 });
 
 beforeEach(async () => {
   await db.batch([
+    db.prepare("DELETE FROM profile_auth_recovery_jobs"),
     db.prepare("DELETE FROM profile_link_catchup_jobs"),
     db.prepare("DELETE FROM rating_updates"),
     db.prepare(
@@ -150,9 +242,11 @@ it.each(lanes)(
       {
         kind: "candidate",
         value:
-          lane === "profile-link"
-            ? { loginUid: "healthy" }
-            : { operationId: "healthy" },
+          lane === "auth"
+            ? { profileId: "healthy" }
+            : lane === "profile-link"
+              ? { loginUid: "healthy" }
+              : { operationId: "healthy" },
       },
     ]);
     const { table, key } = source(lane);

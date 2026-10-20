@@ -10,6 +10,7 @@ import {
   type RecoveryKeyRow,
   type RecoveryRowObservation,
 } from "../recoveryObservation.ts";
+import { buildRecoveryQuarantineWrite } from "../recoveryQuarantine.ts";
 import { parseCanonicalAuthRecoveryRow } from "./auth.ts";
 import { CanonicalProfileCorruption, type RecoveryRow } from "./types.ts";
 
@@ -66,33 +67,30 @@ export async function quarantineCanonicalAuthRecoveryJob(
 } | null> {
   const profileIdBytes = observation.keyBytes;
   const guard = recoveryObservationGuard(JOB_EXPRESSIONS, observation);
-  const result = await db
-    .prepare(
-      `INSERT INTO profile_auth_recovery_quarantine (
-         profile_id, revision_token, reason, quarantined_at_ms
-       )
-       SELECT job.profile_id, CAST(job.revision AS TEXT), ?, ?
+  const statement = buildRecoveryQuarantineWrite({
+    target: "auth",
+    select: {
+      sql: `SELECT job.profile_id, CAST(job.revision AS TEXT), ?, ?
        FROM profile_auth_recovery_jobs AS job
        WHERE job.profile_id = CASE WHEN ? = 'blob' THEN ? ELSE CAST(? AS TEXT) END
          AND ${guard.sql}
          AND EXISTS (
            SELECT 1 FROM profile_canonical_control
            WHERE singleton = 1 AND state = 'active'
-         )
-       ON CONFLICT(profile_id) DO UPDATE SET
-         revision_token = excluded.revision_token,
-         reason = excluded.reason,
-         quarantined_at_ms = excluded.quarantined_at_ms
-       WHERE profile_auth_recovery_quarantine.revision_token != excluded.revision_token`,
-    )
-    .bind(
-      reason,
-      nowMs,
-      observation.keyType,
-      profileIdBytes,
-      profileIdBytes,
-      ...guard.bindings,
-    )
+         )`,
+      bindings: [
+        reason,
+        nowMs,
+        observation.keyType,
+        profileIdBytes,
+        profileIdBytes,
+        ...guard.bindings,
+      ],
+    },
+  });
+  const result = await db
+    .prepare(statement.sql)
+    .bind(...statement.bindings)
     .run();
   if (result.meta.changes !== 1) return null;
   return {

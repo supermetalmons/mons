@@ -29,6 +29,11 @@ const ratingScans = {
 const projectionKinds = Object.keys(
   ratingScans,
 ) as RatingRecoveryProjectionKind[];
+const projectionPrefixes = {
+  "event-progress": "event_progress",
+  "profile-game": "profile_game_projection",
+  telegram: "telegram_projection",
+} as const;
 
 async function seedProfileLink(loginUid = "login", cleanup = "[1]") {
   await db
@@ -218,6 +223,56 @@ describe("profile-link recovery quarantine", () => {
     ]);
   });
 
+  it("replaces a malformed revision marker and retains it on same-revision retries", async () => {
+    await seedProfileLink();
+    const original = await invalidProfile();
+    expect(
+      await profileLinks.quarantineInvalidEntry(
+        { ...original, reason: "invalid-login-uid" },
+        2_000,
+      ),
+    ).not.toBeNull();
+    expect(
+      await db.prepare("SELECT * FROM profile_link_catchup_quarantine").first(),
+    ).toMatchObject({
+      revision_token: "1",
+      reason: "invalid-login-uid",
+      quarantined_at_ms: 2_000,
+    });
+    await db
+      .prepare("UPDATE profile_link_catchup_jobs SET revision = 1.5")
+      .run();
+    const replacement = await invalidProfile();
+    const before = await readSources();
+    expect(
+      await profileLinks.quarantineInvalidEntry(replacement, 3_000),
+    ).toEqual({
+      loginUidHex: "6c6f67696e",
+      revisionHex: replacement.observation.revisionHex,
+      reason: "invalid-record",
+    });
+    const marker = await db
+      .prepare("SELECT * FROM profile_link_catchup_quarantine")
+      .first();
+    expect(marker).toEqual({
+      login_uid: "login",
+      revision_token: "1.5",
+      reason: "invalid-record",
+      quarantined_at_ms: 3_000,
+    });
+    expect(
+      await profileLinks.quarantineInvalidEntry(
+        { ...replacement, reason: "invalid-login-uid" },
+        4_000,
+      ),
+    ).toBeNull();
+    expect(
+      await db.prepare("SELECT * FROM profile_link_catchup_quarantine").first(),
+    ).toEqual(marker);
+    expect(await profileLinks.scanDue(1_000, 100)).toEqual([]);
+    expect(await readSources()).toEqual(before);
+  });
+
   it.each(["same-revision", "new-revision", "recreated", "frozen"] as const)(
     "preserves a %s change after observation",
     async (change) => {
@@ -382,21 +437,30 @@ describe("rating recovery quarantine", () => {
     ]);
   });
 
-  it.each([
-    "same-revision",
-    "new-revision",
-    "recreated",
-    "completed",
-    "claimed",
-    "frozen",
-  ] as const)(
-    "does not quarantine a %s change after observation",
-    async (change) => {
+  it.each(
+    projectionKinds.flatMap((projectionKind) =>
+      (
+        [
+          "same-revision",
+          "new-revision",
+          "recreated",
+          "completed",
+          "claimed",
+          "frozen",
+        ] as const
+      ).map((change) => ({ projectionKind, change })),
+    ),
+  )(
+    "does not quarantine a $projectionKind $change change after observation",
+    async ({ projectionKind, change }) => {
       await seedRating();
-      await db
-        .prepare("UPDATE rating_updates SET event_progress_version = 1.5")
-        .run();
-      const entry = await invalidRating();
+      const prefix = projectionPrefixes[projectionKind];
+      const malformed =
+        projectionKind === "telegram"
+          ? "operation_id = CAST(operation_id AS BLOB)"
+          : `${prefix}_version = 1.5`;
+      await db.prepare(`UPDATE rating_updates SET ${malformed}`).run();
+      const entry = await invalidRating(projectionKind);
       if (change === "frozen") {
         await db
           .prepare(
@@ -407,17 +471,127 @@ describe("rating recovery quarantine", () => {
         await db.prepare("DELETE FROM rating_updates").run();
         await seedRating();
       } else {
+        const repaired =
+          projectionKind === "telegram"
+            ? "operation_id = CAST(operation_id AS TEXT)"
+            : `${prefix}_version = 1`;
         const changes = {
-          "same-revision": "event_progress_version = 1",
-          "new-revision": "event_progress_version = 1, revision = revision + 1",
-          completed: "event_progress_state = 'done'",
-          claimed:
-            "event_progress_updated_at_ms = 2000, revision = revision + 1",
+          "same-revision": repaired,
+          "new-revision": `${repaired}, revision = revision + 1`,
+          completed: `${prefix}_state = 'done'`,
+          claimed: `${prefix}_updated_at_ms = 2000`,
         };
         await db.prepare(`UPDATE rating_updates SET ${changes[change]}`).run();
       }
       const before = await readSources();
       expect(await quarantineRatingRecoveryEntry(db, entry, 2_000)).toBeNull();
+      expect(await readSources()).toEqual(before);
+      expect(
+        (
+          await db
+            .prepare("SELECT * FROM rating_projection_recovery_quarantine")
+            .all()
+        ).results,
+      ).toEqual([]);
+    },
+  );
+
+  it.each(projectionKinds)(
+    "distinguishes adjacent REAL revisions for %s",
+    async (projectionKind) => {
+      await seedRating();
+      await db
+        .prepare("UPDATE rating_updates SET revision = ?")
+        .bind(1.0000000000000002)
+        .run();
+      const stale = await invalidRating(projectionKind);
+      await db
+        .prepare("UPDATE rating_updates SET revision = ?")
+        .bind(1.0000000000000004)
+        .run();
+      const current = await invalidRating(projectionKind);
+      const before = await readSources();
+      expect(await quarantineRatingRecoveryEntry(db, stale, 2_000)).toBeNull();
+      expect(
+        (
+          await db
+            .prepare("SELECT * FROM rating_projection_recovery_quarantine")
+            .all()
+        ).results,
+      ).toEqual([]);
+      expect(
+        await quarantineRatingRecoveryEntry(db, current, 2_000),
+      ).toMatchObject({
+        projectionKind,
+        revisionHex: current.observation.revisionHex,
+      });
+      expect(
+        await db
+          .prepare(
+            "SELECT hex(revision_token) AS revision_hex FROM rating_projection_recovery_quarantine",
+          )
+          .first("revision_hex"),
+      ).toBe(current.observation.revisionHex);
+      expect(await readSources()).toEqual(before);
+    },
+  );
+
+  it.each(projectionKinds)(
+    "replaces a malformed %s revision marker and retains it on same-revision retries",
+    async (projectionKind) => {
+      await seedRating();
+      await db.prepare("UPDATE rating_updates SET revision = 1.5").run();
+      const original = await invalidRating(projectionKind);
+      expect(
+        await quarantineRatingRecoveryEntry(
+          db,
+          { ...original, reason: "invalid-operation-id" },
+          2_000,
+        ),
+      ).not.toBeNull();
+      expect(
+        await db
+          .prepare("SELECT * FROM rating_projection_recovery_quarantine")
+          .first(),
+      ).toMatchObject({
+        revision_token: "1.5",
+        reason: "invalid-operation-id",
+        quarantined_at_ms: 2_000,
+      });
+      await db.prepare("UPDATE rating_updates SET revision = 2.5").run();
+      const replacement = await invalidRating(projectionKind);
+      const before = await readSources();
+      expect(
+        await quarantineRatingRecoveryEntry(db, replacement, 3_000),
+      ).toEqual({
+        operationIdHex: "6f7065726174696f6e",
+        projectionKind,
+        revisionHex: replacement.observation.revisionHex,
+        reason: "invalid-record",
+      });
+      const marker = await db
+        .prepare("SELECT * FROM rating_projection_recovery_quarantine")
+        .first();
+      expect(marker).toEqual({
+        operation_id: "operation",
+        projection_kind: projectionKind,
+        revision_token: "2.5",
+        reason: "invalid-record",
+        quarantined_at_ms: 3_000,
+      });
+      expect(
+        await quarantineRatingRecoveryEntry(
+          db,
+          { ...replacement, reason: "invalid-operation-id" },
+          4_000,
+        ),
+      ).toBeNull();
+      expect(
+        await db
+          .prepare("SELECT * FROM rating_projection_recovery_quarantine")
+          .first(),
+      ).toEqual(marker);
+      expect(await ratingScans[projectionKind](db, 1_000, 100)).toEqual([]);
       expect(await readSources()).toEqual(before);
     },
   );
