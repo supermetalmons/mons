@@ -13,67 +13,23 @@ import {
 } from "../src/wagerReservationRuntime.ts";
 import { reserveFrozenMaterialsOnce } from "../src/wagerReservationOperations.ts";
 import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
+import {
+  isWagerAdmissionInsert,
+  observeWagerAdmissionDatabase,
+  type WagerD1Interceptor,
+} from "./wagerAdmissionTestUtils.ts";
 
 const testEnv = env as Env & { TEST_PROFILE_D1_MIGRATIONS: D1Migration[] };
 const db = env.PROFILE_DB;
 const materials = (dust = 0) => ({ ...createEmptyMaterials(), dust });
 
-function observeReservationRuntime(
-  intercept: (
-    execute: () => Promise<unknown>,
-    query: string,
-    method: "first" | "run",
-  ) => Promise<unknown> = (execute) => execute(),
-) {
-  const sessions: Parameters<D1Database["withSession"]>[0][] = [];
-  const queries: string[] = [];
-  const wrap = (
-    statement: D1PreparedStatement,
-    query: string,
-  ): D1PreparedStatement =>
-    new Proxy(statement, {
-      get(target, property) {
-        if (property === "bind")
-          return (...values: unknown[]) => wrap(target.bind(...values), query);
-        if (property === "first" || property === "run")
-          return async (...args: unknown[]) => {
-            queries.push(query);
-            return intercept(
-              () => Reflect.apply(target[property], target, args),
-              query,
-              property,
-            );
-          };
-        const value = Reflect.get(target, property, target);
-        return typeof value === "function" ? value.bind(target) : value;
-      },
-    });
-  const database = new Proxy(db, {
-    get(target, property) {
-      if (property === "prepare")
-        return (query: string) => wrap(target.prepare(query), query);
-      if (property === "withSession")
-        return (...args: Parameters<D1Database["withSession"]>) => {
-          sessions.push(args[0]);
-          const session = target.withSession(...args);
-          return new Proxy(session, {
-            get(current, key) {
-              if (key === "prepare")
-                return (query: string) => wrap(current.prepare(query), query);
-              const value = Reflect.get(current, key, current);
-              return typeof value === "function" ? value.bind(current) : value;
-            },
-          });
-        };
-      const value = Reflect.get(target, property, target);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
+function observeReservationRuntime(intercept?: WagerD1Interceptor) {
+  const observed = observeWagerAdmissionDatabase(db, intercept);
   const runtime = createWagerReservationRuntime(
-    { ...env, PROFILE_DB: database },
+    { ...env, PROFILE_DB: observed.database },
     {} as GameplayRepository,
   );
-  return { runtime, sessions, queries };
+  return { runtime, sessions: observed.sessions, queries: observed.queries };
 }
 
 async function seedBalance(playerUid: string, dust: number, revision: number) {
@@ -177,7 +133,7 @@ describe("D1 wager reservation runtime", () => {
     expect(sourceAccesses).toBe(0);
   });
 
-  it("validates the client without D1 and reads control once when admitting work", async () => {
+  it("validates the client without D1 and admits work without a separate control read", async () => {
     const observed = observeReservationRuntime();
     expect(() =>
       assertWagerClientVersion(
@@ -191,11 +147,14 @@ describe("D1 wager reservation runtime", () => {
       work++;
     });
     expect(work).toBe(1);
+    expect(observed.queries.filter(isWagerAdmissionInsert)).toHaveLength(1);
     expect(
-      observed.queries.filter((query) =>
-        query.includes("FROM wager_reservation_runtime_control"),
+      observed.queries.filter(
+        (query) =>
+          /^\s*SELECT\b/.test(query) &&
+          query.includes("FROM wager_reservation_runtime_control"),
       ),
-    ).toHaveLength(1);
+    ).toHaveLength(0);
     expect(
       await db
         .prepare(
@@ -205,23 +164,21 @@ describe("D1 wager reservation runtime", () => {
     ).toBe(0);
   });
 
-  it.each(["control-read", "admission-insert"] as const)(
-    "blocks domain work when reservations freeze after %s",
+  it.each(["before-insert", "after-insert"] as const)(
+    "blocks domain work when reservations freeze at %s",
     async (boundary) => {
       let frozen = false;
       let work = 0;
       const observed = observeReservationRuntime(
         async (execute, query, method) => {
-          const result = await execute();
           const atBoundary =
-            boundary === "control-read"
-              ? method === "first" &&
-                query.includes("FROM wager_reservation_runtime_control")
-              : method === "run" &&
-                query.includes(
-                  "INSERT INTO wager_reservation_write_admissions",
-                );
-          if (!frozen && atBoundary) {
+            method === "first" && isWagerAdmissionInsert(query);
+          if (!frozen && atBoundary && boundary === "before-insert") {
+            frozen = true;
+            await freezeReservations();
+          }
+          const result = await execute();
+          if (!frozen && atBoundary && boundary === "after-insert") {
             frozen = true;
             await freezeReservations();
           }
@@ -298,11 +255,12 @@ describe("D1 wager reservation runtime", () => {
       { storage_mode: "d1", freeze_generation: 1.5 },
     ]) {
       let work = 0;
-      const observed = observeReservationRuntime(async (execute, query) =>
-        query.includes("FROM wager_reservation_runtime_control")
+      const observed = observeReservationRuntime(async (execute, query) => {
+        if (isWagerAdmissionInsert(query)) return null;
+        return query.includes("FROM wager_reservation_runtime_control")
           ? control
-          : execute(),
-      );
+          : execute();
+      });
       assertWagerClientVersion(versionedRequest());
       await expect(
         observed.runtime.run("send", async () => {
@@ -314,8 +272,42 @@ describe("D1 wager reservation runtime", () => {
         message: "wager-reservation-unavailable",
       });
       expect(work).toBe(0);
-      expect(observed.queries).toHaveLength(1);
+      expect(observed.queries).toHaveLength(3);
+      expect(observed.queries.filter(isWagerAdmissionInsert)).toHaveLength(1);
     }
+  });
+
+  it("retains uncertain admissions recovered after an insertion response is lost", async () => {
+    let work = 0;
+    const observed = observeReservationRuntime(async (execute, query) => {
+      const result = await execute();
+      if (isWagerAdmissionInsert(query)) {
+        await db
+          .prepare(
+            "UPDATE wager_reservation_write_admissions SET uncertain = 1",
+          )
+          .run();
+        throw new Error("admission-response-lost");
+      }
+      return result;
+    });
+    await expect(
+      observed.runtime.run("send", async () => {
+        work++;
+      }),
+    ).rejects.toThrow("wager-reservation-unavailable");
+    expect(work).toBe(0);
+    expect(observed.queries.filter(isWagerAdmissionInsert)).toHaveLength(1);
+    expect(
+      observed.queries.some((query) =>
+        /^\s*DELETE FROM wager_reservation_write_admissions\b/.test(query),
+      ),
+    ).toBe(true);
+    expect(
+      await db
+        .prepare("SELECT uncertain FROM wager_reservation_write_admissions")
+        .all(),
+    ).toMatchObject({ results: [{ uncertain: 1 }] });
   });
 
   it("fails unavailable D1 control closed without querying gameplay storage", async () => {

@@ -243,6 +243,7 @@ async function applyAdmittedInviteEventEffects(
   const admission = await acquireInviteSourceAdmission(
     db,
     EVENT_RECEIPT_ADMISSION_KIND,
+    { expectedControl: control },
   );
   const guards = () => [
     ...inviteSourceControlGuardStatements(db, control),

@@ -17,7 +17,10 @@ import {
 } from "../src/eventRepository.ts";
 import type { StateRepository } from "../test/stateRepositoryTestTypes.ts";
 import { createLegacyInviteSourceD1Store as createInviteSourceD1Store } from "../test/legacyInviteSourceFixture.ts";
-import { prepareInviteEventIntent } from "../src/inviteEventEffects.ts";
+import {
+  applyInviteEventEffects,
+  prepareInviteEventIntent,
+} from "../src/inviteEventEffects.ts";
 import { applyEventTestMigrations } from "./eventTestMigrations.ts";
 import { resetEventReceiptTestState } from "./eventTransitionTestFixture.ts";
 import {
@@ -88,6 +91,40 @@ function matchEffects(id = inviteId) {
       aura: "guest-aura",
     },
   };
+}
+
+function prepareEffects() {
+  return prepareInviteEventIntent(testEnv.PROFILE_GAMES_DB, {
+    schemaVersion: 1,
+    transitionId: "prepared-event-transition",
+    eventId,
+    expectedRevision: 1,
+    canonicalUpdates: { [`events/${eventId}/status`]: "active" },
+    rtdbEffects: matchEffects(),
+    createdAtMs: 100,
+    updatedAtMs: 100,
+  });
+}
+
+function observeInviteControlReads() {
+  const reads: string[] = [];
+  const wrap = <T extends D1Database | D1DatabaseSession>(database: T): T =>
+    new Proxy(database, {
+      get(target, property) {
+        if (property === "prepare")
+          return (query: string) => {
+            if (/^SELECT \* FROM invite_source_control\b/.test(query))
+              reads.push(query);
+            return target.prepare(query);
+          };
+        if (property === "withSession" && "withSession" in target)
+          return (constraint?: D1SessionConstraint | D1SessionBookmark) =>
+            wrap(target.withSession(constraint));
+        const value = Reflect.get(target, property, target);
+        return typeof value === "function" ? value.bind(target) : value;
+      },
+    });
+  return { database: wrap(testEnv.PROFILE_GAMES_DB), reads };
 }
 
 function fixture(profileGamesDb = testEnv.PROFILE_GAMES_DB) {
@@ -285,6 +322,50 @@ describe("event transitions with canonical D1 invitation metadata", () => {
       testEnv.TEST_D1_MIGRATIONS,
     );
   });
+
+  it("reuses the validated control read when admitting event effects", async () => {
+    const f = fixture();
+    const intent = await prepareEffects();
+    const observed = observeInviteControlReads();
+    await applyInviteEventEffects(
+      observed.database,
+      eventMatchTestPort(f.raw),
+      intent,
+      undefined,
+      async (creations) => appearanceRegistrations(creations),
+    );
+    expect(observed.reads).toHaveLength(1);
+    expect(f.writes).toEqual([hostPath, guestPath]);
+    expect(await count("invite_sources")).toBe(1);
+    expect(await count("invite_event_effect_receipts")).toBe(1);
+    expect(await count("event_transition_receipts")).toBe(1);
+    expect(await count("invite_source_write_admissions")).toBe(0);
+  });
+
+  it.each([
+    "verified_at_ms = NULL",
+    "activated_at_ms = 0",
+    "epoch = 9007199254740992",
+  ])(
+    "fully validates event control before acquiring with a snapshot: %s",
+    async (change) => {
+      const f = fixture();
+      const intent = await prepareEffects();
+      await testEnv.PROFILE_GAMES_DB.prepare(
+        `UPDATE invite_source_control SET ${change} WHERE singleton = 1`,
+      ).run();
+      await expect(
+        applyInviteEventEffects(
+          testEnv.PROFILE_GAMES_DB,
+          eventMatchTestPort(f.raw),
+          intent,
+        ),
+      ).rejects.toThrow("invite-source-control-unavailable");
+      expect(f.writes).toEqual([]);
+      expect(await count("invite_sources")).toBe(0);
+      expect(await count("invite_source_write_admissions")).toBe(0);
+    },
+  );
 
   it("atomically publishes every event invite and discovery row after proving its two live matches", async () => {
     const f = fixture();

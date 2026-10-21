@@ -35,22 +35,23 @@ export function wagerReservationUnavailable(): AuthApiFailure {
   );
 }
 
+function parseWagerReservationGeneration(value: unknown): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw wagerReservationUnavailable();
+  }
+  return value;
+}
+
 export function parseWagerReservationControlRow(
   value: unknown,
 ): WagerReservationControl {
   const row = value as ControlRow | null | undefined;
-  if (
-    !row ||
-    (row.storage_mode !== "frozen" && row.storage_mode !== "d1") ||
-    typeof row.freeze_generation !== "number" ||
-    !Number.isSafeInteger(row.freeze_generation) ||
-    row.freeze_generation < 0
-  ) {
+  if (!row || (row.storage_mode !== "frozen" && row.storage_mode !== "d1")) {
     throw wagerReservationUnavailable();
   }
   return {
     storageMode: row.storage_mode,
-    freezeGeneration: row.freeze_generation,
+    freezeGeneration: parseWagerReservationGeneration(row.freeze_generation),
   };
 }
 
@@ -128,52 +129,54 @@ export async function acquireWagerReservationAdmission(
   kind: string,
   now: number,
 ): Promise<WagerReservationAdmission> {
-  const control = await readWagerReservationControl(db);
-  if (control.storageMode === "frozen")
-    throw new WagerReservationWritesDisabled();
-  const admission: WagerReservationAdmission = {
-    admissionId: crypto.randomUUID(),
-    freezeGeneration: control.freezeGeneration,
-    expiresAtMs: now + ADMISSION_DURATION_MS,
+  const admissionId = crypto.randomUUID();
+  const expiresAtMs = now + ADMISSION_DURATION_MS;
+  const admissionFromRow = (
+    row: Pick<ControlRow, "freeze_generation">,
+  ): WagerReservationAdmission => ({
+    admissionId,
+    freezeGeneration: parseWagerReservationGeneration(row.freeze_generation),
+    expiresAtMs,
     writerEpoch: 1,
-  };
+  });
   try {
-    await db
+    const inserted = await db
       .prepare(
         `INSERT INTO wager_reservation_write_admissions (
            admission_id, freeze_generation, kind, created_at_ms, expires_at_ms, writer_epoch
-         ) VALUES (?, ?, ?, ?, ?, ?)`,
+         )
+         SELECT ?, reservation.freeze_generation, ?, ?, ?, 1
+         FROM wager_reservation_runtime_control AS reservation
+         JOIN profile_canonical_control AS profile ON profile.singleton = 1
+         JOIN wager_state_activation AS wager_state ON wager_state.singleton = 1
+         WHERE reservation.singleton = 1 AND reservation.storage_mode = 'd1'
+           AND typeof(reservation.freeze_generation) IN ('integer', 'real')
+           AND reservation.freeze_generation BETWEEN 0 AND 9007199254740991
+           AND reservation.freeze_generation = CAST(reservation.freeze_generation AS INTEGER)
+           AND profile.state = 'active' AND wager_state.activation_epoch = 1
+         RETURNING freeze_generation`,
       )
-      .bind(
-        admission.admissionId,
-        admission.freezeGeneration,
-        kind,
-        now,
-        admission.expiresAtMs,
-        admission.writerEpoch,
-      )
-      .run();
-  } catch {
-    const stored = await db
+      .bind(admissionId, kind, now, expiresAtMs)
+      .first<Pick<ControlRow, "freeze_generation">>();
+    if (inserted) return admissionFromRow(inserted);
+  } catch {}
+  let stored: Pick<ControlRow, "freeze_generation"> | null = null;
+  try {
+    stored = await db
+      .withSession("first-primary")
       .prepare(
-        `SELECT admission_id FROM wager_reservation_write_admissions
-         WHERE admission_id = ? AND freeze_generation = ? AND writer_epoch = ?`,
+        `SELECT freeze_generation FROM wager_reservation_write_admissions
+         WHERE admission_id = ? AND kind = ? AND created_at_ms = ?
+           AND expires_at_ms = ? AND writer_epoch = 1`,
       )
-      .bind(
-        admission.admissionId,
-        admission.freezeGeneration,
-        admission.writerEpoch,
-      )
-      .first<{ admission_id: string }>()
-      .catch(() => null);
-    if (!stored) {
-      const latest = await readWagerReservationControl(db);
-      if (latest.storageMode === "frozen")
-        throw new WagerReservationWritesDisabled();
-      throw wagerReservationUnavailable();
-    }
-  }
-  return admission;
+      .bind(admissionId, kind, now, expiresAtMs)
+      .first<Pick<ControlRow, "freeze_generation">>();
+  } catch {}
+  if (stored) return admissionFromRow(stored);
+  const latest = await readWagerReservationControl(db);
+  if (latest.storageMode === "frozen")
+    throw new WagerReservationWritesDisabled();
+  throw wagerReservationUnavailable();
 }
 
 export async function releaseWagerReservationAdmission(

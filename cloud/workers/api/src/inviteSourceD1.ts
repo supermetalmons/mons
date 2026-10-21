@@ -210,9 +210,14 @@ export function inviteSourceControlGuardStatements(
 export async function acquireInviteSourceAdmission(
   db: D1Database,
   kind: string,
-  { now = Date.now }: { now?: () => number } = {},
+  {
+    now = Date.now,
+    expectedControl,
+  }: { now?: () => number; expectedControl?: InviteSourceControl } = {},
 ): Promise<InviteSourceAdmission> {
-  const control = await readInviteSourceControl(db);
+  const control = {
+    ...(expectedControl ?? (await readInviteSourceControl(db))),
+  };
   if (control.state !== "active")
     throw new InviteSourceFailure("invite-source-writes-frozen");
   const createdAtMs = now();

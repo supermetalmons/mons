@@ -152,6 +152,19 @@ async function activate() {
     .run();
 }
 
+const admissionControlSources = ["read", "supplied"] as const;
+
+async function admissionOptions(
+  controlSource: (typeof admissionControlSources)[number],
+) {
+  return {
+    now: () => 10,
+    ...(controlSource === "supplied"
+      ? { expectedControl: await readInviteSourceControl(db) }
+      : {}),
+  };
+}
+
 function observePreparationReads(
   afterBatch?: (results: D1Result<Record<string, unknown>>[]) => void,
 ) {
@@ -659,6 +672,77 @@ describe("canonical invite source", () => {
     ).toBe(0);
   });
 
+  it("acquires from a validated control snapshot in one database call", async () => {
+    await activate();
+    const options = await admissionOptions("supplied");
+    const queries: string[] = [];
+    const database = interceptAdmissions(
+      async (query, _bindings, _primary, execute) => {
+        queries.push(query);
+        return execute();
+      },
+    );
+    const connection = new Proxy(database, {
+      get(target, property) {
+        if (property === "withSession")
+          return () => {
+            throw new Error("unexpected-control-read");
+          };
+        const value = Reflect.get(target, property, target);
+        return typeof value === "function" ? value.bind(target) : value;
+      },
+    });
+    const admission = await acquireInviteSourceAdmission(
+      connection,
+      "supplied",
+      options,
+    );
+    expect(queries).toHaveLength(1);
+    expect(queries[0]).toMatch(
+      /^\s*INSERT INTO invite_source_write_admissions/,
+    );
+    expect(admission).toMatchObject({
+      backend: "d1",
+      epoch: 1,
+      freezeGeneration: 0,
+      kind: "supplied",
+      createdAtMs: 10,
+    });
+    await releaseInviteSourceAdmission(db, admission);
+    expect(await admissionRows()).toEqual([]);
+  });
+
+  it("pins the supplied control tuple before an uncertain insert", async () => {
+    await activate();
+    const expectedControl = await readInviteSourceControl(db);
+    let lostResponse = false;
+    const connection = interceptAdmissions(
+      async (query, _bindings, _primary, execute) => {
+        const result = await execute();
+        if (query.trimStart().startsWith("INSERT") && !lostResponse) {
+          lostResponse = true;
+          expectedControl.backend = "rtdb";
+          expectedControl.epoch = 0;
+          expectedControl.freezeGeneration = 1;
+          throw new Error("lost-insert-response");
+        }
+        return result;
+      },
+    );
+    const admission = await acquireInviteSourceAdmission(connection, "pinned", {
+      expectedControl,
+      now: () => 10,
+    });
+    expect(lostResponse).toBe(true);
+    expect(admission).toMatchObject({
+      backend: "d1",
+      epoch: 1,
+      freezeGeneration: 0,
+    });
+    await releaseInviteSourceAdmission(db, admission);
+    expect(await admissionRows()).toEqual([]);
+  });
+
   it.each(["patch", "sweep"])(
     "releases a committed admission after its INSERT response is lost during coordinator %s",
     async (operation) => {
@@ -710,64 +794,83 @@ describe("canonical invite source", () => {
     },
   );
 
-  it("retries an INSERT that failed before committing with the same admission ID", async () => {
-    await activate();
-    const insertedIds: unknown[] = [];
-    const connection = interceptAdmissions(
-      async (query, bindings, _primary, execute) => {
-        if (query.trimStart().startsWith("INSERT")) {
-          insertedIds.push(bindings[0]);
-          if (insertedIds.length === 1) throw new Error("insert-unavailable");
-        }
-        return execute();
-      },
-    );
-    const admission = await acquireInviteSourceAdmission(connection, "retry", {
-      now: () => 10,
-    });
-    expect(insertedIds).toEqual([admission.admissionId, admission.admissionId]);
-    expect(await admissionRows()).toEqual([
-      {
-        admission_id: admission.admissionId,
-        backend: "d1",
-        epoch: 1,
-        freeze_generation: 0,
-        kind: "retry",
-        created_at_ms: 10,
-      },
-    ]);
-    await releaseInviteSourceAdmission(connection, admission);
-    expect(await admissionRows()).toEqual([]);
-  });
+  it.each(admissionControlSources)(
+    "retries an INSERT that failed before committing with the same admission ID (%s control)",
+    async (controlSource) => {
+      await activate();
+      const options = await admissionOptions(controlSource);
+      const insertedIds: unknown[] = [];
+      const connection = interceptAdmissions(
+        async (query, bindings, _primary, execute) => {
+          if (query.trimStart().startsWith("INSERT")) {
+            insertedIds.push(bindings[0]);
+            if (insertedIds.length === 1) throw new Error("insert-unavailable");
+          }
+          return execute();
+        },
+      );
+      const admission = await acquireInviteSourceAdmission(
+        connection,
+        "retry",
+        options,
+      );
+      expect(insertedIds).toEqual([
+        admission.admissionId,
+        admission.admissionId,
+      ]);
+      expect(await admissionRows()).toEqual([
+        {
+          admission_id: admission.admissionId,
+          backend: "d1",
+          epoch: 1,
+          freeze_generation: 0,
+          kind: "retry",
+          created_at_ms: 10,
+        },
+      ]);
+      await releaseInviteSourceAdmission(connection, admission);
+      expect(await admissionRows()).toEqual([]);
+    },
+  );
 
-  it("recovers one committed admission after its response and first primary readback fail", async () => {
-    await activate();
-    const insertedIds: unknown[] = [];
-    let readbacks = 0;
-    const connection = interceptAdmissions(
-      async (query, bindings, primary, execute) => {
-        if (query.trimStart().startsWith("INSERT")) {
-          insertedIds.push(bindings[0]);
-          const result = await execute();
-          if (insertedIds.length === 1) throw new Error("lost-insert-response");
-          return result;
-        }
-        if (query.trimStart().startsWith("SELECT")) {
-          expect(primary).toBe(true);
-          if (++readbacks === 1) throw new Error("readback-unavailable");
-        }
-        return execute();
-      },
-    );
-    const admission = await acquireInviteSourceAdmission(connection, "retry", {
-      now: () => 10,
-    });
-    expect(insertedIds).toEqual([admission.admissionId, admission.admissionId]);
-    expect(readbacks).toBe(2);
-    expect(await admissionRows()).toHaveLength(1);
-    await releaseInviteSourceAdmission(connection, admission);
-    expect(await admissionRows()).toEqual([]);
-  });
+  it.each(admissionControlSources)(
+    "recovers one committed admission after its response and first primary readback fail (%s control)",
+    async (controlSource) => {
+      await activate();
+      const options = await admissionOptions(controlSource);
+      const insertedIds: unknown[] = [];
+      let readbacks = 0;
+      const connection = interceptAdmissions(
+        async (query, bindings, primary, execute) => {
+          if (query.trimStart().startsWith("INSERT")) {
+            insertedIds.push(bindings[0]);
+            const result = await execute();
+            if (insertedIds.length === 1)
+              throw new Error("lost-insert-response");
+            return result;
+          }
+          if (query.trimStart().startsWith("SELECT")) {
+            expect(primary).toBe(true);
+            if (++readbacks === 1) throw new Error("readback-unavailable");
+          }
+          return execute();
+        },
+      );
+      const admission = await acquireInviteSourceAdmission(
+        connection,
+        "retry",
+        options,
+      );
+      expect(insertedIds).toEqual([
+        admission.admissionId,
+        admission.admissionId,
+      ]);
+      expect(readbacks).toBe(2);
+      expect(await admissionRows()).toHaveLength(1);
+      await releaseInviteSourceAdmission(connection, admission);
+      expect(await admissionRows()).toEqual([]);
+    },
+  );
 
   it.each(["before", "after"])(
     "retries a failed release %s DELETE commit without deleting another admission",
@@ -834,80 +937,95 @@ describe("canonical invite source", () => {
     ]);
   });
 
-  it("retains an uncertain committed admission when every primary readback fails", async () => {
-    await activate();
-    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
-    const insertedIds: unknown[] = [];
-    const connection = interceptAdmissions(
-      async (query, bindings, primary, execute) => {
-        if (query.trimStart().startsWith("INSERT")) {
-          insertedIds.push(bindings[0]);
-          await execute();
-          throw new Error("lost-insert-response");
-        }
-        expect(primary).toBe(true);
-        throw new Error("readback-unavailable");
-      },
-    );
-    await expect(
-      acquireInviteSourceAdmission(connection, "uncertain", { now: () => 10 }),
-    ).rejects.toThrow();
-    expect(insertedIds).toHaveLength(3);
-    expect(new Set(insertedIds).size).toBe(1);
-    expect(await admissionRows()).toMatchObject([
-      { admission_id: insertedIds[0], kind: "uncertain" },
-    ]);
-    expect(errorLog).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(String(errorLog.mock.calls[0][0]))).toEqual({
-      event: "invite_source_admission_acquire_unconfirmed",
-      admissionId: insertedIds[0],
-      backend: "d1",
-      epoch: 1,
-      freezeGeneration: 0,
-      kind: "uncertain",
-      createdAtMs: 10,
-    });
-  });
-
-  it("recovers its committed admission after control freezes so the fenced writer can release it", async () => {
-    await activate();
-    const connection = interceptAdmissions(
-      async (query, _bindings, _primary, execute) => {
-        const result = await execute();
-        if (query.trimStart().startsWith("INSERT")) {
-          await db
-            .prepare(
-              "UPDATE invite_source_control SET state = 'frozen', freeze_generation = 1 WHERE singleton = 1",
-            )
-            .run();
-          throw new Error("lost-insert-response");
-        }
-        return result;
-      },
-    );
-    const admission = await acquireInviteSourceAdmission(connection, "raced", {
-      now: () => 10,
-    });
-    expect(admission).toMatchObject({
-      backend: "d1",
-      epoch: 1,
-      freezeGeneration: 0,
-    });
-    await expect(
-      db.batch(inviteSourceAdmissionGuardStatements(db, admission)),
-    ).rejects.toThrow();
-    await releaseInviteSourceAdmission(connection, admission);
-    expect(await admissionRows()).toEqual([]);
-  });
-
-  it.each([
-    "state = 'frozen', freeze_generation = 1",
-    "epoch = 2",
-    "backend = 'rtdb', epoch = 0",
-  ])(
-    "rejects acquisition when control changes before INSERT: %s",
-    async (change) => {
+  it.each(admissionControlSources)(
+    "retains an uncertain committed admission when every primary readback fails (%s control)",
+    async (controlSource) => {
       await activate();
+      const options = await admissionOptions(controlSource);
+      const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
+      const insertedIds: unknown[] = [];
+      const connection = interceptAdmissions(
+        async (query, bindings, primary, execute) => {
+          if (query.trimStart().startsWith("INSERT")) {
+            insertedIds.push(bindings[0]);
+            await execute();
+            throw new Error("lost-insert-response");
+          }
+          expect(primary).toBe(true);
+          throw new Error("readback-unavailable");
+        },
+      );
+      await expect(
+        acquireInviteSourceAdmission(connection, "uncertain", options),
+      ).rejects.toThrow();
+      expect(insertedIds).toHaveLength(3);
+      expect(new Set(insertedIds).size).toBe(1);
+      expect(await admissionRows()).toMatchObject([
+        { admission_id: insertedIds[0], kind: "uncertain" },
+      ]);
+      expect(errorLog).toHaveBeenCalledTimes(1);
+      expect(JSON.parse(String(errorLog.mock.calls[0][0]))).toEqual({
+        event: "invite_source_admission_acquire_unconfirmed",
+        admissionId: insertedIds[0],
+        backend: "d1",
+        epoch: 1,
+        freezeGeneration: 0,
+        kind: "uncertain",
+        createdAtMs: 10,
+      });
+    },
+  );
+
+  it.each(admissionControlSources)(
+    "recovers its committed admission after control freezes so the fenced writer can release it (%s control)",
+    async (controlSource) => {
+      await activate();
+      const options = await admissionOptions(controlSource);
+      const connection = interceptAdmissions(
+        async (query, _bindings, _primary, execute) => {
+          const result = await execute();
+          if (query.trimStart().startsWith("INSERT")) {
+            await db
+              .prepare(
+                "UPDATE invite_source_control SET state = 'frozen', freeze_generation = 1 WHERE singleton = 1",
+              )
+              .run();
+            throw new Error("lost-insert-response");
+          }
+          return result;
+        },
+      );
+      const admission = await acquireInviteSourceAdmission(
+        connection,
+        "raced",
+        options,
+      );
+      expect(admission).toMatchObject({
+        backend: "d1",
+        epoch: 1,
+        freezeGeneration: 0,
+      });
+      await expect(
+        db.batch(inviteSourceAdmissionGuardStatements(db, admission)),
+      ).rejects.toThrow();
+      await releaseInviteSourceAdmission(connection, admission);
+      expect(await admissionRows()).toEqual([]);
+    },
+  );
+
+  it.each(
+    admissionControlSources.flatMap((controlSource) =>
+      [
+        "state = 'frozen', freeze_generation = 1",
+        "epoch = 2",
+        "backend = 'rtdb', epoch = 0",
+      ].map((change) => ({ controlSource, change })),
+    ),
+  )(
+    "rejects acquisition when control changes before INSERT: $change ($controlSource control)",
+    async ({ controlSource, change }) => {
+      await activate();
+      const options = await admissionOptions(controlSource);
       let changed = false;
       const connection = interceptAdmissions(
         async (query, _bindings, _primary, execute) => {
@@ -923,47 +1041,61 @@ describe("canonical invite source", () => {
         },
       );
       await expect(
-        acquireInviteSourceAdmission(connection, "raced"),
+        acquireInviteSourceAdmission(connection, "raced", options),
       ).rejects.toThrow();
       expect(changed).toBe(true);
       expect(await admissionRows()).toEqual([]);
     },
   );
 
-  it("does not recover or delete an admission whose exact tuple changed", async () => {
-    await activate();
-    let changed = false;
-    const connection = interceptAdmissions(
-      async (query, bindings, _primary, execute) => {
-        const result = await execute();
-        if (query.trimStart().startsWith("INSERT") && !changed) {
-          changed = true;
-          await db
-            .prepare(
-              "UPDATE invite_source_write_admissions SET kind = 'other' WHERE admission_id = ?",
-            )
-            .bind(bindings[0])
-            .run();
-          throw new Error("lost-insert-response");
-        }
-        return result;
-      },
-    );
-    await expect(
-      acquireInviteSourceAdmission(connection, "raced", { now: () => 10 }),
-    ).rejects.toThrow();
-    const rows = await admissionRows();
-    expect(rows).toMatchObject([{ kind: "other" }]);
-    await releaseInviteSourceAdmission(db, {
-      admissionId: rows[0].admission_id as string,
-      backend: "d1",
-      epoch: 1,
-      freezeGeneration: 0,
-      kind: "raced",
-      createdAtMs: 10,
-    });
-    expect(await admissionRows()).toEqual(rows);
-  });
+  it.each(
+    admissionControlSources.flatMap((controlSource) =>
+      [
+        { column: "backend", value: "rtdb" },
+        { column: "epoch", value: 2 },
+        { column: "freeze_generation", value: 1 },
+        { column: "kind", value: "other" },
+        { column: "created_at_ms", value: 11 },
+      ].map((change) => ({ controlSource, ...change })),
+    ),
+  )(
+    "does not recover or delete an admission whose $column changed ($controlSource control)",
+    async ({ controlSource, column, value }) => {
+      await activate();
+      const options = await admissionOptions(controlSource);
+      let changed = false;
+      const connection = interceptAdmissions(
+        async (query, bindings, _primary, execute) => {
+          const result = await execute();
+          if (query.trimStart().startsWith("INSERT") && !changed) {
+            changed = true;
+            await db
+              .prepare(
+                `UPDATE invite_source_write_admissions SET ${column} = ? WHERE admission_id = ?`,
+              )
+              .bind(value, bindings[0])
+              .run();
+            throw new Error("lost-insert-response");
+          }
+          return result;
+        },
+      );
+      await expect(
+        acquireInviteSourceAdmission(connection, "raced", options),
+      ).rejects.toThrow();
+      const rows = await admissionRows();
+      expect(rows).toMatchObject([{ [column]: value }]);
+      await releaseInviteSourceAdmission(db, {
+        admissionId: rows[0].admission_id as string,
+        backend: "d1",
+        epoch: 1,
+        freezeGeneration: 0,
+        kind: "raced",
+        createdAtMs: 10,
+      });
+      expect(await admissionRows()).toEqual(rows);
+    },
+  );
 
   it("rejects unsupported mutation and query shapes before writing", async () => {
     await activate();
