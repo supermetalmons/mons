@@ -26,7 +26,27 @@ export function createGameControlsStore(initialTimerConfig: TimerConfig) {
     ),
   };
   const listeners = new Set<() => void>();
-  const notify = () => listeners.forEach((listener) => listener());
+  let batchDepth = 0;
+  let notificationPending = false;
+  const notify = () => {
+    if (batchDepth > 0) {
+      notificationPending = true;
+      return;
+    }
+    listeners.forEach((listener) => listener());
+  };
+  const batchUpdates = (callback: () => void): void => {
+    batchDepth += 1;
+    try {
+      callback();
+    } finally {
+      batchDepth -= 1;
+      if (batchDepth === 0 && notificationPending) {
+        notificationPending = false;
+        notify();
+      }
+    }
+  };
   const updatePresentation = (updates: Partial<GameControlsPresentation>) => {
     if (!hasChanges(snapshot.presentation, updates)) return;
     snapshot = {
@@ -36,6 +56,7 @@ export function createGameControlsStore(initialTimerConfig: TimerConfig) {
     notify();
   };
   return {
+    batchUpdates,
     getSnapshot: () => snapshot,
     subscribe: (listener: () => void) => {
       listeners.add(listener);
@@ -76,6 +97,7 @@ const gameControlsStore = createGameControlsStore({
 });
 
 export const getGameControlsSnapshot = gameControlsStore.getSnapshot;
+export const batchGameControlsUpdates = gameControlsStore.batchUpdates;
 export const subscribeGameControls = gameControlsStore.subscribe;
 export const updateGameControlsContext = gameControlsStore.updateContext;
 export const updateGameControlsPresentation =

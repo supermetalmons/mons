@@ -3152,6 +3152,93 @@ test(
 );
 
 test(
+  "session presets publish one final snapshot and unchanged repeats preserve identity",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      for (const preset of [
+        "lobby",
+        "watch",
+        "snapshot",
+        "invite",
+        "automatchTransition",
+        "localMatch",
+        "automatchRequest",
+        "puzzle",
+        false,
+        true,
+      ]) {
+        const result = await page.evaluate((preset) => {
+          const {
+            run,
+            port,
+            controlsStore,
+            applyRouteControlsPreset,
+            applyDisposedControlsPreset,
+            applyGameplayControlsPreset,
+          } = window.harness;
+          const applyPreset = () => {
+            if (typeof preset === "boolean") {
+              applyDisposedControlsPreset(preset);
+            } else if (
+              ["localMatch", "automatchRequest", "puzzle"].includes(preset)
+            ) {
+              applyGameplayControlsPreset(preset);
+            } else {
+              applyRouteControlsPreset(preset);
+            }
+          };
+          run(() => {
+            applyDisposedControlsPreset(false);
+            if (typeof preset === "boolean") {
+              port.setHomeVisible(!preset);
+              port.setEndMatchVisible(true);
+              port.showWaitingStateText("waiting");
+              port.setUndoVisible(true);
+              port.setUndoEnabled(true);
+            }
+          });
+          const before = controlsStore.getGameControlsSnapshot();
+          const observed = [];
+          const unsubscribe = controlsStore.subscribeGameControls(() => {
+            observed.push(controlsStore.getGameControlsSnapshot());
+          });
+          try {
+            run(applyPreset);
+            const after = controlsStore.getGameControlsSnapshot();
+            const changedNotifications = observed.length;
+            const publishedFinalSnapshot = observed[0] === after;
+            observed.length = 0;
+            run(applyPreset);
+            return {
+              changed: after !== before,
+              changedNotifications,
+              publishedFinalSnapshot,
+              repeatedNotifications: observed.length,
+              retainedSnapshot:
+                controlsStore.getGameControlsSnapshot() === after,
+            };
+          } finally {
+            unsubscribe();
+          }
+        }, preset);
+        assert.deepEqual(
+          result,
+          {
+            changed: true,
+            changedNotifications: 1,
+            publishedFinalSnapshot: true,
+            repeatedNotifications: 0,
+            retainedSnapshot: true,
+          },
+          `preset ${preset}`,
+        );
+      }
+    });
+  },
+);
+
+test(
   "repeating a disposed preset still dismisses a picker whose reaction button is hidden",
   { timeout: 60000 },
   async () => {

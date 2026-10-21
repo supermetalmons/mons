@@ -1,6 +1,7 @@
 import * as bottomControls from "../ui/controls/bottomControlsPort";
 import { setIslandButtonDimmed } from "../runtime/islandButtonPort";
 import { PrimaryActionType } from "../ui/controls/primaryAction";
+import { batchGameControlsUpdates } from "./gameControlsStore";
 
 export type RouteControlsPreset =
   "automatchTransition" | "watch" | "snapshot" | "lobby" | "invite";
@@ -158,9 +159,19 @@ const sessionControls = createSessionControlsPresenter({
   setIslandButtonDimmed,
 });
 
-export const applyRouteControlsPreset =
-  sessionControls.applyRouteControlsPreset;
-export const applyDisposedControlsPreset =
-  sessionControls.applyDisposedControlsPreset;
-export const applyGameplayControlsPreset =
-  sessionControls.applyGameplayControlsPreset;
+export const applyRouteControlsPreset = (preset: RouteControlsPreset): void =>
+  batchGameControlsUpdates(() =>
+    sessionControls.applyRouteControlsPreset(preset),
+  );
+export const applyDisposedControlsPreset = (
+  preserveAutomatchUi: boolean,
+): void =>
+  batchGameControlsUpdates(() =>
+    sessionControls.applyDisposedControlsPreset(preserveAutomatchUi),
+  );
+export const applyGameplayControlsPreset = (
+  preset: GameplayControlsPreset,
+): void =>
+  batchGameControlsUpdates(() =>
+    sessionControls.applyGameplayControlsPreset(preset),
+  );

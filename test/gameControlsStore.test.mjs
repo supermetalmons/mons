@@ -223,3 +223,222 @@ test("explicit presentation reset keeps the current context and caller's timer t
     resetConfig,
   );
 });
+
+test("batches expose immutable current snapshots immediately and notify once with the final state", () => {
+  const store = createGameControlsStore(config);
+  const initial = store.getSnapshot();
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+  let beforeEnablingUndo;
+
+  store.batchUpdates(() => {
+    store.updateContext({ sessionId: 3, isOnlineGame: true });
+    store.updatePresentation({ waitingText: "waiting", homeVisible: true });
+    store.dispatchGameControls({ type: "setUndoVisible", visible: true });
+    beforeEnablingUndo = store.getSnapshot();
+    assert.equal(beforeEnablingUndo.context.sessionId, 3);
+    assert.equal(beforeEnablingUndo.presentation.waitingText, "waiting");
+    assert.equal(
+      beforeEnablingUndo.presentation.gameControls.undo.visible,
+      true,
+    );
+    store.dispatchGameControls({ type: "setUndoEnabled", enabled: true });
+    assert.deepEqual(store.getSnapshot().presentation.gameControls.undo, {
+      visible: true,
+      enabled: true,
+    });
+    assert.deepEqual(observed, []);
+  });
+
+  assert.deepEqual(observed, [store.getSnapshot()]);
+  assert.equal(observed[0], store.getSnapshot());
+  assert.equal(initial.context.sessionId, 0);
+  assert.equal(initial.presentation.waitingText, "");
+  assert.deepEqual(initial.presentation.gameControls.undo, {
+    visible: false,
+    enabled: false,
+  });
+  assert.equal(
+    beforeEnablingUndo.presentation.gameControls.undo.enabled,
+    false,
+  );
+});
+
+test("empty and no-op batches retain identity while reverted changes still publish once", () => {
+  const store = createGameControlsStore(config);
+  const initial = store.getSnapshot();
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+
+  store.batchUpdates(() => {});
+  store.batchUpdates(() => {
+    store.updateContext({ isOnlineGame: false });
+    store.updatePresentation({ homeVisible: false });
+    store.batchUpdates(() => {
+      store.dispatchGameControls({ type: "setUndoVisible", visible: false });
+    });
+  });
+  assert.equal(store.getSnapshot(), initial);
+  assert.deepEqual(observed, []);
+
+  store.batchUpdates(() => {
+    store.updateContext({ isOnlineGame: true });
+    store.updateContext({ isOnlineGame: false });
+    store.updatePresentation({ homeVisible: true });
+    store.updatePresentation({ homeVisible: false });
+    store.dispatchGameControls({ type: "setUndoVisible", visible: true });
+    store.dispatchGameControls({ type: "setUndoVisible", visible: false });
+  });
+  assert.deepEqual(store.getSnapshot(), initial);
+  assert.notEqual(store.getSnapshot(), initial);
+  assert.deepEqual(observed, [store.getSnapshot()]);
+});
+
+test("nested batches and presentation resets publish only at the outer exit", () => {
+  const store = createGameControlsStore(config);
+  const resetConfig = { ...config, requestDate: 9000 };
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+
+  store.batchUpdates(() => {
+    store.updateContext({ sessionId: 7, isOnlineGame: true });
+    store.updatePresentation({ waitingText: "old", endMatchConfirmed: true });
+    store.batchUpdates(() => {
+      store.resetPresentation(resetConfig);
+      assert.equal(store.getSnapshot().context.sessionId, 7);
+      assert.equal(store.getSnapshot().presentation.waitingText, "");
+      store.dispatchGameControls({ type: "showResign" });
+    });
+    assert.deepEqual(observed, []);
+    store.updatePresentation({ homeVisible: true });
+  });
+
+  const final = store.getSnapshot();
+  assert.deepEqual(observed, [final]);
+  assert.equal(final.context.isOnlineGame, true);
+  assert.equal(final.presentation.endMatchConfirmed, false);
+  assert.equal(final.presentation.homeVisible, true);
+  assert.equal(final.presentation.gameControls.resignVisible, true);
+  assert.deepEqual(final.presentation.gameControls.timer.config, resetConfig);
+});
+
+test("a caught nested batch error keeps completed writes in the outer publication", () => {
+  const store = createGameControlsStore(config);
+  const failure = new Error("nested callback failed");
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+
+  store.batchUpdates(() => {
+    store.updateContext({ sessionId: 2 });
+    assert.throws(
+      () =>
+        store.batchUpdates(() => {
+          store.updatePresentation({ homeVisible: true });
+          throw failure;
+        }),
+      (error) => error === failure,
+    );
+    assert.equal(store.getSnapshot().presentation.homeVisible, true);
+    assert.deepEqual(observed, []);
+    store.updatePresentation({ waitingText: "continued" });
+  });
+
+  assert.deepEqual(observed, [store.getSnapshot()]);
+  assert.equal(observed[0].context.sessionId, 2);
+  assert.equal(observed[0].presentation.homeVisible, true);
+  assert.equal(observed[0].presentation.waitingText, "continued");
+});
+
+test("an uncaught nested batch error publishes completed writes and leaves later updates usable", () => {
+  const store = createGameControlsStore(config);
+  const failure = new Error("callback failed");
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+
+  assert.throws(
+    () =>
+      store.batchUpdates(() => {
+        store.updateContext({ sessionId: 2 });
+        store.batchUpdates(() => {
+          store.updatePresentation({ homeVisible: true });
+          throw failure;
+        });
+        store.updatePresentation({ waitingText: "unreachable" });
+      }),
+    (error) => error === failure,
+  );
+  assert.deepEqual(observed, [store.getSnapshot()]);
+  assert.equal(observed[0].context.sessionId, 2);
+  assert.equal(observed[0].presentation.homeVisible, true);
+  assert.equal(observed[0].presentation.waitingText, "");
+
+  store.updateContext({ sessionId: 3 });
+  assert.equal(observed.length, 2);
+  store.batchUpdates(() => {
+    store.updatePresentation({ homeVisible: false, waitingText: "recovered" });
+  });
+  assert.equal(observed.length, 3);
+  assert.equal(observed.at(-1), store.getSnapshot());
+});
+
+for (const nestedBatch of [false, true]) {
+  test(`subscriber updates remain reentrant when ${nestedBatch ? "batched" : "direct"}`, () => {
+    const store = createGameControlsStore(config);
+    const calls = [];
+    store.subscribe(() => {
+      const sessionId = store.getSnapshot().context.sessionId;
+      calls.push(["first", sessionId]);
+      if (sessionId === 1) {
+        const update = () => store.updateContext({ sessionId: 2 });
+        if (nestedBatch) store.batchUpdates(update);
+        else update();
+      }
+    });
+    store.subscribe(() => {
+      calls.push(["second", store.getSnapshot().context.sessionId]);
+    });
+
+    store.batchUpdates(() => store.updateContext({ sessionId: 1 }));
+    assert.deepEqual(calls, [
+      ["first", 1],
+      ["first", 2],
+      ["second", 2],
+      ["second", 2],
+    ]);
+  });
+}
+
+test("a throwing subscriber does not leave a batch pending or suppress later notifications", () => {
+  const store = createGameControlsStore(config);
+  const failure = new Error("subscriber failed");
+  const stopThrowing = store.subscribe(() => {
+    throw failure;
+  });
+  assert.throws(
+    () =>
+      store.batchUpdates(() => {
+        store.updateContext({ sessionId: 1 });
+        store.updatePresentation({ homeVisible: true });
+      }),
+    (error) => error === failure,
+  );
+  assert.equal(store.getSnapshot().context.sessionId, 1);
+  assert.equal(store.getSnapshot().presentation.homeVisible, true);
+  stopThrowing();
+
+  const observed = [];
+  const unsubscribe = store.subscribe(() => observed.push(store.getSnapshot()));
+  store.batchUpdates(() => {});
+  assert.deepEqual(observed, []);
+  store.updateContext({ sessionId: 2 });
+  assert.equal(observed.length, 1);
+  store.batchUpdates(() => {
+    store.updateContext({ sessionId: 3 });
+    store.updatePresentation({ homeVisible: false });
+  });
+  assert.equal(observed.length, 2);
+  assert.equal(observed.at(-1), store.getSnapshot());
+  unsubscribe();
+  store.batchUpdates(() => store.updateContext({ sessionId: 4 }));
+  assert.equal(observed.length, 2);
+});
