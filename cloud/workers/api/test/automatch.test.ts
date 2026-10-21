@@ -1050,6 +1050,277 @@ test("does not receipt a canceled pending shortcut", async () => {
   );
 });
 
+test("reconciles existing-invite receipts with a fresh signal and no projections", async (t) => {
+  for (const mode of ["pending", "matched"] as const) {
+    for (const failure of [
+      "response-lost-after-commit",
+      "D1_ERROR: automatch-selection-stale",
+    ]) {
+      await t.test(`${mode}: ${failure}`, async () => {
+        const controller = new AbortController();
+        let writes = 0;
+        let proofReads = 0;
+        let projections = 0;
+        const value = repository({
+          getStatePath: async (path) => {
+            if (path === "automatch") {
+              return { auto_owned: { uid: identity.uid } };
+            }
+            if (path === "automatch/auto_owned") {
+              return { uid: identity.uid };
+            }
+            if (path === "invites/auto_owned") {
+              return {
+                hostId: identity.uid,
+                guestId: mode === "matched" ? "other-guest" : null,
+                automatchStateHint: mode,
+              };
+            }
+            assert.fail(`unexpected path ${path}`);
+          },
+          patchStateRoot: async (_updates, signal) => {
+            writes++;
+            assert.equal(signal, controller.signal);
+            controller.abort();
+            throw new Error(failure);
+          },
+        });
+        const readReceipt = value.readAutomatchReceipt;
+        value.readAutomatchReceipt = async (operationId, signal) => {
+          if (writes > 0) {
+            proofReads++;
+            assert.ok(signal);
+            assert.notEqual(signal, controller.signal);
+            assert.equal(signal.aborted, false);
+          }
+          return readReceipt(operationId, signal);
+        };
+
+        const result = await startAutomatch(identity, request(), value, {
+          signal: controller.signal,
+          wait: async () => assert.fail("must reconcile without reselection"),
+          enqueueProfileGameProjection: async () => {
+            projections++;
+          },
+          enqueueTelegramProjection: async () => {
+            projections++;
+          },
+        });
+
+        assert.deepEqual(result, {
+          ok: true,
+          inviteId: "auto_owned",
+          mode,
+          matchedImmediately: mode === "matched",
+        });
+        assert.equal(writes, 1);
+        assert.equal(proofReads, 1);
+        assert.equal(projections, 0);
+      });
+    }
+  }
+});
+
+test("a skipped automatch preparation does not hide an invite release failure", async (t) => {
+  for (const path of ["existing", "matched"] as const) {
+    await t.test(path, async () => {
+      const uid = path === "existing" ? identity.uid : "host-uid";
+      const releaseFailure = new GameSessionMutationLockFailure("release");
+      let prepared = false;
+      let proofReads = 0;
+      let writes = 0;
+      let projections = 0;
+      const value = repository({
+        getStatePath: async (recordPath) => {
+          if (recordPath === "automatch") {
+            return { auto_stale: { uid } };
+          }
+          if (recordPath === "automatch/auto_stale") return { uid };
+          if (recordPath === "invites/auto_stale") {
+            prepared = true;
+            return {
+              hostId: uid,
+              guestId: path === "matched" ? "other-guest" : null,
+              automatchStateHint: "canceled",
+            };
+          }
+          assert.fail(`unexpected path ${recordPath}`);
+        },
+        patchStateRoot: async () => {
+          writes++;
+        },
+      });
+      const readReceipt = value.readAutomatchReceipt;
+      value.readAutomatchReceipt = async (operationId, signal) => {
+        if (prepared) proofReads++;
+        return readReceipt(operationId, signal);
+      };
+      const locks = coordinationFor(value).mutationLocks;
+      const release = locks.release;
+      locks.release = async (lock, ownerId) => {
+        if (lock.lockId === "auto_stale") throw releaseFailure;
+        await release(lock, ownerId);
+      };
+
+      await assert.rejects(
+        startAutomatch(identity, request(), value, {
+          enqueueProfileGameProjection: async () => {
+            projections++;
+          },
+          enqueueTelegramProjection: async () => {
+            projections++;
+          },
+        }),
+        (error: unknown) => {
+          assert.ok(error instanceof GameSessionMutationLeaseReleaseFailure);
+          assert.equal(error.cause, releaseFailure);
+          assert.equal(error.workCompleted, true);
+          assert.equal(error.workError, undefined);
+          return true;
+        },
+      );
+      assert.equal(prepared, true);
+      assert.equal(writes, 0);
+      assert.equal(proofReads, 0);
+      assert.equal(projections, 0);
+    });
+  }
+});
+
+test("automatch admission failure before commit never reconciles or projects", async (t) => {
+  for (const path of ["pending", "existing", "matched"] as const) {
+    await t.test(path, async () => {
+      const uid = path === "existing" ? identity.uid : "host-uid";
+      const admissionFailure = new Error("writes-disabled");
+      let guardCalls = 0;
+      let proofReads = 0;
+      let writes = 0;
+      let projections = 0;
+      const value = repository({
+        getStatePath: async (recordPath) => {
+          if (path === "pending") return null;
+          if (recordPath === "automatch") {
+            return { auto_guarded: { uid } };
+          }
+          if (recordPath === "automatch/auto_guarded") return { uid };
+          if (recordPath === "invites/auto_guarded") {
+            return {
+              hostId: uid,
+              guestId: null,
+              automatchStateHint: "pending",
+            };
+          }
+          assert.fail(`unexpected path ${recordPath}`);
+        },
+        patchStateRoot: async () => {
+          writes++;
+        },
+      });
+      const readReceipt = value.readAutomatchReceipt;
+      value.readAutomatchReceipt = async (operationId, signal) => {
+        if (guardCalls > 0) proofReads++;
+        return readReceipt(operationId, signal);
+      };
+
+      await assert.rejects(
+        startAutomatch(identity, request(), value, {
+          assertMutationAllowed: async () => {
+            guardCalls++;
+            throw admissionFailure;
+          },
+          enqueueProfileGameProjection: async () => {
+            projections++;
+          },
+          enqueueTelegramProjection: async () => {
+            projections++;
+          },
+          random: () => 0,
+        }),
+        (error: unknown) => error === admissionFailure,
+      );
+      assert.equal(guardCalls, 1);
+      assert.equal(writes, 0);
+      assert.equal(proofReads, 0);
+      assert.equal(projections, 0);
+    });
+  }
+});
+
+test("resolved pending and existing commits survive release failure without proof reads", async (t) => {
+  for (const path of ["pending", "existing"] as const) {
+    await t.test(path, async () => {
+      const inviteId = path === "pending" ? "auto_aaaaaaaaaaa" : "auto_owned";
+      const controller = new AbortController();
+      const projections: string[] = [];
+      let writes = 0;
+      let proofReads = 0;
+      const value = repository({
+        getStatePath: async (recordPath) => {
+          if (path === "pending") return null;
+          if (recordPath === "automatch") {
+            return { [inviteId]: { uid: identity.uid } };
+          }
+          if (recordPath === `automatch/${inviteId}`) {
+            return { uid: identity.uid };
+          }
+          if (recordPath === `invites/${inviteId}`) {
+            return {
+              hostId: identity.uid,
+              guestId: null,
+              automatchStateHint: "pending",
+            };
+          }
+          assert.fail(`unexpected path ${recordPath}`);
+        },
+        patchStateRoot: async () => {
+          writes++;
+          controller.abort();
+        },
+      });
+      const readReceipt = value.readAutomatchReceipt;
+      value.readAutomatchReceipt = async (operationId, signal) => {
+        if (writes > 0) {
+          proofReads++;
+          throw new Error("proof-unavailable");
+        }
+        return readReceipt(operationId, signal);
+      };
+      const locks = coordinationFor(value).mutationLocks;
+      const release = locks.release;
+      locks.release = async (lock, ownerId) => {
+        if (lock.lockId === inviteId) {
+          throw new GameSessionMutationLockFailure("release");
+        }
+        await release(lock, ownerId);
+      };
+
+      const result = await startAutomatch(identity, request(), value, {
+        signal: controller.signal,
+        enqueueTelegramProjection: async () => {
+          projections.push("telegram");
+        },
+        enqueueProfileGameProjection: async () => {
+          projections.push("profile");
+        },
+        random: () => 0,
+      });
+
+      assert.deepEqual(result, {
+        ok: true,
+        inviteId,
+        mode: "pending",
+        matchedImmediately: false,
+      });
+      assert.equal(writes, 1);
+      assert.equal(proofReads, 0);
+      assert.deepEqual(
+        projections,
+        path === "pending" ? ["telegram", "profile"] : [],
+      );
+    });
+  }
+});
+
 test("uses the supplied ownership snapshot without revalidation", async () => {
   let ownershipReads = 0;
   const result = await findOwnedQueuedAutomatches(
@@ -3585,6 +3856,7 @@ test("rejects a committed match with a conflicting receipt", async () => {
 test("returns a committed match despite release failure", async () => {
   let committed = false;
   let writes = 0;
+  let proofReads = 0;
   const profileTasks: unknown[] = [];
   const telegramTasks: unknown[] = [];
   const value = repository({
@@ -3616,6 +3888,14 @@ test("returns a committed match despite release failure", async () => {
       committed = true;
     },
   });
+  const readReceipt = value.readAutomatchReceipt;
+  value.readAutomatchReceipt = async (operationId, signal) => {
+    if (committed) {
+      proofReads++;
+      throw new Error("proof-unavailable");
+    }
+    return readReceipt(operationId, signal);
+  };
   const stores = coordinationFor(value);
   const release = stores.mutationLocks.release;
   stores.mutationLocks.release = async (lock, ownerId) => {
@@ -3641,6 +3921,7 @@ test("returns a committed match despite release failure", async () => {
     matchedImmediately: true,
   });
   assert.equal(writes, 1);
+  assert.equal(proofReads, 0);
   assert.deepEqual(profileTasks, [
     {
       kind: "automatch-profile-game-projection",

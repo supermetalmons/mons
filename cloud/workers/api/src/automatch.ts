@@ -9,6 +9,7 @@ import {
   automatchTimestamp,
   cancelQueuedAutomatch,
 } from "./automatch/cancellation.ts";
+import { commitAutomatchWithLease } from "./automatch/commit.ts";
 import {
   buildMatchedAutomatchPlan,
   buildPendingAutomatchPlan,
@@ -509,14 +510,12 @@ async function persistExistingAutomatchReceipt(
   dependencies: AutomatchDependencies,
 ): Promise<SuccessfulStartAutomatchResponse | null> {
   const owned = new Set(ownerUids);
-  let response: SuccessfulStartAutomatchResponse | null = null;
-  let patchAttempted = false;
-  try {
-    await withGameSessionMutationLease(
+  return commitAutomatchWithLease(
+    {
       inviteId,
-      request.operationId,
-      dependencies.mutationLocks,
-      async () => {
+      leaseOperationId: request.operationId,
+      selectionConflict: "reconcile",
+      prepare: async () => {
         const [queueValue, inviteValue] = await Promise.all([
           repository.readAutomatchEntry(inviteId, signal),
           repository.readInviteMetadata(inviteId, signal),
@@ -525,7 +524,8 @@ async function persistExistingAutomatchReceipt(
         const invite = toRecord(inviteValue);
         const hostId = normalizeString(invite?.hostId);
         const guestId = normalizeString(invite?.guestId);
-        if (!invite || !owned.has(hostId)) return;
+        if (!invite || !owned.has(hostId)) return null;
+        let response: SuccessfulStartAutomatchResponse;
         if (guestId) {
           response = matchedAutomatchResponse(inviteId);
         } else if (
@@ -536,12 +536,11 @@ async function persistExistingAutomatchReceipt(
         ) {
           response = pendingAutomatchResponse(inviteId);
         } else {
-          return;
+          return null;
         }
-        await dependencies.assertMutationAllowed?.();
-        patchAttempted = true;
-        await repository.commitSessionChanges(
-          [
+        return {
+          response,
+          changes: [
             ...buildAutomatchReceiptChanges(
               identity.uid,
               request,
@@ -556,26 +555,14 @@ async function persistExistingAutomatchReceipt(
               operationId: request.operationId,
             },
           ],
-          signal,
-        );
+        };
       },
-    );
-  } catch (error) {
-    if (!response || !patchAttempted) throw error;
-    const didCommit =
-      (error instanceof GameSessionMutationLeaseReleaseFailure &&
-        error.workCompleted) ||
-      (await didCommitAutomatchReceipt(
-        identity.uid,
-        request,
-        response,
-        repository,
-      ));
-    if (!didCommit) {
-      throw error;
-    }
-  }
-  return response;
+      commit: (changes) => repository.commitSessionChanges(changes, signal),
+      reconcile: (response) =>
+        didCommitAutomatchReceipt(identity.uid, request, response, repository),
+    },
+    dependencies,
+  );
 }
 
 async function attemptAutomatch(
@@ -701,42 +688,23 @@ async function attemptAutomatch(
         },
         dependencies.createProjectionRequestId || (() => crypto.randomUUID()),
       );
-    const inviteId = response.inviteId;
-    let patchAttempted = false;
-    try {
-      await withGameSessionMutationLease(
-        inviteId,
-        profileGameProjectionTask.requestId,
-        dependencies.mutationLocks,
-        async () => {
-          await dependencies.assertMutationAllowed?.();
-          patchAttempted = true;
-          await repository.commitSessionChanges(changes, signal);
-        },
-      );
-    } catch (error) {
-      if (isAutomatchQueueSelectionConflict(error)) throw error;
-      const didCommit =
-        (error instanceof GameSessionMutationLeaseReleaseFailure &&
-          error.workCompleted) ||
-        (patchAttempted &&
-          (await didCommitAutomatchReceipt(
+    await commitAutomatchWithLease(
+      {
+        inviteId: response.inviteId,
+        leaseOperationId: profileGameProjectionTask.requestId,
+        selectionConflict: "rethrow",
+        prepare: async () => ({ response, changes }),
+        commit: (changes) => repository.commitSessionChanges(changes, signal),
+        reconcile: (expected) =>
+          didCommitAutomatchReceipt(
             identity.uid,
             request,
-            response,
+            expected,
             repository,
-          )));
-      if (!didCommit) {
-        throw error;
-      }
-      await enqueueAutomatchProjections(
-        projectionTask,
-        profileGameProjectionTask,
-        dependencies,
-      );
-      markAutomatchOutcome("pending");
-      return response;
-    }
+          ),
+      },
+      dependencies,
+    );
     await enqueueAutomatchProjections(
       projectionTask,
       profileGameProjectionTask,
@@ -787,14 +755,12 @@ async function attemptAutomatch(
     },
     dependencies.createProjectionRequestId || (() => crypto.randomUUID()),
   );
-  let matchResult: "matched" | "stale" = "stale";
-  let patchAttempted = false;
-  try {
-    matchResult = await withGameSessionMutationLease(
-      queued.inviteId,
-      profileGameProjectionTask.requestId,
-      dependencies.mutationLocks,
-      async () => {
+  const matchResult = await commitAutomatchWithLease(
+    {
+      inviteId: queued.inviteId,
+      leaseOperationId: profileGameProjectionTask.requestId,
+      selectionConflict: "rethrow",
+      prepare: async () => {
         const [currentQueueValue, currentInviteValue] = await Promise.all([
           repository.readAutomatchEntry(queued.inviteId, signal),
           repository.readInviteMetadata(queued.inviteId, signal),
@@ -805,7 +771,7 @@ async function attemptAutomatch(
           normalizeString(currentInvite?.hostId) !== existingUid ||
           normalizeString(currentInvite?.guestId)
         ) {
-          return "stale" as const;
+          return null;
         }
         inviteChange.value = {
           ...inviteChange.value,
@@ -814,33 +780,15 @@ async function attemptAutomatch(
             [identity.uid]: request.operationId,
           },
         };
-        await dependencies.assertMutationAllowed?.();
-        patchAttempted = true;
-        await repository.commitSessionChanges(changes, signal);
-        return "matched" as const;
+        return { response: matchedResponse, changes };
       },
-    );
-  } catch (patchFailure) {
-    if (isAutomatchQueueSelectionConflict(patchFailure)) throw patchFailure;
-    if (!patchAttempted) {
-      throw patchFailure;
-    }
-    const isReleaseFailure =
-      patchFailure instanceof GameSessionMutationLeaseReleaseFailure;
-    const didCommit =
-      (isReleaseFailure && patchFailure.workCompleted) ||
-      (await didCommitAutomatchReceipt(
-        identity.uid,
-        request,
-        matchedResponse,
-        repository,
-      ));
-    if (!didCommit) {
-      throw patchFailure;
-    }
-    matchResult = "matched";
-  }
-  if (matchResult === "stale") {
+      commit: (changes) => repository.commitSessionChanges(changes, signal),
+      reconcile: (response) =>
+        didCommitAutomatchReceipt(identity.uid, request, response, repository),
+    },
+    dependencies,
+  );
+  if (!matchResult) {
     return attemptAutomatch(
       identity,
       request,
