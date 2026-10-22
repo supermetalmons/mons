@@ -1,3 +1,4 @@
+import type { DecodedWager } from "./wagerModel.ts";
 import type { WagerKey } from "./wagerStateRepository.ts";
 import {
   readStoredSettlement,
@@ -226,7 +227,7 @@ async function claimSettlement(
 ): Promise<
   "already-resolved" | "insufficient-materials" | "no-wager" | WagerSettlement
 > {
-  let current: unknown;
+  let current: DecodedWager | null;
   await assertMutationAllowed?.();
   try {
     const transaction = await repository.wagerWriter.claimSettlement(
@@ -254,8 +255,7 @@ async function claimSettlement(
   } catch {
     current = await repository.wagers.readWager(wagerKey, signal);
   }
-  const wager = toRecord(current);
-  const settlement = readStoredSettlement(wager);
+  const settlement = readStoredSettlement(current);
   if (
     settlement?.operationId === operationId &&
     settlement.state === "completed"
@@ -344,18 +344,17 @@ async function readWagerSettlementRetry(
   ) {
     return { state: "stale" };
   }
-  const rawWager = await repository.wagers.readWager({
+  const wager = await repository.wagers.readWager({
     inviteId: task.inviteId,
     matchId: task.matchId,
   });
-  if (rawWager === null || rawWager === undefined) {
+  if (wager === null || wager === undefined) {
     return { state: "stale" };
   }
-  const wager = toRecord(rawWager);
-  if (!wager) throw new Error("wager-settlement-malformed");
+  if (!wager.record) throw new Error("wager-settlement-malformed");
   const settlement = readStoredSettlement(wager);
   if (!settlement) {
-    if (wager.resolved) return { state: "stale" };
+    if (wager.resolved.raw) return { state: "stale" };
     return task.resolution ? { state: "unclaimed" } : { state: "stale" };
   }
   if (settlement.operationId !== task.operationId) return { state: "stale" };
@@ -492,17 +491,14 @@ export async function resolveWagerOutcome(
     inviteId: request.inviteId,
     matchId: request.matchId,
   };
-  if (
-    (await repository.wagers.readResolutionMarker(
-      wagerKey,
-      dependencies.signal,
-    )) === true
-  ) {
-    const markedWager = toRecord(
-      await repository.wagers.readWager(wagerKey, dependencies.signal),
-    );
+  const snapshot = await repository.wagers.readWagerSnapshot(
+    wagerKey,
+    dependencies.signal,
+  );
+  if (snapshot.resolutionMarker === true) {
+    const markedWager = snapshot.wager;
     const markedSettlement = readStoredSettlement(markedWager);
-    const proposals = toRecord(markedWager?.proposals);
+    const proposals = markedWager?.proposals.value?.entries;
     if (
       markedSettlement?.state === "completed" &&
       markedSettlement.failureReason ===
@@ -515,10 +511,10 @@ export async function resolveWagerOutcome(
       };
     }
     if (
-      !markedWager ||
-      markedWager.resolved ||
+      !markedWager?.record ||
+      markedWager.resolved.raw ||
       markedSettlement?.state === "completed" ||
-      (!markedWager.agreed && Object.keys(proposals || {}).length === 0)
+      (!markedWager.agreed.raw && Object.keys(proposals || {}).length === 0)
     ) {
       return { ok: true, reason: "already-resolved", mining: await mining() };
     }

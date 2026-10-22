@@ -194,7 +194,7 @@ function client(
     ...persistence.client,
     wagers: {
       readWager: async () => null,
-      readResolutionMarker: async () => null,
+      readWagerSnapshot: async () => ({ wager: null, resolutionMarker: null }),
       readInviteWagerState: async () => [],
       readInviteWagerPresence: async () => ({
         wagerMatchIds: [],

@@ -15,6 +15,7 @@ import type {
   TransactionDecision,
   TransactionResult,
 } from "../src/repositoryContracts.ts";
+import { decodeWager, type DecodedWager } from "../src/wagerModel.ts";
 
 export type WagerTestState = {
   readState(
@@ -41,27 +42,35 @@ export type WagerTestState = {
 export function createMemoryWagerState(state: WagerTestState): WagerWriter {
   const path = (key: WagerKey) =>
     `invites/${key.inviteId}/wagers/${key.matchId}`;
-  const transact = (
+  const transact = async (
     key: WagerKey,
-    reduce: (current: unknown) => TransactionDecision<WagerRecord>,
+    reduce: (current: DecodedWager | null) => TransactionDecision<WagerRecord>,
     signal?: AbortSignal,
-  ) =>
-    state.transactState(path(key), reduce, signal) as Promise<
-      TransactionResult<WagerRecord>
-    >;
+  ): Promise<TransactionResult<DecodedWager>> => {
+    const result = await state.transactState(
+      path(key),
+      (current) => reduce(decodeWager(current)),
+      signal,
+    );
+    return { ...result, value: decodeWager(result.value) };
+  };
   return {
     readWager: async (key, signal) =>
-      (await state.readState(
-        path(key),
-        undefined,
-        signal,
-      )) as WagerRecord | null,
-    readResolutionMarker: async (key, signal) =>
-      (await state.readState(
-        `invites/${key.inviteId}/matchesWagerResolutions/${key.matchId}`,
-        undefined,
-        signal,
-      )) as boolean | null,
+      decodeWager(await state.readState(path(key), undefined, signal)),
+    readWagerSnapshot: async (key, signal) => {
+      const [wager, resolutionMarker] = await Promise.all([
+        state.readState(path(key), undefined, signal),
+        state.readState(
+          `invites/${key.inviteId}/matchesWagerResolutions/${key.matchId}`,
+          undefined,
+          signal,
+        ),
+      ]);
+      return {
+        wager: decodeWager(wager),
+        resolutionMarker: resolutionMarker as boolean | null,
+      };
+    },
     readInviteWagerState: async () => {
       throw new Error("unexpected-invite-wager-read");
     },
@@ -95,11 +104,9 @@ export function createMemoryWagerState(state: WagerTestState): WagerWriter {
         signal,
       ),
     async completeSettlement(key, input, signal) {
-      const current = (await state.readState(
-        path(key),
-        undefined,
-        signal,
-      )) as WagerRecord | null;
+      const current = decodeWager(
+        await state.readState(path(key), undefined, signal),
+      );
       const decision = completeSettlementDecision(current, input);
       if ("commit" in decision)
         return {
@@ -120,7 +127,7 @@ export function createMemoryWagerState(state: WagerTestState): WagerWriter {
       } else if (input.settlement.kind === "agreed")
         updates[`${path(key)}/resolved`] = decision.value?.resolved;
       await state.patchStateRoot(updates, signal);
-      return { committed: true, value: decision.value };
+      return { committed: true, value: decodeWager(decision.value) };
     },
   };
 }

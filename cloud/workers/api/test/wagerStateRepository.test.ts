@@ -35,8 +35,8 @@ test("read-only wager capability exposes no writer or generic state operations",
   assert.deepEqual(Object.keys(reader).sort(), [
     "readInviteWagerPresence",
     "readInviteWagerState",
-    "readResolutionMarker",
     "readWager",
+    "readWagerSnapshot",
   ]);
   assert.equal(f.accesses(), 0);
 });
@@ -91,7 +91,7 @@ test("typed keys reject unsafe IDs before touching D1", async () => {
   ]) {
     await assert.rejects(reader.readWager(key), /invalid-wager-state-key/);
     await assert.rejects(
-      reader.readResolutionMarker(key),
+      reader.readWagerSnapshot(key),
       /invalid-wager-state-key/,
     );
   }
@@ -126,6 +126,19 @@ test("a cancelled command cannot read or dispatch a notification", async () => {
   );
   assert.equal(f.accesses(), 0);
   assert.equal(notices, 0);
+});
+
+test("a cancelled wager snapshot cannot read D1", async () => {
+  const f = fixture();
+  const reason = new Error("cancelled");
+  await assert.rejects(
+    createWagerStateReader(f.db).readWagerSnapshot(
+      { inviteId: "invite", matchId: "match" },
+      AbortSignal.abort(reason),
+    ),
+    (error) => error === reason,
+  );
+  assert.equal(f.accesses(), 0);
 });
 
 test("cancellation during a read prevents the decision, write, and notification", async () => {

@@ -21,6 +21,7 @@ import {
   getAuthCorsHeaders,
 } from "./authHttp.ts";
 import { readBoundedJson } from "./http.ts";
+import { createRequestTiming } from "./requestTiming.ts";
 import { issueSessionAccessToken } from "./sessionAuth.ts";
 import {
   createSessionRepository,
@@ -68,37 +69,11 @@ export async function handleSessionRoute(
   dependencies: SessionRouteDependencies = {},
 ): Promise<Response> {
   const now = dependencies.now || Date.now;
-  const startedAt = now();
-  const timings = new Map<string, number>();
+  const { measure, finish } = createRequestTiming({ now, repeated: "sum" });
   let target: SessionBootstrapTarget | SessionEventBootstrapTarget | null =
     null;
   let includeIdentity = false;
   let headers: Record<string, string> = { Vary: "Origin" };
-  const measure = async <T>(
-    name: string,
-    work: () => Promise<T>,
-  ): Promise<T> => {
-    const started = now();
-    try {
-      return await work();
-    } finally {
-      timings.set(
-        name,
-        (timings.get(name) ?? 0) + Math.max(0, now() - started),
-      );
-    }
-  };
-  const finish = (response: Response): Response => {
-    timings.set("total", Math.max(0, now() - startedAt));
-    response.headers.set(
-      "Server-Timing",
-      Array.from(
-        timings,
-        ([name, duration]) => `${name};dur=${duration.toFixed(1)}`,
-      ).join(", "),
-    );
-    return response;
-  };
   const tokenResponse = async (
     session: SessionTokenResponse,
   ): Promise<Response> => {

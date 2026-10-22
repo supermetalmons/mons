@@ -92,9 +92,101 @@ function responseLost(
     },
   });
 }
+function observeWagerReads(afterRead?: () => Promise<void>) {
+  const queries: string[] = [];
+  const sessions: D1SessionBookmark[] = [];
+  const statement = (
+    value: D1PreparedStatement,
+    query: string,
+  ): D1PreparedStatement =>
+    new Proxy(value, {
+      get(target, property) {
+        if (property === "bind")
+          return (...values: unknown[]) =>
+            statement(target.bind(...values), query);
+        if (property === "first")
+          return async (...args: unknown[]) => {
+            queries.push(query);
+            const result = await Reflect.apply(target.first, target, args);
+            await afterRead?.();
+            return result;
+          };
+        const member = Reflect.get(target, property, target);
+        return typeof member === "function" ? member.bind(target) : member;
+      },
+    });
+  const database = new Proxy(db, {
+    get(target, property) {
+      if (property === "withSession")
+        return (constraint: D1SessionBookmark) => {
+          sessions.push(constraint);
+          return new Proxy(target.withSession(constraint), {
+            get(session, property) {
+              if (property === "prepare")
+                return (query: string) =>
+                  statement(session.prepare(query), query);
+              const member = Reflect.get(session, property, session);
+              return typeof member === "function"
+                ? member.bind(session)
+                : member;
+            },
+          });
+        };
+      const member = Reflect.get(target, property, target);
+      return typeof member === "function" ? member.bind(target) : member;
+    },
+  });
+  return { database, queries, sessions };
+}
 describe("canonical wager state", () => {
   beforeAll(async () => {
     await applyRetiredProfileMigrations(db, migrations, "a".repeat(64));
+  });
+  it("reads a wager and its marker from one revision with one primary query", async () => {
+    await withWriter(async (writeGuards) => {
+      const store = createWagerStateD1Store(db, { writeGuards, now });
+      const id = key("snapshot-revision");
+      await store.commit([
+        {
+          current: await store.read(id),
+          value: { wager: { snapshot: "before" }, resolutionMarker: false },
+        },
+      ]);
+      const before = await store.read(id);
+      let changed = false;
+      const observed = observeWagerReads(async () => {
+        if (changed) return;
+        changed = true;
+        expect(
+          await store.commit([
+            {
+              current: before,
+              value: { wager: { snapshot: "after" }, resolutionMarker: true },
+            },
+          ]),
+        ).toBe(true);
+      });
+      const snapshot = await createWagerStateReader(
+        observed.database,
+      ).readWagerSnapshot(id);
+      expect(snapshot.wager?.raw).toEqual({ snapshot: "before" });
+      expect(snapshot.resolutionMarker).toBe(false);
+      expect(observed.queries).toHaveLength(1);
+      expect(observed.sessions).toEqual(["first-primary"]);
+      const latest = await createWagerStateReader(db).readWagerSnapshot(id);
+      expect(latest.wager?.raw).toEqual({ snapshot: "after" });
+      expect(latest.resolutionMarker).toBe(true);
+    });
+  });
+  it("reads absent wager state with one primary query", async () => {
+    const observed = observeWagerReads();
+    expect(
+      await createWagerStateReader(observed.database).readWagerSnapshot(
+        key("snapshot-missing"),
+      ),
+    ).toEqual({ wager: null, resolutionMarker: null });
+    expect(observed.queries).toHaveLength(1);
+    expect(observed.sessions).toEqual(["first-primary"]);
   });
   it("commits completion and its marker atomically, preserves extensions, and retains deletion revisions", async () => {
     await withWriter(async (writeGuards) => {
@@ -144,8 +236,8 @@ describe("canonical wager state", () => {
         insufficientMaterials: false,
       });
       expect(completed.committed).toBe(true);
-      expect(await writer.readResolutionMarker(id)).toBe(true);
-      expect(await writer.readWager(id)).toMatchObject({
+      expect((await writer.readWagerSnapshot(id)).resolutionMarker).toBe(true);
+      expect((await writer.readWager(id))?.raw).toMatchObject({
         retained: { ids: ["first", "second"] },
         settlement: {
           state: "completed",
@@ -212,7 +304,7 @@ describe("canonical wager state", () => {
       expect(composed).toEqual({
         hostId: "host",
         guestId: "guest",
-        wagers: { composed: await writer.readWager(key("composed")) },
+        wagers: { composed: (await writer.readWager(key("composed")))?.raw },
       });
       expect(composeInviteWagerSource(null, states, false)).toBeNull();
       expect(await writer.readInviteWagerState("missing")).toEqual([]);
@@ -251,10 +343,12 @@ describe("canonical wager state", () => {
         parse.mockRestore();
       }
       expect(
-        await reader.readWager({
-          inviteId: "shallow-history",
-          matchId: "first",
-        }),
+        (
+          await reader.readWager({
+            inviteId: "shallow-history",
+            matchId: "first",
+          })
+        )?.raw,
       ).toEqual({ history });
     });
   });
@@ -268,7 +362,9 @@ describe("canonical wager state", () => {
       ]);
       expect(results.every((result) => result.committed)).toBe(true);
       expect(
-        Object.keys((await writer.readWager(id))!.proposals as object).sort(),
+        Object.keys(
+          (await writer.readWager(id))!.proposals.raw as object,
+        ).sort(),
       ).toEqual(["guest", "host"]);
       const observed = observeD1FailureDatabase(db);
       const store = createWagerStateD1Store(observed.database, {
@@ -299,7 +395,7 @@ describe("canonical wager state", () => {
         "wager-state-conflict",
       );
       expect((await store.read(key("other"))).revision).toBe(0);
-      expect((await writer.readWager(id))?.overwritten).toBeUndefined();
+      expect((await writer.readWager(id))?.record?.overwritten).toBeUndefined();
     });
   });
   it.each(["host", "guest"])(
@@ -397,7 +493,7 @@ describe("canonical wager state", () => {
       expect(observed.batches).toHaveLength(1);
       expect(notices).toEqual([]);
       expect(
-        Object.keys((await live.readWager(id))!.proposals as object),
+        Object.keys((await live.readWager(id))!.proposals.raw as object),
       ).toEqual(["guest"]);
     });
   });
@@ -428,8 +524,8 @@ describe("canonical wager state", () => {
       expect(observed.batches).toHaveLength(1);
       expect(observed.errors).toHaveLength(1);
       expect(classifyD1Failure(observed.errors[0])).toBe("guard");
-      expect(await writer.readResolutionMarker(id)).toBeNull();
-      expect((await writer.readWager(id))!.settlement).toMatchObject({
+      expect((await writer.readWagerSnapshot(id)).resolutionMarker).toBeNull();
+      expect((await writer.readWager(id))!.settlement.raw).toMatchObject({
         state: "pending",
       });
       const notices: boolean[] = [];
@@ -447,8 +543,8 @@ describe("canonical wager state", () => {
           insufficientMaterials: false,
         }),
       ).rejects.toThrow("response-lost-after-commit");
-      expect(await writer.readResolutionMarker(id)).toBe(true);
-      expect((await writer.readWager(id))!.settlement).toMatchObject({
+      expect((await writer.readWagerSnapshot(id)).resolutionMarker).toBe(true);
+      expect((await writer.readWager(id))!.settlement.raw).toMatchObject({
         state: "completed",
       });
       expect(notices).toEqual([false]);
@@ -513,7 +609,7 @@ describe("canonical wager state", () => {
           }),
         ).rejects.toThrow("wager-settlement-unavailable");
       expect(await writer.readWager(id)).toEqual(claimed.value);
-      expect(await writer.readResolutionMarker(id)).toBeNull();
+      expect((await writer.readWagerSnapshot(id)).resolutionMarker).toBeNull();
     });
   });
   it("notifies rooms on confirmed and ambiguous writes while reads and no-ops remain quiet", async () => {
@@ -561,7 +657,7 @@ describe("canonical wager state", () => {
       ).rejects.toThrow("response-lost-after-commit");
       expect(notices.splice(0)).toEqual([id.inviteId]);
       expect(
-        (await writer.readWager(id))!.proposalRemovalOperations,
+        (await writer.readWager(id))!.proposalRemovalOperations.raw,
       ).toHaveProperty("remove");
       const unreadableDb = new Proxy(db, {
         get(target, property) {
@@ -627,7 +723,7 @@ describe("canonical wager state", () => {
       ).rejects.toBe(failure);
       expect(notices).toEqual([true, false]);
       expect(
-        (await writer.readWager(id))!.proposalRemovalOperations,
+        (await writer.readWager(id))!.proposalRemovalOperations.raw,
       ).toHaveProperty("remove");
     });
   });

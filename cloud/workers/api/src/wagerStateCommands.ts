@@ -1,13 +1,28 @@
 import {
-  isMaterialName,
-  normalizeCount,
-  type MiningMaterialName,
-} from "@mons/shared/mining";
+  lineageFingerprint,
+  readStoredSettlement,
+  readWagerProposal,
+  readWagerCount,
+  readWagerRemovalReceipt,
+  WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON,
+  type DecodedWager,
+  type RawWagerRecord,
+  type WagerSettlement,
+  type SettlementRelease,
+} from "./wagerModel.ts";
+import { isMaterialName, type MiningMaterialName } from "@mons/shared/mining";
 import type { WagerAgreement } from "@mons/shared/wagers";
 import type { TransactionDecision } from "./repositoryContracts.ts";
 
+export {
+  lineageFingerprint,
+  readStoredSettlement,
+  WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON,
+} from "./wagerModel.ts";
+export type { WagerSettlement, SettlementRelease } from "./wagerModel.ts";
+
 export type WagerKey = { inviteId: string; matchId: string };
-export type WagerRecord = Record<string, unknown>;
+export type WagerRecord = RawWagerRecord;
 export type ModernProposalLineage = {
   count: number;
   material: MiningMaterialName;
@@ -74,73 +89,14 @@ export type CompleteWagerSettlementCommand = {
   completedAtMs: number;
   insufficientMaterials: boolean;
 };
-function toRecord(value: unknown): WagerRecord | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as WagerRecord)
-    : null;
-}
 function normalizeString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 function validOperationId(value: unknown): value is string {
   return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 }
-const SETTLEMENT_VERSION = 2;
-export const WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON =
-  "insufficient-materials";
-
-type WagerSettlementFailureReason =
-  typeof WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON;
-
-export type SettlementRelease = {
-  reservationOperationIds: string[];
-  uid: string;
-};
-
-type SettlementBase = {
-  claimedAtMs: number;
-  completedAtMs: number | null;
-  failureReason: WagerSettlementFailureReason | null;
-  fingerprint: string;
-  operationId: string;
-  state: "completed" | "pending";
-  version: typeof SETTLEMENT_VERSION;
-};
-
-type AgreedSettlement = SettlementBase & {
-  count: number;
-  kind: "agreed";
-  loserProfileId: string;
-  loserUid: string;
-  material: MiningMaterialName;
-  releases: SettlementRelease[];
-  winnerProfileId: string;
-  winnerUid: string;
-};
-
-type ProposalSettlement = SettlementBase & {
-  kind: "proposals";
-  releases: SettlementRelease[];
-};
-
-export type WagerSettlement = AgreedSettlement | ProposalSettlement;
-
-function withoutReady(value: unknown): Record<string, unknown> {
-  const operation = toRecord(value);
-  const { reservationLineageReady: _ready, ...rest } = operation || {};
-  return rest;
-}
-
-export function lineageFingerprint(value: unknown): string {
-  const wager = toRecord(value);
-  return JSON.stringify([
-    wager?.agreed,
-    withoutReady(wager?.agreementOperation),
-  ]);
-}
-
 export function transitionWagerProposal(
-  current: unknown,
+  current: DecodedWager | null,
   input: {
     material: MiningMaterialName;
     now: number;
@@ -154,40 +110,40 @@ export function transitionWagerProposal(
     selfAdjustmentOperationId: string;
   },
 ): WagerProposalTransition {
-  const wager = toRecord(current) || {};
-  const agreement = toRecord(wager.agreed);
-  const agreementOperation = toRecord(wager.agreementOperation);
+  const wager = current?.record || {};
+  const agreement = current?.agreed.value;
+  const agreementOperation = current?.agreementOperation.value;
   if (
-    agreementOperation?.id === input.operationId &&
-    agreement?.accepterId === input.playerUid
+    agreementOperation?.raw.id === input.operationId &&
+    agreement?.raw.accepterId === input.playerUid
   ) {
     return { decision: "replayed" };
   }
-  const proposals = { ...(toRecord(wager.proposals) || {}) };
-  const ownProposal = toRecord(proposals[input.playerUid]);
-  if (ownProposal?.operationId === input.operationId) {
+  const proposals = { ...current?.proposals.value?.raw };
+  const ownProposal = readWagerProposal(current, input.playerUid);
+  if (ownProposal?.raw.operationId === input.operationId) {
     return { decision: "replayed" };
   }
   if (wager.resolved || wager.agreed || wager.settlement) {
     return { decision: "unavailable" };
   }
-  const proposedBy = { ...(toRecord(wager.proposedBy) || {}) };
+  const proposedBy = { ...current?.proposedBy.value };
   if (proposals[input.playerUid] || proposedBy[input.playerUid]) {
     return { decision: "unavailable" };
   }
-  const opponentProposal = toRecord(proposals[input.opponentUid]);
-  const opponentCount = normalizeCount(opponentProposal?.count);
+  const opponentProposal = readWagerProposal(current, input.opponentUid);
+  const opponentCount = readWagerCount(opponentProposal);
   if (
     opponentProposal &&
-    opponentProposal.material === input.material &&
+    opponentProposal.raw.material === input.material &&
     opponentCount > 0
   ) {
     if (
       !input.opponentProposal ||
       input.opponentProposal.material !== input.material ||
       input.opponentProposal.count !== opponentCount ||
-      opponentProposal.operationId !== input.opponentProposal.operationId ||
-      opponentProposal.reservationOperationId !==
+      opponentProposal.raw.operationId !== input.opponentProposal.operationId ||
+      opponentProposal.raw.reservationOperationId !==
         input.opponentProposal.reservationOperationId
     ) {
       return { decision: "unavailable" };
@@ -275,7 +231,7 @@ export function transitionWagerProposal(
 }
 
 export function sendProposalDecision(
-  current: unknown,
+  current: DecodedWager | null,
   input: SendWagerProposalCommand,
 ): TransactionDecision<WagerRecord> {
   const transition = transitionWagerProposal(current, input);
@@ -284,7 +240,7 @@ export function sendProposalDecision(
     : { commit: false, decision: transition.decision };
 }
 export function acceptProposalDecision(
-  current: unknown,
+  current: DecodedWager | null,
   input: AcceptWagerProposalCommand,
 ): TransactionDecision<WagerRecord> {
   const {
@@ -306,12 +262,12 @@ export function acceptProposalDecision(
     reservationOperationId,
   } = input;
 
-  const currentWager = toRecord(current);
-  const existingOperation = toRecord(currentWager?.agreementOperation);
-  const existingAgreement = toRecord(currentWager?.agreed);
+  const currentWager = current?.record;
+  const existingOperation = current?.agreementOperation.value;
+  const existingAgreement = current?.agreed.value;
   if (
-    existingOperation?.id === operationId &&
-    existingAgreement?.accepterId === playerUid
+    existingOperation?.raw.id === operationId &&
+    existingAgreement?.raw.accepterId === playerUid
   ) {
     return { commit: false, decision: "replayed" };
   }
@@ -323,19 +279,18 @@ export function acceptProposalDecision(
   ) {
     return { commit: false, decision: "proposal-unavailable" };
   }
-  const currentProposals = toRecord(currentWager.proposals) || {};
-  const currentOpponentProposal = toRecord(currentProposals[opponentUid]);
-  const currentOwnProposal = toRecord(currentProposals[playerUid]);
+  const currentOpponentProposal = readWagerProposal(current, opponentUid);
+  const currentOwnProposal = readWagerProposal(current, playerUid);
   const opponentMatches =
-    currentOpponentProposal?.material === material &&
-    normalizeCount(currentOpponentProposal.count) === proposedCount &&
+    currentOpponentProposal?.raw.material === material &&
+    readWagerCount(currentOpponentProposal) === proposedCount &&
     normalizeString(currentOpponentProposal.operationId) ===
       opponentProposalOperationId &&
     normalizeString(currentOpponentProposal.reservationOperationId) ===
       opponentReservationOperationId;
   const ownMatches = hasOwnProposal
-    ? currentOwnProposal?.material === ownMaterial &&
-      normalizeCount(currentOwnProposal.count) === ownCount &&
+    ? currentOwnProposal?.raw.material === ownMaterial &&
+      readWagerCount(currentOwnProposal) === ownCount &&
       normalizeString(currentOwnProposal.operationId) ===
         ownProposalOperationId &&
       normalizeString(currentOwnProposal.reservationOperationId) ===
@@ -391,23 +346,23 @@ export function acceptProposalDecision(
   };
 }
 export function removeProposalDecision(
-  current: unknown,
+  current: DecodedWager | null,
   input: RemoveWagerProposalCommand,
 ): TransactionDecision<WagerRecord> {
   const { proposalUid, operationId, expectedReservationOperationId } = input;
 
-  const wager = toRecord(current);
-  const removalOperations = toRecord(wager?.proposalRemovalOperations) || {};
-  const replayOperation = toRecord(removalOperations[operationId]);
+  const wager = current?.record;
+  const removalOperations = current?.proposalRemovalOperations.value?.raw || {};
+  const replayOperation = readWagerRemovalReceipt(current, operationId);
   if (replayOperation) {
-    return replayOperation.reservationOperationId ===
+    return replayOperation.raw.reservationOperationId ===
       expectedReservationOperationId &&
-      validOperationId(replayOperation.proposalOperationId)
+      validOperationId(replayOperation.raw.proposalOperationId)
       ? { commit: false, decision: "replayed" }
       : { commit: false, decision: "proposal-invalid" };
   }
-  const proposals = toRecord(wager?.proposals);
-  const proposal = toRecord(proposals?.[proposalUid]);
+  const proposals = current?.proposals.value?.raw;
+  const proposal = readWagerProposal(current, proposalUid);
   if (
     !wager ||
     wager.agreed ||
@@ -446,18 +401,18 @@ export function removeProposalDecision(
   return { value: nextWager };
 }
 export function markLineageReadyDecision(
-  current: unknown,
+  current: DecodedWager | null,
   input: MarkWagerLineageReadyCommand,
 ): TransactionDecision<WagerRecord> {
   const { operationId, fingerprint } = input;
-  const wager = toRecord(current);
-  const agreementOperation = toRecord(wager?.agreementOperation);
+  const wager = current?.record;
+  const agreementOperation = current?.agreementOperation.value;
   if (
     !wager ||
     !wager.agreed ||
-    agreementOperation?.id !== operationId ||
+    agreementOperation?.raw.id !== operationId ||
     agreementOperation.reservationLineageVersion !== 1 ||
-    lineageFingerprint(wager) !== fingerprint
+    lineageFingerprint(current) !== fingerprint
   ) {
     return { commit: false, decision: "agreement-missing" };
   }
@@ -468,7 +423,7 @@ export function markLineageReadyDecision(
     value: {
       ...wager,
       agreementOperation: {
-        ...agreementOperation,
+        ...agreementOperation.raw,
         reservationLineageReady: true,
       },
     },
@@ -476,141 +431,6 @@ export function markLineageReadyDecision(
 }
 function settlementFingerprint(value: Record<string, unknown>): string {
   return JSON.stringify(value);
-}
-
-function parseReservationOperationIds(value: unknown): string[] | null {
-  if (!Array.isArray(value)) return null;
-  const operationIds = value.map(normalizeString);
-  return operationIds.length > 0 &&
-    operationIds.every(
-      (operationId, index) =>
-        /^[a-f0-9]{64}$/.test(operationId) &&
-        operationIds.indexOf(operationId) === index,
-    )
-    ? operationIds
-    : null;
-}
-
-function parseRelease(value: unknown): SettlementRelease | null {
-  const release = toRecord(value);
-  const uid = normalizeString(release?.uid);
-  const operationIds = parseReservationOperationIds(
-    release?.reservationOperationIds,
-  );
-  return release &&
-    Object.keys(release).length === 2 &&
-    Object.hasOwn(release, "uid") &&
-    Object.hasOwn(release, "reservationOperationIds") &&
-    uid &&
-    operationIds
-    ? { uid, reservationOperationIds: operationIds }
-    : null;
-}
-
-function parseSettlement(value: unknown): WagerSettlement | null {
-  const settlement = toRecord(value);
-  const state = settlement?.state;
-  const completedAtMs = settlement?.completedAtMs;
-  const failureReason = settlement?.failureReason;
-  if (
-    settlement?.version !== SETTLEMENT_VERSION ||
-    (state !== "pending" && state !== "completed") ||
-    typeof settlement.fingerprint !== "string" ||
-    !settlement.fingerprint ||
-    typeof settlement.operationId !== "string" ||
-    !settlement.operationId ||
-    !Number.isSafeInteger(settlement.claimedAtMs) ||
-    (completedAtMs !== undefined &&
-      completedAtMs !== null &&
-      !Number.isSafeInteger(completedAtMs)) ||
-    (failureReason !== undefined &&
-      failureReason !== null &&
-      failureReason !== WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON) ||
-    (state === "pending" &&
-      failureReason !== undefined &&
-      failureReason !== null) ||
-    (state === "completed" && !Number.isSafeInteger(completedAtMs))
-  ) {
-    return null;
-  }
-  const base: SettlementBase = {
-    version: SETTLEMENT_VERSION,
-    state,
-    fingerprint: settlement.fingerprint,
-    operationId: settlement.operationId,
-    claimedAtMs: Number(settlement.claimedAtMs),
-    completedAtMs: Number.isSafeInteger(completedAtMs)
-      ? Number(completedAtMs)
-      : null,
-    failureReason:
-      failureReason === WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON
-        ? failureReason
-        : null,
-  };
-  if (settlement.kind === "agreed") {
-    const winnerUid = normalizeString(settlement.winnerUid);
-    const loserUid = normalizeString(settlement.loserUid);
-    const winnerProfileId = normalizeString(settlement.winnerProfileId);
-    const loserProfileId = normalizeString(settlement.loserProfileId);
-    const material = normalizeString(settlement.material);
-    const count = normalizeCount(settlement.count);
-    const storedReleases = settlement.releases;
-    const releases = Array.isArray(storedReleases)
-      ? storedReleases.map(parseRelease)
-      : [null];
-    return winnerUid &&
-      loserUid &&
-      winnerProfileId &&
-      loserProfileId &&
-      isMaterialName(material) &&
-      count > 0 &&
-      releases.length === 2 &&
-      releases.every((release) => release !== null)
-      ? {
-          ...base,
-          kind: "agreed",
-          winnerUid,
-          loserUid,
-          winnerProfileId,
-          loserProfileId,
-          material,
-          count,
-          releases: releases.filter(
-            (release): release is SettlementRelease => release !== null,
-          ),
-        }
-      : null;
-  }
-  const storedReleases = settlement.releases ?? [];
-  if (
-    settlement.kind !== "proposals" ||
-    !Array.isArray(storedReleases) ||
-    base.failureReason
-  ) {
-    return null;
-  }
-  const releases = storedReleases.map(parseRelease);
-  if (releases.some((release) => release === null)) {
-    return null;
-  }
-  return {
-    ...base,
-    kind: "proposals",
-    releases: releases.filter(
-      (release): release is SettlementRelease => release !== null,
-    ),
-  };
-}
-
-export function readStoredSettlement(
-  wager: Record<string, unknown> | null,
-): WagerSettlement | null {
-  const rawSettlement = wager?.settlement;
-  const settlement = parseSettlement(rawSettlement);
-  if (rawSettlement !== null && rawSettlement !== undefined && !settlement) {
-    throw new Error("wager-settlement-malformed");
-  }
-  return settlement;
 }
 
 function createLineageRelease(
@@ -624,7 +444,7 @@ function createLineageRelease(
 }
 
 function createSettlement(
-  wager: Record<string, unknown>,
+  wager: DecodedWager,
   resolution: WagerSettlementResolution,
   operationId: string,
   nowMs: number,
@@ -637,30 +457,28 @@ function createSettlement(
     claimedAtMs: nowMs,
     completedAtMs: null,
   };
-  const agreement = toRecord(wager.agreed);
+  const agreement = wager.agreed.value;
   const material = normalizeString(agreement?.material);
-  const count = normalizeCount(agreement?.count);
+  const count = readWagerCount(agreement);
   const proposerUid = normalizeString(agreement?.proposerId);
   const accepterUid = normalizeString(agreement?.accepterId);
   if (isMaterialName(material) && count > 0) {
-    const agreementOperation = toRecord(wager.agreementOperation);
+    const agreementOperation = wager.agreementOperation.value;
     if (agreementOperation?.reservationLineageVersion !== 1) {
       throw new Error("wager-reservation-lineage-invalid");
     }
     if (agreementOperation.reservationLineageReady !== true) {
       throw new Error("wager-reservation-lineage-pending");
     }
-    const proposerOperationIds = parseReservationOperationIds(
-      agreementOperation.proposerReservationOperationIds,
-    );
-    const accepterOperationIds = parseReservationOperationIds(
-      agreementOperation.accepterReservationOperationIds,
-    );
+    const proposerOperationIds =
+      agreementOperation.proposerReservationOperationIds;
+    const accepterOperationIds =
+      agreementOperation.accepterReservationOperationIds;
     if (
       !proposerOperationIds ||
       !accepterOperationIds ||
-      Object.hasOwn(agreementOperation, "proposerLegacyReservation") ||
-      Object.hasOwn(agreementOperation, "accepterLegacyReservation")
+      Object.hasOwn(agreementOperation.raw, "proposerLegacyReservation") ||
+      Object.hasOwn(agreementOperation.raw, "accepterLegacyReservation")
     ) {
       throw new Error("wager-reservation-lineage-invalid");
     }
@@ -696,9 +514,8 @@ function createSettlement(
       fingerprint: settlementFingerprint(candidate),
     };
   }
-  const proposals = toRecord(wager.proposals) || {};
   const releases = [resolution.winnerUid, resolution.loserUid].map((uid) => {
-    const proposal = toRecord(proposals[uid]);
+    const proposal = readWagerProposal(wager, uid);
     const proposalReservationOperationId = normalizeString(
       proposal?.reservationOperationId,
     );
@@ -730,17 +547,17 @@ function createSettlement(
 }
 
 export function claimSettlementDecision(
-  value: unknown,
+  value: DecodedWager | null,
   input: ClaimWagerSettlementCommand,
 ): TransactionDecision<WagerRecord> {
   const { resolution, operationId, now, acceptReservationOperationIdByUid } =
     input;
 
-  const wager = toRecord(value);
-  if (!wager) {
+  const wager = value?.record;
+  if (!value || !wager) {
     return { commit: false, decision: "no-wager" };
   }
-  const existing = readStoredSettlement(wager);
+  const existing = readStoredSettlement(value);
   if (wager.resolved) {
     return { commit: false, decision: "already-resolved" };
   }
@@ -757,7 +574,7 @@ export function claimSettlementDecision(
     };
   }
   const settlement = createSettlement(
-    wager,
+    value,
     resolution,
     operationId,
     now,
@@ -766,11 +583,11 @@ export function claimSettlementDecision(
   return { value: { ...wager, settlement } };
 }
 export function completeSettlementDecision(
-  value: unknown,
+  value: DecodedWager | null,
   input: CompleteWagerSettlementCommand,
 ): TransactionDecision<WagerRecord> {
-  const wager = toRecord(value);
-  const current = readStoredSettlement(wager);
+  const wager = value?.record;
+  const current = readStoredSettlement(value);
   const { settlement, completedAtMs, insufficientMaterials } = input;
   if (
     !wager ||
@@ -781,17 +598,15 @@ export function completeSettlementDecision(
     throw new Error("wager-settlement-unavailable");
   if (current.state === "completed")
     return { commit: false, decision: "completed" };
-  const next: WagerRecord = {
-    ...wager,
-    settlement: {
-      ...toRecord(wager.settlement),
-      state: "completed",
-      completedAtMs,
-    },
+  const nextSettlement: RawWagerRecord = {
+    ...(value?.settlement.kind === "valid" ? value.settlement.raw : {}),
+    state: "completed",
+    completedAtMs,
   };
+  const next: WagerRecord = { ...wager, settlement: nextSettlement };
   delete next.proposals;
   if (insufficientMaterials) {
-    (next.settlement as WagerRecord).failureReason =
+    nextSettlement.failureReason =
       WAGER_SETTLEMENT_INSUFFICIENT_MATERIALS_REASON;
     delete next.agreed;
   } else if (settlement.kind === "agreed")

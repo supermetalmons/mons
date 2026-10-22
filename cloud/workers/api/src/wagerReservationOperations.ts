@@ -1,3 +1,4 @@
+import { wagerReferencesReservationOperation } from "./wagerModel.ts";
 import type { WagerKey } from "./wagerStateRepository.ts";
 import {
   applyMaterialDeltas,
@@ -18,6 +19,7 @@ import {
   type ParsedFrozenOperation,
   type ReservationOperationKind,
 } from "./wagerFrozenRecords.ts";
+export { wagerReferencesReservationOperation } from "./wagerModel.ts";
 export {
   createOperationId,
   createWagerReservationOperationId,
@@ -34,12 +36,6 @@ export type WagerMutationContext = {
   createCriticalPhaseSignal: () => AbortSignal;
   refreshLease: () => Promise<void>;
 };
-
-function toRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-}
 
 function normalizeString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -283,49 +279,6 @@ export async function readFrozenOperationForUid(
     throw new Error("wager-operation-unavailable");
   }
   return state.status === "active" ? state.operation : null;
-}
-
-function reservationOperationIds(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value
-        .map(normalizeString)
-        .filter((operationId, index, values) =>
-          Boolean(operationId && values.indexOf(operationId) === index),
-        )
-    : [];
-}
-
-export function wagerReferencesReservationOperation(
-  value: unknown,
-  playerUid: string,
-  reservationOperationId: string,
-): boolean {
-  const wager = toRecord(value);
-  const proposal = toRecord(toRecord(wager?.proposals)?.[playerUid]);
-  const agreementOperation = toRecord(wager?.agreementOperation);
-  const settlement = toRecord(wager?.settlement);
-  const settlementReferences = Array.isArray(settlement?.releases)
-    ? settlement.releases.some((value) => {
-        const release = toRecord(value);
-        return (
-          normalizeString(release?.uid) === playerUid &&
-          reservationOperationIds(release?.reservationOperationIds).includes(
-            reservationOperationId,
-          )
-        );
-      })
-    : false;
-  return Boolean(
-    normalizeString(proposal?.reservationOperationId) ===
-      reservationOperationId ||
-    reservationOperationIds(
-      agreementOperation?.accepterReservationOperationIds,
-    ).includes(reservationOperationId) ||
-    reservationOperationIds(
-      agreementOperation?.proposerReservationOperationIds,
-    ).includes(reservationOperationId) ||
-    settlementReferences,
-  );
 }
 
 export async function releaseUnreferencedWagerReservation(

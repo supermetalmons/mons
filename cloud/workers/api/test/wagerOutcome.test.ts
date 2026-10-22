@@ -610,6 +610,40 @@ test("preserves participant, match, no-wager, and historical replay outcomes", a
   }
 });
 
+test("resolves a marked wager from one snapshot without rereading its record", async () => {
+  const state = createRepository({
+    marker: true,
+    wager: {
+      resolved: {
+        winnerId: "host",
+        loserId: "guest",
+        material: "dust",
+        count: 2,
+      },
+    },
+  });
+  let snapshots = 0;
+  const readSnapshot = state.repository.wagers.readWagerSnapshot;
+  state.repository.wagers.readWagerSnapshot = async (...args) => {
+    snapshots++;
+    return readSnapshot(...args);
+  };
+  state.repository.wagers.readWager = async () => {
+    throw new Error("unexpected-wager-reread");
+  };
+  assert.deepEqual(
+    await resolveWagerOutcome(
+      identity,
+      { inviteId: "invite", matchId: "invite" },
+      state.repository,
+      { resolveResult: () => "win" },
+    ),
+    { ok: true, reason: "already-resolved", mining: snapshot(10) },
+  );
+  assert.equal(snapshots, 1);
+  assert.equal(state.transferCalls, 0);
+});
+
 test("leaves terminal timer marker cleanup to the coordination sweep", async () => {
   const state = createRepository();
   const stores = coordinationFor(state.repository);

@@ -25,6 +25,7 @@ import {
   type WorkerExecutionContext,
 } from "./sessionAuth.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
+import { createRequestTiming } from "./requestTiming.ts";
 import {
   AuthApiFailure,
   authErrorResponse,
@@ -256,30 +257,7 @@ export async function handleAuthRoute(
 ): Promise<Response> {
   let corsHeaders: Record<string, string> = { Vary: "Origin" };
   const now = dependencies.now || Date.now;
-  const startedAt = now();
-  const timings = new Map<string, number>();
-  const measure = async <T>(
-    name: string,
-    work: () => Promise<T>,
-  ): Promise<T> => {
-    const started = now();
-    try {
-      return await work();
-    } finally {
-      timings.set(name, Math.max(0, now() - started));
-    }
-  };
-  const finish = (response: Response): Response => {
-    timings.set("total", Math.max(0, now() - startedAt));
-    response.headers.set(
-      "Server-Timing",
-      Array.from(
-        timings,
-        ([name, duration]) => `${name};dur=${duration.toFixed(1)}`,
-      ).join(", "),
-    );
-    return response;
-  };
+  const { measure, finish } = createRequestTiming({ now, repeated: "replace" });
   const respond: typeof authJsonResponse = (body, status, headers) =>
     finish(authJsonResponse(body, status, headers));
   try {

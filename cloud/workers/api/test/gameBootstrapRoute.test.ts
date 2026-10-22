@@ -246,9 +246,16 @@ test("bootstrap routes a single admission and pair read with coherent public dat
 
 test("bootstrap validates preflight, method, path, query and authentication before storage", async () => {
   const preflight = setup();
+  const response = await read(preflight, request({ method: "OPTIONS" }));
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("Server-Timing"), "total;dur=1.0");
   assert.equal(
-    (await read(preflight, request({ method: "OPTIONS" }))).status,
-    204,
+    response.headers.get("Timing-Allow-Origin"),
+    "https://mons.link",
+  );
+  assert.equal(
+    response.headers.get("Access-Control-Expose-Headers"),
+    "Retry-After, Server-Timing",
   );
   assert.equal(preflight.calls.auth, 0);
   for (const [incoming, status] of [
@@ -412,6 +419,10 @@ test("bootstrap reselects a rematch when room metadata advances during admission
   assert.equal(body.match.matchId, `${inviteId}1`);
   assert.deepEqual(body.metadata, advanced.snapshot);
   assert.equal(state.calls.admission, 1);
+  assert.match(
+    response.headers.get("Server-Timing") || "",
+    /(?:^|, )match;dur=3\.0(?:,|$)/,
+  );
 });
 
 test("bootstrap refreshes stale membership, rematch endings, protection and operation IDs", async () => {
@@ -568,11 +579,34 @@ test("rate limiting and cancellation avoid bootstrap source work", async () => {
   const canceled = setup();
   const controller = new AbortController();
   controller.abort();
-  assert.equal(
-    (await read(canceled, request({ signal: controller.signal }))).status,
-    503,
+  const canceledResponse = await read(
+    canceled,
+    request({ signal: controller.signal }),
   );
+  assert.equal(canceledResponse.status, 503);
+  assert.equal(canceledResponse.headers.get("Server-Timing"), "total;dur=1.0");
+  assert.equal(canceled.calls.auth, 0);
   assert.equal(canceled.calls.admission, 0);
+});
+
+test("cancellation after authentication records auth timing without starting bootstrap reads", async () => {
+  const state = setup();
+  const controller = new AbortController();
+  state.dependencies.verifyIdentity = async () => {
+    state.calls.auth++;
+    controller.abort();
+    return socketTestIdentity("host-login");
+  };
+  const response = await read(state, request({ signal: controller.signal }));
+  assert.equal(response.status, 503);
+  assert.equal(
+    response.headers.get("Server-Timing"),
+    "auth;dur=1.0, total;dur=3.0",
+  );
+  assert.equal(state.calls.auth, 1);
+  assert.equal(state.calls.admission, 0);
+  assert.deepEqual(state.calls.rates, []);
+  assert.deepEqual(state.calls.matches, []);
 });
 
 test("bootstrap contract rejects cross-invite pairs, malformed roles and inconsistent selection", async () => {

@@ -1,3 +1,4 @@
+import { decodeWager, type DecodedWager } from "./wagerModel.ts";
 import type {
   TransactionDecision,
   TransactionResult,
@@ -31,16 +32,20 @@ export type {
   WagerRecord,
   ModernProposalLineage,
 } from "./wagerStateCommands.ts";
+export type WagerReadSnapshot = {
+  wager: DecodedWager | null;
+  resolutionMarker: boolean | null;
+};
 export type WagerReader = {
   readInviteWagerPresence(
     inviteId: string,
     signal?: AbortSignal,
   ): Promise<{ wagerMatchIds: string[]; resolutionMatchIds: string[] }>;
-  readWager(key: WagerKey, signal?: AbortSignal): Promise<WagerRecord | null>;
-  readResolutionMarker(
+  readWager(key: WagerKey, signal?: AbortSignal): Promise<DecodedWager | null>;
+  readWagerSnapshot(
     key: WagerKey,
     signal?: AbortSignal,
-  ): Promise<boolean | null>;
+  ): Promise<WagerReadSnapshot>;
   readInviteWagerState(
     inviteId: string,
     signal?: AbortSignal,
@@ -51,32 +56,32 @@ export type WagerWriter = WagerReader & {
     key: WagerKey,
     input: SendWagerProposalCommand,
     signal?: AbortSignal,
-  ): Promise<TransactionResult<WagerRecord>>;
+  ): Promise<TransactionResult<DecodedWager>>;
   acceptProposal(
     key: WagerKey,
     input: AcceptWagerProposalCommand,
     signal?: AbortSignal,
-  ): Promise<TransactionResult<WagerRecord>>;
+  ): Promise<TransactionResult<DecodedWager>>;
   removeProposal(
     key: WagerKey,
     input: RemoveWagerProposalCommand,
     signal?: AbortSignal,
-  ): Promise<TransactionResult<WagerRecord>>;
+  ): Promise<TransactionResult<DecodedWager>>;
   markLineageReady(
     key: WagerKey,
     input: MarkWagerLineageReadyCommand,
     signal?: AbortSignal,
-  ): Promise<TransactionResult<WagerRecord>>;
+  ): Promise<TransactionResult<DecodedWager>>;
   claimSettlement(
     key: WagerKey,
     input: ClaimWagerSettlementCommand,
     signal?: AbortSignal,
-  ): Promise<TransactionResult<WagerRecord>>;
+  ): Promise<TransactionResult<DecodedWager>>;
   completeSettlement(
     key: WagerKey,
     input: CompleteWagerSettlementCommand,
     signal?: AbortSignal,
-  ): Promise<TransactionResult<WagerRecord>>;
+  ): Promise<TransactionResult<DecodedWager>>;
 };
 export type WagerStateRepositoryOptions = WagerStateD1Options & {
   notify?: (inviteId: string, committed: boolean) => Promise<void>;
@@ -126,6 +131,16 @@ function normalizeJson(value: unknown): unknown {
 
 export function createWagerStateReader(db: D1Database): WagerReader {
   const store = createWagerStateD1Store(db);
+  const readWagerSnapshot = async (
+    key: WagerKey,
+    signal?: AbortSignal,
+  ): Promise<WagerReadSnapshot> => {
+    const snapshot = await store.read(key, signal);
+    return {
+      wager: decodeWager(snapshot.wager),
+      resolutionMarker: snapshot.resolutionMarker,
+    };
+  };
   return {
     async readInviteWagerPresence(inviteId, signal) {
       const states = await store.readInvite(inviteId, signal, true);
@@ -139,9 +154,8 @@ export function createWagerStateReader(db: D1Database): WagerReader {
       };
     },
     readWager: async (key, signal) =>
-      (await store.read(key, signal)).wager as WagerRecord | null,
-    readResolutionMarker: async (key, signal) =>
-      (await store.read(key, signal)).resolutionMarker,
+      (await readWagerSnapshot(key, signal)).wager,
+    readWagerSnapshot,
     readInviteWagerState: (inviteId, signal) =>
       store.readInvite(inviteId, signal),
   };
@@ -158,22 +172,20 @@ export function createWagerStateRepository(
   };
   async function commitDecision(
     key: WagerKey,
-    reduce: (current: unknown) => TransactionDecision<WagerRecord>,
+    reduce: (current: DecodedWager | null) => TransactionDecision<WagerRecord>,
     signal?: AbortSignal,
     complete = false,
-  ): Promise<TransactionResult<WagerRecord>> {
+  ): Promise<TransactionResult<DecodedWager>> {
     if (!options.writeGuards)
       throw new WagerStateD1Failure("wager-state-read-only");
     return runOptimisticTransaction({
       maxAttempts: 25,
       signal,
       read: () => store.read(key, signal),
-      getValue: (current) => current.wager as WagerRecord | null,
+      getValue: (current) => decodeWager(current.wager),
       decide: (current) => reduce(structuredClone(current)),
       async write(current, next) {
-        const wager = (
-          complete ? next : normalizeJson(next)
-        ) as WagerRecord | null;
+        const wager = complete ? next : normalizeJson(next);
         let committed: boolean;
         try {
           committed = await store.commit(
@@ -195,7 +207,7 @@ export function createWagerStateRepository(
         if (committed) {
           await notify(key.inviteId, true);
         }
-        return { applied: committed, value: wager };
+        return { applied: committed, value: decodeWager(wager) };
       },
       conflictError: () => new WagerStateD1Failure("wager-state-conflict"),
     });

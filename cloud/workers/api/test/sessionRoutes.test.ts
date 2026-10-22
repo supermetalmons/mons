@@ -221,6 +221,9 @@ test("session endpoints preflight without D1 and rate limit before writes", asyn
     env,
   );
   assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get("Server-Timing"), null);
+  assert.equal(preflight.headers.get("Timing-Allow-Origin"), null);
+  assert.equal(preflight.headers.get("Access-Control-Expose-Headers"), null);
   let touched = false;
   const limited = await handleSessionRoute(
     request("anonymous", input),
@@ -235,6 +238,7 @@ test("session endpoints preflight without D1 and rate limit before writes", asyn
     },
   );
   assert.equal(limited.status, 429);
+  assert.match(limited.headers.get("Server-Timing") || "", /^total;dur=/);
   assert.equal(touched, false);
 });
 

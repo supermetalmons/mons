@@ -138,6 +138,9 @@ test("auth routes apply exact origin-aware preflight policy", async () => {
   );
   assert.equal(preflight.headers.get("Vary"), "Origin");
   assert.equal(preflight.headers.get("Cache-Control"), "no-store");
+  assert.equal(preflight.headers.get("Server-Timing"), null);
+  assert.equal(preflight.headers.get("Timing-Allow-Origin"), null);
+  assert.equal(preflight.headers.get("Access-Control-Expose-Headers"), null);
 
   const rejected = await handleAuthRoute(
     request("/auth/intents", "OPTIONS", undefined, "https://attacker.invalid"),
@@ -146,6 +149,8 @@ test("auth routes apply exact origin-aware preflight policy", async () => {
   );
   assert.equal(rejected.status, 403);
   assert.equal(rejected.headers.get("Access-Control-Allow-Origin"), null);
+  assert.equal(rejected.headers.get("Timing-Allow-Origin"), null);
+  assert.match(rejected.headers.get("Server-Timing") || "", /^total;dur=/);
   assert.deepEqual(await responseJson(rejected), {
     ok: false,
     error: "permission-denied",

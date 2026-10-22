@@ -260,7 +260,7 @@ function fixture(route: RouteCase) {
     }),
     wagers: {
       readWager: unexpected,
-      readResolutionMarker: unexpected,
+      readWagerSnapshot: unexpected,
       readInviteWagerState: unexpected,
       readInviteWagerPresence: unexpected,
     },

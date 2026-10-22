@@ -293,6 +293,10 @@ test("authenticated identity route derives the login from the token and keeps fa
       },
     );
     assert.equal(response.status, status);
+    assert.match(
+      response.headers.get("Server-Timing") || "",
+      /^identity;dur=\d+\.\d, total;dur=\d+\.\d$/,
+    );
     assert.doesNotMatch(await response.text(), /private/);
   }
 });

@@ -313,19 +313,18 @@ describe("D1 wager gameplay integration", () => {
     ).toBe(8);
     expect((await state.runtime.readBalance(state.host)).frozen.dust).toBe(0);
     expect((await state.runtime.readBalance(state.guest)).frozen.dust).toBe(0);
-    expect(
-      await state.repository.wagers.readResolutionMarker({
-        inviteId: state.inviteId,
-        matchId: state.inviteId,
-      }),
-    ).toBe(true);
-    const stored = await state.repository.wagers.readWager({
+    const stored = await state.repository.wagers.readWagerSnapshot({
       inviteId: state.inviteId,
       matchId: state.inviteId,
     });
     expect(stored).toMatchObject({
-      resolved: { count: 2 },
-      settlement: { state: "completed" },
+      resolutionMarker: true,
+      wager: {
+        raw: {
+          resolved: { count: 2 },
+          settlement: { state: "completed" },
+        },
+      },
     });
     expect(await state.readSource(state.inviteId)).toEqual({
       hostId: state.host,

@@ -10,6 +10,7 @@ import {
   type GameBootstrapDependencies,
 } from "./gameBootstrap.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
+import { createRequestTiming } from "./requestTiming.ts";
 import {
   verifySessionRequest,
   type SessionIdentity,
@@ -65,35 +66,18 @@ export async function handleGameBootstrapRoute(
   dependencies: GameBootstrapRouteDependencies = {},
 ): Promise<Response> {
   const now = dependencies.now || Date.now;
-  const startedAt = now();
-  const timings = new Map<string, number>();
+  const timing = createRequestTiming({ now, repeated: "sum" });
+  const { finish } = timing;
   const measure = async <T>(
     name: string,
     work: () => Promise<T>,
   ): Promise<T> => {
     request.signal.throwIfAborted();
-    const started = now();
-    try {
+    return timing.measure(name, async () => {
       const value = await work();
       request.signal.throwIfAborted();
       return value;
-    } finally {
-      timings.set(
-        name,
-        (timings.get(name) ?? 0) + Math.max(0, now() - started),
-      );
-    }
-  };
-  const finish = (response: Response): Response => {
-    timings.set("total", Math.max(0, now() - startedAt));
-    response.headers.set(
-      "Server-Timing",
-      Array.from(
-        timings,
-        ([name, duration]) => `${name};dur=${duration.toFixed(1)}`,
-      ).join(", "),
-    );
-    return response;
+    });
   };
   let corsHeaders: Record<string, string> = { Vary: "Origin" };
   try {
