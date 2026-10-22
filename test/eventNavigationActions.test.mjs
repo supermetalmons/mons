@@ -45,37 +45,20 @@ function createConnection(methodNames, dependencies) {
   return new Connection();
 }
 
-test("canonical profile ID resolution authenticates and discards stale auth replies", async () => {
+test("canonical profile ID resolution delegates to the profile client", async () => {
   const calls = [];
-  let authenticated = false;
-  let currentUser = true;
-  let resolve;
-  const response = new Promise((yes) => (resolve = yes));
-  const tokenProvider = Object.assign(async () => "session-token", {
-    assertCurrentUser: () => {
-      if (!currentUser) throw new Error("authentication-changed");
-    },
-  });
-  const instance = createConnection(["resolveProfileId"], {
-    resolveProfileIdViaApi: (id, provider) => {
-      assert.equal(authenticated, true);
-      assert.equal(provider, tokenProvider);
+  const response = Promise.resolve("canonical-profile");
+  const instance = createConnection(["resolveProfileId"], {});
+  instance.profileClient = {
+    resolveProfileId: (id) => {
       calls.push(id);
       return response;
     },
-  });
-  Object.assign(instance, {
-    ensureAuthenticated: async () => (authenticated = true),
-    getUserBoundAuthTokenProvider: () => tokenProvider,
-  });
-  assert.equal(await instance.resolveProfileId("  "), null);
-  assert.equal(authenticated, false);
+  };
   const pending = instance.resolveProfileId(" retired-profile ");
-  await Promise.resolve();
-  assert.deepEqual(calls, ["retired-profile"]);
-  currentUser = false;
-  resolve("canonical-profile");
-  await assert.rejects(pending, /authentication-changed/);
+  assert.equal(pending, response);
+  assert.deepEqual(calls, [" retired-profile "]);
+  assert.equal(await pending, "canonical-profile");
 });
 
 function eventProfileIdsHarness() {

@@ -23,6 +23,8 @@ registerHooks({
 
 const { createSessionControlsPresenter } =
   await import("../src/game/sessionControls.ts");
+const { createRemoteMoveSyncController } =
+  await import("../src/game/remoteMoveSyncController.ts");
 
 const variants = createGameVariantHelpers(MonsRules);
 const randomVariant = variants
@@ -57,7 +59,6 @@ const declarations = [
   "ensureLocalRematchSeriesInitialized",
   "localColorFromMonsColor",
   "advanceLocalRematchSeriesToNextMatch",
-  "resetRemoteMoveHistories",
   "resetBotScoreReactionState",
   "setCurrentVariant",
   "applyGameSeedToCurrentGame",
@@ -96,17 +97,8 @@ function harness({ bot = false } = {}) {
     isInviteBotIntoLocalGameUnavailable: !bot,
     didMakeFirstLocalPlayerMoveOnLocalBoard: true,
     didStartLocalGame: false,
-    whiteProcessedMovesCount: 8,
-    blackProcessedMovesCount: 7,
-    didSetWhiteProcessedMovesCount: true,
-    didSetBlackProcessedMovesCount: true,
-    currentGameModelMatchId: "previous-match",
-    whiteFlatMovesString: "old-white-move",
-    blackFlatMovesString: "old-black-move",
     currentInputs: ["old-selection"],
     botScoreReactionPlayedTurns: new Set([1]),
-    remoteMoveHistories: new Map([["white", { moves: ["old-move"] }]]),
-    remoteMoveHistoriesMatchId: "previous-match",
     boardViewMode: "historicalView",
     boardRenderSessionId: 4,
     moveHistoryFlipOverrideEnabled: true,
@@ -125,6 +117,24 @@ function harness({ bot = false } = {}) {
   });
   rematchViewing.ensureLocalSeries();
   let api;
+  const remoteMoveSync = createRemoteMoveSyncController({
+    getGame: () => api?.state().game ?? initial.game,
+    getActiveMatchId: () => "previous-match",
+    createSessionGuard: () => () => true,
+    isGameOver: () => api?.state().isGameOver ?? initial.isGameOver,
+    onReplayOutput: () => assert.fail("unexpected replay during local startup"),
+  });
+  remoteMoveSync.setProcessedCounts(8, 7);
+  remoteMoveSync.remember(
+    { color: "white", flatMovesString: Array(9).fill("old").join("-") },
+    "previous-match",
+  );
+  remoteMoveSync.verifyHistory(
+    { historyVerified: false },
+    "previous-match",
+    "old-white",
+    "white",
+  );
   const timerHarness = createMatchTimerHarness({
     activeMatchId: null,
     isOnlineGame: false,
@@ -164,6 +174,7 @@ function harness({ bot = false } = {}) {
     "showWaitingStateText",
   ];
   const dependencies = {
+    remoteMoveSync,
     rematchViewing,
     matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
@@ -211,7 +222,10 @@ function harness({ bot = false } = {}) {
     function state() { return {
       ${Object.keys(initial).join(", ")},
       botScoreReactionPlayedTurnCount: botScoreReactionPlayedTurns.size,
-      remoteMoveHistoryCount: remoteMoveHistories.size,
+      whiteProcessedMovesCount: remoteMoveSync.getProcessedCount("white"),
+      blackProcessedMovesCount: remoteMoveSync.getProcessedCount("black"),
+      remoteMovesInitialized: remoteMoveSync.hasInitializedBothSides(),
+      hasPendingRemoteMoves: remoteMoveSync.hasPendingMoves(),
       selection: rematchViewing.getSelection(),
       localSeries: rematchViewing.getLocalSeriesDescriptor(),
     }; }
@@ -234,6 +248,18 @@ function harness({ bot = false } = {}) {
     automoves,
     seeds,
     rematchViewing,
+    assertVerificationReset: () => {
+      remoteMoveSync.verifyHistory(
+        {
+          historyVerified: false,
+          verifyHistory: () =>
+            assert.fail("previous match verification was retained"),
+        },
+        "previous-match",
+        "new-black",
+        "black",
+      );
+    },
   };
 }
 
@@ -246,25 +272,17 @@ function assertFreshMatch(state, bot) {
     "isWaitingForRematchResponse",
     "flashbackMode",
     "didMakeFirstLocalPlayerMoveOnLocalBoard",
-    "didSetWhiteProcessedMovesCount",
-    "didSetBlackProcessedMovesCount",
+    "remoteMovesInitialized",
+    "hasPendingRemoteMoves",
     "moveHistoryFlipOverrideEnabled",
   ])
     assert.equal(state[name], false, name);
-  for (const name of [
-    "currentGameModelMatchId",
-    "whiteFlatMovesString",
-    "blackFlatMovesString",
-    "remoteMoveHistoriesMatchId",
-    "timerMatchId",
-  ])
-    assert.equal(state[name], null, name);
+  assert.equal(state.timerMatchId, null);
   assert.equal(state.resignedColor, undefined);
   assert.equal(state.winnerByTimerColor, undefined);
   assert.equal(state.whiteProcessedMovesCount, 0);
   assert.equal(state.blackProcessedMovesCount, 0);
   assert.equal(state.botScoreReactionPlayedTurnCount, 0);
-  assert.equal(state.remoteMoveHistoryCount, 0);
   assert.deepEqual(state.currentInputs, []);
   assert.equal(state.didStartLocalGame, true);
   assert.equal(state.selection, null);
@@ -289,6 +307,7 @@ function assertPlayableControls(ui) {
 test("local rematch clears historical and terminal state while preserving history and alternating sides", () => {
   const h = harness();
   h.rematch();
+  h.assertVerificationReset();
   const state = h.state();
   assertFreshMatch(state, false);
   assert.equal(h.renders.length, 1);
@@ -321,6 +340,7 @@ test("local rematch clears historical and terminal state while preserving histor
 test("white bot start opens with one automove only after the new model, colors and controls are ready", () => {
   const h = harness();
   h.startBot();
+  h.assertVerificationReset();
   assert.equal(h.contexts.at(-1).isGameWithBot, true);
   assert.equal(h.contexts.at(-1).isGameOver, false);
   assert.equal(h.automoves.length, 1);
@@ -351,6 +371,7 @@ test("white bot start opens with one automove only after the new model, colors a
 test("bot rematch preserves the previous game, switches the bot to black and waits for the human", () => {
   const h = harness({ bot: true });
   h.rematch();
+  h.assertVerificationReset();
   const state = h.state();
   assertFreshMatch(state, true);
   assert.equal(state.botPlayerColor, MonsRules.Color.Black);

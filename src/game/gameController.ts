@@ -7,6 +7,7 @@ import {
 } from "./mainGameLoadState";
 import { MATCH_TIMER_DURATION_SECONDS } from "@mons/shared/timers";
 import { createMatchTimerController } from "./matchTimerController";
+import { createRemoteMoveSyncController } from "./remoteMoveSyncController";
 import {
   applyDisposedControlsPreset,
   applyGameplayControlsPreset,
@@ -156,7 +157,6 @@ import {
   getHistoricalWinnerByTimerColor as resolveHistoricalTimerWinnerColor,
   getMatchMovesByColor as resolveMatchMovesByColor,
   getTrustedGameFromMatchPair as resolveTrustedGameFromMatchPair,
-  movesArrayForHistoryVerification,
   normalizePersistedMoveHistory,
   toMonsColor,
   type TrustedMatchPairGame,
@@ -420,24 +420,6 @@ let wagerOutcomeAnimationAllowed = false;
 let didSetupWagerSubscription = false;
 let unsubscribeFromWagerState: (() => void) | null = null;
 
-let whiteProcessedMovesCount = 0;
-let blackProcessedMovesCount = 0;
-let didSetWhiteProcessedMovesCount = false;
-let didSetBlackProcessedMovesCount = false;
-
-type RemoteMoveHistory = {
-  match: Match;
-  moves: readonly string[];
-  flatMovesString: string;
-};
-
-const remoteMoveHistories = new Map<string, RemoteMoveHistory>();
-let remoteMoveHistoriesMatchId: string | null = null;
-
-let currentGameModelMatchId: string | null = null;
-let whiteFlatMovesString: string | null = null;
-let blackFlatMovesString: string | null = null;
-
 let wagerMatchId: string | null = null;
 
 let game: MonsRules.Game;
@@ -447,6 +429,16 @@ let botPlayerColor: MonsRules.Color;
 let playerSideColor: MonsRules.Color;
 let resignedColor: MonsRules.Color | undefined;
 let winnerByTimerColor: MonsRules.Color | undefined;
+
+const remoteMoveSync = createRemoteMoveSyncController({
+  getGame: () => game,
+  getActiveMatchId: () => connection.getActiveMatchId(),
+  createSessionGuard: getSessionGuard,
+  isGameOver: () => isGameOver,
+  onReplayOutput: (output) => {
+    applyOutput([], "", output, true, false, AssistedInputKind.None);
+  },
+});
 
 let lastReactionTime = 0;
 const botReactionVariationsWhenPlayerScores = [17, 20, 374, 429, 465, 900999];
@@ -477,7 +469,7 @@ const setCurrentVariant = (gameVariant: unknown): StoredGameVariant => {
 
 const applyGameSeedToCurrentGame = (seed: GameSeed): MonsRules.Game => {
   setCurrentVariant(seed.gameVariant);
-  resetRemoteMoveHistories();
+  remoteMoveSync.clearHistories();
   game = createGameModelForStoredVariant(seed.gameVariant);
   return game;
 };
@@ -495,7 +487,7 @@ const gameModelFromFen = (fen: unknown): MonsRules.Game | null => {
 
 const installCurrentGameModel = (gameModel: MonsRules.Game): void => {
   setCurrentVariant(gameModel.variant);
-  resetRemoteMoveHistories();
+  remoteMoveSync.clearHistories();
   game = gameModel;
 };
 
@@ -1779,13 +1771,7 @@ function resetSessionState(
     wagerOutcomeShown = false;
     wagerOutcomeAnimating = false;
     wagerOutcomeAnimationAllowed = false;
-    whiteProcessedMovesCount = 0;
-    blackProcessedMovesCount = 0;
-    didSetWhiteProcessedMovesCount = false;
-    didSetBlackProcessedMovesCount = false;
-    currentGameModelMatchId = null;
-    whiteFlatMovesString = null;
-    blackFlatMovesString = null;
+    remoteMoveSync.resetProgress();
     wagerMatchId = null;
   }
   flashbackMode = false;
@@ -1933,7 +1919,7 @@ export async function go(routeStateOverride?: RouteState) {
 
 export function disposeGameSession(nextRouteState?: RouteState) {
   cancelSessionPreload();
-  resetRemoteMoveHistories();
+  remoteMoveSync.clearHistories();
   const preserveAutomatchUi = pendingAutomatchTransition;
   const wasWaitingAnimationRunning =
     Board.hasMonsBoardDisplayAnimationRunning();
@@ -2010,13 +1996,7 @@ function initializeLocalMatch(mode: "local" | "bot") {
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   didStartLocalGame = true;
   isGameWithBot = mode === "bot";
-  whiteProcessedMovesCount = 0;
-  blackProcessedMovesCount = 0;
-  didSetWhiteProcessedMovesCount = false;
-  didSetBlackProcessedMovesCount = false;
-  currentGameModelMatchId = null;
-  whiteFlatMovesString = null;
-  blackFlatMovesString = null;
+  remoteMoveSync.resetProgress();
   currentInputs = [];
   matchTimers.reset(null);
   publishGameControlsContext();
@@ -2104,13 +2084,7 @@ export function didJustCreateRematchProposalSuccessfully(
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
   isWaitingForRematchResponse = true;
-  whiteProcessedMovesCount = 0;
-  blackProcessedMovesCount = 0;
-  didSetWhiteProcessedMovesCount = false;
-  didSetBlackProcessedMovesCount = false;
-  currentGameModelMatchId = null;
-  whiteFlatMovesString = null;
-  blackFlatMovesString = null;
+  remoteMoveSync.resetProgress();
   playerSideColor =
     nextMatch.color === "black" ? MonsRules.Color.Black : MonsRules.Color.White;
   if (!loadCurrentGameFromFen(nextMatch.fen)) {
@@ -2403,13 +2377,7 @@ export function didUpdateRematchSeriesMetadata() {
       didConnect = false;
       isGameOver = false;
       publishGameControlsContext();
-      whiteProcessedMovesCount = 0;
-      blackProcessedMovesCount = 0;
-      didSetWhiteProcessedMovesCount = false;
-      didSetBlackProcessedMovesCount = false;
-      currentGameModelMatchId = null;
-      whiteFlatMovesString = null;
-      blackFlatMovesString = null;
+      remoteMoveSync.resetProgress();
       resignedColor = undefined;
       winnerByTimerColor = undefined;
       currentInputs = [];
@@ -3738,9 +3706,11 @@ function hasBothEthOrSolAddresses(): boolean {
 }
 
 function bindVerifiedGameToMatch(matchId: string): void {
-  currentGameModelMatchId = matchId;
-  whiteFlatMovesString = null;
-  blackFlatMovesString = null;
+  remoteMoveSync.bindVerifiedGame(matchId);
+  showVerifiedMoveHistory();
+}
+
+function showVerifiedMoveHistory(): void {
   showMoveHistoryButton(true);
   if (isMoveHistoryPopupOpen && boardViewMode !== "historicalView") {
     triggerMoveHistoryPopupReload();
@@ -3752,35 +3722,8 @@ function verifyMovesIfNeeded(
   flatMovesString: unknown,
   color: string,
 ) {
-  if (currentGameModelMatchId === matchId && game.historyVerified) {
-    return;
-  }
-
-  const normalizedMoves = normalizePersistedMoveHistory(flatMovesString);
-  if (normalizedMoves === null) {
-    return;
-  }
-
-  if (currentGameModelMatchId !== matchId) {
-    currentGameModelMatchId = matchId;
-    whiteFlatMovesString = null;
-    blackFlatMovesString = null;
-  }
-
-  if (color === "white") {
-    whiteFlatMovesString = normalizedMoves;
-  } else {
-    blackFlatMovesString = normalizedMoves;
-  }
-
-  if (whiteFlatMovesString !== null && blackFlatMovesString !== null) {
-    const result = game.verifyHistory({
-      white: movesArrayForHistoryVerification(whiteFlatMovesString),
-      black: movesArrayForHistoryVerification(blackFlatMovesString),
-    });
-    if (result) {
-      bindVerifiedGameToMatch(matchId);
-    }
+  if (remoteMoveSync.verifyHistory(game, matchId, flatMovesString, color)) {
+    showVerifiedMoveHistory();
   }
 }
 
@@ -4359,7 +4302,7 @@ function installTrustedGameForMatch(
 ): void {
   installCurrentGameModel(trustedGame.gameModel);
   bindVerifiedGameToMatch(matchId);
-  setProcessedMovesCounts(
+  remoteMoveSync.setProcessedCounts(
     trustedGame.whiteMovesCount,
     trustedGame.blackMovesCount,
   );
@@ -4591,32 +4534,6 @@ function setNewBoard(inFlashbackMode: boolean) {
   });
 }
 
-function getProcessedMovesCount(color: string): number {
-  return color === "white"
-    ? whiteProcessedMovesCount
-    : blackProcessedMovesCount;
-}
-
-function setProcessedMovesCountForColor(color: string, count: number) {
-  if (color === "white") {
-    whiteProcessedMovesCount = count;
-    didSetWhiteProcessedMovesCount = true;
-  } else {
-    blackProcessedMovesCount = count;
-    didSetBlackProcessedMovesCount = true;
-  }
-}
-
-function setProcessedMovesCounts(
-  whiteMovesCount: number,
-  blackMovesCount: number,
-): void {
-  whiteProcessedMovesCount = whiteMovesCount;
-  blackProcessedMovesCount = blackMovesCount;
-  didSetWhiteProcessedMovesCount = true;
-  didSetBlackProcessedMovesCount = true;
-}
-
 function handleVictoryByTimer(
   onConnect: boolean,
   winnerColor: string,
@@ -4743,10 +4660,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
 
-  if (
-    !onConnect ||
-    (didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount)
-  ) {
+  if (!onConnect || remoteMoveSync.hasInitializedBothSides()) {
     Board.updateScore(
       game.scores[MonsRules.Color.White],
       game.scores[MonsRules.Color.Black],
@@ -4958,7 +4872,7 @@ export function didReceiveInviteReactionUpdate(
   }
   const currentTime = Date.now();
   const watchOnlyAllowed = isWatchOnly
-    ? didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount
+    ? remoteMoveSync.hasInitializedBothSides()
     : false;
   const regularAllowed = isWatchOnly
     ? false
@@ -4987,93 +4901,6 @@ export function didReceiveInviteReactionUpdate(
   lastReactionTime = currentTime;
 }
 
-function resetRemoteMoveHistories(): void {
-  remoteMoveHistories.clear();
-  remoteMoveHistoriesMatchId = null;
-}
-
-function rememberRemoteMoveHistory(match: Match, matchId: string): boolean {
-  const flatMovesString = normalizePersistedMoveHistory(match.flatMovesString);
-  if (
-    flatMovesString === null ||
-    (match.color !== "white" && match.color !== "black")
-  ) {
-    return false;
-  }
-  if (remoteMoveHistoriesMatchId !== matchId) {
-    resetRemoteMoveHistories();
-    remoteMoveHistoriesMatchId = matchId;
-  }
-  const previous = remoteMoveHistories.get(match.color);
-  if (
-    previous &&
-    previous.flatMovesString !== "" &&
-    flatMovesString !== previous.flatMovesString &&
-    !flatMovesString.startsWith(`${previous.flatMovesString}-`)
-  ) {
-    return false;
-  }
-  remoteMoveHistories.set(match.color, {
-    match:
-      previous?.match.status === "surrendered"
-        ? { ...match, status: "surrendered" }
-        : { ...match },
-    flatMovesString,
-    moves:
-      previous?.flatMovesString === flatMovesString
-        ? previous.moves
-        : movesFensArray(match),
-  });
-  return true;
-}
-
-function hasPendingRemoteMoves(): boolean {
-  return [...remoteMoveHistories.entries()].some(
-    ([color, history]) => getProcessedMovesCount(color) < history.moves.length,
-  );
-}
-
-function drainRemoteMoveHistories(
-  matchId: string,
-  shouldRenderLiveBoard: boolean,
-): boolean {
-  const sessionGuard = getSessionGuard();
-  const activeGame = game;
-  const remainingMoves = [...remoteMoveHistories.entries()].reduce(
-    (total, [color, history]) =>
-      total + Math.max(0, history.moves.length - getProcessedMovesCount(color)),
-    0,
-  );
-  let didMutate = false;
-  for (let step = 0; step < remainingMoves; step++) {
-    if (
-      !sessionGuard() ||
-      connection.getActiveMatchId() !== matchId ||
-      game !== activeGame ||
-      isGameOver ||
-      game.winner !== undefined
-    ) {
-      break;
-    }
-    const color = activeGame.activeColor;
-    const processedMovesCount = getProcessedMovesCount(color);
-    const moveFen = remoteMoveHistories.get(color)?.moves[processedMovesCount];
-    if (moveFen === undefined) {
-      break;
-    }
-    const output = activeGame.playFen(moveFen);
-    if (output.kind !== "complete") {
-      break;
-    }
-    setProcessedMovesCountForColor(color, processedMovesCount + 1);
-    didMutate = true;
-    if (shouldRenderLiveBoard) {
-      applyOutput([], "", output, true, false, AssistedInputKind.None);
-    }
-  }
-  return didMutate;
-}
-
 export function didReceiveMatchUpdates(
   matches: ReadonlyMap<string, Match>,
   matchId: string,
@@ -5082,7 +4909,7 @@ export function didReceiveMatchUpdates(
   if (!isActive() || connection.getActiveMatchId() !== matchId) return;
   const sessionGuard = getSessionGuard();
   for (const match of matches.values()) {
-    rememberRemoteMoveHistory(match, matchId);
+    remoteMoveSync.remember(match, matchId);
   }
   for (const [playerId, match] of matches) {
     if (!isActive() || !sessionGuard()) return;
@@ -5129,9 +4956,9 @@ export function didReceiveMatchUpdate(
     }
     didConnectTo(match, matchPlayerUid, matchId, hydration);
     if (hydration.kind === "provisional") {
-      setProcessedMovesCountForColor(match.color, movesCountOfMatch(match));
+      remoteMoveSync.setProcessedCount(match.color, movesCountOfMatch(match));
     }
-    rememberRemoteMoveHistory(match, matchId);
+    remoteMoveSync.remember(match, matchId);
     didConnect = true;
     markMainGameContentReady(
       !isWatchOnly && !isGameOver && game.winner === undefined,
@@ -5156,7 +4983,7 @@ export function didReceiveMatchUpdate(
     return;
   }
 
-  if (!rememberRemoteMoveHistory(match, matchId)) {
+  if (!remoteMoveSync.remember(match, matchId)) {
     return;
   }
   const shouldRenderLiveBoard = boardViewMode !== "historicalView";
@@ -5184,10 +5011,7 @@ export function didReceiveMatchUpdate(
   }
 
   const receivingGame = game;
-  const didReplayMoves = drainRemoteMoveHistories(
-    matchId,
-    shouldRenderLiveBoard,
-  );
+  const didReplayMoves = remoteMoveSync.drain(matchId, shouldRenderLiveBoard);
   if (
     !sessionGuard() ||
     connection.getActiveMatchId() !== matchId ||
@@ -5203,11 +5027,7 @@ export function didReceiveMatchUpdate(
     }
   }
 
-  const surrenderedMatch = !hasPendingRemoteMoves()
-    ? [...remoteMoveHistories.values()].find(
-        (history) => history.match.status === "surrendered",
-      )?.match
-    : undefined;
+  const surrenderedMatch = remoteMoveSync.getSurrenderedMatchWhenDrained();
   if (surrenderedMatch) {
     if (shouldRenderLiveBoard) {
       handleResignStatus(false, surrenderedMatch.color);
@@ -5325,14 +5145,6 @@ export function enterWatchOnlyMode(reuseInitialIdentity = false) {
     if (isCurrent() && profile.id === storedProfileId)
       syncOwnProfileMiningState(profile);
   })().catch(() => {});
-}
-
-function movesFensArray(match: Match): string[] {
-  const flatMovesString = match.flatMovesString;
-  if (!flatMovesString || flatMovesString === "") {
-    return [];
-  }
-  return flatMovesString.split("-");
 }
 
 function movesCountOfMatch(match: Match): number {

@@ -768,6 +768,8 @@ test("browser customization and prize selection mutations use Worker routes", ()
   const gameplayApi = readText("src/services/gameplayApi.ts");
   const profileApi = readText("src/services/profileApi.ts");
   const connection = readText("src/connection/connection.ts");
+  const profileClient = readText("src/connection/profileClient.ts");
+  const profileSource = `${connection}\n${profileClient}`;
   const eventClient = readText("src/connection/eventClient.ts");
 
   assert.match(gameplayApi, /\/events\/prize-selections\/toggle/);
@@ -776,13 +778,13 @@ test("browser customization and prize selection mutations use Worker routes", ()
     eventClient,
     /getUserBoundAuthTokenProvider\(\)[\s\S]{0,250}toggleEventPrizeSelectionViaApi/,
   );
-  assert.match(connection, /field: "emojiAndAura"/);
-  assert.doesNotMatch(connection, /profileCustomizationWrites/);
-  assert.doesNotMatch(connection, /pendingProfileCustomizations/);
-  assert.doesNotMatch(connection, /drainProfileCustomizations/);
-  assert.doesNotMatch(connection, /\bupdateDoc\s*\(/);
+  assert.match(profileClient, /field: "emojiAndAura"/);
+  assert.doesNotMatch(profileSource, /profileCustomizationWrites/);
+  assert.doesNotMatch(profileSource, /pendingProfileCustomizations/);
+  assert.doesNotMatch(profileSource, /drainProfileCustomizations/);
+  assert.doesNotMatch(profileSource, /\bupdateDoc\s*\(/);
   assert.doesNotMatch(
-    `${connection}\n${eventClient}`,
+    `${profileSource}\n${eventClient}`,
     /runTransaction\([\s\S]{0,200}eventPrizeSelections/,
   );
 });

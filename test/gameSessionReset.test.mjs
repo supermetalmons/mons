@@ -21,6 +21,8 @@ registerHooks({
 
 const { createSessionControlsPresenter } =
   await import("../src/game/sessionControls.ts");
+const { createRemoteMoveSyncController } =
+  await import("../src/game/remoteMoveSyncController.ts");
 
 const source = ts.createSourceFile(
   "gameController.ts",
@@ -41,7 +43,6 @@ const declarations = [
   "resetSessionState",
   "resetBotScoreReactionState",
   "nextBoardRenderSession",
-  "resetRemoteMoveHistories",
   "resetOnlineReconnectRequestState",
   "setWatchOnlyState",
   "isCreateInviteRoute",
@@ -109,8 +110,6 @@ function harness({
     moveHistoryFlipOverrideSessionId: 4,
     moveHistoryFlipOverrideBaseBoardFlipped: true,
     botScoreReactionPlayedTurns: new Set([1]),
-    remoteMoveHistories: new Map([["white", ["old"]]]),
-    remoteMoveHistoriesMatchId: "old",
     pendingOnlineReconnectInviteId: "old",
     lastOnlineReconnectRequestedAtMs: 123,
     flashbackMode: true,
@@ -124,13 +123,6 @@ function harness({
     wagerOutcomeShown: true,
     wagerOutcomeAnimating: true,
     wagerOutcomeAnimationAllowed: true,
-    whiteProcessedMovesCount: 5,
-    blackProcessedMovesCount: 4,
-    didSetWhiteProcessedMovesCount: true,
-    didSetBlackProcessedMovesCount: true,
-    currentGameModelMatchId: "old",
-    whiteFlatMovesString: "old-white",
-    blackFlatMovesString: "old-black",
     wagerMatchId: "old",
     lastObservedMatchSideFallbackWarningKey: "old",
     lastReactionTime: 123,
@@ -146,6 +138,24 @@ function harness({
       scores: { white: 0, black: 0 },
     },
   };
+  const remoteMoveSync = createRemoteMoveSyncController({
+    getGame: () => api?.state().game ?? initial.game,
+    getActiveMatchId: () => "old",
+    createSessionGuard: () => () => true,
+    isGameOver: () => api?.state().isGameOver ?? initial.isGameOver,
+    onReplayOutput: () => assert.fail("unexpected replay during reset"),
+  });
+  remoteMoveSync.setProcessedCounts(5, 4);
+  remoteMoveSync.remember(
+    { color: "white", flatMovesString: Array(6).fill("old").join("-") },
+    "old",
+  );
+  remoteMoveSync.verifyHistory(
+    { historyVerified: false },
+    "old",
+    "old-white",
+    "white",
+  );
   const rematchViewing = createRematchViewingHarness({
     selection: { matchId: "old", pair: {}, game: {} },
   });
@@ -218,6 +228,7 @@ function harness({
     "showRandomEmojisForLoopMode",
   ];
   const dependencies = {
+    remoteMoveSync,
     rematchViewing,
     matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
@@ -341,6 +352,7 @@ function harness({
   );
   return {
     ...api,
+    remoteMoveSync,
     contexts,
     events,
     ui,
@@ -423,12 +435,52 @@ test("wager subscriptions survive repeated startup and are replaced once after d
     1,
   );
   assert.equal(h.pendingTimeouts.size, 0);
-  assert.equal(h.state().remoteMoveHistories.size, 0);
+  assert.equal(h.remoteMoveSync.hasPendingMoves(), false);
+  assert.equal(h.remoteMoveSync.getProcessedCount("white"), 0);
+  assert.equal(h.remoteMoveSync.getProcessedCount("black"), 0);
+  assert.equal(h.remoteMoveSync.hasInitializedBothSides(), false);
   assert.equal(h.state().processedVoiceReactions.size, 0);
-  assert.equal(h.state().currentGameModelMatchId, null);
+  h.remoteMoveSync.verifyHistory(
+    {
+      historyVerified: false,
+      verifyHistory: () => assert.fail("disposed history was retained"),
+    },
+    "old",
+    "new-black",
+    "black",
+  );
   await h.go(home);
   assert.equal(h.subscriptions.size, 1);
   assert.equal(h.events.filter(([name]) => name === "subscribe").length, 2);
+});
+
+test("startup retains move progress until the disposal lifecycle resets it", async () => {
+  const h = harness();
+  await h.go(home);
+  assert.equal(h.remoteMoveSync.getProcessedCount("white"), 5);
+  assert.equal(h.remoteMoveSync.getProcessedCount("black"), 4);
+  assert.equal(h.remoteMoveSync.hasInitializedBothSides(), true);
+  const histories = [];
+  h.remoteMoveSync.verifyHistory(
+    {
+      historyVerified: false,
+      verifyHistory: (value) => {
+        histories.push(value);
+        return false;
+      },
+    },
+    "old",
+    "new-black",
+    "black",
+  );
+  assert.deepEqual(histories, [
+    { white: ["old", "white"], black: ["new", "black"] },
+  ]);
+  h.disposeGameSession(home);
+  await h.go(home);
+  assert.equal(h.remoteMoveSync.getProcessedCount("white"), 0);
+  assert.equal(h.remoteMoveSync.getProcessedCount("black"), 0);
+  assert.equal(h.remoteMoveSync.hasInitializedBothSides(), false);
 });
 
 for (const [action, pendingAutomatch] of [

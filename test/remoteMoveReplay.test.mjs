@@ -1,8 +1,25 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { registerHooks } from "node:module";
 import test from "node:test";
 import { Game } from "mons-rules";
 import ts from "typescript";
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (
+      context.parentURL?.endsWith(".ts") &&
+      (specifier.startsWith("./") || specifier.startsWith("../")) &&
+      !/\.[^/]+$/.test(specifier)
+    ) {
+      return nextResolve(`${specifier}.ts`, context);
+    }
+    return nextResolve(specifier, context);
+  },
+});
+
+const { createRemoteMoveSyncController } =
+  await import("../src/game/remoteMoveSyncController.ts");
 
 const source = ts.createSourceFile(
   "gameController.ts",
@@ -14,16 +31,12 @@ const source = ts.createSourceFile(
   true,
 );
 const functionNames = [
-  "resetRemoteMoveHistories",
-  "rememberRemoteMoveHistory",
-  "hasPendingRemoteMoves",
-  "drainRemoteMoveHistories",
   "didReceiveMatchUpdates",
   "didReceiveMatchUpdate",
-  "getProcessedMovesCount",
-  "setProcessedMovesCountForColor",
-  "setProcessedMovesCounts",
-  "movesFensArray",
+  "installInitialGameHydration",
+  "installTrustedGameForMatch",
+  "bindVerifiedGameToMatch",
+  "showVerifiedMoveHistory",
   "movesCountOfMatch",
 ];
 const functions = functionNames.map((name) => {
@@ -34,11 +47,7 @@ const functions = functionNames.map((name) => {
   assert.ok(declaration, name);
   return declaration.getText(source).replace(/^export /, "");
 });
-const variableNames = [
-  "remoteMoveHistories",
-  "remoteMoveHistoriesMatchId",
-  "installCurrentGameModel",
-];
+const variableNames = ["remoteMoveSync", "installCurrentGameModel"];
 const variables = variableNames.map((name) => {
   const statement = source.statements.find(
     (statement) =>
@@ -53,10 +62,6 @@ const variables = variableNames.map((name) => {
 const { outputText } = ts.transpileModule(
   `
   let game = initialGame;
-  let whiteProcessedMovesCount = 0;
-  let blackProcessedMovesCount = 0;
-  let didSetWhiteProcessedMovesCount = false;
-  let didSetBlackProcessedMovesCount = false;
   let isGameOver = false;
   let didConnect = initiallyConnected;
   let isWaitingForInviteToGetAccepted = false;
@@ -67,8 +72,8 @@ const { outputText } = ts.transpileModule(
     onSurrender(color, game.toFen());
   }
   const handleResignStatusWithoutRender = handleResignStatus;
-  function didConnectTo(_match, _uid, _id, hydration) {
-    installCurrentGameModel(hydration.gameModel);
+  function didConnectTo(_match, _uid, id, hydration) {
+    installInitialGameHydration(id, hydration);
   }
   ${variables.join("\n")}
   ${functions.join("\n")}
@@ -76,7 +81,12 @@ const { outputText } = ts.transpileModule(
   { compilerOptions: { target: ts.ScriptTarget.ES2022 } },
 );
 
-function harness({ historical = false, connected = true, onOutput } = {}) {
+function harness({
+  historical = false,
+  connected = true,
+  onOutput,
+  trustedGame,
+} = {}) {
   let activeMatchId = "match";
   let sessionVersion = 0;
   let popupReloads = 0;
@@ -97,8 +107,7 @@ function harness({ historical = false, connected = true, onOutput } = {}) {
   const dependencies = {
     initialGame: spy(new Game()),
     initiallyConnected: connected,
-    normalizePersistedMoveHistory: (value) =>
-      value == null ? "" : typeof value === "string" ? value : null,
+    createRemoteMoveSyncController,
     connection: {
       getActiveMatchId: () => activeMatchId,
       rematchSeriesEndIsIndicated: () => false,
@@ -110,6 +119,7 @@ function harness({ historical = false, connected = true, onOutput } = {}) {
     boardViewMode: historical ? "historicalView" : "activeLive",
     isReconnect: false,
     isWatchOnly: true,
+    isMoveHistoryPopupOpen: false,
     Board: {
       setupPlayerId: noop,
       updateEmojiAndAuraIfNeeded: noop,
@@ -131,10 +141,19 @@ function harness({ historical = false, connected = true, onOutput } = {}) {
     },
     setCurrentVariant: noop,
     onSurrender: (color, fen) => surrendered.push({ color, fen }),
-    prepareInitialGameHydration: (match) => ({
-      kind: "provisional",
-      gameModel: spy(Game.fromFen(match.fen)),
-    }),
+    prepareInitialGameHydration: (match) =>
+      trustedGame
+        ? {
+            kind: "trusted",
+            trustedGame: {
+              ...trustedGame,
+              gameModel: spy(trustedGame.gameModel),
+            },
+          }
+        : {
+            kind: "provisional",
+            gameModel: spy(Game.fromFen(match.fen)),
+          },
     markMainGameContentReady: (canPlay) =>
       contentReady.push({ canPlay, fen: api.game().toFen() }),
     resetOnlineReconnectRequestState: noop,
@@ -162,8 +181,9 @@ function harness({ historical = false, connected = true, onOutput } = {}) {
       receive: (match, id = "match") => didReceiveMatchUpdate(match, match.color, id),
       receiveBatch: (matches, id = "match", isActive = () => true) => didReceiveMatchUpdates(new Map(matches.map(match => [match.color, match])), id, isActive),
       game: () => game,
-      counts: () => ({ white: whiteProcessedMovesCount, black: blackProcessedMovesCount }),
-      install: (nextGame) => { installCurrentGameModel(nextGame); setProcessedMovesCounts(0, 0); isGameOver = false; },
+      counts: () => ({ white: remoteMoveSync.getProcessedCount("white"), black: remoteMoveSync.getProcessedCount("black") }),
+      initialized: () => remoteMoveSync.hasInitializedBothSides(),
+      install: (nextGame) => { installCurrentGameModel(nextGame); remoteMoveSync.setProcessedCounts(0, 0); isGameOver = false; },
     };
   `,
   )(...Object.values(dependencies));
@@ -437,4 +457,38 @@ test("an invalid input stops the bounded replay without advancing its cursor", (
   assert.deepEqual(h.played, ["invalid"]);
   assert.deepEqual(h.counts(), { white: 0, black: 0 });
   assert.equal(h.game().toFen(), game.toFen());
+});
+
+test("trusted hydration seeds both move counts and never replays the verified snapshot", () => {
+  const fixture = threeTurns();
+  const h = harness({
+    connected: false,
+    trustedGame: {
+      gameModel: fixture.game,
+      whiteMovesCount: fixture.moves.white.length,
+      blackMovesCount: fixture.moves.black.length,
+    },
+  });
+  h.receiveBatch([fixture.snapshots.white, fixture.snapshots.black]);
+  h.receiveBatch([fixture.snapshots.black, fixture.snapshots.white]);
+  assert.equal(h.game(), fixture.game);
+  assert.deepEqual(h.played, []);
+  assert.deepEqual(h.counts(), { white: 12, black: 6 });
+  assert.equal(h.initialized(), true);
+});
+
+test("trusted hydration initializes both sides even when their histories are empty", () => {
+  const game = new Game();
+  const h = harness({
+    connected: false,
+    trustedGame: {
+      gameModel: game,
+      whiteMovesCount: 0,
+      blackMovesCount: 0,
+    },
+  });
+  h.receive(record(game, "white", []));
+  assert.deepEqual(h.counts(), { white: 0, black: 0 });
+  assert.equal(h.initialized(), true);
+  assert.deepEqual(h.played, []);
 });

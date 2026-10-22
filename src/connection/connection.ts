@@ -34,7 +34,6 @@ import {
   Reaction,
   PlayerProfile,
   PlayerMiningMaterials,
-  MINING_MATERIAL_NAMES,
   MiningMaterialName,
   RematchSeriesDescriptor,
   HistoricalMatchPair,
@@ -46,7 +45,6 @@ import {
   EventPrizeWithdrawalResponse,
   ProfileEventPrizes,
 } from "./connectionModels";
-import { resolvePlayerProfileWithRetry } from "./playerProfileLookup";
 import { storage, type PendingAutomatchOperation } from "../utils/storage";
 import { withAutomatchOperationLock } from "./automatchOperationLock";
 import {
@@ -179,10 +177,7 @@ import type {
   ClaimMatchVictoryByTimerResponse,
   StartMatchTimerResponse,
 } from "@mons/shared/timers";
-import {
-  isPlayerProfile,
-  type ProfileCustomizationUpdateRequest,
-} from "@mons/shared/profiles";
+import { isPlayerProfile } from "@mons/shared/profiles";
 import type {
   WagerOutcomeResolveResponse,
   WagerProposalAcceptResponse,
@@ -247,6 +242,7 @@ import { transition, transitionToHome } from "../session/sessionTransitionPort";
 import { startNavigationGamesPolling } from "./navigationGamesPoller";
 import { EventClient, type EventSyncResponse } from "./eventClient";
 import { WagerClient, type WagerOwner } from "./wagerClient";
+import { ProfileClient } from "./profileClient";
 import type { MatchRuntimeContext, InviteRole } from "./matchRuntimeContext";
 import { showNotificationBanner } from "../ui/identity/profileUiPort";
 import { createPollingAuthTokenProvider } from "./pollingAuthTokenProvider";
@@ -261,8 +257,6 @@ const getStoredAuthPresentation = (): {
   );
 };
 
-const LEADERBOARD_ENTRY_LIMIT = 99;
-const PROFILE_LOOKUP_RETRY_DELAY_MS = 1_000;
 const NAVIGATION_GAMES_POLL_INTERVAL_MS = 5_000;
 const NAVIGATION_GAMES_MAX_CONSECUTIVE_FAILURES = 3;
 const AUTOMATCH_OPERATION_RETENTION_MS = 7 * 24 * 60 * 60 * 1_000;
@@ -284,6 +278,7 @@ class Connection {
   private auth = sessionAuth;
   private readonly eventClient: EventClient;
   private readonly wagerClient: WagerClient;
+  private readonly profileClient: ProfileClient;
 
   private inviteMetadataState: InviteMetadataState | null = null;
   private inviteMetadataViewer: InviteMetadataViewer | null = null;
@@ -685,10 +680,6 @@ class Connection {
     };
   }
 
-  private async delay(ms: number): Promise<void> {
-    await new Promise<void>((resolve) => setTimeout(resolve, ms));
-  }
-
   private createWagerClient(): WagerClient {
     return new WagerClient({
       auth: this.auth,
@@ -825,6 +816,26 @@ class Connection {
   }
 
   constructor() {
+    this.profileClient = new ProfileClient({
+      ensureAuthenticated: () => this.ensureAuthenticated(),
+      getAuthApiToken: this.getAuthApiToken,
+      getUserBoundAuthTokenProvider: () => this.getUserBoundAuthTokenProvider(),
+      getLocalProfileId: () => this.getLocalProfileId(),
+      getStoredEmojiAura: () => storage.getPlayerEmojiAura(""),
+      invalidateInitialIdentity,
+      api: {
+        editUsernameViaApi,
+        getProfileByIdViaApi,
+        getProfileByLoginIdViaApi,
+        readLeaderboardViaApi,
+        resolveProfileIdViaApi,
+        updateProfileCustomizationViaApi,
+      },
+      now: () => Date.now(),
+      wait: async (milliseconds) => {
+        await new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+      },
+    });
     if (typeof window !== "undefined") {
       window.addEventListener("online", () => this.refreshMoveDeliveries());
       window.addEventListener("pageshow", () => this.refreshMoveDeliveries());
@@ -1200,151 +1211,37 @@ class Connection {
     this.loginUid = null;
     this.setSameProfilePlayerUid(null);
     this.wagerClient.resetProfile();
-    this.materialLeaderboardCache.clear();
-    this.materialLeaderboardCacheTime = 0;
+    this.profileClient.resetProfile();
     this.eventClient.reset();
   }
 
-  public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
-    await this.ensureAuthenticated();
-    return getProfileByLoginIdViaApi(loginId, this.getAuthApiToken);
+  public getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
+    return this.profileClient.getProfileByLoginId(loginId);
   }
 
-  public async getProfileById(
-    profileId: string,
-  ): Promise<PlayerProfile | null> {
-    const normalizedProfileId = profileId.trim();
-    if (!normalizedProfileId) {
-      return null;
-    }
-    await this.ensureAuthenticated();
-    return getProfileByIdViaApi(normalizedProfileId, this.getAuthApiToken);
+  public getProfileById(profileId: string): Promise<PlayerProfile | null> {
+    return this.profileClient.getProfileById(profileId);
   }
 
-  public async resolveProfileId(profileId: string): Promise<string | null> {
-    const normalizedProfileId = profileId.trim();
-    if (!normalizedProfileId) return null;
-    await this.ensureAuthenticated();
-    const tokenProvider = this.getUserBoundAuthTokenProvider();
-    const canonicalId = await resolveProfileIdViaApi(
-      normalizedProfileId,
-      tokenProvider,
-    );
-    tokenProvider.assertCurrentUser();
-    return canonicalId;
+  public resolveProfileId(profileId: string): Promise<string | null> {
+    return this.profileClient.resolveProfileId(profileId);
   }
 
-  private async getPlayerProfileWithRetry(
+  private getPlayerProfileWithRetry(
     loginId: string,
     isCurrent: () => boolean,
   ): Promise<PlayerProfile | null> {
-    await this.ensureAuthenticated();
-    if (!isCurrent()) {
-      return null;
-    }
-    const tokenProvider = this.getUserBoundAuthTokenProvider();
-    return resolvePlayerProfileWithRetry(
-      loginId,
-      {
-        getProfileByLoginId: async (playerLoginId) => {
-          const profile = await getProfileByLoginIdViaApi(
-            playerLoginId,
-            tokenProvider,
-          );
-          tokenProvider.assertCurrentUser();
-          return profile;
-        },
-      },
-      isCurrent,
-      () => this.delay(PROFILE_LOOKUP_RETRY_DELAY_MS),
-    );
+    return this.profileClient.getPlayerProfileWithRetry(loginId, isCurrent);
   }
 
-  private materialLeaderboardCache: Map<MiningMaterialName, PlayerProfile[]> =
-    new Map();
-  private materialLeaderboardCacheTime: number = 0;
-  private static LEADERBOARD_CACHE_TTL = 60000;
-
-  private async fetchAllMaterialLeaderboards(): Promise<void> {
-    const leaderboards = await Promise.all(
-      MINING_MATERIAL_NAMES.map((material) =>
-        readLeaderboardViaApi(material, this.getAuthApiToken),
-      ),
-    );
-    MINING_MATERIAL_NAMES.forEach((material, index) => {
-      this.materialLeaderboardCache.set(material, leaderboards[index]);
-    });
-    this.materialLeaderboardCacheTime = Date.now();
-  }
-
-  private isMaterialCacheValid(): boolean {
-    return (
-      this.materialLeaderboardCache.size === MINING_MATERIAL_NAMES.length &&
-      Date.now() - this.materialLeaderboardCacheTime <
-        Connection.LEADERBOARD_CACHE_TTL
-    );
-  }
-
-  public async getLeaderboard(
+  public getLeaderboard(
     type: "rating" | "mp" | MiningMaterialName | "total" = "rating",
   ): Promise<PlayerProfile[]> {
-    await this.ensureAuthenticated();
-
-    if (type === "total") {
-      if (!this.isMaterialCacheValid()) {
-        await this.fetchAllMaterialLeaderboards();
-      }
-      const profileMap = new Map<string, PlayerProfile>();
-      MINING_MATERIAL_NAMES.forEach((material) => {
-        const cached = this.materialLeaderboardCache.get(material);
-        if (cached) {
-          cached.forEach((profile) => {
-            if (!profileMap.has(profile.id)) {
-              profileMap.set(profile.id, profile);
-            }
-          });
-        }
-      });
-      const profiles = Array.from(profileMap.values());
-      profiles.sort((a, b) => {
-        const totalA = a.mining
-          ? Object.values(a.mining.materials).reduce((sum, val) => sum + val, 0)
-          : 0;
-        const totalB = b.mining
-          ? Object.values(b.mining.materials).reduce((sum, val) => sum + val, 0)
-          : 0;
-        return totalB - totalA;
-      });
-      return profiles.slice(0, LEADERBOARD_ENTRY_LIMIT);
-    }
-
-    if (MINING_MATERIAL_NAMES.includes(type as MiningMaterialName)) {
-      const materialType = type as MiningMaterialName;
-      if (this.isMaterialCacheValid()) {
-        const cached = this.materialLeaderboardCache.get(materialType);
-        if (cached) {
-          return cached;
-        }
-      }
-      await this.fetchAllMaterialLeaderboards();
-      return this.materialLeaderboardCache.get(materialType) ?? [];
-    }
-
-    return readLeaderboardViaApi(type, this.getAuthApiToken);
+    return this.profileClient.getLeaderboard(type);
   }
 
-  public async editUsername(username: string): Promise<any> {
-    try {
-      await this.ensureAuthenticated();
-      const tokenProvider = this.getUserBoundAuthTokenProvider();
-      const result = await editUsernameViaApi(username, tokenProvider);
-      tokenProvider.assertCurrentUser();
-      if (result.ok) invalidateInitialIdentity();
-      return result;
-    } catch (error) {
-      console.error("Error editing username:", error);
-      throw error;
-    }
+  public editUsername(username: string): Promise<any> {
+    return this.profileClient.editUsername(username);
   }
 
   private getAuthApiToken = async (forceRefresh: boolean): Promise<string> => {
@@ -2829,63 +2726,35 @@ class Connection {
     newId: number,
     aura: string | null | undefined,
   ): void {
-    const storedAura = aura ?? storage.getPlayerEmojiAura("");
-    this.updateCustomField({
-      field: "emojiAndAura",
-      value: {
-        emoji: newId,
-        aura: storedAura === "rainbow" ? "rainbow" : "",
-      },
-    });
+    this.profileClient.updateStoredEmoji(newId, aura);
   }
 
   public updateCardBackgroundId(newId: number): void {
-    this.updateCustomField({ field: "cardBackgroundId", value: newId });
+    this.profileClient.updateCardBackgroundId(newId);
   }
 
   public updateCardSubtitleId(newId: number): void {
-    this.updateCustomField({ field: "cardSubtitleId", value: newId });
+    this.profileClient.updateCardSubtitleId(newId);
   }
 
   public updateProfileCounter(counter: string): void {
-    if (counter === "gp" || counter === "mp") {
-      this.updateCustomField({ field: "profileCounter", value: counter });
-    }
+    this.profileClient.updateProfileCounter(counter);
   }
 
   public updateProfileMons(mons: string): void {
-    this.updateCustomField({ field: "profileMons", value: mons });
+    this.profileClient.updateProfileMons(mons);
   }
 
   public updateCardStickers(stickers: string): void {
-    this.updateCustomField({ field: "cardStickers", value: stickers });
+    this.profileClient.updateCardStickers(stickers);
   }
 
   public updateCompletedProblems(ids: string[]): void {
-    this.updateCustomField({ field: "completedProblems", value: ids });
+    this.profileClient.updateCompletedProblems(ids);
   }
 
   public updateTutorialCompleted(completed: boolean): void {
-    this.updateCustomField({ field: "tutorialCompleted", value: completed });
-  }
-
-  private updateCustomField(request: ProfileCustomizationUpdateRequest): void {
-    const profileId = this.getLocalProfileId();
-    if (profileId === null) {
-      return;
-    }
-    let tokenProvider: AuthTokenProvider;
-    try {
-      tokenProvider = this.getUserBoundAuthTokenProvider();
-    } catch {
-      return;
-    }
-    void updateProfileCustomizationViaApi(request, tokenProvider)
-      .then(() => {
-        tokenProvider.assertCurrentUser?.();
-        invalidateInitialIdentity();
-      })
-      .catch(() => undefined);
+    this.profileClient.updateTutorialCompleted(completed);
   }
 
   public sendVoiceReaction(reaction: Reaction): void {
