@@ -12,6 +12,8 @@ import {
   CanonicalProfileCorruption,
   commitCanonicalPlan,
   materializeCanonicalProfile,
+  readCanonicalAuthMethod,
+  readCanonicalAuthOperation,
   readCanonicalAuthRecoveryJob,
   readCanonicalLeaderboard,
   readCanonicalMergeTarget,
@@ -28,10 +30,13 @@ import {
   resolveCanonicalProfile,
   resolveCanonicalProfiles,
   resolveCanonicalPublicProfile,
+  type CanonicalAuthMethodValue,
+  type CanonicalAuthOperationValue,
   type CanonicalAuthRecoveryValue,
   type CanonicalCommitPlan,
   type CanonicalExpectation,
   type CanonicalMutation,
+  type CanonicalMethodRevocationValue,
   type CanonicalProfileSnapshot,
   type CanonicalProfileValue,
   type CanonicalRatingUpdateValue,
@@ -1753,6 +1758,488 @@ describe("canonical profile D1 store", () => {
         ).run();
       }
     });
+  });
+
+  describe("auth row writes", () => {
+    const primaryProfileId = "auth-row-primary";
+    const reassignedProfileId = "auth-row-reassigned";
+    const neighborProfileId = "auth-row-neighbor";
+
+    beforeEach(async () => {
+      const profiles = [
+        primaryProfileId,
+        reassignedProfileId,
+        neighborProfileId,
+      ].map((profileId) => profileValue(profileId));
+      await commitCanonicalPlan(testEnv.PROFILE_DB, {
+        expectations: profiles.map((value) => ({
+          kind: "profile-absent",
+          profileId: value.profile.id,
+        })),
+        mutations: profiles.map((value) => ({
+          kind: "insert-active-profile",
+          value,
+        })),
+      });
+    });
+
+    function authMethodValue(
+      overrides: Partial<CanonicalAuthMethodValue> = {},
+    ): CanonicalAuthMethodValue {
+      return {
+        method: "apple",
+        normalizedValue: "shared-value",
+        profileId: primaryProfileId,
+        rawValue: " Raw Value ",
+        appleEmailMasked: null,
+        xUsername: null,
+        linkedAtMs: 101,
+        consentAtMs: 102,
+        consentSource: "signin",
+        createdAtMs: 103,
+        updatedAtMs: 104,
+        ...overrides,
+      };
+    }
+
+    it.each(["apple", "x"] as const)(
+      "roundtrips %s auth fields and isolates both compound-key components",
+      async (method) => {
+        const initial = authMethodValue({
+          method,
+          appleEmailMasked:
+            method === "apple" ? "a@privaterelay.example" : null,
+          xUsername: method === "x" ? "InitialHandle" : null,
+        });
+        const neighbors = [
+          authMethodValue({
+            method,
+            normalizedValue: "neighbor-value",
+            profileId: neighborProfileId,
+          }),
+          authMethodValue({ method: method === "apple" ? "x" : "apple" }),
+        ];
+        const values = [initial, ...neighbors];
+        await commitCanonicalPlan(testEnv.PROFILE_DB, {
+          expectations: values.map((value) => ({
+            kind: "auth-method-absent",
+            method: value.method,
+            normalizedValue: value.normalizedValue,
+          })),
+          mutations: values.map((value) => ({
+            kind: "insert-auth-method",
+            value,
+          })),
+        });
+        await expect(
+          readCanonicalAuthMethod(
+            testEnv.PROFILE_DB,
+            method,
+            initial.normalizedValue,
+          ),
+        ).resolves.toEqual({ ...initial, revision: 1 });
+
+        const updated: CanonicalAuthMethodValue = {
+          ...initial,
+          profileId: reassignedProfileId,
+          rawValue: " Changed Raw Value ",
+          appleEmailMasked: null,
+          xUsername: null,
+          linkedAtMs: null,
+          consentAtMs: null,
+          consentSource: "settings",
+          createdAtMs: 201,
+          updatedAtMs: 202,
+        };
+        for (const revision of [1, 2]) {
+          await commitCanonicalPlan(testEnv.PROFILE_DB, {
+            expectations: [
+              {
+                kind: "auth-method-revision",
+                method,
+                normalizedValue: initial.normalizedValue,
+                profileId:
+                  revision === 1 ? primaryProfileId : reassignedProfileId,
+                revision,
+              },
+            ],
+            mutations: [{ kind: "update-auth-method", value: updated }],
+          });
+          await expect(
+            readCanonicalAuthMethod(
+              testEnv.PROFILE_DB,
+              method,
+              initial.normalizedValue,
+            ),
+          ).resolves.toEqual({ ...updated, revision: revision + 1 });
+        }
+        for (const neighbor of neighbors) {
+          await expect(
+            readCanonicalAuthMethod(
+              testEnv.PROFILE_DB,
+              neighbor.method,
+              neighbor.normalizedValue,
+            ),
+          ).resolves.toEqual({ ...neighbor, revision: 1 });
+        }
+      },
+    );
+
+    it("roundtrips auth operations while preserving JSON bytes and SQL nulls", async () => {
+      const initial: CanonicalAuthOperationValue = {
+        operationId: "auth-row-operation",
+        kind: "verify",
+        method: "apple",
+        loginUid: "initial-login",
+        status: "started",
+        meta: { z: 0, a: { second: false, first: null } },
+        result: null,
+        errorCode: null,
+        errorMessage: null,
+        startedAtMs: 101,
+        updatedAtMs: 102,
+      };
+      await commitCanonicalPlan(testEnv.PROFILE_DB, {
+        expectations: [
+          { kind: "auth-operation-absent", operationId: initial.operationId },
+        ],
+        mutations: [{ kind: "insert-auth-operation", value: initial }],
+      });
+      await expect(
+        readCanonicalAuthOperation(testEnv.PROFILE_DB, initial.operationId),
+      ).resolves.toEqual({ ...initial, revision: 1 });
+      const storedJson = () =>
+        testEnv.PROFILE_DB.prepare(
+          "SELECT meta_json, result_json FROM profile_auth_operations WHERE operation_id = ?",
+        )
+          .bind(initial.operationId)
+          .first();
+      await expect(storedJson()).resolves.toEqual({
+        meta_json: '{"z":0,"a":{"second":false,"first":null}}',
+        result_json: null,
+      });
+
+      const updated: CanonicalAuthOperationValue = {
+        operationId: initial.operationId,
+        kind: "unlink",
+        method: "sol",
+        loginUid: "changed-login",
+        status: "failed",
+        meta: null,
+        result: { z: ["second", "first"], a: ' line\n"quoted" ' },
+        errorCode: "changed-code",
+        errorMessage: " changed message ",
+        startedAtMs: 201,
+        updatedAtMs: 202,
+      };
+      for (const revision of [1, 2]) {
+        await commitCanonicalPlan(testEnv.PROFILE_DB, {
+          expectations: [
+            {
+              kind: "auth-operation-revision",
+              operationId: initial.operationId,
+              revision,
+            },
+          ],
+          mutations: [{ kind: "update-auth-operation", value: updated }],
+        });
+        await expect(
+          readCanonicalAuthOperation(testEnv.PROFILE_DB, initial.operationId),
+        ).resolves.toEqual({ ...updated, revision: revision + 1 });
+        await expect(storedJson()).resolves.toEqual({
+          meta_json: null,
+          result_json: '{"z":["second","first"],"a":" line\\n\\"quoted\\" "}',
+        });
+      }
+    });
+
+    it("roundtrips recovery fields without reordering stored identifiers", async () => {
+      const initial: CanonicalAuthRecoveryValue = {
+        profileId: primaryProfileId,
+        loginUids: ["z-login", "a-login"],
+        sourceProfileIds: ["z-source", "a-source"],
+        sourcePhase: "prizes",
+        prizeCursor: " initial cursor ",
+        phaseStartedAtMs: 101,
+        lastEnqueuedAtMs: 102,
+        createdAtMs: 103,
+        updatedAtMs: 104,
+      };
+      await commitCanonicalPlan(testEnv.PROFILE_DB, {
+        expectations: [
+          { kind: "auth-recovery-absent", profileId: primaryProfileId },
+        ],
+        mutations: [{ kind: "insert-auth-recovery", value: initial }],
+      });
+      await expect(
+        readCanonicalAuthRecoveryJob(testEnv.PROFILE_DB, primaryProfileId),
+      ).resolves.toEqual({ ...initial, revision: 1 });
+      const storedJson = () =>
+        testEnv.PROFILE_DB.prepare(
+          "SELECT login_uids_json, source_profile_ids_json FROM profile_auth_recovery_jobs WHERE profile_id = ?",
+        )
+          .bind(primaryProfileId)
+          .first();
+      await expect(storedJson()).resolves.toEqual({
+        login_uids_json: '["z-login","a-login"]',
+        source_profile_ids_json: '["z-source","a-source"]',
+      });
+      const updated: CanonicalAuthRecoveryValue = {
+        profileId: primaryProfileId,
+        loginUids: [" second ", "first"],
+        sourceProfileIds: ["source-2", "source-1"],
+        sourcePhase: "games",
+        prizeCursor: null,
+        phaseStartedAtMs: 201,
+        lastEnqueuedAtMs: 202,
+        createdAtMs: 203,
+        updatedAtMs: 204,
+      };
+      for (const revision of [1, 2]) {
+        await commitCanonicalPlan(testEnv.PROFILE_DB, {
+          expectations: [
+            {
+              kind: "auth-recovery-revision",
+              profileId: primaryProfileId,
+              revision,
+            },
+          ],
+          mutations: [{ kind: "update-auth-recovery", value: updated }],
+        });
+        await expect(
+          readCanonicalAuthRecoveryJob(testEnv.PROFILE_DB, primaryProfileId),
+        ).resolves.toEqual({ ...updated, revision: revision + 1 });
+        await expect(storedJson()).resolves.toEqual({
+          login_uids_json: '[" second ","first"]',
+          source_profile_ids_json: '["source-2","source-1"]',
+        });
+      }
+    });
+
+    it.each(["revocation", "cooldown"] as const)(
+      "roundtrips %s fields and isolates both compound-key components",
+      async (kind) => {
+        const initial: CanonicalMethodRevocationValue = {
+          method: "eth",
+          normalizedValue: "shared-value",
+          profileId: primaryProfileId,
+          scope: "initial-scope",
+          unlinkedByUid: "initial-login",
+          cooldownMs: 100,
+          startedAtMs: 101,
+          retryAtMs: 201,
+          updatedAtMs: 102,
+        };
+        const neighbors: CanonicalMethodRevocationValue[] = [
+          {
+            ...initial,
+            normalizedValue: "neighbor-value",
+            profileId: neighborProfileId,
+          },
+          { ...initial, method: "sol" },
+        ];
+        const absent = (
+          value: CanonicalMethodRevocationValue,
+        ): CanonicalExpectation =>
+          kind === "revocation"
+            ? {
+                kind: "method-revocation-absent",
+                method: value.method,
+                normalizedValue: value.normalizedValue,
+              }
+            : {
+                kind: "method-cooldown-absent",
+                method: value.method,
+                profileId: value.profileId,
+              };
+        const expectedRevision = (revision: number): CanonicalExpectation =>
+          kind === "revocation"
+            ? {
+                kind: "method-revocation-revision",
+                method: initial.method,
+                normalizedValue: initial.normalizedValue,
+                revision,
+              }
+            : {
+                kind: "method-cooldown-revision",
+                method: initial.method,
+                profileId: initial.profileId,
+                revision,
+              };
+        const insert = (
+          value: CanonicalMethodRevocationValue,
+        ): CanonicalMutation => ({
+          kind:
+            kind === "revocation"
+              ? "insert-method-revocation"
+              : "insert-method-cooldown",
+          value,
+        });
+        const table =
+          kind === "revocation"
+            ? "profile_auth_method_revocations"
+            : "profile_auth_method_cooldowns";
+        const read = (value: CanonicalMethodRevocationValue) =>
+          testEnv.PROFILE_DB.prepare(
+            `SELECT * FROM ${table} WHERE method = ? AND ${kind === "revocation" ? "normalized_value" : "profile_id"} = ?`,
+          )
+            .bind(
+              value.method,
+              kind === "revocation" ? value.normalizedValue : value.profileId,
+            )
+            .first();
+        const values = [initial, ...neighbors];
+        await commitCanonicalPlan(testEnv.PROFILE_DB, {
+          expectations: values.map(absent),
+          mutations: values.map(insert),
+        });
+        await expect(read(initial)).resolves.toEqual({
+          method: "eth",
+          ...(kind === "revocation"
+            ? { normalized_value: "shared-value" }
+            : {}),
+          profile_id: primaryProfileId,
+          scope: "initial-scope",
+          unlinked_by_uid: "initial-login",
+          cooldown_ms: 100,
+          started_at_ms: 101,
+          retry_at_ms: 201,
+          updated_at_ms: 102,
+          revision: 1,
+        });
+        const neighborRows = await Promise.all(neighbors.map(read));
+        const updated: CanonicalMethodRevocationValue = {
+          ...initial,
+          profileId:
+            kind === "revocation" ? reassignedProfileId : primaryProfileId,
+          scope: "changed-scope",
+          unlinkedByUid: "changed-login",
+          cooldownMs: 300,
+          startedAtMs: 301,
+          retryAtMs: 601,
+          updatedAtMs: 302,
+        };
+        for (const revision of [1, 2]) {
+          await commitCanonicalPlan(testEnv.PROFILE_DB, {
+            expectations: [expectedRevision(revision)],
+            mutations: [
+              {
+                kind:
+                  kind === "revocation"
+                    ? "update-method-revocation"
+                    : "update-method-cooldown",
+                value: updated,
+              },
+            ],
+          });
+          await expect(read(updated)).resolves.toEqual({
+            method: "eth",
+            ...(kind === "revocation"
+              ? { normalized_value: "shared-value" }
+              : {}),
+            profile_id: updated.profileId,
+            scope: "changed-scope",
+            unlinked_by_uid: "changed-login",
+            cooldown_ms: 300,
+            started_at_ms: 301,
+            retry_at_ms: 601,
+            updated_at_ms: 302,
+            revision: revision + 1,
+          });
+        }
+        await expect(Promise.all(neighbors.map(read))).resolves.toEqual(
+          neighborRows,
+        );
+      },
+    );
+
+    it("rejects stale auth writes without committing another mutation", async () => {
+      const value = authMethodValue();
+      await commitCanonicalPlan(testEnv.PROFILE_DB, {
+        expectations: [
+          {
+            kind: "auth-method-absent",
+            method: value.method,
+            normalizedValue: value.normalizedValue,
+          },
+        ],
+        mutations: [{ kind: "insert-auth-method", value }],
+      });
+      const stalePlan: CanonicalCommitPlan = {
+        expectations: [
+          {
+            kind: "profile-revision",
+            profileId: primaryProfileId,
+            revision: 1,
+          },
+          {
+            kind: "auth-method-revision",
+            method: value.method,
+            normalizedValue: value.normalizedValue,
+            profileId: primaryProfileId,
+            revision: 1,
+          },
+        ],
+        mutations: [
+          {
+            kind: "update-active-profile",
+            value: profileValue(primaryProfileId, { updatedAtMs: 2_000 }),
+          },
+          {
+            kind: "update-auth-method",
+            value: { ...value, rawValue: "stale-value" },
+          },
+        ],
+      };
+      await commitCanonicalPlan(testEnv.PROFILE_DB, {
+        expectations: [stalePlan.expectations[1]],
+        mutations: [{ kind: "update-auth-method", value }],
+      });
+      await expect(
+        commitCanonicalPlan(testEnv.PROFILE_DB, stalePlan),
+      ).rejects.toBeInstanceOf(CanonicalProfileConflict);
+      await expect(
+        readCanonicalProfile(testEnv.PROFILE_DB, primaryProfileId),
+      ).resolves.toMatchObject({ revision: 1, updatedAtMs: 1_000 });
+      await expect(
+        readCanonicalAuthMethod(
+          testEnv.PROFILE_DB,
+          value.method,
+          value.normalizedValue,
+        ),
+      ).resolves.toEqual({ ...value, revision: 2 });
+    });
+
+    it.each([
+      { method: "unsupported" as CanonicalAuthMethodValue["method"] },
+      { normalizedValue: "" },
+      { profileId: "" },
+      { rawValue: "" },
+    ])(
+      "preserves auth-method validation for %j without writing",
+      async (overrides) => {
+        const value = authMethodValue(overrides);
+        const observed = observeAggregateDatabase();
+        await expect(
+          commitCanonicalPlan(observed.database, {
+            expectations: [
+              {
+                kind: "auth-method-absent",
+                method: value.method,
+                normalizedValue: value.normalizedValue,
+              },
+            ],
+            mutations: [{ kind: "insert-auth-method", value }],
+          }),
+        ).rejects.toEqual(new TypeError("invalid-canonical-auth-method"));
+        expect(observed.batches).toHaveLength(0);
+        expect(
+          await testEnv.PROFILE_DB.prepare(
+            "SELECT COUNT(*) AS count FROM profile_auth_methods",
+          ).first("count"),
+        ).toBe(0);
+      },
+    );
   });
 
   it("roundtrips every profile write field on insert and update", async () => {

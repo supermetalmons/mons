@@ -6,6 +6,7 @@ import type {
   GameSessionRecoveryContext,
 } from "../gameSessionContracts.ts";
 import type { EventOutboxReads } from "../eventOutboxReadRepository.ts";
+import type { EventProjectionRecoveryStore } from "../eventProjectionRecoveryD1.ts";
 import type { RatingProjectionRepository } from "../ratingContracts.ts";
 import type { InitialTelegramDelivery } from "../telegramDeliveryTasks.ts";
 import type {
@@ -37,6 +38,7 @@ export type ProjectionRecoveryDependencies = Omit<
   ProjectionDependencies,
   "createStateRepository"
 > & {
+  createEventRecovery?: (env: Env) => EventProjectionRecoveryStore;
   createStateRepository?: (
     env: Env,
   ) => ReturnType<

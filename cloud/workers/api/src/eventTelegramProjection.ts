@@ -15,7 +15,11 @@ import {
   withEventLease,
 } from "../../../runtime/events/lockManagerCore.js";
 import type { EventStore } from "./eventStoreContracts.ts";
-import type { EventOutboxReads } from "./eventOutboxReadRepository.ts";
+import type {
+  EventProjectionRecoverySnapshot,
+  EventProjectionRecoveryStore,
+  EventProjectionRecoveryWriter,
+} from "./eventProjectionRecoveryD1.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
 import type { RatingProjectionRepository } from "./ratingContracts.ts";
 import { parseEventProjectionOutbox } from "./telegramProjectionOutbox.ts";
@@ -37,6 +41,7 @@ const EVENT_TELEGRAM_PROJECTION_OWNER_UID = "event-telegram-projector";
 const EVENT_PROJECTION_SWEEP_LIMIT = 100;
 
 export type EventProjectionSweepCandidate = {
+  snapshot: EventProjectionRecoverySnapshot;
   task: EventTelegramProjectionTask;
   updatedAtMs: number;
 };
@@ -360,15 +365,18 @@ export async function processEventProjectionTask(
 }
 
 export function eventProjectionSweepEntries(
-  value: unknown,
+  snapshots: readonly EventProjectionRecoverySnapshot[],
 ): EventProjectionSweepEntry[] {
-  const records = toRecord(value) || {};
-  return Object.entries(records).map(([eventId, raw]) => {
-    const outbox = parseEventProjectionOutbox(raw);
+  const records = Object.fromEntries(
+    snapshots.map((snapshot) => [snapshot.eventId, snapshot]),
+  );
+  return Object.entries(records).map(([eventId, snapshot]) => {
+    const outbox = parseEventProjectionOutbox(snapshot.record);
     return outbox && isSafeRecordKey(eventId)
       ? {
           kind: "candidate" as const,
           value: {
+            snapshot,
             task: {
               kind: "event-telegram-projection" as const,
               eventId,
@@ -382,12 +390,12 @@ export function eventProjectionSweepEntries(
 }
 
 export async function claimEventProjectionSweepCandidate(
-  state: EventStore,
+  writer: Pick<EventProjectionRecoveryWriter, "claim">,
   candidate: EventProjectionSweepCandidate,
   nowMs: number,
 ): Promise<boolean> {
-  return state.claimEventTelegramProjectionOutbox(
-    candidate.task.eventId,
+  return writer.claim(
+    candidate.snapshot,
     candidate.task.requestId,
     candidate.updatedAtMs,
     nowMs,
@@ -395,11 +403,11 @@ export async function claimEventProjectionSweepCandidate(
 }
 
 async function markInvalidEventProjectionSweepEntry(
-  state: EventStore,
+  writer: Pick<EventProjectionRecoveryWriter, "transact">,
   eventId: string,
   nowMs: number,
 ): Promise<void> {
-  await state.transactEventTelegramProjectionOutbox(eventId, (current) => {
+  await writer.transact(eventId, (current) => {
     const record = toRecord(current);
     const updatedAtMs = record?.updatedAtMs;
     if (
@@ -426,71 +434,68 @@ async function markInvalidEventProjectionSweepEntry(
 
 export async function sweepEventTelegramProjections(
   queue: Queue<TelegramProjectionTask>,
-  state: EventStore &
-    Pick<EventOutboxReads, "listDueEventTelegramProjectionOutboxes">,
+  recovery: EventProjectionRecoveryStore,
   nowMs: number,
   logger: Pick<Console, "error"> = console,
 ): Promise<number> {
-  const records = await state.listDueEventTelegramProjectionOutboxes(
-    nowMs,
-    EVENT_PROJECTION_SWEEP_LIMIT,
-  );
-  const entries = eventProjectionSweepEntries(
-    Object.fromEntries(records.map(({ eventId, record }) => [eventId, record])),
-  );
-  const candidates = entries.flatMap((entry) =>
-    entry.kind === "candidate" ? [entry.value] : [],
-  );
-  const invalidEventIds = entries.flatMap((entry) =>
-    entry.kind === "invalid" ? [entry.eventId] : [],
-  );
-  const { failures: repairFailures } = await collectProjectionRepairs(
-    invalidEventIds,
-    (eventId) => markInvalidEventProjectionSweepEntry(state, eventId, nowMs),
-    "invalid-record-failed",
-    (eventId, error, itemIndex) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "telegram_projection_recovery_record_failed",
-          scope: "telegram",
-          source: "event",
-          phase: "repair",
-          itemIndex,
-          eventId,
-        },
-        error,
-      ),
-  );
-  const { sentCount, claimFailures } = await claimAndEnqueueProjectionTasks({
-    candidates,
-    claim: (candidate) =>
-      claimEventProjectionSweepCandidate(state, candidate, nowMs),
-    toTask: (candidate) => candidate.task,
-    queue,
-    fallbackErrorMessage: "event-claim-failed",
-    onClaimFailure: ({ task }, error, itemIndex) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "telegram_projection_recovery_record_failed",
-          scope: "telegram",
-          source: "event",
-          phase: "claim",
-          itemIndex,
-          eventId: task.eventId,
-        },
-        error,
-      ),
+  const records = await recovery.listDue(nowMs, EVENT_PROJECTION_SWEEP_LIMIT);
+  if (records.length === 0) return 0;
+  return recovery.withAdmission(async (writer) => {
+    const entries = eventProjectionSweepEntries(records);
+    const candidates = entries.flatMap((entry) =>
+      entry.kind === "candidate" ? [entry.value] : [],
+    );
+    const invalidEventIds = entries.flatMap((entry) =>
+      entry.kind === "invalid" ? [entry.eventId] : [],
+    );
+    const { failures: repairFailures } = await collectProjectionRepairs(
+      invalidEventIds,
+      (eventId) => markInvalidEventProjectionSweepEntry(writer, eventId, nowMs),
+      "invalid-record-failed",
+      (eventId, error, itemIndex) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "telegram_projection_recovery_record_failed",
+            scope: "telegram",
+            source: "event",
+            phase: "repair",
+            itemIndex,
+            eventId,
+          },
+          error,
+        ),
+    );
+    const { sentCount, claimFailures } = await claimAndEnqueueProjectionTasks({
+      candidates,
+      claim: (candidate) =>
+        claimEventProjectionSweepCandidate(writer, candidate, nowMs),
+      toTask: (candidate) => candidate.task,
+      queue,
+      fallbackErrorMessage: "event-claim-failed",
+      onClaimFailure: ({ task }, error, itemIndex) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "telegram_projection_recovery_record_failed",
+            scope: "telegram",
+            source: "event",
+            phase: "claim",
+            itemIndex,
+            eventId: task.eventId,
+          },
+          error,
+        ),
+    });
+    const failures = [...repairFailures, ...claimFailures];
+    if (failures.length === 1) {
+      throw failures[0];
+    }
+    if (failures.length > 1) {
+      throw new AggregateError(failures, "event-projection-sweep-failed");
+    }
+    return sentCount;
   });
-  const failures = [...repairFailures, ...claimFailures];
-  if (failures.length === 1) {
-    throw failures[0];
-  }
-  if (failures.length > 1) {
-    throw new AggregateError(failures, "event-projection-sweep-failed");
-  }
-  return sentCount;
 }
 
 export {

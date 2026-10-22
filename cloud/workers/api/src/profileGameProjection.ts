@@ -2,6 +2,7 @@ import * as queue from "./profileGameProjection/queue.ts";
 import * as recovery from "./profileGameProjection/recovery.ts";
 import type {
   AutomatchRecoveryDependencies,
+  EventRecoveryDependencies,
   ProfileGameProjectionDependencies,
   ProfileGameProjectionRecoveryDependencies,
   ProfileGameProjectionSweepResult,
@@ -67,7 +68,7 @@ export function sweepAutomatchProfileGameProjections(
 
 export function sweepEventProfileGameProjections(
   env: Env,
-  dependencies: ProfileGameProjectionDependencies = {},
+  dependencies: EventRecoveryDependencies = {},
 ): Promise<number> {
   return recovery.sweepEventProfileGameProjections(env, dependencies);
 }

@@ -679,13 +679,16 @@ export async function listDueEventProfileGameProjectionOutboxes(
   beforeMs: number,
   limit = 100,
 ): Promise<Array<{ eventId: string; record: EventOutboxRecord }>> {
-  return listProjectionOutboxes(
+  const snapshots = await listDueProjectionOutboxSnapshots(
     db,
-    "event_profile_game_projection_outboxes",
-    "last_queued_at_ms",
+    "profile-game",
     beforeMs,
     limit,
   );
+  return snapshots.map(({ eventId, record }) => ({
+    eventId,
+    record: record as EventOutboxRecord,
+  }));
 }
 
 export async function listDueEventTelegramProjectionOutboxes(
@@ -693,24 +696,39 @@ export async function listDueEventTelegramProjectionOutboxes(
   beforeMs: number,
   limit = 100,
 ): Promise<Array<{ eventId: string; record: EventOutboxRecord }>> {
-  return listProjectionOutboxes(
+  const snapshots = await listDueProjectionOutboxSnapshots(
     db,
-    "event_telegram_projection_outboxes",
-    "updated_at_ms",
+    "telegram",
     beforeMs,
     limit,
   );
+  return snapshots.map(({ eventId, record }) => ({
+    eventId,
+    record: record as EventOutboxRecord,
+  }));
 }
 
-async function listProjectionOutboxes(
+export type ProjectionOutboxKind = "profile-game" | "telegram";
+
+export type ProjectionOutboxSnapshot = {
+  readonly kind: ProjectionOutboxKind;
+  readonly eventId: string;
+  readonly record: unknown;
+  readonly recordJson: string;
+};
+
+export async function listDueProjectionOutboxSnapshots(
   db: EventD1Connection,
-  table:
-    | "event_profile_game_projection_outboxes"
-    | "event_telegram_projection_outboxes",
-  timestampColumn: "last_queued_at_ms" | "updated_at_ms",
+  kind: ProjectionOutboxKind,
   beforeMs: number,
   limit: number,
-): Promise<Array<{ eventId: string; record: EventOutboxRecord }>> {
+): Promise<ProjectionOutboxSnapshot[]> {
+  const table =
+    kind === "profile-game"
+      ? "event_profile_game_projection_outboxes"
+      : "event_telegram_projection_outboxes";
+  const timestampColumn =
+    kind === "profile-game" ? "last_queued_at_ms" : "updated_at_ms";
   const rows = await db
     .prepare(
       `SELECT event_id, record_json FROM ${table}
@@ -720,8 +738,10 @@ async function listProjectionOutboxes(
     .bind(safeInteger(beforeMs), Math.min(safeInteger(limit, 1), 100))
     .all<{ event_id: string; record_json: string }>();
   return rows.results.map((row) => ({
+    kind,
     eventId: row.event_id,
-    record: decodeJson(row.record_json) as EventOutboxRecord,
+    record: decodeJson(row.record_json),
+    recordJson: row.record_json,
   }));
 }
 

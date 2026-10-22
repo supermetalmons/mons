@@ -44,6 +44,7 @@ import {
 import { processEventProfileGameProjection } from "../src/profileGameProjection.ts";
 import { buildEventProfileGameProjectionOutboxUpdates } from "../test/legacyProjectionOutboxFixture.ts";
 import { sweepEventTelegramProjections } from "../src/eventTelegramProjection.ts";
+import { createEventProjectionRecoveryStore } from "../src/eventProjectionRecoveryD1.ts";
 import type { TelegramProjectionTask } from "../src/telegramProjectionTasks.ts";
 
 const testEnv = env as Env & {
@@ -594,7 +595,7 @@ describe("typed event repository", () => {
     await expect(
       sweepEventTelegramProjections(
         { sendBatch } as unknown as Queue<TelegramProjectionTask>,
-        client,
+        createEventProjectionRecoveryStore(testEnv.EVENT_DB, "telegram"),
         200,
       ),
     ).resolves.toBe(0);
@@ -756,6 +757,71 @@ describe("typed event repository", () => {
     ).resolves.toEqual({ [eventId]: assignment });
     expect(genericRead).not.toHaveBeenCalled();
   });
+
+  it.each(["without", "with"] as const)(
+    "rejects malformed selections before transition effects %s selection changes",
+    async (selectionChanges) => {
+      const f = eventTransitionFixture(testEnv);
+      const selectionPath = `eventPrizeSelections/${eventId}/profile-one`;
+      await f.client.commitEventPlan(
+        decodeEventUpdates({
+          [`events/${eventId}`]: eventRecord(),
+          [selectionPath]: "1092",
+        }),
+      );
+      await testEnv.EVENT_DB.prepare(
+        "UPDATE event_prize_selections SET prize_id = ? WHERE event_id = ? AND profile_id = ?",
+      )
+        .bind("invalid#prize", eventId, "profile-one")
+        .run();
+      const readStoredState = async () => {
+        const results = await testEnv.EVENT_DB.batch([
+          testEnv.EVENT_DB.prepare(
+            "SELECT * FROM event_records WHERE event_id = ?",
+          ).bind(eventId),
+          testEnv.EVENT_DB.prepare(
+            "SELECT * FROM event_prize_selections WHERE event_id = ? ORDER BY profile_id",
+          ).bind(eventId),
+        ]);
+        return results.map((result) => result.results);
+      };
+      const before = await readStoredState();
+      await expect(
+        f.client.commitEventPlan(
+          decodeEventUpdates({
+            [`events/${eventId}/status`]: "active",
+            [`events/${eventId}/updatedAtMs`]: 200,
+            ...notificationCreationEffects(),
+            ...(selectionChanges === "with" ? { [selectionPath]: "1092" } : {}),
+          }),
+        ),
+      ).rejects.toThrow("invalid-event-prize-selection");
+      expect(await readStoredState()).toEqual(before);
+      expect(f.writes).toEqual([]);
+      expect(f.patches).toEqual([]);
+      for (const loginUid of ["login-one", "login-two"]) {
+        expect(f.values.has(`players/${loginUid}/matches/event-match`)).toBe(
+          false,
+        );
+      }
+      expect(
+        await testEnv.EVENT_DB.prepare(
+          "SELECT COUNT(*) AS count FROM event_transition_intents",
+        ).first<number>("count"),
+      ).toBe(0);
+      for (const table of [
+        "event_transition_receipts",
+        "invite_event_effect_receipts",
+        "invite_sources",
+      ]) {
+        expect(
+          await testEnv.PROFILE_GAMES_DB.prepare(
+            `SELECT COUNT(*) AS count FROM ${table}`,
+          ).first<number>("count"),
+        ).toBe(0);
+      }
+    },
+  );
 
   it("rejects upcoming-event plans with effects before journaling or applying them", async () => {
     const f = eventTransitionFixture(testEnv);

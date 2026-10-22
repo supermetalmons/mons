@@ -16,12 +16,15 @@ import {
 } from "../src/eventD1.ts";
 import { observeD1FailureDatabase } from "./d1FailureTestUtils.ts";
 import { applyEventTestMigrations } from "./eventTestMigrations.ts";
+import { claimEventProjectionOutboxSnapshot } from "../src/eventD1/projectionOutboxes.ts";
+import type { ProjectionOutboxSnapshot } from "../src/eventD1/reads.ts";
 
 const testEnv = env as Env & { TEST_EVENT_D1_MIGRATIONS: D1Migration[] };
 const db = testEnv.EVENT_DB;
 const families = [
   {
     kind: "profile",
+    projectionKind: "profile-game",
     table: "event_profile_game_projection_outboxes",
     claim: claimEventProfileGameProjectionOutbox,
     acknowledge: acknowledgeEventProfileGameProjectionOutbox,
@@ -29,6 +32,7 @@ const families = [
   },
   {
     kind: "telegram",
+    projectionKind: "telegram",
     table: "event_telegram_projection_outboxes",
     claim: claimEventTelegramProjectionOutbox,
     acknowledge: acknowledgeEventTelegramProjectionOutbox,
@@ -103,7 +107,19 @@ describe("native event projection outbox mutations", () => {
 
   describe.each(families)(
     "$kind",
-    ({ kind, table, claim, acknowledge, transact }) => {
+    ({ kind, projectionKind, table, claim, acknowledge, transact }) => {
+      const readSnapshot = async (): Promise<ProjectionOutboxSnapshot> => {
+        const row = await db
+          .prepare(`SELECT record_json FROM ${table} WHERE event_id = 'event'`)
+          .first<{ record_json: string }>();
+        return {
+          kind: projectionKind,
+          eventId: "event",
+          record: JSON.parse(row!.record_json),
+          recordJson: row!.record_json,
+        };
+      };
+
       it("claims with one read and an in-place JSON update, then acknowledges", async () => {
         await seed(kind);
         const admission = await acquireEventWriteAdmission(db);
@@ -404,6 +420,268 @@ describe("native event projection outbox mutations", () => {
           }),
         ).rejects.toBe(reason);
         expect(observed.writeBatches).toHaveLength(0);
+      });
+
+      it.each([false, true])(
+        "claims scan bytes without another read when noncanonical=%s",
+        async (noncanonical) => {
+          await seed(kind);
+          if (noncanonical) {
+            await db
+              .prepare(`UPDATE ${table} SET record_json = ?`)
+              .bind(JSON.stringify(outbox(kind), null, 2).replace("100", "1e2"))
+              .run();
+          }
+          const snapshot = await readSnapshot();
+          const admission = await acquireEventWriteAdmission(db);
+          const observed = observe();
+          expect(
+            await claimEventProjectionOutboxSnapshot(
+              observed.database,
+              { ...snapshot, record: { requestId: "untrusted-copy" } },
+              "request",
+              100,
+              200,
+              { admission },
+            ),
+          ).toBe(true);
+          expect(
+            observed.queries.filter((sql) => /^SELECT/.test(sql)),
+          ).toHaveLength(0);
+          expect(observed.writeBatches).toHaveLength(1);
+          expect(
+            observed.queries.some((sql) =>
+              sql.includes("json_set(record_json"),
+            ),
+          ).toBe(!noncanonical);
+          const expected = outbox(
+            kind,
+            kind === "profile"
+              ? { lastQueuedAtMs: 200 }
+              : { firstQueuedAtMs: 100, updatedAtMs: 200 },
+          );
+          expect((await readSnapshot()).record).toEqual(expected);
+          expect(
+            (
+              await transact(
+                db,
+                "event",
+                (current) => ({ value: { ...current, roundTrip: true } }),
+                { admission },
+              )
+            ).committed,
+          ).toBe(true);
+        },
+      );
+
+      it.each(["payload", "formatting"])(
+        "rereads after a snapshot CAS miss caused by %s changes",
+        async (change) => {
+          await seed(kind);
+          const snapshot = await readSnapshot();
+          const replacement =
+            change === "payload"
+              ? outbox(kind, { concurrent: { retained: true } })
+              : outbox(kind);
+          await db
+            .prepare(`UPDATE ${table} SET record_json = ?`)
+            .bind(JSON.stringify(replacement, null, 2))
+            .run();
+          const admission = await acquireEventWriteAdmission(db);
+          const observed = observe();
+          expect(
+            await claimEventProjectionOutboxSnapshot(
+              observed.database,
+              snapshot,
+              "request",
+              100,
+              200,
+              { admission },
+            ),
+          ).toBe(true);
+          expect(observed.writeBatches).toHaveLength(2);
+          expect(
+            observed.queries.filter((sql) => /^SELECT/.test(sql)),
+          ).toHaveLength(1);
+          expect((await readSnapshot()).record).toEqual({
+            ...replacement,
+            ...(kind === "profile"
+              ? { lastQueuedAtMs: 200 }
+              : { firstQueuedAtMs: 100, updatedAtMs: 200 }),
+          });
+        },
+      );
+
+      it.each(["request", "timestamp", "deleted", "dead"])(
+        "skips a snapshot whose current row became %s",
+        async (change) => {
+          await seed(kind);
+          const snapshot = await readSnapshot();
+          if (change === "deleted") {
+            await db.prepare(`DELETE FROM ${table}`).run();
+          } else if (change === "dead") {
+            await db.prepare(`UPDATE ${table} SET status = 'dead'`).run();
+          } else {
+            const replacement = outbox(
+              kind,
+              change === "request"
+                ? { requestId: "replacement" }
+                : kind === "profile"
+                  ? { lastQueuedAtMs: 150 }
+                  : { updatedAtMs: 150 },
+            );
+            await db
+              .prepare(`UPDATE ${table} SET record_json = ?`)
+              .bind(JSON.stringify(replacement))
+              .run();
+          }
+          const admission = await acquireEventWriteAdmission(db);
+          const observed = observe();
+          expect(
+            await claimEventProjectionOutboxSnapshot(
+              observed.database,
+              snapshot,
+              "request",
+              100,
+              200,
+              { admission },
+            ),
+          ).toBe(false);
+          expect(observed.writeBatches).toHaveLength(1);
+          expect(
+            observed.queries.filter((sql) => /^SELECT/.test(sql)),
+          ).toHaveLength(1);
+        },
+      );
+
+      it("counts the snapshot attempt within the twelve-attempt contention limit", async () => {
+        await seed(kind);
+        const snapshot = await readSnapshot();
+        const admission = await acquireEventWriteAdmission(db);
+        const observed = observe({
+          async beforeWriteBatch(attempt) {
+            await db
+              .prepare(
+                `UPDATE ${table} SET record_json = json_set(record_json, '$.racing', ?)`,
+              )
+              .bind(attempt)
+              .run();
+          },
+        });
+        await expect(
+          claimEventProjectionOutboxSnapshot(
+            observed.database,
+            snapshot,
+            "request",
+            100,
+            200,
+            { admission },
+          ),
+        ).rejects.toBeInstanceOf(EventD1Conflict);
+        expect(observed.writeBatches).toHaveLength(12);
+        expect(
+          observed.queries.filter((sql) => /^SELECT/.test(sql)),
+        ).toHaveLength(11);
+      });
+
+      it("keeps snapshot writes behind admission and lease guards", async () => {
+        await seed(kind);
+        const snapshot = await readSnapshot();
+        const admission = await acquireEventWriteAdmission(db);
+        await expect(
+          claimEventProjectionOutboxSnapshot(
+            db,
+            snapshot,
+            "request",
+            100,
+            200,
+            {
+              admission,
+              eventLease: {
+                eventId: "event",
+                lockId: "missing",
+                ownerUid: "owner",
+              },
+            },
+          ),
+        ).rejects.toThrow("event-lease-lost");
+        await releaseEventWriteAdmission(db, admission);
+        await expect(
+          claimEventProjectionOutboxSnapshot(
+            db,
+            snapshot,
+            "request",
+            100,
+            200,
+            {
+              admission,
+            },
+          ),
+        ).rejects.toThrow("event-write-admission-invalid");
+        await db
+          .prepare(
+            "UPDATE event_runtime_control SET storage_mode = 'frozen', freeze_generation = freeze_generation + 1",
+          )
+          .run();
+        await expect(
+          claimEventProjectionOutboxSnapshot(
+            db,
+            snapshot,
+            "request",
+            100,
+            200,
+            {
+              admission,
+            },
+          ),
+        ).rejects.toBeInstanceOf(EventWritesDisabled);
+        expect(await readSnapshot()).toEqual(snapshot);
+      });
+
+      it("honors cancellation before a snapshot write and after a fallback read", async () => {
+        await seed(kind);
+        const snapshot = await readSnapshot();
+        const admission = await acquireEventWriteAdmission(db);
+        const reason = new Error("aborted");
+        const alreadyAborted = observe();
+        await expect(
+          claimEventProjectionOutboxSnapshot(
+            alreadyAborted.database,
+            snapshot,
+            "request",
+            100,
+            200,
+            { admission, signal: AbortSignal.abort(reason) },
+          ),
+        ).rejects.toBe(reason);
+        expect(alreadyAborted.writeBatches).toHaveLength(0);
+        const controller = new AbortController();
+        const observed = observe({
+          async beforeWriteBatch() {
+            await db
+              .prepare(
+                `UPDATE ${table} SET record_json = json_set(record_json, '$.concurrent', 1)`,
+              )
+              .run();
+          },
+          async afterRead() {
+            controller.abort(reason);
+          },
+        });
+        await expect(
+          claimEventProjectionOutboxSnapshot(
+            observed.database,
+            snapshot,
+            "request",
+            100,
+            200,
+            { admission, signal: controller.signal },
+          ),
+        ).rejects.toBe(reason);
+        expect(observed.writeBatches).toHaveLength(1);
+        expect(
+          observed.queries.filter((sql) => /^SELECT/.test(sql)),
+        ).toHaveLength(1);
       });
     },
   );

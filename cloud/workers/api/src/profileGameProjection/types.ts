@@ -3,6 +3,7 @@ import type { GameSessionRecoveryContext } from "../gameSessionContracts.ts";
 import type { RatingProfileGameProjectionRepository } from "../ratingContracts.ts";
 import type { EventStore } from "../eventStoreContracts.ts";
 import type { EventOutboxReads } from "../eventOutboxReadRepository.ts";
+import type { EventProjectionRecoveryStore } from "../eventProjectionRecoveryD1.ts";
 import type {
   EventProfileGameProjectionRuntime,
   ProfileGameProjectionRuntime,
@@ -92,13 +93,6 @@ export type AutomatchRecoveryState = Pick<
 > &
   GameSessionRecoveryContext;
 
-export type EventProjectionRecoveryState = Pick<
-  EventProfileProjectionState,
-  | "transactEventProfileGameProjectionOutbox"
-  | "claimEventProfileGameProjectionOutbox"
-> &
-  Pick<EventOutboxReads, "listDueEventProfileGameProjectionOutboxes">;
-
 export type ProfileLinkProcessingJobs = Pick<
   ProfileLinkProjectionJobs,
   "read" | "advance" | "settle" | "settleMissing"
@@ -143,7 +137,7 @@ export type AutomatchRecoveryDependencies = RecoveryDependencies &
 
 export type EventRecoveryDependencies = RecoveryDependencies &
   Pick<ProfileGameProjectionDependencies, "createRequestId"> & {
-    createStateRepository?: (env: Env) => EventProjectionRecoveryState;
+    createEventRecovery?: (env: Env) => EventProjectionRecoveryStore;
   };
 
 export type ProfileLinkRecoveryDependencies = Pick<

@@ -11,6 +11,7 @@ import type { StateRepository } from "../test/stateRepositoryTestTypes.ts";
 import type { EventReads } from "../../../runtime/eventReads.js";
 import type { EventOutboxReads } from "../src/eventOutboxReadRepository.ts";
 import { eventReadFixture } from "./eventReadFixture.ts";
+import { telegramProjectionRecoveryFixture } from "./eventProjectionRecoveryFixture.ts";
 import type {
   RatingProjectionRepository,
   RatingUpdateData,
@@ -698,6 +699,7 @@ test("scheduled recovery batches both pending outbox kinds", async () => {
   const marks: Array<{ state: string; reason?: string }> = [];
   const result = await sweepTelegramProjections(env, {
     createStateRepository: () => store.client,
+    createEventRecovery: () => telegramProjectionRecoveryFixture(store.client),
     createRating: () => ratingRepository(ratingUpdate(), marks),
     now: () => 600_000,
   });
@@ -754,6 +756,8 @@ test("recovery takes current records and reports scan failures", async () => {
     () =>
       sweepTelegramProjections(env, {
         createStateRepository: () => failedState,
+        createEventRecovery: () =>
+          telegramProjectionRecoveryFixture(failedState),
         createRating: () => ratingRepository(ratingUpdate(), []),
         logger: { error: (message) => logs.push(message), info() {} },
         now: () => 600_000,
@@ -800,6 +804,8 @@ test("recovery takes current records and reports scan failures", async () => {
       : recentGetPath(path, query);
   const recovered = await sweepTelegramProjections(env, {
     createStateRepository: () => recentStore.client,
+    createEventRecovery: () =>
+      telegramProjectionRecoveryFixture(recentStore.client),
     createRating: () => ratingRepository(null, []),
     now: () => 600_000,
   });
@@ -878,6 +884,8 @@ test("recovery reports every failure and preserves dispatch and precedence when 
       () =>
         sweepTelegramProjections(env, {
           createStateRepository: () => store.client,
+          createEventRecovery: () =>
+            telegramProjectionRecoveryFixture(store.client),
           createRating: () => ratingRepository(null, []),
           logger: {
             error(message) {
@@ -983,6 +991,7 @@ test("recovery removes malformed markers from the timestamp index", async () => 
       : getPath(path, query);
   const result = await sweepTelegramProjections(PROJECTION_TEST_ENV, {
     createStateRepository: () => store.client,
+    createEventRecovery: () => telegramProjectionRecoveryFixture(store.client),
     createRating: () => ratingRepository(null, []),
     now: () => 600_000,
   });
@@ -1030,6 +1039,8 @@ test("recovery claims bounded pages sequentially", async () => {
   assert.deepEqual(
     await sweepTelegramProjections(PROJECTION_TEST_ENV, {
       createStateRepository: () => memoryState({}).client,
+      createEventRecovery: () =>
+        telegramProjectionRecoveryFixture(memoryState({}).client),
       createRating: () => rating,
       now: () => 600_000,
     }),

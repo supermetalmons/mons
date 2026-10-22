@@ -1,6 +1,7 @@
 import { buildEventTelegramProjection } from "../../../runtime/telegram/eventProjectionCore.js";
 import { attachProjectionTestPorts } from "./projectionTestPorts.ts";
 import { eventReadFixture } from "./eventReadFixture.ts";
+import { telegramProjectionRecoveryFixture } from "./eventProjectionRecoveryFixture.ts";
 import type { EventReads } from "../../../runtime/eventReads.js";
 import type { EventOutboxReads } from "../src/eventOutboxReadRepository.ts";
 import assert from "node:assert/strict";
@@ -1153,7 +1154,11 @@ test("event sweep claims valid markers and dead-letters malformed records", asyn
     },
   } satisfies Queue<TelegramProjectionTask>;
   assert.equal(
-    await sweepEventTelegramProjections(queue, state.client, 200),
+    await sweepEventTelegramProjections(
+      queue,
+      telegramProjectionRecoveryFixture(state.client),
+      200,
+    ),
     1,
   );
   assert.deepEqual(batches.flat(), [task]);
@@ -1238,7 +1243,11 @@ for (const phase of ["repair", "claim"] as const) {
       new Map([["event-failed", failure]]),
     );
     await assert.rejects(
-      sweepEventTelegramProjections(queue, state.client, 200),
+      sweepEventTelegramProjections(
+        queue,
+        telegramProjectionRecoveryFixture(state.client),
+        200,
+      ),
       (error) => error === failure,
     );
     assert.deepEqual(visited, ["event-failed", task.eventId, "enqueue"]);
@@ -1276,9 +1285,12 @@ test("event sweep enqueues in order and aggregates all repair and claim failures
   });
   const logs: string[] = [];
   await assert.rejects(
-    sweepEventTelegramProjections(queue, state.client, 200, {
-      error: (entry) => logs.push(entry),
-    }),
+    sweepEventTelegramProjections(
+      queue,
+      telegramProjectionRecoveryFixture(state.client),
+      200,
+      { error: (entry) => logs.push(entry) },
+    ),
     (error) => {
       assert.ok(error instanceof AggregateError);
       assert.equal(error.message, "event-projection-sweep-failed");
@@ -1360,12 +1372,17 @@ test("event sweep preserves queue failure precedence over repair and claim failu
   };
   const logs: string[] = [];
   await assert.rejects(
-    sweepEventTelegramProjections(queue, state.client, 200, {
-      error(entry) {
-        logs.push(entry);
-        throw new Error("logger-failed");
+    sweepEventTelegramProjections(
+      queue,
+      telegramProjectionRecoveryFixture(state.client),
+      200,
+      {
+        error(entry) {
+          logs.push(entry);
+          throw new Error("logger-failed");
+        },
       },
-    }),
+    ),
     (error) => error === queueFailure,
   );
   assert.deepEqual(

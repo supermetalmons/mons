@@ -14,6 +14,7 @@ import type {
 import { parseAutomatchTelegramProjectionOutbox as parseOutbox } from "../telegramProjectionOutbox.ts";
 import { readTelegramStorageMode } from "../telegramD1.ts";
 import { sweepEventTelegramProjections } from "../eventTelegramProjection.ts";
+import { createEventProjectionRecoveryStore } from "../eventProjectionRecoveryD1.ts";
 import {
   logRecoveryEvent,
   reportRecoveryFailure,
@@ -315,7 +316,11 @@ export async function sweepTelegramProjections(
     sweepAutomatchProjections(env, state, logger, nowMs),
     sweepEventTelegramProjections(
       env.TELEGRAM_PROJECTION_QUEUE,
-      state,
+      (
+        dependencies.createEventRecovery ||
+        ((workerEnv: Env) =>
+          createEventProjectionRecoveryStore(workerEnv.EVENT_DB, "telegram"))
+      )(env),
       nowMs,
       logger,
     ).catch((error) => {

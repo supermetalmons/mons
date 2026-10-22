@@ -1,4 +1,4 @@
-import { type AuthMethodKey, AUTH_METHODS } from "@mons/shared/auth";
+import { type AuthMethodKey } from "@mons/shared/auth";
 import { canonicalProfileRedirectCte } from "./redirectSql.ts";
 import {
   type CanonicalLoginOwnerSnapshot,
@@ -22,11 +22,6 @@ import {
   type CanonicalProfileOwnershipQuery,
   type CanonicalProfileOwnershipSnapshot,
   type CanonicalResolvedProfileAggregateSnapshot,
-  type CanonicalAuthMethodValue,
-  type D1Value,
-  type CanonicalAuthOperationValue,
-  type CanonicalCooldownValue,
-  type CanonicalAuthRecoveryValue,
 } from "./types.ts";
 import {
   record,
@@ -902,73 +897,4 @@ export async function readCanonicalAuthOperation(
     .bind(operationId)
     .first<AuthOperationRow>();
   return row ? parseCanonicalAuthOperationRow(row) : null;
-}
-
-export function authMethodParams(value: CanonicalAuthMethodValue): D1Value[] {
-  if (
-    !AUTH_METHODS.includes(value.method) ||
-    !value.normalizedValue ||
-    !value.profileId ||
-    !value.rawValue
-  ) {
-    throw new TypeError("invalid-canonical-auth-method");
-  }
-  return [
-    value.method,
-    value.normalizedValue,
-    value.profileId,
-    value.rawValue,
-    value.appleEmailMasked,
-    value.xUsername,
-    value.linkedAtMs,
-    value.consentAtMs,
-    value.consentSource,
-    value.createdAtMs,
-    value.updatedAtMs,
-  ];
-}
-
-export function authOperationParams(
-  value: CanonicalAuthOperationValue,
-): D1Value[] {
-  return [
-    value.operationId,
-    value.kind,
-    value.method,
-    value.loginUid,
-    value.status,
-    value.meta === null ? null : JSON.stringify(value.meta),
-    value.result === null ? null : JSON.stringify(value.result),
-    value.errorCode,
-    value.errorMessage,
-    value.startedAtMs,
-    value.updatedAtMs,
-  ];
-}
-
-export function cooldownParams(value: CanonicalCooldownValue): D1Value[] {
-  return [
-    value.profileId,
-    value.method,
-    value.scope,
-    value.unlinkedByUid,
-    value.cooldownMs,
-    value.startedAtMs,
-    value.retryAtMs,
-    value.updatedAtMs,
-  ];
-}
-
-export function recoveryParams(value: CanonicalAuthRecoveryValue): D1Value[] {
-  return [
-    value.profileId,
-    JSON.stringify(value.loginUids),
-    JSON.stringify(value.sourceProfileIds),
-    value.sourcePhase,
-    value.prizeCursor,
-    value.phaseStartedAtMs,
-    value.lastEnqueuedAtMs,
-    value.createdAtMs,
-    value.updatedAtMs,
-  ];
 }

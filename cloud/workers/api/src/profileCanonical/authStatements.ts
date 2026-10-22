@@ -1,10 +1,12 @@
 import type { CanonicalMutation } from "./types.ts";
 import {
-  authMethodParams,
-  authOperationParams,
-  cooldownParams,
-  recoveryParams,
-} from "./auth.ts";
+  authMethodWriteRow,
+  authOperationWriteRow,
+  cooldownWriteRow,
+  methodRevocationWriteRow,
+  recoveryWriteRow,
+} from "./authRows.ts";
+import { canonicalRowMutationStatement } from "./rowStatements.ts";
 
 type AuthMutation = Extract<
   CanonicalMutation,
@@ -34,29 +36,14 @@ function authMutationStatement(
 ): D1PreparedStatement {
   switch (mutation.kind) {
     case "insert-auth-method":
-      return db
-        .prepare(
-          `INSERT INTO profile_auth_methods (
-             method, normalized_value, profile_id, raw_value,
-             apple_email_masked, x_username, linked_at_ms, consent_at_ms,
-             consent_source, created_at_ms, updated_at_ms, revision
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-        )
-        .bind(...authMethodParams(mutation.value));
-    case "update-auth-method": {
-      const values = authMethodParams(mutation.value);
-      const [method, normalizedValue, ...updates] = values;
-      return db
-        .prepare(
-          `UPDATE profile_auth_methods SET
-             profile_id = ?, raw_value = ?, apple_email_masked = ?,
-             x_username = ?, linked_at_ms = ?, consent_at_ms = ?,
-             consent_source = ?, created_at_ms = ?, updated_at_ms = ?,
-             revision = revision + 1
-           WHERE method = ? AND normalized_value = ?`,
-        )
-        .bind(...updates, method, normalizedValue);
-    }
+    case "update-auth-method":
+      return canonicalRowMutationStatement(
+        db,
+        "profile_auth_methods",
+        ["method", "normalized_value"],
+        authMethodWriteRow(mutation.value),
+        mutation.kind === "insert-auth-method",
+      );
     case "delete-auth-method":
       return db
         .prepare(
@@ -65,64 +52,27 @@ function authMutationStatement(
         )
         .bind(mutation.method, mutation.normalizedValue);
     case "insert-auth-operation":
-      return db
-        .prepare(
-          `INSERT INTO profile_auth_operations (
-             operation_id, kind, method, login_uid, status, meta_json,
-             result_json, error_code, error_message, started_at_ms,
-             updated_at_ms, revision
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-        )
-        .bind(...authOperationParams(mutation.value));
-    case "update-auth-operation": {
-      const [operationId, ...updates] = authOperationParams(mutation.value);
-      return db
-        .prepare(
-          `UPDATE profile_auth_operations SET
-             kind = ?, method = ?, login_uid = ?, status = ?, meta_json = ?,
-             result_json = ?, error_code = ?, error_message = ?,
-             started_at_ms = ?, updated_at_ms = ?, revision = revision + 1
-           WHERE operation_id = ?`,
-        )
-        .bind(...updates, operationId);
-    }
+    case "update-auth-operation":
+      return canonicalRowMutationStatement(
+        db,
+        "profile_auth_operations",
+        "operation_id",
+        authOperationWriteRow(mutation.value),
+        mutation.kind === "insert-auth-operation",
+      );
     case "delete-auth-operation":
       return db
         .prepare("DELETE FROM profile_auth_operations WHERE operation_id = ?")
         .bind(mutation.operationId);
     case "insert-method-revocation":
-      return db
-        .prepare(
-          `INSERT INTO profile_auth_method_revocations (
-             method, normalized_value, profile_id, scope, unlinked_by_uid,
-             cooldown_ms, started_at_ms, retry_at_ms, updated_at_ms, revision
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-        )
-        .bind(
-          mutation.value.method,
-          mutation.value.normalizedValue,
-          ...cooldownParams(mutation.value).filter((_, index) => index !== 1),
-        );
     case "update-method-revocation":
-      return db
-        .prepare(
-          `UPDATE profile_auth_method_revocations SET
-             profile_id = ?, scope = ?, unlinked_by_uid = ?, cooldown_ms = ?,
-             started_at_ms = ?, retry_at_ms = ?, updated_at_ms = ?,
-             revision = revision + 1
-           WHERE method = ? AND normalized_value = ?`,
-        )
-        .bind(
-          mutation.value.profileId,
-          mutation.value.scope,
-          mutation.value.unlinkedByUid,
-          mutation.value.cooldownMs,
-          mutation.value.startedAtMs,
-          mutation.value.retryAtMs,
-          mutation.value.updatedAtMs,
-          mutation.value.method,
-          mutation.value.normalizedValue,
-        );
+      return canonicalRowMutationStatement(
+        db,
+        "profile_auth_method_revocations",
+        ["method", "normalized_value"],
+        methodRevocationWriteRow(mutation.value),
+        mutation.kind === "insert-method-revocation",
+      );
     case "delete-method-revocation":
       return db
         .prepare(
@@ -131,26 +81,14 @@ function authMutationStatement(
         )
         .bind(mutation.method, mutation.normalizedValue);
     case "insert-method-cooldown":
-      return db
-        .prepare(
-          `INSERT INTO profile_auth_method_cooldowns (
-             profile_id, method, scope, unlinked_by_uid, cooldown_ms,
-             started_at_ms, retry_at_ms, updated_at_ms, revision
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-        )
-        .bind(...cooldownParams(mutation.value));
-    case "update-method-cooldown": {
-      const [profileId, method, ...updates] = cooldownParams(mutation.value);
-      return db
-        .prepare(
-          `UPDATE profile_auth_method_cooldowns SET
-             scope = ?, unlinked_by_uid = ?, cooldown_ms = ?,
-             started_at_ms = ?, retry_at_ms = ?, updated_at_ms = ?,
-             revision = revision + 1
-           WHERE profile_id = ? AND method = ?`,
-        )
-        .bind(...updates, profileId, method);
-    }
+    case "update-method-cooldown":
+      return canonicalRowMutationStatement(
+        db,
+        "profile_auth_method_cooldowns",
+        ["profile_id", "method"],
+        cooldownWriteRow(mutation.value),
+        mutation.kind === "insert-method-cooldown",
+      );
     case "delete-method-cooldown":
       return db
         .prepare(
@@ -159,28 +97,14 @@ function authMutationStatement(
         )
         .bind(mutation.profileId, mutation.method);
     case "insert-auth-recovery":
-      return db
-        .prepare(
-          `INSERT INTO profile_auth_recovery_jobs (
-             profile_id, login_uids_json, source_profile_ids_json,
-             source_phase, prize_cursor, phase_started_at_ms,
-             last_enqueued_at_ms, created_at_ms, updated_at_ms, revision
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-        )
-        .bind(...recoveryParams(mutation.value));
-    case "update-auth-recovery": {
-      const [profileId, ...updates] = recoveryParams(mutation.value);
-      return db
-        .prepare(
-          `UPDATE profile_auth_recovery_jobs SET
-             login_uids_json = ?, source_profile_ids_json = ?,
-             source_phase = ?, prize_cursor = ?, phase_started_at_ms = ?,
-             last_enqueued_at_ms = ?, created_at_ms = ?, updated_at_ms = ?,
-             revision = revision + 1
-           WHERE profile_id = ?`,
-        )
-        .bind(...updates, profileId);
-    }
+    case "update-auth-recovery":
+      return canonicalRowMutationStatement(
+        db,
+        "profile_auth_recovery_jobs",
+        "profile_id",
+        recoveryWriteRow(mutation.value),
+        mutation.kind === "insert-auth-recovery",
+      );
     case "delete-auth-recovery":
       return db
         .prepare("DELETE FROM profile_auth_recovery_jobs WHERE profile_id = ?")

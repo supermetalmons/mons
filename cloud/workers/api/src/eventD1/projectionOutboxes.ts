@@ -5,7 +5,11 @@ import {
   eventWriteAdmissionGuard,
   rethrowEventBatchFailure,
 } from "./guards.ts";
-import { prepareProjectionOutboxRead } from "./reads.ts";
+import {
+  prepareProjectionOutboxRead,
+  type ProjectionOutboxKind,
+  type ProjectionOutboxSnapshot,
+} from "./reads.ts";
 import {
   EventD1Conflict,
   MAX_EVENT_TRANSACTION_ATTEMPTS,
@@ -19,16 +23,16 @@ import {
   validateProjectionOutbox,
 } from "./validation.ts";
 
-type ProjectionKind = "profile-game" | "telegram";
 type ProjectionClaim = { expectedTimestamp: number; nowMs: number };
 
 async function mutateProjectionOutbox(
   db: EventD1Connection,
-  kind: ProjectionKind,
+  kind: ProjectionOutboxKind,
   eventId: string,
   requestId: string,
   claim: ProjectionClaim | null,
   options: EventTransactionOptions,
+  initialRecordJson?: string,
 ): Promise<boolean> {
   const table =
     kind === "profile-game"
@@ -36,9 +40,12 @@ async function mutateProjectionOutbox(
       : "event_telegram_projection_outboxes";
   for (let attempt = 0; attempt < MAX_EVENT_TRANSACTION_ATTEMPTS; attempt++) {
     options.signal?.throwIfAborted();
-    const row = await prepareProjectionOutboxRead(db, table, eventId).first<{
-      record_json: string;
-    }>();
+    const row =
+      attempt === 0 && initialRecordJson !== undefined
+        ? { record_json: initialRecordJson }
+        : await prepareProjectionOutboxRead(db, table, eventId).first<{
+            record_json: string;
+          }>();
     options.signal?.throwIfAborted();
     const raw = row ? decodeJson(row.record_json) : null;
     const parsed =
@@ -127,6 +134,25 @@ async function mutateProjectionOutbox(
     }
   }
   throw new EventD1Conflict();
+}
+
+export function claimEventProjectionOutboxSnapshot(
+  db: EventD1Connection,
+  snapshot: ProjectionOutboxSnapshot,
+  requestId: string,
+  expectedTimestamp: number,
+  nowMs: number,
+  options: EventTransactionOptions,
+): Promise<boolean> {
+  return mutateProjectionOutbox(
+    db,
+    snapshot.kind,
+    snapshot.eventId,
+    requestId,
+    { expectedTimestamp, nowMs },
+    options,
+    snapshot.recordJson,
+  );
 }
 
 export function claimEventProfileGameProjectionOutbox(

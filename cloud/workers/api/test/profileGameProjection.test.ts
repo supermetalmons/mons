@@ -1,5 +1,6 @@
 import { recoveryCandidates } from "./recoveryScanTestFixtures.ts";
 import { attachProjectionTestPorts } from "./projectionTestPorts.ts";
+import { profileGameProjectionRecoveryFixture } from "./eventProjectionRecoveryFixture.ts";
 import assert from "node:assert/strict";
 import test, { beforeEach } from "node:test";
 import { Color, Game, GameVariant } from "mons-rules";
@@ -9,7 +10,7 @@ import type {
   RatingProfileGameProjectionRepository,
   RatingUpdateData,
 } from "../src/ratingContracts.ts";
-import type { EventStore } from "../src/eventStoreContracts.ts";
+import type { EventProjectionRecoveryWriter } from "../src/eventProjectionRecoveryD1.ts";
 import {
   claimAutomatchSweepCandidate,
   claimEventSweepCandidate,
@@ -2440,24 +2441,15 @@ test("rating recovery retains falsy failures after healthy dispatch and gives Qu
 });
 
 test("event recovery helpers accept only their required outbox capabilities", async () => {
-  const state: Pick<
-    EventStore,
-    | "claimEventProfileGameProjectionOutbox"
-    | "transactEventProfileGameProjectionOutbox"
-  > = {
-    async claimEventProfileGameProjectionOutbox(
-      eventId,
-      requestId,
-      expectedLastQueuedAtMs,
-      nowMs,
-    ) {
+  const state: EventProjectionRecoveryWriter = {
+    async claim(snapshot, requestId, expectedLastQueuedAtMs, nowMs) {
       assert.deepEqual(
-        [eventId, requestId, expectedLastQueuedAtMs, nowMs],
+        [snapshot.eventId, requestId, expectedLastQueuedAtMs, nowMs],
         ["event-1", "request-1", 0, 600_000],
       );
       return false;
     },
-    async transactEventProfileGameProjectionOutbox(_eventId, updater) {
+    async transact(_eventId, updater) {
       const decision = updater(null);
       assert.ok("commit" in decision);
       assert.equal(decision.commit, false);
@@ -2468,6 +2460,12 @@ test("event recovery helpers accept only their required outbox capabilities", as
     await claimEventSweepCandidate(
       state,
       {
+        snapshot: {
+          kind: "profile-game",
+          eventId: "event-1",
+          record: eventOutbox("request-1", 0),
+          recordJson: JSON.stringify(eventOutbox("request-1", 0)),
+        },
         lastQueuedAtMs: 0,
         task: {
           kind: "event-profile-game-projection",
@@ -2494,19 +2492,21 @@ test("event recovery normalizes every non-null malformed marker", async () => {
   const runRepair = async (value: unknown, eventId = "event-1") => {
     let current = value;
     const result = await repairInvalidEventSweepEntry(
-      attachProjectionTestPorts({
-        getStatePath: async () => null,
-        readInviteMetadata: async () => {
-          throw new Error("unexpected-invite-metadata-read");
-        },
-        transactStatePath: async (_path, updater) => {
-          const transaction = applyStateTransaction(current, updater);
-          if (transaction.committed) {
-            current = transaction.value;
+      {
+        transact: async (_eventId, updater) => {
+          const value = current as Parameters<typeof updater>[0];
+          const decision = updater(value);
+          if ("commit" in decision) {
+            return { committed: false, decision: decision.decision, value };
           }
-          return transaction;
+          current = decision.value;
+          return {
+            committed: true,
+            decision: decision.decision,
+            value: decision.value,
+          };
         },
-      }),
+      },
       eventId,
       600_000,
       () => "repair-request",
@@ -2640,7 +2640,7 @@ test("event recovery claims due outboxes and repairs malformed records", async (
       },
       {
         createRequestId: () => requestIds.shift() || "unexpected",
-        createStateRepository: () => state,
+        createEventRecovery: () => profileGameProjectionRecoveryFixture(state),
         logger: { error: (message) => logs.push(String(message)), info() {} },
         now: () => 600_000,
       },
@@ -2934,6 +2934,8 @@ for (const kind of ["automatch", "event"] as const) {
           },
           {
             createStateRepository: () => state,
+            createEventRecovery: () =>
+              profileGameProjectionRecoveryFixture(state),
             createRequestId: () => "repair-request",
             logger: {
               error(message) {
@@ -3068,6 +3070,8 @@ for (const kind of ["automatch", "event"] as const) {
         },
         {
           createStateRepository: () => state,
+          createEventRecovery: () =>
+            profileGameProjectionRecoveryFixture(state),
           createRequestId: () => "repair-request",
           now: () => 600_000,
           logger: {
@@ -3345,6 +3349,8 @@ test("projection sweep cleans locks once and preserves enqueue work on cleanup f
           },
         }),
         createStateRepository: () => projectionLockState(values),
+        createEventRecovery: () =>
+          profileGameProjectionRecoveryFixture(projectionLockState(values)),
         createProfileLinkJobs: () => profileLinkJobs(),
         createRating: () => ratingRepository(null, state),
         now: () => 1_000_000,
