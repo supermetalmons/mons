@@ -3157,99 +3157,156 @@ describe("canonical profile D1 store", () => {
         await expect(
           readCanonicalProfileIdMap(testEnv.PROFILE_DB, [value.profile.id]),
         ).resolves.toEqual(new Map([[value.profile.id, value.profile.id]]));
-        await expect(
-          readCanonicalProfileOwnershipSnapshot(testEnv.PROFILE_DB, {
-            loginUids: [],
-            profileIds: [value.profile.id],
-          }),
-        ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
+        for (const query of [
+          { loginUids: [], profileIds: [value.profile.id] },
+          { loginUids: [loginUid], profileIds: [] },
+        ]) {
+          await expect(
+            readCanonicalProfileOwnershipSnapshot(testEnv.PROFILE_DB, query),
+          ).rejects.toBeInstanceOf(CanonicalProfileCorruption);
+        }
       },
     );
   });
 
-  it("resolves bulk ownership in one transactional batch", async () => {
-    const value = profileValue("canonical-bulk-owner");
-    const loginUids = Array.from(
-      { length: 40 },
-      (_, index) => `canonical-bulk-login-${index}`,
-    );
-    await commitCanonicalPlan(testEnv.PROFILE_DB, {
-      expectations: [
-        { kind: "profile-absent", profileId: value.profile.id },
-        ...loginUids.map((loginUid) => ({
-          kind: "login-owner-absent" as const,
-          loginUid,
-        })),
-      ],
-      mutations: [
-        { kind: "insert-active-profile", value },
-        ...loginUids.map((loginUid) => ({
-          kind: "insert-login-owner" as const,
-          value: {
+  it("returns empty ownership and rejects invalid input without accessing D1", async () => {
+    let accesses = 0;
+    const database = new Proxy({} as D1Database, {
+      get() {
+        accesses += 1;
+        throw new Error("unexpected-database-access");
+      },
+    });
+    await expect(
+      readCanonicalProfileOwnershipSnapshot(database, {
+        loginUids: [],
+        profileIds: [],
+      }),
+    ).resolves.toEqual({
+      canonicalProfileIdByProfileId: new Map(),
+      loginOwnerByUid: new Map(),
+      loginOwnersByProfileId: new Map(),
+      profileById: new Map(),
+    });
+    await expect(
+      readCanonicalProfileOwnershipSnapshot(database, {
+        loginUids: [""],
+        profileIds: [],
+      }),
+    ).rejects.toThrow("invalid-canonical-login-ownership-input");
+    await expect(
+      readCanonicalProfileOwnershipSnapshot(database, {
+        loginUids: [],
+        profileIds: [""],
+      }),
+    ).rejects.toThrow("invalid-canonical-profile-ownership-input");
+    expect(accesses).toBe(0);
+  });
+
+  it.each(["mixed", "login-only", "profile-only"] as const)(
+    "resolves %s bulk ownership in one transactional batch",
+    async (kind) => {
+      const value = profileValue("canonical-bulk-owner");
+      const loginUids = Array.from(
+        { length: 40 },
+        (_, index) => `canonical-bulk-login-${index}`,
+      );
+      await commitCanonicalPlan(testEnv.PROFILE_DB, {
+        expectations: [
+          { kind: "profile-absent", profileId: value.profile.id },
+          ...loginUids.map((loginUid) => ({
+            kind: "login-owner-absent" as const,
             loginUid,
-            profileId: value.profile.id,
-            createdAtMs: 1_000,
-            updatedAtMs: 1_000,
-          },
-        })),
-      ],
-    });
-    let batchReads = 0;
-    let preparedReads = 0;
-    const preparedQueries: string[] = [];
-    const countingDb = new Proxy(testEnv.PROFILE_DB, {
-      get(target, property) {
-        if (property === "batch") {
-          return async (statements: D1PreparedStatement[]) => {
-            batchReads += 1;
-            return target.batch(statements);
-          };
-        }
-        if (property === "prepare") {
-          return (query: string) => {
-            preparedReads += 1;
-            preparedQueries.push(query);
-            return target.prepare(query);
-          };
-        }
-        const member = Reflect.get(target, property, target);
-        return typeof member === "function" ? member.bind(target) : member;
-      },
-    });
+          })),
+        ],
+        mutations: [
+          { kind: "insert-active-profile", value },
+          ...loginUids.map((loginUid) => ({
+            kind: "insert-login-owner" as const,
+            value: {
+              loginUid,
+              profileId: value.profile.id,
+              createdAtMs: 1_000,
+              updatedAtMs: 1_000,
+            },
+          })),
+        ],
+      });
+      let batchReads = 0;
+      let preparedReads = 0;
+      const preparedQueries: string[] = [];
+      const countingDb = new Proxy(testEnv.PROFILE_DB, {
+        get(target, property) {
+          if (property === "batch") {
+            return async (statements: D1PreparedStatement[]) => {
+              batchReads += 1;
+              return target.batch(statements);
+            };
+          }
+          if (property === "prepare") {
+            return (query: string) => {
+              preparedReads += 1;
+              preparedQueries.push(query);
+              return target.prepare(query);
+            };
+          }
+          const member = Reflect.get(target, property, target);
+          return typeof member === "function" ? member.bind(target) : member;
+        },
+      });
 
-    const ownership = await readCanonicalProfileOwnershipSnapshot(countingDb, {
-      loginUids,
-      profileIds: [value.profile.id, "canonical-bulk-missing"],
-    });
-    expect(
-      loginUids.every(
-        (loginUid) =>
-          ownership.loginOwnerByUid.get(loginUid)?.profileId ===
-          value.profile.id,
-      ),
-    ).toBe(true);
-    expect(ownership.loginOwnersByProfileId.get(value.profile.id)).toHaveLength(
-      loginUids.length,
-    );
-    expect(ownership.profileById.get(value.profile.id)).toMatchObject({
-      profileId: value.profile.id,
-      state: "active",
-    });
-    expect(ownership.canonicalProfileIdByProfileId.get(value.profile.id)).toBe(
-      value.profile.id,
-    );
-    expect(
-      ownership.canonicalProfileIdByProfileId.get("canonical-bulk-missing"),
-    ).toBeNull();
-    expect(batchReads).toBe(1);
-    expect(preparedReads).toBe(4);
-    expect(
-      preparedQueries.every(
-        (query) =>
-          !query.includes("legacy_fields_json") && !query.includes("profile.*"),
-      ),
-    ).toBe(true);
-  });
+      const ownership = await readCanonicalProfileOwnershipSnapshot(
+        countingDb,
+        {
+          loginUids:
+            kind === "profile-only"
+              ? []
+              : [...loginUids, "canonical-bulk-missing-login", loginUids[0]],
+          profileIds:
+            kind === "login-only"
+              ? []
+              : [value.profile.id, "canonical-bulk-missing", value.profile.id],
+        },
+      );
+      expect([...ownership.loginOwnerByUid]).toEqual(
+        kind === "profile-only"
+          ? []
+          : [
+              ...loginUids.map((loginUid) => [
+                loginUid,
+                { profileId: value.profile.id, revision: 1 },
+              ]),
+              ["canonical-bulk-missing-login", null],
+            ],
+      );
+      expect(
+        ownership.loginOwnersByProfileId.get(value.profile.id),
+      ).toHaveLength(loginUids.length);
+      expect(ownership.profileById.get(value.profile.id)).toMatchObject({
+        profileId: value.profile.id,
+        state: "active",
+      });
+      expect(ownership.profileById.size).toBe(1);
+      expect(ownership.loginOwnersByProfileId.size).toBe(1);
+      expect([...ownership.canonicalProfileIdByProfileId]).toEqual(
+        kind === "login-only"
+          ? []
+          : [
+              [value.profile.id, value.profile.id],
+              ["canonical-bulk-missing", null],
+            ],
+      );
+      expect(batchReads).toBe(1);
+      expect(preparedReads).toBe(kind === "mixed" ? 4 : 3);
+      expect(
+        preparedQueries.every(
+          (query) =>
+            !query.includes("legacy_fields_json") &&
+            !query.includes("profile.*"),
+        ),
+      ).toBe(true);
+    },
+  );
 
   it("resolves redirects and rejects unsafe merge topology", async () => {
     const target = profileValue("canonical-redirect-target");

@@ -24,7 +24,7 @@ import {
   TELEGRAM_PROJECTION_QUEUE_NAME,
   type TelegramProjectionTask,
 } from "./telegramProjectionTasks.ts";
-import { sweepEventProgress } from "./eventProgress.ts";
+import { sweepEventProgress } from "./eventProgressRecovery.ts";
 import {
   handleEventProfileGameProjectionQueue,
   handleProfileGameProjectionQueue,

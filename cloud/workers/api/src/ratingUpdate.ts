@@ -56,7 +56,7 @@ import { authorizeMatchPlayer } from "./matchAdmission.ts";
 import {
   buildEventProgressPlan,
   type EventProgressPlan,
-} from "./eventProgress.ts";
+} from "./eventProgressCodec.ts";
 
 const RATING_UPDATE_LEASE_MS = 30_000;
 const FEB_CHALLENGE_START_UTC = Date.UTC(2026, 1, 1);

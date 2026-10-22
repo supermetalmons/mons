@@ -755,9 +755,16 @@ describe("D1-authoritative profile game projection ownership", () => {
         .slice(1)
         .map((loginUid) => insertAdditionalLoginOwner(profileId, loginUid)),
     );
+    let batchReads = 0;
     let preparedReads = 0;
     const countingDb = new Proxy(testEnv.PROFILE_DB, {
       get(target, property) {
+        if (property === "batch") {
+          return async (statements: D1PreparedStatement[]) => {
+            batchReads += 1;
+            return target.batch(statements);
+          };
+        }
         if (property === "prepare") {
           return (query: string) => {
             preparedReads += 1;
@@ -779,7 +786,8 @@ describe("D1-authoritative profile game projection ownership", () => {
         (loginUid) => ownership.profileIdByLoginUid.get(loginUid) === profileId,
       ),
     ).toBe(true);
-    expect(preparedReads).toBe(4);
+    expect(batchReads).toBe(1);
+    expect(preparedReads).toBe(3);
   });
 
   it("keeps each cleanup catch-up below 1,000 statements", async () => {

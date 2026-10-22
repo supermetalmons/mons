@@ -1,11 +1,11 @@
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import { EVENT_PRIZE_ANNOUNCEMENT_GRACE_MS } from "../../../runtime/telegram/eventPrizeAnnouncement.js";
 import {
-  InvalidEventProgressPayloadError,
   parseEventProgressOutbox,
   parseEventProgressParams,
   type EventProgressWorkflowParams,
-} from "./eventProgress.ts";
+} from "./eventProgressCodec.ts";
+import { InvalidEventProgressPayloadError } from "./eventProgressWorkflowRunner.ts";
 import {
   EVENT_ANNOUNCEMENT_SPECS,
   getEventAnnouncementKind,

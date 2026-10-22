@@ -21,6 +21,7 @@ import {
   type InviteWagersSourceResult,
 } from "./inviteWagers.ts";
 import { composeInviteWagerSource } from "./inviteWagerSource.ts";
+import { createInviteChannelSnapshotStore } from "./inviteChannelSnapshotStore.ts";
 import type { WagerStateSnapshot } from "./wagerStateD1.ts";
 import {
   socketSessionCurrent,
@@ -59,14 +60,8 @@ type WagerRead = {
   invalidationGeneration: number;
 };
 
-type StoredMetadata = {
+type StoredInviteIdentity = {
   invite_id: string;
-  snapshot_json: string | null;
-  revision: number;
-};
-
-type StoredWagers = StoredMetadata & {
-  source_fingerprint: string | null;
 };
 
 type InviteSocketAttachment = {
@@ -120,6 +115,9 @@ type InviteChannelsDependencies = {
 };
 
 export class InviteChannelsRoom {
+  private readonly snapshots: ReturnType<
+    typeof createInviteChannelSnapshotStore
+  >;
   private inviteId: string | null = null;
   private metadataSequence: Promise<void> = Promise.resolve();
   private wagerSequence: Promise<void> = Promise.resolve();
@@ -139,7 +137,9 @@ export class InviteChannelsRoom {
   constructor(
     private readonly ctx: DurableObjectState,
     private readonly dependencies: InviteChannelsDependencies,
-  ) {}
+  ) {
+    this.snapshots = createInviteChannelSnapshotStore(ctx.storage.sql);
+  }
 
   pinInvite(inviteId: string, options: { cache?: boolean } = {}): void {
     if (
@@ -159,7 +159,7 @@ export class InviteChannelsRoom {
       inviteId,
     );
     const stored = this.ctx.storage.sql
-      .exec<Pick<StoredMetadata, "invite_id">>(
+      .exec<StoredInviteIdentity>(
         "SELECT invite_id FROM invite_metadata WHERE singleton = 1",
       )
       .one();
@@ -175,7 +175,7 @@ export class InviteChannelsRoom {
 
   pinnedInviteId(): string {
     return this.ctx.storage.sql
-      .exec<Pick<StoredMetadata, "invite_id">>(
+      .exec<StoredInviteIdentity>(
         "SELECT invite_id FROM invite_metadata WHERE singleton = 1",
       )
       .one().invite_id;
@@ -242,9 +242,7 @@ export class InviteChannelsRoom {
     result: InviteMetadataReadResult,
   ): InviteMetadataReadResult {
     this.pinInvite(inviteId);
-    const stored = this.ctx.storage.sql
-      .exec<StoredMetadata>("SELECT * FROM invite_metadata WHERE singleton = 1")
-      .one();
+    const stored = this.snapshots.readMetadata();
     const sockets = this.inviteSockets("metadata", true);
     if (result.status !== "ok") {
       for (const socket of sockets) {
@@ -262,11 +260,7 @@ export class InviteChannelsRoom {
       revision: changed ? stored.revision + 1 : stored.revision,
     };
     if (changed) {
-      this.ctx.storage.sql.exec(
-        "UPDATE invite_metadata SET snapshot_json = ?, revision = ? WHERE singleton = 1",
-        JSON.stringify(snapshot),
-        snapshot.revision,
-      );
+      this.snapshots.writeMetadata(JSON.stringify(snapshot), snapshot.revision);
     }
     const source = { ...result, snapshot };
     const message: InviteMetadataMessage = {
@@ -312,9 +306,7 @@ export class InviteChannelsRoom {
     if (result.status !== "ok" || metadata.status !== "ok") {
       return { status: result.status === "missing" ? "missing" : "invalid" };
     }
-    const stored = this.ctx.storage.sql
-      .exec<StoredWagers>("SELECT * FROM invite_wagers WHERE singleton = 1")
-      .one();
+    const stored = this.snapshots.readWagers();
     const changed = result.fingerprint !== stored.source_fingerprint;
     if (changed && stored.revision >= Number.MAX_SAFE_INTEGER) {
       throw new Error("wagers-revision-exhausted");
@@ -324,8 +316,7 @@ export class InviteChannelsRoom {
       revision: changed ? stored.revision + 1 : stored.revision,
     };
     if (changed) {
-      this.ctx.storage.sql.exec(
-        "UPDATE invite_wagers SET snapshot_json = ?, revision = ?, source_fingerprint = ? WHERE singleton = 1",
+      this.snapshots.writeWagers(
         JSON.stringify(snapshot),
         snapshot.revision,
         result.fingerprint,

@@ -758,32 +758,52 @@ export async function readCanonicalProfileOwnershipSnapshot(
       profileById: new Map(),
     });
   }
+  const statements: D1PreparedStatement[] = [];
+  const loginResolutionIndex = loginUids.length
+    ? statements.push(
+        canonicalOwnershipResolutionStatement(db, loginUids, "login"),
+      ) - 1
+    : null;
+  const profileResolutionIndex = profileIds.length
+    ? statements.push(
+        canonicalOwnershipResolutionStatement(db, profileIds, "profile"),
+      ) - 1
+    : null;
+  const profilesIndex =
+    statements.push(
+      canonicalOwnershipProfilesStatement(db, loginUids, profileIds),
+    ) - 1;
+  const ownersIndex =
+    statements.push(
+      canonicalOwnershipOwnersStatement(db, loginUids, profileIds),
+    ) - 1;
   const results = await db.batch<
     | CanonicalOwnershipOwnerRow
     | CanonicalOwnershipProfileRow
     | CanonicalOwnershipResolutionRow
-  >([
-    canonicalOwnershipResolutionStatement(db, loginUids, "login"),
-    canonicalOwnershipResolutionStatement(db, profileIds, "profile"),
-    canonicalOwnershipProfilesStatement(db, loginUids, profileIds),
-    canonicalOwnershipOwnersStatement(db, loginUids, profileIds),
-  ]);
+  >(statements);
   const loginResolutions = parseCanonicalOwnershipResolutions(
-    results[0].results as CanonicalOwnershipResolutionRow[],
+    loginResolutionIndex === null
+      ? []
+      : (results[loginResolutionIndex]
+          .results as CanonicalOwnershipResolutionRow[]),
     loginUids,
     "login",
   );
   const profileResolutions = parseCanonicalOwnershipResolutions(
-    results[1].results as CanonicalOwnershipResolutionRow[],
+    profileResolutionIndex === null
+      ? []
+      : (results[profileResolutionIndex]
+          .results as CanonicalOwnershipResolutionRow[]),
     profileIds,
     "profile",
   );
   const profileById = parseCanonicalOwnershipProfiles(
-    results[2].results as CanonicalOwnershipProfileRow[],
+    results[profilesIndex].results as CanonicalOwnershipProfileRow[],
   );
   const { aggregateOwnerByUid, loginOwnersByProfileId } =
     parseCanonicalOwnershipOwners(
-      results[3].results as CanonicalOwnershipOwnerRow[],
+      results[ownersIndex].results as CanonicalOwnershipOwnerRow[],
       profileById,
     );
   const canonicalProfileIds = new Set<string>();

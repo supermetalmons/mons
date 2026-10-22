@@ -7,7 +7,11 @@ import * as entrypoint from "../src/workerHandler.ts";
 import { extractIdFromJsonUri } from "../src/helius.ts";
 import { handleFetch, handleRequest } from "../src/router.ts";
 import * as eventProgress from "../src/eventProgress.ts";
+import * as eventProgressCodec from "../src/eventProgressCodec.ts";
 import * as eventProgressDispatch from "../src/eventProgressDispatch.ts";
+import * as eventProgressRecovery from "../src/eventProgressRecovery.ts";
+import * as eventProgressWorkflowRunner from "../src/eventProgressWorkflowRunner.ts";
+import { createEventRuntimeStore } from "../src/workerEventRuntime.ts";
 import * as eventRepository from "../src/eventRepository.ts";
 import * as eventPrizeWithdrawal from "../src/eventPrizeWithdrawal.ts";
 import * as eventPrizeWithdrawalContracts from "../src/eventPrizeWithdrawal/contracts.ts";
@@ -243,6 +247,8 @@ test("gameplay route runtimes keep event and rating dependencies scoped", () => 
     );
     for (const dependency of [
       "eventProgress.ts",
+      "eventProgressRecovery.ts",
+      "eventProgressWorkflowRunner.ts",
       "eventRepository.ts",
       "ratingRepository.ts",
     ]) {
@@ -388,9 +394,15 @@ for (const module of [
   });
 }
 
-test("event announcement scheduling and dispatch do not depend on recovery orchestration", () => {
-  const recovery = resolve(import.meta.dirname, "../src/eventProgress.ts");
+test("event Workflow execution, announcement scheduling and dispatch do not depend on recovery orchestration", () => {
+  const recovery = resolve(
+    import.meta.dirname,
+    "../src/eventProgressRecovery.ts",
+  );
   for (const entry of [
+    "eventProgressWorkflowRunner.ts",
+    "eventProgressWorkflow.ts",
+    "eventPrizeAnnouncementWorkflow.ts",
     "eventPrizeAnnouncementSchedule.ts",
     "eventProgressDispatch.ts",
   ]) {
@@ -403,15 +415,57 @@ test("event announcement scheduling and dispatch do not depend on recovery orche
   }
 });
 
-test("event progress retains its public dispatch function identities", () => {
-  assert.strictEqual(
-    eventProgress.ensureEventProgressWorkflow,
-    eventProgressDispatch.ensureEventProgressWorkflow,
+test("event progress internals stay independent of their facade and recovery stays independent of Workflow execution", () => {
+  const sourceRoot = resolve(import.meta.dirname, "../src");
+  const facade = resolve(sourceRoot, "eventProgress.ts");
+  const recovery = resolve(sourceRoot, "eventProgressRecovery.ts");
+  const runner = resolve(sourceRoot, "eventProgressWorkflowRunner.ts");
+  for (const entry of [
+    "eventProgressRecovery.ts",
+    "eventProgressWorkflowRunner.ts",
+    "eventProgressCodec.ts",
+    "eventProgressDispatch.ts",
+  ]) {
+    assert.ok(
+      !reachableRuntimeFiles(resolve(sourceRoot, entry)).includes(facade),
+      entry,
+    );
+  }
+  assert.ok(!reachableRuntimeFiles(recovery).includes(runner));
+});
+
+test("event progress retains its exact public facade and function identities", () => {
+  const expected = {
+    buildEventProgressPlan: eventProgressCodec.buildEventProgressPlan,
+    parseEventProgressOutbox: eventProgressCodec.parseEventProgressOutbox,
+    parseEventProgressParams: eventProgressCodec.parseEventProgressParams,
+    ensureEventProgressWorkflow:
+      eventProgressDispatch.ensureEventProgressWorkflow,
+    removeOutbox: eventProgressDispatch.removeOutbox,
+    createEventRuntimeStore,
+    sweepEventProgress: eventProgressRecovery.sweepEventProgress,
+    createWorkflowEventRuntime:
+      eventProgressWorkflowRunner.createWorkflowEventRuntime,
+    runEventProgressWorkflow:
+      eventProgressWorkflowRunner.runEventProgressWorkflow,
+    InvalidEventProgressPayloadError:
+      eventProgressWorkflowRunner.InvalidEventProgressPayloadError,
+    EventProgressRetryableError:
+      eventProgressWorkflowRunner.EventProgressRetryableError,
+    EVENT_PROGRESS_TIMEOUT_MS:
+      eventProgressWorkflowRunner.EVENT_PROGRESS_TIMEOUT_MS,
+    EVENT_PROGRESS_WORKER_UID:
+      eventProgressWorkflowRunner.EVENT_PROGRESS_WORKER_UID,
+    EVENT_PROGRESS_OUTBOX_ROOT: "eventProgressOutbox",
+    EVENT_PROGRESS_OUTBOX_DEAD_ROOT: "eventProgressOutboxDead",
+  };
+  assert.deepEqual(
+    Object.keys(eventProgress).sort(),
+    Object.keys(expected).sort(),
   );
-  assert.strictEqual(
-    eventProgress.removeOutbox,
-    eventProgressDispatch.removeOutbox,
-  );
+  for (const name of Object.keys(expected) as (keyof typeof expected)[]) {
+    assert.strictEqual(eventProgress[name], expected[name], name);
+  }
 });
 
 const repositoryRoot = resolve(import.meta.dirname, "../../../..");
@@ -607,7 +661,10 @@ test("event runtimes install the shared ownership snapshot through an independen
   const source = readFileSync(factory, "utf8");
   assert.match(source, /readProfileOwnershipSnapshot:\s*\(query\)\s*=>/);
   assert.match(source, /requireProfileOwnershipSnapshot\(repository, query\)/);
-  for (const filename of ["eventOperations.ts", "eventProgress.ts"]) {
+  for (const filename of [
+    "eventOperations.ts",
+    "eventProgressWorkflowRunner.ts",
+  ]) {
     const consumer = resolve(import.meta.dirname, "../src", filename);
     assert.ok(reachableRuntimeFiles(consumer).includes(factory));
     assert.ok(!reachableRuntimeFiles(factory).includes(consumer));

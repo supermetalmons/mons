@@ -216,7 +216,7 @@ test("event Telegram projection uses a dedicated lock without changing domain lo
 test("event HTTP and Workflow runtimes install the mutation coordinator", () => {
   for (const relativePath of [
     "cloud/workers/api/src/eventRoute.ts",
-    "cloud/workers/api/src/eventProgress.ts",
+    "cloud/workers/api/src/eventProgressWorkflowRunner.ts",
   ]) {
     const source = fs.readFileSync(
       path.join(repositoryRoot, relativePath),

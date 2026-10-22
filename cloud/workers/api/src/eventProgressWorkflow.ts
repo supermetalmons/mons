@@ -11,11 +11,11 @@ import {
   EVENT_PROGRESS_TIMEOUT_MS,
   EVENT_PROGRESS_WORKER_UID,
   InvalidEventProgressPayloadError,
-  removeOutbox,
   runEventProgressWorkflow,
   type EventProgressWorkflowDependencies,
-  type EventProgressWorkflowParams,
-} from "./eventProgress.ts";
+} from "./eventProgressWorkflowRunner.ts";
+import { removeOutbox } from "./eventProgressDispatch.ts";
+import type { EventProgressWorkflowParams } from "./eventProgressCodec.ts";
 import { assertProfileBackgroundMutationsEnabled } from "./profileCanonicalActivation.ts";
 import { getEventAnnouncementKind } from "./eventAnnouncementKinds.ts";
 import { runEventAnnouncementWorkflow } from "./eventPrizeAnnouncementWorkflow.ts";

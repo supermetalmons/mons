@@ -3,6 +3,7 @@ import {
   createTelegramLocalRetryBarrier,
   type TelegramEngineResult,
   type TelegramRepository,
+  type TelegramRetryScheduler,
 } from "../../../runtime/telegram/deliveryEngine.js";
 import {
   buildTelegramDeliveryTaskId,
@@ -35,20 +36,6 @@ const TELEGRAM_FROZEN_RETRY_SECONDS = 60;
 const defaultSleep = (milliseconds: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
 
-type TelegramEngine = {
-  reconcile(input: Record<string, unknown>): Promise<TelegramEngineResult>;
-};
-
-type TelegramEngineFactory = (input: {
-  repository: TelegramRepository;
-  client: TelegramClient;
-  resolveDestination: (destination: string) => string;
-  now: () => number;
-  scheduleRetry: ReturnType<typeof createRetryScheduler>;
-  logger: Pick<Console, "error" | "info">;
-  localRetryBarrier: ReturnType<typeof createTelegramLocalRetryBarrier>;
-}) => TelegramEngine;
-
 function toRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -75,7 +62,7 @@ function createTelegramClient(env: Env): TelegramClient {
 function createRetryScheduler(
   env: Env,
   now: () => number,
-): (input: Record<string, unknown>) => Promise<Record<string, unknown>> {
+): TelegramRetryScheduler {
   return async (input) => {
     const scheduleTimeMs = normalizeOptionalTimestamp(input.scheduleTimeMs);
     const payload = normalizeTaskPayload(input);
@@ -101,7 +88,7 @@ export async function handleTelegramQueueMessage(
     sleep = defaultSleep,
   }: {
     createRepository?: (env: Env) => TelegramRepository;
-    createEngine?: TelegramEngineFactory;
+    createEngine?: typeof createTelegramDeliveryEngine;
     logger?: Pick<Console, "error" | "info">;
     now?: () => number;
     readStorageMode?: (db: D1Database) => Promise<TelegramStorageMode>;
