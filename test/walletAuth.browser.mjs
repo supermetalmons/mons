@@ -32,13 +32,16 @@ const mockedModules = new Set(
     "ui/NameEditModal",
     "ui/LogoutConfirmModal",
     "ui/shinyCardUiPort",
-    "ui/uiSession",
     "ui/eventModalController",
     "ui/identity/useAppleAuthFlow",
   ].map((name) => path.join(repository, "src", name)),
 );
 
-async function fixture(screen, run, { mobile = false } = {}) {
+async function fixture(
+  screen,
+  run,
+  { mobile = false, openSignIn = true, query = {} } = {},
+) {
   const server = await createServer({
     root: repository,
     configFile: false,
@@ -111,14 +114,15 @@ async function fixture(screen, run, { mobile = false } = {}) {
       errors.push(error.message);
       console.error("Fixture page error:", error.message);
     });
-    await page.goto(
-      `${origin}/__wallet-auth?screen=${screen}${mobile ? "&mobile" : ""}`,
-    );
-    if (screen === "signin") {
+    const search = new URLSearchParams({ screen, ...query });
+    if (mobile) search.set("mobile", "");
+    await page.goto(`${origin}/__wallet-auth?${search}`);
+    await page.waitForFunction(() => window.harness !== undefined);
+    if (screen === "signin" && openSignIn) {
       const signIn = page.getByRole("button", { name: "Sign In", exact: true });
       if (mobile) await signIn.dispatchEvent("touchstart");
       else await signIn.click();
-    } else
+    } else if (screen === "settings")
       await page
         .getByRole("button", { name: "+", exact: true })
         .first()
@@ -337,6 +341,454 @@ for (const screen of ["signin", "settings"]) {
         );
         assert.equal(await page.locator("#root").textContent(), "");
       });
+    },
+  );
+}
+
+test(
+  "X sign-in prevents duplicate starts and restores the button after cooldown and redirect errors",
+  { timeout: 30_000 },
+  async () => {
+    await fixture("signin", async ({ page }) => {
+      const xButton = page.getByRole("button", { name: "X", exact: true });
+      await xButton.evaluate((button) => {
+        button.click();
+        button.click();
+      });
+      await waitForCalls(page, "xIntentCalls", 1);
+      assert.equal(
+        await page.getByRole("button", { name: "Connecting..." }).isDisabled(),
+        true,
+      );
+      await page.evaluate(() =>
+        window.harness.rejectXIntent(0, "auth-cooldown", {
+          reason: "method-reuse-cooldown",
+          method: "x",
+        }),
+      );
+      await page
+        .getByText(
+          "This X sign-in was recently unlinked. Try again in up to 24 hours.",
+        )
+        .waitFor();
+      await xButton.click();
+      await waitForCalls(page, "xIntentCalls", 2);
+      await page.evaluate(() => window.harness.resolveXIntent(1));
+      await waitForCalls(page, "xRedirectCalls", 1);
+      assert.deepEqual(
+        await page.evaluate(() => {
+          const { intentId, consentSource } =
+            window.harness.environment.xRedirectCalls[0];
+          return { intentId, consentSource };
+        }),
+        { intentId: "x-intent-1", consentSource: "signin" },
+      );
+      await page.evaluate(() =>
+        window.harness.rejectXRedirect(0, "x-oauth-access_denied"),
+      );
+      await page.getByText("X sign in was canceled.").waitFor();
+      assert.equal(await xButton.isDisabled(), false);
+      assert.equal(
+        await page.evaluate(() => window.harness.environment.timers.size),
+        0,
+      );
+    });
+  },
+);
+
+test(
+  "X stalled navigation recovers when visible and cleans timers and subscriptions on unmount",
+  { timeout: 30_000 },
+  async () => {
+    await fixture("signin", async ({ page }) => {
+      await page.getByRole("button", { name: "X", exact: true }).click();
+      await waitForCalls(page, "xIntentCalls", 1);
+      await page.evaluate(() => window.harness.resolveXIntent(0));
+      await waitForCalls(page, "xRedirectCalls", 1);
+      await page.evaluate(() =>
+        window.harness.rejectXRedirect(0, "x-redirect-started"),
+      );
+      await page.waitForFunction(() =>
+        [...window.harness.environment.timers.values()].some(
+          (timer) => timer.delay === 1500,
+        ),
+      );
+      await page.evaluate(() => {
+        window.harness.setVisibilityState("hidden");
+        window.harness.advanceTimers(1500);
+      });
+      assert.equal(
+        await page.getByRole("button", { name: "Connecting..." }).isDisabled(),
+        true,
+      );
+      await page.evaluate(() => window.harness.setVisibilityState("visible"));
+      await page.getByRole("button", { name: "X", exact: true }).waitFor();
+      await page.evaluate(() =>
+        window.harness.setPendingXRedirectResult({
+          flowId: "pending-flow",
+          status: "ready",
+          errorCode: "",
+          consentSource: "signin",
+        }),
+      );
+      await page.getByRole("button", { name: "Verifying..." }).waitFor();
+      await page.evaluate(() => window.harness.dispose());
+      assert.deepEqual(
+        await page.evaluate(() => ({
+          timers: window.harness.environment.timers.size,
+          pendingListeners: window.harness.environment.xPendingListeners.size,
+          feedbackListeners: window.harness.environment.xFeedbackListeners.size,
+        })),
+        { timers: 0, pendingListeners: 0, feedbackListeners: 0 },
+      );
+      await page.evaluate(() => {
+        window.harness.setVisibilityState("hidden");
+        window.harness.setVisibilityState("visible");
+        window.harness.publishXAuthUiFeedback({
+          target: "signin",
+          kind: "error",
+          message: "Late callback",
+        });
+      });
+      assert.equal(await page.locator("#root").textContent(), "");
+    });
+  },
+);
+
+test(
+  "X pending callback blocks sign-in until stale retry clears the result",
+  { timeout: 30_000 },
+  async () => {
+    await fixture(
+      "signin",
+      async ({ page }) => {
+        const verifying = page.getByRole("button", { name: "Verifying..." });
+        await verifying.waitFor();
+        assert.equal(await verifying.isDisabled(), true);
+        assert.equal(await verifying.getAttribute("aria-busy"), "true");
+        assert.equal(
+          await page.getByRole("button", { name: "X", exact: true }).count(),
+          0,
+        );
+        await page.evaluate(() => window.harness.advanceTimers(20_000));
+        await page.getByRole("button", { name: "Try Again" }).click();
+        await page
+          .getByText("X sign in took too long. Please try again.")
+          .waitFor();
+        await page.getByRole("button", { name: "X", exact: true }).click();
+        await waitForCalls(page, "xIntentCalls", 1);
+        assert.equal(
+          await page.evaluate(() => window.harness.environment.xClearedResults),
+          1,
+        );
+        assert.equal(
+          await page.evaluate(() => window.harness.environment.xPending),
+          null,
+        );
+      },
+      { openSignIn: false, query: { xPendingSource: "signin" } },
+    );
+  },
+);
+
+test(
+  "X feedback chooses the current inline or event sign-in surface",
+  { timeout: 30_000 },
+  async () => {
+    await fixture(
+      "signin",
+      async ({ page }) => {
+        await page.evaluate(() =>
+          window.harness.publishXAuthUiFeedback({
+            target: "signin",
+            kind: "error",
+            message: "Inline callback error",
+          }),
+        );
+        await page.getByText("Inline callback error").waitFor();
+        assert.equal(
+          await page.getByRole("dialog", { name: "Sign In" }).count(),
+          0,
+        );
+        await page.evaluate(() => {
+          window.harness.setEventModalState(true);
+          window.harness.publishXAuthUiFeedback({
+            target: "signin",
+            kind: "error",
+            message: "Event callback error",
+          });
+        });
+        const eventDialog = page.getByRole("dialog", { name: "Sign In" });
+        await eventDialog.getByText("Event callback error").waitFor();
+        await page.evaluate(() => window.harness.setEventModalState(false));
+        await eventDialog.waitFor({ state: "detached" });
+        await page
+          .getByRole("button", { name: "Sign In", exact: true })
+          .waitFor();
+        await page.evaluate(() =>
+          window.harness.publishXAuthUiFeedback({
+            target: "signin",
+            kind: "error",
+            message: "Current inline error",
+          }),
+        );
+        await page.getByText("Current inline error").waitFor();
+        assert.equal(await eventDialog.count(), 0);
+        assert.equal(
+          await page.evaluate(
+            () => window.harness.environment.xFeedbackDeliveries,
+          ),
+          3,
+        );
+      },
+      { openSignIn: false },
+    );
+  },
+);
+
+for (const kind of ["success", "error"]) {
+  test(
+    `X settings return ${kind} reopens Settings and preserves callback feedback`,
+    { timeout: 30_000 },
+    async () => {
+      await fixture(
+        "signin",
+        async ({ page }) => {
+          await page.evaluate((kind) => {
+            if (kind === "success") {
+              window.harness.environment.linkedMethods.x = true;
+              window.harness.setPendingXRedirectResult(null);
+              window.harness.publishXAuthUiFeedback({
+                target: "settings",
+                kind,
+                message: "X linked",
+              });
+            } else {
+              window.harness.publishXAuthUiFeedback({
+                target: "settings",
+                kind,
+                message: "Settings callback error",
+              });
+              window.harness.setPendingXRedirectResult(null);
+            }
+          }, kind);
+          const settings = page.getByRole("dialog", { name: "Settings" });
+          await settings.waitFor();
+          if (kind === "error") {
+            await settings.getByText("Settings callback error").waitFor();
+          } else {
+            await settings
+              .getByRole("button", { name: "×", exact: true })
+              .waitFor();
+            assert.equal(await settings.getByText("X linked").count(), 0);
+          }
+          assert.deepEqual(
+            await page.evaluate(() => ({
+              subscribers: window.harness.environment.xFeedbackListeners.size,
+              deliveries: window.harness.environment.xFeedbackDeliveries,
+            })),
+            { subscribers: 1, deliveries: 1 },
+          );
+          await settings
+            .getByRole("button", { name: "OK", exact: true })
+            .click();
+          await settings.waitFor({ state: "detached" });
+        },
+        { openSignIn: false, query: { xPendingSource: "settings" } },
+      );
+    },
+  );
+}
+
+test(
+  "X persisted feedback is consumed once with Profile and Settings mounted in StrictMode",
+  { timeout: 30_000 },
+  async () => {
+    await fixture(
+      "signin",
+      async ({ page }) => {
+        const settings = page.getByRole("dialog", { name: "Settings" });
+        await settings.getByText("Persisted callback error").waitFor();
+        assert.deepEqual(
+          await page.evaluate(() => ({
+            consumed: window.harness.environment.xFeedbackConsumed,
+            subscribers: window.harness.environment.xFeedbackListeners.size,
+          })),
+          { consumed: 1, subscribers: 1 },
+        );
+        await page.evaluate(() =>
+          window.harness.publishXAuthUiFeedback({
+            target: "settings",
+            kind: "error",
+            message: "Updated callback error",
+          }),
+        );
+        await settings.getByText("Updated callback error").waitFor();
+        assert.equal(
+          await page.getByRole("dialog", { name: "Settings" }).count(),
+          1,
+        );
+        assert.equal(
+          await page.evaluate(
+            () => window.harness.environment.xFeedbackDeliveries,
+          ),
+          1,
+        );
+        await page.evaluate(() => window.harness.dispose());
+        assert.equal(
+          await page.evaluate(
+            () => window.harness.environment.xFeedbackListeners.size,
+          ),
+          0,
+        );
+      },
+      {
+        openSignIn: false,
+        query: {
+          xFeedbackTarget: "settings",
+          xFeedbackMessage: "Persisted callback error",
+        },
+      },
+    );
+  },
+);
+
+for (const eventOpen of [false, true]) {
+  test(
+    `X initial sign-in feedback opens ${eventOpen ? "event" : "inline"} UI without losing the error`,
+    { timeout: 30_000 },
+    async () => {
+      await fixture(
+        "signin",
+        async ({ page }) => {
+          await page.getByText("Restored sign-in error").waitFor();
+          assert.equal(
+            await page.getByRole("dialog", { name: "Sign In" }).count(),
+            eventOpen ? 1 : 0,
+          );
+          assert.equal(
+            await page.getByRole("button", { name: "X", exact: true }).count(),
+            1,
+          );
+          assert.equal(
+            await page.evaluate(
+              () => window.harness.environment.xFeedbackConsumed,
+            ),
+            1,
+          );
+        },
+        {
+          openSignIn: false,
+          query: {
+            xFeedbackTarget: "signin",
+            xFeedbackMessage: "Restored sign-in error",
+            ...(eventOpen ? { eventOpen: "" } : {}),
+          },
+        },
+      );
+    },
+  );
+}
+
+test(
+  "X linking blocks other settings actions and refreshes only when intent preparation fails",
+  { timeout: 30_000 },
+  async () => {
+    await fixture("settings", async ({ page, wallet }) => {
+      const xButton = page
+        .getByText("X", { exact: true })
+        .locator("../..")
+        .getByRole("button");
+      const reads = await page.evaluate(
+        () => window.harness.environment.linkedReads,
+      );
+      await xButton.click();
+      await waitForCalls(page, "xIntentCalls", 1);
+      assert.equal(await wallet("eth").isDisabled(), true);
+      await page.evaluate(() =>
+        window.harness.rejectXIntent(0, "x-auth-disabled"),
+      );
+      await page.getByText("Linking X is temporarily unavailable.").waitFor();
+      assert.equal(await wallet("eth").isDisabled(), false);
+      assert.equal(
+        await page.evaluate(() => window.harness.environment.linkedReads),
+        reads + 1,
+      );
+      await xButton.click();
+      await waitForCalls(page, "xIntentCalls", 2);
+      await page.evaluate(() => window.harness.resolveXIntent(1));
+      await waitForCalls(page, "xRedirectCalls", 1);
+      assert.equal(
+        await page.evaluate(
+          () => window.harness.environment.xRedirectCalls[0].consentSource,
+        ),
+        "settings",
+      );
+      await page.evaluate(() =>
+        window.harness.rejectXRedirect(0, "x-redirect-started"),
+      );
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll("button")]
+          .filter((button) => button.textContent === "+")
+          .every((button) => !button.disabled),
+      );
+      assert.equal(
+        await page.evaluate(() => window.harness.environment.linkedReads),
+        reads + 1,
+      );
+      assert.equal(
+        await page.evaluate(
+          () => window.harness.environment.xFeedbackListeners.size,
+        ),
+        0,
+      );
+    });
+  },
+);
+
+for (const target of ["settings", "signin"]) {
+  test(
+    `X queued ${target} feedback survives pending startup UI cleanup in StrictMode`,
+    { timeout: 30_000 },
+    async () => {
+      await fixture(
+        "signin",
+        async ({ page }) => {
+          await page.getByText("Restored callback error").waitFor();
+          assert.ok(
+            await page.evaluate(
+              () => window.harness.environment.hiddenCards > 0,
+            ),
+          );
+          if (target === "settings") {
+            await page.getByRole("dialog", { name: "Settings" }).waitFor();
+          } else {
+            await page
+              .getByRole("button", { name: "X", exact: true })
+              .waitFor();
+          }
+          assert.equal(
+            await page.evaluate(
+              () => window.harness.environment.xFeedbackConsumed,
+            ),
+            1,
+          );
+          assert.equal(
+            await page.evaluate(
+              () => window.harness.environment.xFeedbackListeners.size,
+            ),
+            1,
+          );
+        },
+        {
+          openSignIn: false,
+          query: {
+            pendingTransientCleanup: "",
+            xFeedbackTarget: target,
+            xFeedbackMessage: "Restored callback error",
+          },
+        },
+      );
     },
   );
 }

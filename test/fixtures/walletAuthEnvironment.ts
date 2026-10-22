@@ -1,5 +1,19 @@
 const noop = () => {};
 const subscribe = () => noop;
+const params = new URLSearchParams(location.search);
+
+type XRedirectResult = {
+  flowId: string;
+  status: "ready" | "failed";
+  errorCode: string;
+  consentSource: "signin" | "settings";
+};
+export type XAuthUiFeedback = {
+  target: "signin" | "settings";
+  kind: "error" | "success";
+  message: string;
+};
+type EventModalState = { isOpen: boolean; eventId: string | null };
 
 export const environment = {
   connectCalls: [] as any[],
@@ -10,6 +24,33 @@ export const environment = {
   linkedMethods: { eth: false, sol: false, apple: false, x: false },
   hiddenCards: 0,
   providerReads: 0,
+  xIntentCalls: [] as any[],
+  xRedirectCalls: [] as any[],
+  xPending: params.has("xPendingSource")
+    ? ({
+        flowId: "pending-flow",
+        status: "ready",
+        errorCode: "",
+        consentSource: params.get("xPendingSource"),
+      } as XRedirectResult)
+    : null,
+  xPendingListeners: new Set<(result: XRedirectResult | null) => void>(),
+  xFeedback: params.has("xFeedbackTarget")
+    ? ({
+        target: params.get("xFeedbackTarget"),
+        kind: params.get("xFeedbackKind") || "error",
+        message: params.get("xFeedbackMessage") || "X callback failed.",
+      } as XAuthUiFeedback)
+    : null,
+  xFeedbackListeners: new Set<(feedback: XAuthUiFeedback) => void>(),
+  xFeedbackConsumed: 0,
+  xFeedbackDeliveries: 0,
+  xClearedResults: 0,
+  eventModal: {
+    isOpen: params.has("eventOpen"),
+    eventId: params.has("eventOpen") ? "event-id" : null,
+  } as EventModalState,
+  eventModalListeners: new Set<(state: EventModalState) => void>(),
   wallets: [
     {
       info: { uuid: "one", rdns: "wallet.one", name: "Wallet One", icon: "" },
@@ -31,9 +72,15 @@ window.setTimeout = ((
   delay?: number,
   ...args: any[]
 ) => {
-  if ((delay === 500 || delay === 650) && typeof callback === "function") {
+  if (
+    [500, 650, 1500, 20_000].includes(delay ?? 0) &&
+    typeof callback === "function"
+  ) {
     const id = nextTimer--;
-    environment.timers.set(id, { callback: () => callback(...args), delay });
+    environment.timers.set(id, {
+      callback: () => callback(...args),
+      delay: delay!,
+    });
     return id;
   }
   return timeout(callback, delay, ...args);
@@ -54,6 +101,8 @@ export const connectToEthereumAndSign = (wallet: any) =>
 export const connectToSolana = () =>
   defer(environment.connectCalls, { method: "sol" });
 export const connection = {
+  beginAuthIntent: (method: string) =>
+    defer(environment.xIntentCalls, { method }),
   verifyEthAddress: (...args: any[]) =>
     defer(environment.verificationCalls, { method: "eth", args }),
   verifySolanaAddress: (...args: any[]) =>
@@ -91,13 +140,47 @@ export const useAppleAuthFlow = () => ({
   clearIntent: noop,
 });
 export const clearAppleSignInTransientState = noop;
-export const clearConsumedXRedirectResult = noop;
-export const isXRedirectStartedError = () => false;
-export const peekXRedirectResult = () => null;
-export const startXRedirectAuth = noop;
-export const subscribeToPendingXRedirectResult = subscribe;
-export const consumePendingXAuthUiFeedback = () => null;
-export const subscribeToXAuthUiFeedback = subscribe;
+export const setPendingXRedirectResult = (result: XRedirectResult | null) => {
+  environment.xPending = result;
+  environment.xPendingListeners.forEach((listener) => listener(result));
+};
+export const clearConsumedXRedirectResult = () => {
+  environment.xClearedResults += 1;
+  setPendingXRedirectResult(null);
+};
+export const isXRedirectStartedError = (error: unknown) =>
+  error instanceof Error && error.message === "x-redirect-started";
+export const peekXRedirectResult = () => environment.xPending;
+export const startXRedirectAuth = (options: object) =>
+  defer(environment.xRedirectCalls, options);
+export const subscribeToPendingXRedirectResult = (
+  listener: (result: XRedirectResult | null) => void,
+) => {
+  environment.xPendingListeners.add(listener);
+  listener(environment.xPending);
+  return () => environment.xPendingListeners.delete(listener);
+};
+export const consumePendingXAuthUiFeedback = () => {
+  const feedback = environment.xFeedback;
+  environment.xFeedback = null;
+  if (feedback) environment.xFeedbackConsumed += 1;
+  return feedback;
+};
+export const subscribeToXAuthUiFeedback = (
+  listener: (feedback: XAuthUiFeedback) => void,
+) => {
+  environment.xFeedbackListeners.add(listener);
+  return () => environment.xFeedbackListeners.delete(listener);
+};
+export const publishXAuthUiFeedback = (feedback: XAuthUiFeedback) => {
+  environment.xFeedback = feedback;
+  if (environment.xFeedbackListeners.size === 0) return;
+  environment.xFeedbackListeners.forEach((listener) => {
+    environment.xFeedbackDeliveries += 1;
+    listener(feedback);
+  });
+  environment.xFeedback = null;
+};
 export const markAuthNameCommitted = subscribe;
 export const notifyVerifiedProfileNameCommitted = subscribe;
 export const performLogoutCleanupAndReload = async () => {};
@@ -112,8 +195,18 @@ export const hideShinyCard = () => (environment.hiddenCards += 1);
 export const showShinyCard = noop;
 export const showsShinyCardSomewhere = false;
 export const updateShinyCardDisplayName = noop;
-export const registerProfileTransientUiHandler = subscribe;
 
 export const EVENT_MODAL_AUTH_Z_INDEX = 100101;
-export const getEventModalState = () => ({ isOpen: false, eventId: null });
-export const subscribeToEventModalState = subscribe;
+export const getEventModalState = () => environment.eventModal;
+export const subscribeToEventModalState = (
+  listener: (state: EventModalState) => void,
+) => {
+  environment.eventModalListeners.add(listener);
+  return () => environment.eventModalListeners.delete(listener);
+};
+export const setEventModalState = (isOpen: boolean) => {
+  environment.eventModal = { isOpen, eventId: isOpen ? "event-id" : null };
+  environment.eventModalListeners.forEach((listener) =>
+    listener(environment.eventModal),
+  );
+};

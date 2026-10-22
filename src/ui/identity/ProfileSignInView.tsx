@@ -20,20 +20,7 @@ import type { AuthState } from "../../connection/authModels";
 import { handleLoginSuccess } from "../../connection/loginSuccess";
 import { markAuthNameCommitted } from "../../session/authRestoreTiming";
 import { notifyVerifiedProfileNameCommitted } from "../../connection/deferredProfilePresentation";
-import {
-  clearConsumedXRedirectResult,
-  isXRedirectStartedError,
-  peekXRedirectResult,
-  startXRedirectAuth,
-  subscribeToPendingXRedirectResult,
-} from "../../connection/xConnection";
 import { formatAuthCooldownErrorMessage } from "../../connection/authCooldownErrors";
-import { formatXAuthErrorMessage } from "../../connection/xAuthErrors";
-import {
-  consumePendingXAuthUiFeedback,
-  subscribeToXAuthUiFeedback,
-  XAuthUiFeedback,
-} from "../../connection/xAuthUiFeedback";
 import { NameEditModal } from "../NameEditModal";
 import { LogoutConfirmModal } from "../LogoutConfirmModal";
 import { SettingsModal } from "./SettingsModalView";
@@ -56,13 +43,10 @@ import {
 } from "../../session/logoutOrchestrator";
 import { useEthereumWalletPicker } from "../EthereumWalletPicker";
 import { primeInjectedEthereumProviderDiscovery } from "../../connection/injectedEthereumProviders";
-import {
-  type XButtonUiState,
-  getAppleButtonLabel,
-  getXButtonLabel,
-} from "./authFlowState";
+import { getAppleButtonLabel, getXButtonLabel } from "./authFlowState";
 import { useAppleAuthFlow } from "./useAppleAuthFlow";
 import { useWalletAuthFlow } from "./useWalletAuthFlow";
+import { useXAuthFlow } from "./useXAuthFlow";
 import type { WalletAuthFlowOptions } from "./walletAuthFlowController";
 import {
   type ProfileSignInApi,
@@ -220,9 +204,6 @@ const EventSignInTitle = styled(ModalTitle)`
   text-align: left;
 `;
 
-const X_REDIRECT_NAVIGATION_FALLBACK_DELAY_MS = 1500;
-const STALE_PENDING_X_SIGNIN_DELAY_MS = 20 * 1000;
-
 interface NotificationState {
   title: string;
   subtitle: string;
@@ -243,13 +224,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
     return eventModalState.isOpen && !!eventModalState.eventId;
   });
   const [inlineAuthError, setInlineAuthError] = useState("");
-  const [xButtonState, setXButtonState] = useState<XButtonUiState>("idle");
-  const [isPendingXSignInRedirect, setIsPendingXSignInRedirect] =
-    useState<boolean>(() => {
-      return peekXRedirectResult()?.consentSource === "signin";
-    });
-  const [isPendingXSignInRedirectStale, setIsPendingXSignInRedirectStale] =
-    useState(false);
   const { requestWalletSelection, pickerElement, closePicker } =
     useEthereumWalletPicker();
   const [profileDisplayName, setProfileDisplayName] = useState(
@@ -274,19 +248,11 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const signInButtonRef = useRef<HTMLButtonElement>(null);
   const notificationTimeoutRef = useRef<number | null>(null);
-  const pendingXSignInStaleTimeoutRef = useRef<number | null>(null);
-  const xRedirectNavigationFallbackTimeoutRef = useRef<number | null>(null);
-  const xRedirectVisibilityRecoveryHandlerRef = useRef<(() => void) | null>(
-    null,
-  );
   const logoutReturnFocusIdRef = useRef<string | null>(null);
   const settingsReturnFocusIdRef = useRef<string | null>(null);
   const isMountedRef = useRef(true);
-  const authStatusRef = useRef(authStatus);
+  const wasOpenRef = useRef(isOpen);
   const nextSettingsInlineMessageIdRef = useRef(0);
-  const shouldReopenSettingsAfterXRedirectRef = useRef(
-    peekXRedirectResult()?.consentSource === "settings",
-  );
 
   const restoreFocusById = useCallback(
     (returnFocusIdRef: { current: string | null }) => {
@@ -375,10 +341,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
       : ethereumState === "verifying"
         ? "Verifying..."
         : "Ethereum";
-  const xText = getXButtonLabel(xButtonState);
-  const isXBusy = xButtonState === "connecting";
-  const isPendingXSignInRedirectBlockingUi =
-    isPendingXSignInRedirect && !isPendingXSignInRedirectStale;
   const shouldLiftAboveEventModal = isOpen && popupMode === "event";
   const isEventSignInPopup = isOpen && popupMode === "event";
 
@@ -436,96 +398,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
     setPopupMode("inline");
   }, [authStatus, isOpen, popupMode]);
 
-  const clearPendingXSignInStaleTimeout = useCallback(() => {
-    if (pendingXSignInStaleTimeoutRef.current !== null) {
-      window.clearTimeout(pendingXSignInStaleTimeoutRef.current);
-      pendingXSignInStaleTimeoutRef.current = null;
-    }
-  }, []);
-
-  const clearXRedirectNavigationFallbackTimeout = useCallback(() => {
-    if (xRedirectNavigationFallbackTimeoutRef.current !== null) {
-      window.clearTimeout(xRedirectNavigationFallbackTimeoutRef.current);
-      xRedirectNavigationFallbackTimeoutRef.current = null;
-    }
-  }, []);
-
-  const clearXRedirectVisibilityRecovery = useCallback(() => {
-    if (!xRedirectVisibilityRecoveryHandlerRef.current) {
-      return;
-    }
-    document.removeEventListener(
-      "visibilitychange",
-      xRedirectVisibilityRecoveryHandlerRef.current,
-    );
-    xRedirectVisibilityRecoveryHandlerRef.current = null;
-  }, []);
-
-  const closeProfileTransientUiForSettingsReopen = useCallback(() => {
-    logoutReturnFocusIdRef.current = null;
-    closeMenuAndInfoIfAny();
-    setIsOpen(false);
-    setIsLogoutConfirmOpen(false);
-    setIsEditingName(false);
-    hideShinyCard();
-  }, []);
-
-  const armPendingXSignInStaleTimeout = useCallback(() => {
-    clearPendingXSignInStaleTimeout();
-    pendingXSignInStaleTimeoutRef.current = window.setTimeout(() => {
-      pendingXSignInStaleTimeoutRef.current = null;
-      if (
-        !isMountedRef.current ||
-        peekXRedirectResult()?.consentSource !== "signin"
-      ) {
-        return;
-      }
-      setIsPendingXSignInRedirectStale(true);
-    }, STALE_PENDING_X_SIGNIN_DELAY_MS);
-  }, [clearPendingXSignInStaleTimeout]);
-
-  const recoverXRedirectNavigationIfStalled = useCallback(() => {
-    clearXRedirectNavigationFallbackTimeout();
-    clearXRedirectVisibilityRecovery();
-    if (!isMountedRef.current || authStatusRef.current === "authenticated") {
-      return;
-    }
-    if (peekXRedirectResult()?.consentSource === "signin") {
-      return;
-    }
-    setXButtonState("idle");
-  }, [
-    clearXRedirectNavigationFallbackTimeout,
-    clearXRedirectVisibilityRecovery,
-  ]);
-
-  const scheduleXRedirectNavigationFallback = useCallback(() => {
-    clearXRedirectNavigationFallbackTimeout();
-    clearXRedirectVisibilityRecovery();
-    xRedirectNavigationFallbackTimeoutRef.current = window.setTimeout(() => {
-      xRedirectNavigationFallbackTimeoutRef.current = null;
-      if (!isMountedRef.current) {
-        return;
-      }
-      if (document.visibilityState === "visible") {
-        recoverXRedirectNavigationIfStalled();
-        return;
-      }
-      const handleVisibilityChange = () => {
-        if (document.visibilityState !== "visible") {
-          return;
-        }
-        recoverXRedirectNavigationIfStalled();
-      };
-      xRedirectVisibilityRecoveryHandlerRef.current = handleVisibilityChange;
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-    }, X_REDIRECT_NAVIGATION_FALLBACK_DELAY_MS);
-  }, [
-    clearXRedirectNavigationFallbackTimeout,
-    clearXRedirectVisibilityRecovery,
-    recoverXRedirectNavigationIfStalled,
-  ]);
-
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
@@ -579,18 +451,11 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      clearPendingXSignInStaleTimeout();
-      clearXRedirectNavigationFallbackTimeout();
-      clearXRedirectVisibilityRecovery();
       if (notificationTimeoutRef.current) {
         clearTimeout(notificationTimeoutRef.current);
       }
     };
-  }, [
-    clearPendingXSignInStaleTimeout,
-    clearXRedirectNavigationFallbackTimeout,
-    clearXRedirectVisibilityRecovery,
-  ]);
+  }, []);
 
   useEffect(() => {
     if (!isOpen || authStatus === "authenticated") {
@@ -599,58 +464,8 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
   }, [isOpen, authStatus, closePicker]);
 
   useEffect(() => {
-    authStatusRef.current = authStatus;
-  }, [authStatus]);
-
-  useEffect(() => {
-    return subscribeToPendingXRedirectResult((result) => {
-      const isPendingSignInRedirect = result?.consentSource === "signin";
-      setIsPendingXSignInRedirect(isPendingSignInRedirect);
-      if (isPendingSignInRedirect) {
-        setIsPendingXSignInRedirectStale(false);
-        armPendingXSignInStaleTimeout();
-        setInlineAuthError("");
-        setIsOpen(false);
-        return;
-      }
-      clearPendingXSignInStaleTimeout();
-      setIsPendingXSignInRedirectStale(false);
-      if (result?.consentSource === "settings") {
-        shouldReopenSettingsAfterXRedirectRef.current = true;
-        return;
-      }
-      if (
-        !shouldReopenSettingsAfterXRedirectRef.current ||
-        !isMountedRef.current
-      ) {
-        return;
-      }
-      shouldReopenSettingsAfterXRedirectRef.current = false;
-      closeProfileTransientUiForSettingsReopen();
-      setIsSettingsOpen(true);
-    });
-  }, [
-    armPendingXSignInStaleTimeout,
-    clearPendingXSignInStaleTimeout,
-    closeProfileTransientUiForSettingsReopen,
-  ]);
-
-  useEffect(() => {
     if (authStatus === "authenticated") resetAppleUi();
   }, [authStatus, resetAppleUi]);
-
-  useEffect(() => {
-    if (authStatus === "authenticated" && xButtonState !== "idle") {
-      clearXRedirectNavigationFallbackTimeout();
-      clearXRedirectVisibilityRecovery();
-      setXButtonState("idle");
-    }
-  }, [
-    authStatus,
-    clearXRedirectNavigationFallbackTimeout,
-    clearXRedirectVisibilityRecovery,
-    xButtonState,
-  ]);
 
   useEffect(() => {
     reconcileLogoutUiLockWithAuthStatus(authStatus);
@@ -789,14 +604,70 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
     );
   }, [closeProfilePopupInternal, hideNotificationBannerInternal]);
 
-  const recoverFromStalePendingXSignInRedirect = useCallback(() => {
-    clearPendingXSignInStaleTimeout();
-    setIsPendingXSignInRedirectStale(false);
-    clearConsumedXRedirectResult();
-    setInlineAuthError(
-      formatXAuthErrorMessage("x-redirect-complete-timeout", "signin"),
-    );
-  }, [clearPendingXSignInStaleTimeout]);
+  useEffect(() => {
+    return registerSignInInlineAuthErrorHandler((message) => {
+      if (!isMountedRef.current) {
+        return;
+      }
+      setInlineAuthError(typeof message === "string" ? message : "");
+    });
+  }, []);
+
+  const {
+    buttonState: xButtonState,
+    pendingSignIn,
+    isBusy: isXBusy,
+    start: handleXClick,
+    retryPendingSignIn: recoverFromStalePendingXSignInRedirect,
+  } = useXAuthFlow({
+    consentSource: "signin",
+    authStatus,
+    canStart: () => authStatus !== "authenticated",
+    onStart: () => setInlineAuthError(""),
+    onError: (message) => setInlineAuthError(message),
+    onRedirectStarted: () => setInlineAuthError(""),
+    onPendingSignIn: () => {
+      setInlineAuthError("");
+      setIsOpen(false);
+    },
+    onSettingsReturn: () => {
+      logoutReturnFocusIdRef.current = null;
+      closeMenuAndInfoIfAny();
+      setIsOpen(false);
+      setIsLogoutConfirmOpen(false);
+      setIsEditingName(false);
+      hideShinyCard();
+      setIsSettingsOpen(true);
+    },
+    onFeedback: (feedback) => {
+      if (feedback.target === "signin") {
+        const eventModalState = getEventModalState();
+        const nextMode: ProfileSignInPopupMode =
+          eventModalState.isOpen && !!eventModalState.eventId
+            ? "event"
+            : "inline";
+        closeMenuAndInfoIfAny();
+        setPopupMode(nextMode);
+        setInlineAuthError(feedback.message);
+        setIsOpen(true);
+        return;
+      }
+      if (feedback.kind === "error") {
+        nextSettingsInlineMessageIdRef.current += 1;
+        setSettingsInlineMessage({
+          id: nextSettingsInlineMessageIdRef.current,
+          message: feedback.message,
+        });
+      } else {
+        setSettingsInlineMessage(null);
+      }
+      setIsOpen(false);
+      setIsSettingsOpen(true);
+    },
+  });
+  const xText = getXButtonLabel(xButtonState);
+  const isPendingXSignInRedirect = pendingSignIn !== "none";
+  const isPendingXSignInRedirectBlockingUi = pendingSignIn === "waiting";
 
   const openProfileSignInPopupInternal = useCallback(
     (mode: ProfileSignInPopupMode = "inline") => {
@@ -870,57 +741,8 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
   }, []);
 
   useEffect(() => {
-    return registerSignInInlineAuthErrorHandler((message) => {
-      if (!isMountedRef.current) {
-        return;
-      }
-      setInlineAuthError(typeof message === "string" ? message : "");
-    });
-  }, []);
-
-  useEffect(() => {
-    const applyFeedback = (feedback: XAuthUiFeedback) => {
-      if (!isMountedRef.current) {
-        return;
-      }
-      if (feedback.target === "signin") {
-        const eventModalState = getEventModalState();
-        const nextMode: ProfileSignInPopupMode =
-          eventModalState.isOpen && !!eventModalState.eventId
-            ? "event"
-            : "inline";
-        closeMenuAndInfoIfAny();
-        setPopupMode(nextMode);
-        setInlineAuthError(feedback.message);
-        setIsOpen(true);
-        return;
-      }
-      if (feedback.kind === "error") {
-        nextSettingsInlineMessageIdRef.current += 1;
-        setSettingsInlineMessage({
-          id: nextSettingsInlineMessageIdRef.current,
-          message: feedback.message,
-        });
-      } else {
-        setSettingsInlineMessage(null);
-      }
-      setIsOpen(false);
-      setIsSettingsOpen(true);
-    };
-
-    const pendingFeedback = consumePendingXAuthUiFeedback();
-    if (pendingFeedback) {
-      applyFeedback(pendingFeedback);
-    }
-
-    return subscribeToXAuthUiFeedback(applyFeedback);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      return;
-    }
-    setInlineAuthError("");
+    if (wasOpenRef.current && !isOpen) setInlineAuthError("");
+    wasOpenRef.current = isOpen;
   }, [isOpen]);
 
   const handleSignInClick = () => {
@@ -989,49 +811,6 @@ const ProfileSignIn: React.FC<ProfileSignInProps> = ({ authState }) => {
     void import("../../connection/ethereumConnection").catch(() => {});
     primeInjectedEthereumProviderDiscovery();
   }, [isOpen, authStatus]);
-
-  const handleXClick = async () => {
-    if (isXBusy) {
-      return;
-    }
-    clearXRedirectNavigationFallbackTimeout();
-    clearXRedirectVisibilityRecovery();
-    setInlineAuthError("");
-    setXButtonState("connecting");
-    let didStartXRedirect = false;
-    try {
-      const intent = await connection.beginAuthIntent("x");
-      await startXRedirectAuth({
-        intentId: intent.intentId,
-        consentSource: "signin",
-      });
-    } catch (error) {
-      if (isXRedirectStartedError(error)) {
-        didStartXRedirect = true;
-        if (isMountedRef.current) {
-          setInlineAuthError("");
-        }
-        scheduleXRedirectNavigationFallback();
-        return;
-      }
-      if (!isMountedRef.current) {
-        return;
-      }
-      const cooldownMessage = formatAuthCooldownErrorMessage(error);
-      if (cooldownMessage) {
-        setInlineAuthError(cooldownMessage);
-      } else {
-        setInlineAuthError(formatXAuthErrorMessage(error, "signin"));
-      }
-    } finally {
-      if (!didStartXRedirect && isMountedRef.current) {
-        clearPendingXSignInStaleTimeout();
-        clearXRedirectNavigationFallbackTimeout();
-        clearXRedirectVisibilityRecovery();
-        setXButtonState("idle");
-      }
-    }
-  };
 
   const handleNotificationClick = () => {
     if (notificationState?.successHandler) {

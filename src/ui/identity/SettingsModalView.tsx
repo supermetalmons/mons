@@ -23,11 +23,6 @@ import { setAuthStatusGlobally } from "../../connection/authentication";
 import { useEthereumWalletPicker } from "../EthereumWalletPicker";
 import { primeInjectedEthereumProviderDiscovery } from "../../connection/injectedEthereumProviders";
 import { clearAppleSignInTransientState } from "../../connection/appleConnection";
-import {
-  isXRedirectStartedError,
-  startXRedirectAuth,
-} from "../../connection/xConnection";
-import { formatXAuthErrorMessage } from "../../connection/xAuthErrors";
 import { isMobile } from "../../utils/misc";
 import { notifyOtherTabsAboutSignIn } from "../../session/logoutOrchestrator";
 import { resetNftCache } from "../../services/nftCache";
@@ -38,6 +33,7 @@ import {
 } from "./authFlowState";
 import { useAppleAuthFlow } from "./useAppleAuthFlow";
 import { useWalletAuthFlow } from "./useWalletAuthFlow";
+import { useXAuthFlow } from "./useXAuthFlow";
 import type { WalletAuthFlowOptions } from "./walletAuthFlowController";
 
 const SettingsPopup = styled(ModalPopup)`
@@ -584,35 +580,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   };
 
-  const runXConnectFlow = useCallback(async () => {
-    setAuthMessage("");
-    setBusyMethod("x");
-    let didStartXRedirect = false;
-    try {
-      const intent = await connection.beginAuthIntent("x");
-      didStartXRedirect = true;
-      await startXRedirectAuth({
-        intentId: intent.intentId,
-        consentSource: "settings",
-      });
-    } catch (error) {
+  const { start: runXConnectFlow } = useXAuthFlow({
+    consentSource: "settings",
+    canStart: () => !isLoading && busyMethod === null,
+    onStart: () => {
+      setAuthMessage("");
+      setBusyMethod("x");
+    },
+    onError: (message, error) => {
       console.error("Failed to connect x:", error);
-      if (!isMountedRef.current) return;
-      const cooldownMessage = formatAuthCooldownErrorMessage(error);
-      if (cooldownMessage) {
-        setAuthMessage(cooldownMessage);
-      } else if (isXRedirectStartedError(error)) {
-        setAuthMessage("");
-      } else {
-        setAuthMessage(formatXAuthErrorMessage(error, "link"));
-      }
-    } finally {
-      if (isMountedRef.current) {
-        setBusyMethod(null);
-        if (!didStartXRedirect) await refreshLinkedMethods();
-      }
-    }
-  }, [refreshLinkedMethods]);
+      setAuthMessage(message);
+    },
+    onRedirectStarted: () => setAuthMessage(""),
+    onSettled: async ({ redirectAttempted }) => {
+      setBusyMethod((method) => (method === "x" ? null : method));
+      if (!redirectAttempted) await refreshLinkedMethods();
+    },
+  });
 
   const handleConnectClick = useCallback(
     (method: MethodKey) => {
