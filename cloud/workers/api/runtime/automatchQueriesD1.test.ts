@@ -188,6 +188,62 @@ const reads: {
   },
 ];
 
+const recoveryReads = [
+  {
+    name: "Telegram due",
+    root: telegramRoot,
+    field: "updatedAtMs",
+    value: 10,
+    run: (
+      target: AutomatchD1Store,
+      limit: number,
+      excludedIdentities: readonly string[] = [],
+      signal?: AbortSignal,
+    ) =>
+      target.listDueAutomatchTelegramOutboxesPage(
+        10,
+        limit,
+        excludedIdentities,
+        signal,
+      ),
+  },
+  {
+    name: "profile due",
+    root: profileRoot,
+    field: "lastQueuedAtMs",
+    value: 10,
+    run: (
+      target: AutomatchD1Store,
+      limit: number,
+      excludedIdentities: readonly string[] = [],
+      signal?: AbortSignal,
+    ) =>
+      target.listDueAutomatchProfileOutboxesPage(
+        10,
+        limit,
+        excludedIdentities,
+        signal,
+      ),
+  },
+  {
+    name: "malformed profile",
+    root: profileRoot,
+    field: "lastQueuedAtMs",
+    value: "10",
+    run: (
+      target: AutomatchD1Store,
+      limit: number,
+      excludedIdentities: readonly string[] = [],
+      signal?: AbortSignal,
+    ) =>
+      target.listMalformedAutomatchProfileOutboxesPage(
+        limit,
+        excludedIdentities,
+        signal,
+      ),
+  },
+] as const;
+
 describe("explicit D1 automatch queries", () => {
   beforeAll(async () => {
     await applyD1Migrations(db, testEnv.TEST_D1_MIGRATIONS);
@@ -319,6 +375,206 @@ describe("explicit D1 automatch queries", () => {
     }
   });
 
+  it("preserves raw JSON number precision, duplicate fields, and numeric text ordering", async () => {
+    for (const [root, field] of [
+      [telegramRoot, "updatedAtMs"],
+      [profileRoot, "lastQueuedAtMs"],
+    ] as const) {
+      const { table } = AUTOMATCH_RECORD_TABLES[root];
+      const values = [
+        ["integer", "9007199254740993"],
+        ["maximum-integer", "9223372036854775807"],
+        ["real", "10.0"],
+        ["fraction", "10.25"],
+        ["numeric-text", '"0010"'],
+        ["numeric-text-later", '"10"'],
+        ["positive-overflow", "1e999"],
+        ["negative-overflow", "-1e999"],
+        ["underflow", "1e-999"],
+      ];
+      await db.batch([
+        ...values.map(([key, value]) =>
+          db
+            .prepare(
+              `INSERT INTO ${table} (record_key, payload_json, revision, updated_at_ms)
+               VALUES (?, ?, 1, 100)`,
+            )
+            .bind(key, `{ "${field}" : ${value}, "future": "\\u03b1" }`),
+        ),
+        db
+          .prepare(
+            `INSERT INTO ${table} (record_key, payload_json, revision, updated_at_ms)
+             VALUES ('duplicate', ?, 1, 100)`,
+          )
+          .bind(`{"${field}":1,"${field}":50}`),
+      ]);
+    }
+    for (const cutoff of [
+      -Number.MAX_VALUE,
+      -0.5,
+      0,
+      1,
+      10,
+      10.25,
+      Number.MAX_SAFE_INTEGER + 1,
+      Number.MAX_VALUE,
+    ]) {
+      for (const limit of [1, 3, 100]) {
+        expect(
+          await store.listDueAutomatchTelegramOutboxes(cutoff, limit),
+        ).toEqual(
+          await legacy.getPath(telegramRoot, {
+            orderBy: "updatedAtMs",
+            startAt: 0,
+            endAt: cutoff,
+            limitToFirst: limit,
+          }),
+        );
+        expect(
+          await store.listDueAutomatchProfileOutboxes(cutoff, limit),
+        ).toEqual(
+          await legacy.getPath(profileRoot, {
+            orderBy: "lastQueuedAtMs",
+            endAt: cutoff,
+            limitToFirst: limit,
+          }),
+        );
+      }
+    }
+    for (const limit of [1, 2, 100]) {
+      expect(await store.listMalformedAutomatchProfileOutboxes(limit)).toEqual(
+        await legacy.getPath(profileRoot, {
+          orderBy: "lastQueuedAtMs",
+          startAt: "",
+          limitToFirst: limit,
+        }),
+      );
+    }
+    for (const [table, field] of [
+      ["automatch_telegram_projection_outbox", "updatedAtMs"],
+      ["game_session_projection_outbox", "lastQueuedAtMs"],
+    ]) {
+      const types = await db
+        .prepare(
+          `SELECT record_key, typeof(recovery_sort_value) AS generated_type,
+             typeof(json_extract(payload_json, '$.${field}')) AS original_type,
+             recovery_sort_value IS json_extract(payload_json, '$.${field}') AS same_value
+           FROM ${table} ORDER BY record_key`,
+        )
+        .all<{
+          record_key: string;
+          generated_type: string;
+          original_type: string;
+          same_value: number;
+        }>();
+      for (const row of types.results) {
+        expect(row.generated_type, row.record_key).toBe(row.original_type);
+        expect(row.same_value, row.record_key).toBe(1);
+      }
+    }
+  });
+
+  it.each(recoveryReads)(
+    "returns raw identities and excludes earlier $name pages before applying the limit",
+    async ({ root, field, value, run }) => {
+      const keys = ["2", "02", "10", "alpha", "😀"];
+      await seed(
+        root,
+        keys.map((key) => [key, { [field]: value, requestId: key }]),
+      );
+      const first = await run(store, 2);
+      expect(first.scannedIdentities).toEqual(["text:32", "text:3032"]);
+      expect(first.entries).toEqual({
+        "2": { [field]: value, requestId: "2" },
+        "02": { [field]: value, requestId: "02" },
+      });
+      const second = await run(store, 2, ["text:32", "text:3032"]);
+      expect(second.scannedIdentities).toEqual([
+        "text:3130",
+        "text:616C706861",
+      ]);
+      expect(second.entries).toEqual({
+        "10": { [field]: value, requestId: "10" },
+        alpha: { [field]: value, requestId: "alpha" },
+      });
+      const excluded = ["text:32", "text:3032", "text:3130", "text:616C706861"];
+      const third = await run(store, 2, excluded);
+      expect(third.scannedIdentities).toEqual(["text:F09F9880"]);
+      expect(third.entries).toEqual({
+        "😀": { [field]: value, requestId: "😀" },
+      });
+      expect(await run(store, 2, [...excluded, "text:F09F9880"])).toEqual({
+        entries: null,
+        scannedIdentities: [],
+      });
+    },
+  );
+
+  it.each(recoveryReads)(
+    "rejects invalid $name exclusions before querying and retains strict row decoding",
+    async ({ root, field, value, run }) => {
+      const observed = observeReads();
+      for (const excluded of [
+        ["text:32", "text:32"],
+        ["text:ab"],
+        ["text:0"],
+        ["numeric:32"],
+        Array.from(
+          { length: 11 },
+          (_, index) =>
+            `text:${index.toString(16).toUpperCase().padStart(2, "0")}`,
+        ),
+      ]) {
+        await expect(run(observed.store, 2, excluded)).rejects.toThrow(
+          "invalid-recovery-scan-exclusions",
+        );
+      }
+      expect(observed.sessions).toEqual([]);
+      expect(observed.queries).toEqual([]);
+      await seed(root, [["bad.key", { [field]: value }]]);
+      await expect(run(store, 2)).rejects.toThrow("invalid-automatch-key");
+    },
+  );
+
+  it.each(recoveryReads)(
+    "checks cancellation around $name page reads and keeps their index with exclusions",
+    async ({ root, field, value, run }) => {
+      await seed(root, [
+        ["one", { [field]: value }],
+        ["two", { [field]: value }],
+      ]);
+      const reason = new Error("cancelled-automatch-page");
+      const before = new AbortController();
+      before.abort(reason);
+      const cancelled = observeReads();
+      await expect(run(cancelled.store, 2, [], before.signal)).rejects.toBe(
+        reason,
+      );
+      expect(cancelled.sessions).toEqual([]);
+      expect(cancelled.queries).toEqual([]);
+
+      const after = new AbortController();
+      const completed = observeReads(() => after.abort(reason));
+      await expect(
+        run(completed.store, 2, ["text:6F6E65"], after.signal),
+      ).rejects.toBe(reason);
+      expect(completed.sessions).toEqual(["first-primary"]);
+      expect(completed.queries).toHaveLength(1);
+      const query = completed.queries[0];
+      const plan = await db
+        .prepare(`EXPLAIN QUERY PLAN ${query.sql}`)
+        .bind(...query.values)
+        .all<{ detail: string }>();
+      const details = plan.results.map(({ detail }) => detail).join("\n");
+      expect(details).toContain(
+        root === telegramRoot
+          ? "USING INDEX idx_automatch_telegram_projection_recovery"
+          : "USING INDEX idx_game_session_projection_recovery",
+      );
+      expect(details).not.toContain("TEMP B-TREE");
+    },
+  );
+
   it("returns null for empty and tombstone-only collections", async () => {
     for (const { run } of reads) expect(await run(store)).toBeNull();
     for (const root of queryRoots) await seed(root, [["deleted", undefined]]);
@@ -376,7 +632,7 @@ describe("explicit D1 automatch queries", () => {
     },
   );
 
-  it("uses indexed searches without sorting within due recovery branches", async () => {
+  it("uses indexed searches without sorting recovery rows", async () => {
     await seed("automatch", [["entry", { uid: "owner" }]]);
     await seed(telegramRoot, mixedOutboxes("updatedAtMs"));
     await seed(profileRoot, mixedOutboxes("lastQueuedAtMs"));
@@ -402,24 +658,16 @@ describe("explicit D1 automatch queries", () => {
       /SEARCH .* USING INDEX idx_automatch_entries_uid \(<expr>=\?\)/,
     );
     expect(plans[1]).toMatch(
-      /SEARCH .* USING INDEX idx_automatch_telegram_projection_due \(<expr>>\? AND <expr><\?\)/,
+      /SEARCH .* USING INDEX idx_automatch_telegram_projection_recovery /,
     );
     expect(sorts[1], plans[1]).toEqual([]);
-    expect(
-      plans[2].match(
-        /SEARCH .* USING INDEX idx_game_session_projection_due \(<expr>/g,
-      ),
-      plans[2],
-    ).toHaveLength(4);
     expect(plans[2]).toMatch(
-      /SEARCH .* USING INDEX idx_game_session_projection_due \(<expr><\?\)/,
+      /SEARCH .* USING INDEX idx_game_session_projection_recovery /,
     );
-    expect(sorts[2], plans[2]).toMatchObject([
-      { parent: 0, detail: "USE TEMP B-TREE FOR ORDER BY" },
-    ]);
+    expect(sorts[2], plans[2]).toEqual([]);
     expect(plans[3]).toMatch(
-      /SEARCH .* USING INDEX idx_game_session_projection_due \(<expr>>\?\)/,
+      /SEARCH .* USING INDEX idx_game_session_projection_recovery /,
     );
-    expect(sorts[3], plans[3]).toHaveLength(1);
+    expect(sorts[3], plans[3]).toEqual([]);
   });
 });

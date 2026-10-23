@@ -1,3 +1,7 @@
+import {
+  projectionRecoveryEntryIdentity,
+  projectionRecoveryPage,
+} from "./projectionRecoveryFixtures.ts";
 import { recoveryCandidates } from "./recoveryScanTestFixtures.ts";
 import { attachProjectionTestPorts } from "./projectionTestPorts.ts";
 import { profileGameProjectionRecoveryFixture } from "./eventProjectionRecoveryFixture.ts";
@@ -140,6 +144,14 @@ function ratingRepository(
     },
     quarantineRatingRecoveryEntry: async () => null,
     scanDueRatingProfileGameProjections: async () => [],
+    async scanDueRatingProfileGameProjectionsPage(nowMs, limit, excluded = []) {
+      return projectionRecoveryPage(
+        await this.scanDueRatingProfileGameProjections(nowMs, limit),
+        projectionRecoveryEntryIdentity,
+        excluded,
+        limit,
+      );
+    },
     markRatingProfileGameProjection: async (
       _operationId,
       projectionState,
@@ -282,6 +294,7 @@ function profileLinkJobs(
   ProfileLinkCatchupStore,
   | "read"
   | "scanDue"
+  | "scanDuePage"
   | "quarantineInvalidEntry"
   | "claimDispatch"
   | "advance"
@@ -304,6 +317,14 @@ function profileLinkJobs(
           )
           .slice(0, limit)
           .map((job) => structuredClone(job)),
+      );
+    },
+    async scanDuePage(dueBeforeMs, limit, excluded = []) {
+      return projectionRecoveryPage(
+        await this.scanDue(dueBeforeMs, values.size || limit),
+        projectionRecoveryEntryIdentity,
+        excluded,
+        limit,
       );
     },
     async claimDispatch(loginUid, requestId, expectedLastQueuedAtMs, nowMs) {

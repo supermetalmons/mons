@@ -3,6 +3,7 @@ import type { EventProgressOutboxRecord } from "../../../runtime/events.js";
 import type { GameSessionPort } from "./gameSessionContracts.ts";
 import type { MatchStatePort } from "./repositoryContracts.ts";
 import type { RecoveryRowObservation } from "./recoveryObservation.ts";
+import type { RecoveryScanPage } from "./recoveryScanPage.ts";
 import type {
   ProfileOwnershipProfile,
   ProfileOwnershipReader,
@@ -256,6 +257,15 @@ export type RatingProjectionRepository = RatingRepository &
       updatedBeforeMs: number,
       limit: number,
     ) => Promise<RatingRecoveryScanEntry<PendingRatingTelegramProjection>[]>;
+    scanDueRatingTelegramProjectionsPage: (
+      updatedBeforeMs: number,
+      limit: number,
+      excludedIdentities?: readonly string[],
+    ) => Promise<
+      RecoveryScanPage<
+        RatingRecoveryScanEntry<PendingRatingTelegramProjection>[]
+      >
+    >;
     markRatingTelegramProjection: (
       operationId: string,
       state: "dead" | "done",
@@ -275,6 +285,15 @@ export type RatingProfileGameProjectionRepository = RatingRepository &
       updatedBeforeMs: number,
       limit: number,
     ) => Promise<RatingRecoveryScanEntry<PendingRatingProfileGameProjection>[]>;
+    scanDueRatingProfileGameProjectionsPage: (
+      updatedBeforeMs: number,
+      limit: number,
+      excludedIdentities?: readonly string[],
+    ) => Promise<
+      RecoveryScanPage<
+        RatingRecoveryScanEntry<PendingRatingProfileGameProjection>[]
+      >
+    >;
     markRatingProfileGameProjection: (
       operationId: string,
       state: "dead" | "done",

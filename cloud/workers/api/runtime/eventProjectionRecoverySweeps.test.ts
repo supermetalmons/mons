@@ -19,13 +19,15 @@ const families = [
     kind: "profile-game",
     table: "event_profile_game_projection_outboxes",
     timestampColumn: "last_queued_at_ms",
-    limit: 10,
+    limit: 20,
+    pageSize: 10,
   },
   {
     kind: "telegram",
     table: "event_telegram_projection_outboxes",
     timestampColumn: "updated_at_ms",
     limit: 100,
+    pageSize: 100,
   },
 ] as const;
 
@@ -188,7 +190,7 @@ describe("event projection recovery sweep admissions", () => {
 
   describe.each(families)(
     "$kind",
-    ({ kind, table, timestampColumn, limit }) => {
+    ({ kind, table, timestampColumn, limit, pageSize }) => {
       const readRows = async () =>
         (
           await db
@@ -366,10 +368,16 @@ describe("event projection recovery sweep admissions", () => {
         await seed(kind, eventIds);
         const observed = observeSweep(kind);
         expect(await observed.run()).toBe(limit);
-        expect(observed.taskBatches).toEqual([
-          expectedTasks(kind, eventIds.slice(0, limit)),
-        ]);
-        expectAdmissionQueries(observed.queries, 1, 1);
+        const pageCount = limit / pageSize;
+        expect(observed.taskBatches).toEqual(
+          Array.from({ length: pageCount }, (_, index) =>
+            expectedTasks(
+              kind,
+              eventIds.slice(index * pageSize, (index + 1) * pageSize),
+            ),
+          ),
+        );
+        expectAdmissionQueries(observed.queries, pageCount, pageCount);
         expect(await admissionCount()).toBe(0);
         const rows = await readRows();
         expect(

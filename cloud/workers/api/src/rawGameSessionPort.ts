@@ -1,4 +1,5 @@
 import type { GameSessionChange } from "../../../runtime/gameSessionChanges.js";
+import type { RecoveryScanPage } from "./recoveryScanPage.ts";
 import type {
   TransactionDecision,
   TransactionResult,
@@ -41,6 +42,12 @@ export type RawAutomatchProjectionPort = {
     limit: number,
     signal?: AbortSignal,
   ): Promise<Record<string, unknown> | null>;
+  listDueAutomatchTelegramOutboxesPage(
+    nowMs: number,
+    limit: number,
+    excludedIdentities?: readonly string[],
+    signal?: AbortSignal,
+  ): Promise<RecoveryScanPage<Record<string, unknown> | null>>;
   readAutomatchProfileOutbox(
     inviteId: string,
     signal?: AbortSignal,
@@ -73,10 +80,21 @@ export type RawAutomatchProjectionPort = {
     limit: number,
     signal?: AbortSignal,
   ): Promise<Record<string, unknown> | null>;
+  listDueAutomatchProfileOutboxesPage(
+    beforeMs: number,
+    limit: number,
+    excludedIdentities?: readonly string[],
+    signal?: AbortSignal,
+  ): Promise<RecoveryScanPage<Record<string, unknown> | null>>;
   listMalformedAutomatchProfileOutboxes(
     limit: number,
     signal?: AbortSignal,
   ): Promise<Record<string, unknown> | null>;
+  listMalformedAutomatchProfileOutboxesPage(
+    limit: number,
+    excludedIdentities?: readonly string[],
+    signal?: AbortSignal,
+  ): Promise<RecoveryScanPage<Record<string, unknown> | null>>;
 };
 
 export type RawGameSessionPort = RawAutomatchProjectionPort & {

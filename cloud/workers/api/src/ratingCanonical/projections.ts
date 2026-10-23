@@ -16,7 +16,9 @@ import type {
 import {
   scanDueRatingEventProgress,
   scanDueRatingProfileGameProjections,
+  scanDueRatingProfileGameProjectionsPage,
   scanDueRatingTelegramProjections,
+  scanDueRatingTelegramProjectionsPage,
   quarantineRatingRecoveryEntry,
 } from "../ratingProjectionD1.ts";
 import { mergedRatingValue } from "./codec.ts";
@@ -123,7 +125,9 @@ export function createRatingProjections(
   | "claimRatingTelegramProjection"
   | "scanDueRatingEventProgress"
   | "scanDueRatingProfileGameProjections"
+  | "scanDueRatingProfileGameProjectionsPage"
   | "scanDueRatingTelegramProjections"
+  | "scanDueRatingTelegramProjectionsPage"
   | "quarantineRatingRecoveryEntry"
   | "markRatingEventProgress"
   | "markRatingProfileGameProjection"
@@ -176,8 +180,32 @@ export function createRatingProjections(
     async scanDueRatingProfileGameProjections(updatedBeforeMs, limit) {
       return scanDueRatingProfileGameProjections(db, updatedBeforeMs, limit);
     },
+    async scanDueRatingProfileGameProjectionsPage(
+      updatedBeforeMs,
+      limit,
+      excludedIdentities,
+    ) {
+      return scanDueRatingProfileGameProjectionsPage(
+        db,
+        updatedBeforeMs,
+        limit,
+        excludedIdentities,
+      );
+    },
     async scanDueRatingTelegramProjections(updatedBeforeMs, limit) {
       return scanDueRatingTelegramProjections(db, updatedBeforeMs, limit);
+    },
+    async scanDueRatingTelegramProjectionsPage(
+      updatedBeforeMs,
+      limit,
+      excludedIdentities,
+    ) {
+      return scanDueRatingTelegramProjectionsPage(
+        db,
+        updatedBeforeMs,
+        limit,
+        excludedIdentities,
+      );
     },
     async markRatingEventProgress(operationId, state, updatedAtMs, reason) {
       return markProjection(

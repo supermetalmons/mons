@@ -9,7 +9,9 @@ import {
   quarantineRatingRecoveryEntry,
   scanDueRatingEventProgress,
   scanDueRatingProfileGameProjections,
+  scanDueRatingProfileGameProjectionsPage,
   scanDueRatingTelegramProjections,
+  scanDueRatingTelegramProjectionsPage,
 } from "../src/ratingProjectionD1.ts";
 import { createRatingProjections } from "../src/ratingCanonical/projections.ts";
 import type {
@@ -17,6 +19,7 @@ import type {
   RatingRecoveryProjectionKind,
 } from "../src/ratingContracts.ts";
 import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
+import { recoveryScanIdentityFixture } from "../test/recoveryScanPageFixture.ts";
 
 const testEnv = env as Env & { TEST_PROFILE_D1_MIGRATIONS: D1Migration[] };
 const db = testEnv.PROFILE_DB;
@@ -151,6 +154,150 @@ beforeEach(async () => {
       "UPDATE profile_canonical_control SET state = 'active' WHERE singleton = 1",
     ),
   ]);
+});
+
+describe("bounded recovery scan pages", () => {
+  it("excludes visited profile-link keys before limiting and keeps the due index", async () => {
+    for (let index = 0; index < 21; index++)
+      await seedProfileLink(`login-${String(index).padStart(2, "0")}`, "[]");
+    const first = await profileLinks.scanDuePage(1_000, 10);
+    const excluded = first.scannedIdentities.filter(
+      (key): key is string => key !== null,
+    );
+    const queries: string[] = [];
+    const second = await createProfileLinkCatchupStore(
+      withScanRows((rows) => rows, queries),
+    ).scanDuePage(1_000, 10, excluded);
+    expect(first.entries).toHaveLength(10);
+    expect(second.entries).toHaveLength(10);
+    expect(second.entries[0]).toMatchObject({
+      kind: "candidate",
+      value: { loginUid: "login-10" },
+    });
+    expect(second.entries[9]).toMatchObject({
+      kind: "candidate",
+      value: { loginUid: "login-19" },
+    });
+    expect(
+      new Set([...first.scannedIdentities, ...second.scannedIdentities]).size,
+    ).toBe(20);
+    expect(queries).toHaveLength(1);
+    const plan = await db
+      .prepare(`EXPLAIN QUERY PLAN ${queries[0]}`)
+      .bind(1_000, 10, ...excluded)
+      .all<{ detail: string }>();
+    const details = plan.results.map(({ detail }) => detail).join("\n");
+    expect(details).toContain("USING INDEX idx_profile_link_catchup_jobs_due");
+    expect(details).not.toContain("USE TEMP B-TREE FOR ORDER BY");
+    expect(await profileLinks.scanDue(1_000, 10)).toEqual(first.entries);
+  });
+
+  it.each([
+    ["profile-game", scanDueRatingProfileGameProjectionsPage],
+    ["telegram", scanDueRatingTelegramProjectionsPage],
+  ] as const)(
+    "keeps %s rating pages distinct when rows remain due",
+    async (_kind, scan) => {
+      for (let index = 0; index < 21; index++)
+        await seedRating(`operation-${String(index).padStart(2, "0")}`);
+      const first = await scan(db, 0, 10);
+      const excluded = first.scannedIdentities.filter(
+        (key): key is string => key !== null,
+      );
+      const second = await scan(db, 0, 10, excluded);
+      expect(second.entries).toHaveLength(10);
+      expect(second.entries[0]).toMatchObject({
+        kind: "candidate",
+        value: { operationId: "operation-10" },
+      });
+      expect(second.entries[9]).toMatchObject({
+        kind: "candidate",
+        value: { operationId: "operation-19" },
+      });
+      expect(
+        first.scannedIdentities.every(
+          (key) => !second.scannedIdentities.includes(key),
+        ),
+      ).toBe(true);
+    },
+  );
+
+  it("retains raw scanned identities when inspection drops concurrently deleted records", async () => {
+    for (let index = 0; index < 10; index++)
+      await seedProfileLink(`bad-${index}`);
+    await seedProfileLink("healthy", "[]");
+    let deleted = false;
+    const observed = withScanRows(async (rows) => {
+      if (!deleted) {
+        deleted = true;
+        await db
+          .prepare(
+            "DELETE FROM profile_link_catchup_jobs WHERE login_uid LIKE 'bad-%'",
+          )
+          .run();
+      }
+      return rows;
+    });
+    const page = await createProfileLinkCatchupStore(observed).scanDuePage(
+      1_000,
+      10,
+    );
+    expect(page.entries).toEqual([]);
+    expect(page.scannedIdentities).toHaveLength(10);
+    expect(
+      await profileLinks.scanDuePage(
+        1_000,
+        10,
+        page.scannedIdentities.filter((key): key is string => key !== null),
+      ),
+    ).toMatchObject({
+      entries: [{ kind: "candidate", value: { loginUid: "healthy" } }],
+    });
+  });
+
+  it("distinguishes text and BLOB keys and retains invalid UTF-8 bytes in exclusions", async () => {
+    await seedProfileLink("same", "[]");
+    await seedProfileLink("blob", "[]");
+    await seedProfileLink("invalid", "[]");
+    await db.batch([
+      db.prepare(
+        "UPDATE profile_link_catchup_jobs SET login_uid = CAST('same' AS BLOB) WHERE login_uid = 'blob'",
+      ),
+      db.prepare(
+        "UPDATE profile_link_catchup_jobs SET login_uid = CAST(X'FF' AS TEXT) WHERE login_uid = 'invalid'",
+      ),
+    ]);
+    const before = await readSources();
+    const first = await profileLinks.scanDuePage(1_000, 10);
+    expect(new Set(first.scannedIdentities)).toEqual(
+      new Set(["text:73616D65", "blob:73616D65", "text:FF"]),
+    );
+    expect(
+      await profileLinks.scanDuePage(1_000, 10, ["text:73616D65", "text:FF"]),
+    ).toMatchObject({
+      entries: [{ kind: "invalid" }],
+      scannedIdentities: ["blob:73616D65"],
+    });
+    expect(await readSources()).toEqual(before);
+  });
+
+  it("processes oversized keys normally without retaining oversized continuation tokens", async () => {
+    const oversized = "x".repeat(769);
+    await seedProfileLink("healthy", "[]");
+    await seedProfileLink(oversized, "[]");
+    const page = await profileLinks.scanDuePage(1_000, 10, [
+      recoveryScanIdentityFixture("healthy")!,
+    ]);
+    expect(page.scannedIdentities).toEqual([null]);
+    expect(page.entries).toMatchObject([
+      { kind: "invalid", reason: "invalid-login-uid" },
+    ]);
+    expect(
+      await db
+        .prepare("SELECT COUNT(*) AS n FROM profile_link_catchup_jobs")
+        .first<number>("n"),
+    ).toBe(2);
+  });
 });
 
 describe("profile-link recovery quarantine", () => {

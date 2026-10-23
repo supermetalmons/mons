@@ -31,6 +31,12 @@ import type {
   ProfileEventPrizePageQuery,
 } from "../../../../runtime/eventReads.js";
 import { readD1FirstRow } from "../d1Reads.ts";
+import {
+  readRecoveryScanIdentities,
+  recoveryScanExclusionSql,
+  recoveryScanIdentitySql,
+  type RecoveryScanPage,
+} from "../recoveryScanPage.ts";
 
 export async function readEventRecord(
   db: EventD1Connection,
@@ -723,26 +729,54 @@ export async function listDueProjectionOutboxSnapshots(
   beforeMs: number,
   limit: number,
 ): Promise<ProjectionOutboxSnapshot[]> {
+  return (await listDueProjectionOutboxSnapshotsPage(db, kind, beforeMs, limit))
+    .entries;
+}
+
+export async function listDueProjectionOutboxSnapshotsPage(
+  db: EventD1Connection,
+  kind: ProjectionOutboxKind,
+  beforeMs: number,
+  limit: number,
+  excludedIdentities: readonly string[] = [],
+): Promise<RecoveryScanPage<ProjectionOutboxSnapshot[]>> {
   const table =
     kind === "profile-game"
       ? "event_profile_game_projection_outboxes"
       : "event_telegram_projection_outboxes";
   const timestampColumn =
     kind === "profile-game" ? "last_queued_at_ms" : "updated_at_ms";
+  const exclusions = recoveryScanExclusionSql(
+    "event_id",
+    excludedIdentities,
+    3,
+  );
   const rows = await db
     .prepare(
-      `SELECT event_id, record_json FROM ${table}
-       WHERE status = 'pending' AND ${timestampColumn} <= ?
-       ORDER BY ${timestampColumn}, event_id LIMIT ?`,
+      `SELECT event_id, record_json,
+              ${recoveryScanIdentitySql("event_id")} AS recovery_scan_identity
+       FROM ${table}
+       WHERE status = 'pending' AND ${timestampColumn} <= ?1${exclusions}
+       ORDER BY ${timestampColumn}, event_id LIMIT ?2`,
     )
-    .bind(safeInteger(beforeMs), Math.min(safeInteger(limit, 1), 100))
-    .all<{ event_id: string; record_json: string }>();
-  return rows.results.map((row) => ({
+    .bind(
+      safeInteger(beforeMs),
+      Math.min(safeInteger(limit, 1), 100),
+      ...excludedIdentities,
+    )
+    .all<{
+      event_id: string;
+      record_json: string;
+      recovery_scan_identity: string | null;
+    }>();
+  const scannedIdentities = readRecoveryScanIdentities(rows.results);
+  const entries = rows.results.map((row) => ({
     kind,
     eventId: row.event_id,
     record: decodeJson(row.record_json),
     recordJson: row.record_json,
   }));
+  return { entries, scannedIdentities };
 }
 
 export async function readEventTelegramProjectionState(

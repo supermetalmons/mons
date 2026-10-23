@@ -7,6 +7,29 @@ import {
 } from "./types.ts";
 import { decodeSnapshot, requireKey, requireRoot } from "./codec.ts";
 import { readD1FirstRow } from "../d1Reads.ts";
+import {
+  readRecoveryScanIdentities,
+  recoveryScanExclusionSql,
+  recoveryScanIdentitySql,
+  type RecoveryScanPage,
+} from "../recoveryScanPage.ts";
+
+const RECOVERY_ORDER_SQL = `recovery_sort_rank, recovery_sort_value,
+  recovery_key_rank, recovery_key_integer, recovery_key_length,
+  record_key COLLATE BINARY`;
+
+function decodeValues(
+  root: AutomatchRoot,
+  rows: readonly RecordRow[],
+): Record<string, unknown> | null {
+  if (!rows.length) return null;
+  return Object.fromEntries(
+    rows.map((row) => {
+      const snapshot = decodeSnapshot(root, row);
+      return [snapshot.key, snapshot.value];
+    }),
+  );
+}
 
 function validateQueryLimit(limit: number): void {
   if (!Number.isSafeInteger(limit) || limit < 1) {
@@ -118,13 +141,24 @@ export function createAutomatchReads(db: D1Database) {
       .bind(...values)
       .all<RecordRow>();
     signal?.throwIfAborted();
-    if (!rows.results.length) return null;
-    return Object.fromEntries(
-      rows.results.map((row) => {
-        const snapshot = decodeSnapshot(root, row);
-        return [snapshot.key, snapshot.value];
-      }),
-    );
+    return decodeValues(root, rows.results);
+  }
+
+  async function readRecoveryPage(
+    root: AutomatchRoot,
+    sql: string,
+    values: readonly (string | number)[],
+    signal?: AbortSignal,
+  ): Promise<RecoveryScanPage<Record<string, unknown> | null>> {
+    signal?.throwIfAborted();
+    const rows = await db
+      .withSession("first-primary")
+      .prepare(sql)
+      .bind(...values)
+      .all<RecordRow & { recovery_scan_identity?: unknown }>();
+    signal?.throwIfAborted();
+    const scannedIdentities = readRecoveryScanIdentities(rows.results);
+    return { entries: decodeValues(root, rows.results), scannedIdentities };
   }
 
   async function listAutomatchEntriesByLogin(
@@ -164,19 +198,31 @@ export function createAutomatchReads(db: D1Database) {
     limit: number,
     signal?: AbortSignal,
   ) {
+    return (
+      await listDueAutomatchTelegramOutboxesPage(nowMs, limit, [], signal)
+    ).entries;
+  }
+
+  async function listDueAutomatchTelegramOutboxesPage(
+    nowMs: number,
+    limit: number,
+    excludedIdentities: readonly string[] = [],
+    signal?: AbortSignal,
+  ) {
     validateQueryLimit(limit);
     validateQueryCutoff(nowMs);
-    return readValues(
+    return readRecoveryPage(
       "telegramProjectionOutbox/automatch",
-      `SELECT record_key, payload_json, revision
+      `SELECT record_key, payload_json, revision,
+         ${recoveryScanIdentitySql("record_key")} AS recovery_scan_identity
        FROM automatch_telegram_projection_outbox
        WHERE payload_json IS NOT NULL
-         AND json_type(payload_json, '$.updatedAtMs') IN ('integer', 'real')
-         AND json_extract(payload_json, '$.updatedAtMs') >= 0
-         AND json_extract(payload_json, '$.updatedAtMs') <= ?
-       ORDER BY json_extract(payload_json, '$.updatedAtMs'), ${keyOrderSql("record_key")}
-       LIMIT ?`,
-      [nowMs, limit],
+         AND recovery_sort_rank = 3
+         AND recovery_sort_value >= 0
+         AND recovery_sort_value <= ?1
+         ${recoveryScanExclusionSql("record_key", excludedIdentities, 3)}
+       ORDER BY ${RECOVERY_ORDER_SQL} LIMIT ?2`,
+      [nowMs, limit, ...excludedIdentities],
       signal,
     );
   }
@@ -186,47 +232,29 @@ export function createAutomatchReads(db: D1Database) {
     limit: number,
     signal?: AbortSignal,
   ) {
+    return (
+      await listDueAutomatchProfileOutboxesPage(beforeMs, limit, [], signal)
+    ).entries;
+  }
+
+  async function listDueAutomatchProfileOutboxesPage(
+    beforeMs: number,
+    limit: number,
+    excludedIdentities: readonly string[] = [],
+    signal?: AbortSignal,
+  ) {
     validateQueryLimit(limit);
     validateQueryCutoff(beforeMs);
-    return readValues(
+    return readRecoveryPage(
       "profileGameProjectionOutbox/automatch",
-      `WITH null_due AS (
-         SELECT record_key, payload_json, revision, 0 AS sort_rank, NULL AS sort_value
-         FROM game_session_projection_outbox
-         WHERE payload_json IS NOT NULL
-           AND json_extract(payload_json, '$.lastQueuedAtMs') IS NULL
-         ORDER BY ${keyOrderSql("record_key")} LIMIT ?2
-       ), false_due AS (
-         SELECT record_key, payload_json, revision, 1 AS sort_rank, NULL AS sort_value
-         FROM game_session_projection_outbox
-         WHERE payload_json IS NOT NULL
-           AND json_extract(payload_json, '$.lastQueuedAtMs') = 0
-           AND json_type(payload_json, '$.lastQueuedAtMs') = 'false'
-         ORDER BY ${keyOrderSql("record_key")} LIMIT ?2
-       ), true_due AS (
-         SELECT record_key, payload_json, revision, 2 AS sort_rank, NULL AS sort_value
-         FROM game_session_projection_outbox
-         WHERE payload_json IS NOT NULL
-           AND json_extract(payload_json, '$.lastQueuedAtMs') = 1
-           AND json_type(payload_json, '$.lastQueuedAtMs') = 'true'
-         ORDER BY ${keyOrderSql("record_key")} LIMIT ?2
-       ), numeric_due AS (
-         SELECT record_key, payload_json, revision, 3 AS sort_rank,
-           json_extract(payload_json, '$.lastQueuedAtMs') AS sort_value
-         FROM game_session_projection_outbox
-         WHERE payload_json IS NOT NULL
-           AND json_extract(payload_json, '$.lastQueuedAtMs') <= ?1
-           AND json_type(payload_json, '$.lastQueuedAtMs') IN ('integer', 'real')
-         ORDER BY json_extract(payload_json, '$.lastQueuedAtMs'), ${keyOrderSql("record_key")}
-         LIMIT ?2
-       )
-       SELECT record_key, payload_json, revision FROM (
-         SELECT * FROM null_due
-         UNION ALL SELECT * FROM false_due
-         UNION ALL SELECT * FROM true_due
-         UNION ALL SELECT * FROM numeric_due
-       ) ORDER BY sort_rank, sort_value, ${keyOrderSql("record_key")} LIMIT ?2`,
-      [beforeMs, limit],
+      `SELECT record_key, payload_json, revision,
+         ${recoveryScanIdentitySql("record_key")} AS recovery_scan_identity
+       FROM game_session_projection_outbox
+       WHERE payload_json IS NOT NULL
+         AND (recovery_sort_rank, recovery_sort_value) <= (3, ?1)
+         ${recoveryScanExclusionSql("record_key", excludedIdentities, 3)}
+       ORDER BY ${RECOVERY_ORDER_SQL} LIMIT ?2`,
+      [beforeMs, limit, ...excludedIdentities],
       signal,
     );
   }
@@ -235,18 +263,26 @@ export function createAutomatchReads(db: D1Database) {
     limit: number,
     signal?: AbortSignal,
   ) {
+    return (await listMalformedAutomatchProfileOutboxesPage(limit, [], signal))
+      .entries;
+  }
+
+  async function listMalformedAutomatchProfileOutboxesPage(
+    limit: number,
+    excludedIdentities: readonly string[] = [],
+    signal?: AbortSignal,
+  ) {
     validateQueryLimit(limit);
-    return readValues(
+    return readRecoveryPage(
       "profileGameProjectionOutbox/automatch",
-      `SELECT record_key, payload_json, revision
+      `SELECT record_key, payload_json, revision,
+         ${recoveryScanIdentitySql("record_key")} AS recovery_scan_identity
        FROM game_session_projection_outbox
        WHERE payload_json IS NOT NULL
-         AND json_extract(payload_json, '$.lastQueuedAtMs') >= ''
-       ORDER BY CASE json_type(payload_json, '$.lastQueuedAtMs') WHEN 'text' THEN 0 ELSE 1 END,
-         CASE WHEN json_type(payload_json, '$.lastQueuedAtMs') = 'text'
-           THEN json_extract(payload_json, '$.lastQueuedAtMs') END,
-         ${keyOrderSql("record_key")} LIMIT ?`,
-      [limit],
+         AND recovery_sort_rank >= 4
+         ${recoveryScanExclusionSql("record_key", excludedIdentities, 2)}
+       ORDER BY ${RECOVERY_ORDER_SQL} LIMIT ?1`,
+      [limit, ...excludedIdentities],
       signal,
     );
   }
@@ -298,8 +334,11 @@ export function createAutomatchReads(db: D1Database) {
     listAutomatchEntriesByLogin,
     readFirstAutomatchEntry,
     listDueAutomatchTelegramOutboxes,
+    listDueAutomatchTelegramOutboxesPage,
     listDueAutomatchProfileOutboxes,
+    listDueAutomatchProfileOutboxesPage,
     listMalformedAutomatchProfileOutboxes,
+    listMalformedAutomatchProfileOutboxesPage,
     listEntriesByLogins,
   };
 }

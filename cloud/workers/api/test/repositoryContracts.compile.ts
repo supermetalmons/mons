@@ -430,8 +430,11 @@ export type AutomatchSessionPortExcludesRawRecoveryAccess = Assert<
     | "transactRawAutomatchTelegramOutbox"
     | "transactRawAutomatchProfileOutbox"
     | "listDueAutomatchTelegramOutboxes"
+    | "listDueAutomatchTelegramOutboxesPage"
     | "listDueAutomatchProfileOutboxes"
+    | "listDueAutomatchProfileOutboxesPage"
     | "listMalformedAutomatchProfileOutboxes"
+    | "listMalformedAutomatchProfileOutboxesPage"
     | "projectionRecovery"
   > extends never
     ? true

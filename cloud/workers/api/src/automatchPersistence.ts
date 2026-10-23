@@ -346,13 +346,53 @@ export function createAutomatchPersistence(
       await control();
       return store.listDueAutomatchTelegramOutboxes(atMs, limit, signal);
     },
+    listDueAutomatchTelegramOutboxesPage: async (
+      atMs,
+      limit,
+      excludedIdentities,
+      signal,
+    ) => {
+      await control();
+      return store.listDueAutomatchTelegramOutboxesPage(
+        atMs,
+        limit,
+        excludedIdentities,
+        signal,
+      );
+    },
     listDueAutomatchProfileOutboxes: async (atMs, limit, signal) => {
       await control();
       return store.listDueAutomatchProfileOutboxes(atMs, limit, signal);
     },
+    listDueAutomatchProfileOutboxesPage: async (
+      atMs,
+      limit,
+      excludedIdentities,
+      signal,
+    ) => {
+      await control();
+      return store.listDueAutomatchProfileOutboxesPage(
+        atMs,
+        limit,
+        excludedIdentities,
+        signal,
+      );
+    },
     listMalformedAutomatchProfileOutboxes: async (limit, signal) => {
       await control();
       return store.listMalformedAutomatchProfileOutboxes(limit, signal);
+    },
+    listMalformedAutomatchProfileOutboxesPage: async (
+      limit,
+      excludedIdentities,
+      signal,
+    ) => {
+      await control();
+      return store.listMalformedAutomatchProfileOutboxesPage(
+        limit,
+        excludedIdentities,
+        signal,
+      );
     },
     commitSessionChanges: (changes, signal) =>
       write(

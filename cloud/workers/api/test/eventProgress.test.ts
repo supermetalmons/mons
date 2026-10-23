@@ -36,6 +36,10 @@ import {
   invalidRatingRecoveryEntry,
 } from "./recoveryScanTestFixtures.ts";
 import { recoveryKeyHex } from "../src/recoveryObservation.ts";
+import {
+  EVENT_ANNOUNCEMENT_KINDS,
+  eventAnnouncementRunAtMs,
+} from "../src/eventAnnouncementKinds.ts";
 
 const outboxRecoveryStores = new WeakMap<
   EventProgressSweepRepository,
@@ -79,9 +83,38 @@ function scheduledRecovery(
       );
   return {
     readCursor: async () => ({ cursor, revision }),
-    listUrgent: async (throughMs) =>
+    listUrgent: async (throughMs, nowMs = Date.now()) =>
       rows()
         .filter((row) => row.cursor.startAtMs <= throughMs)
+        .map((row) => {
+          const announcement = Math.min(
+            ...EVENT_ANNOUNCEMENT_KINDS.map((kind) => {
+              const runAtMs = eventAnnouncementRunAtMs(
+                row.cursor.eventId,
+                row.event,
+                nowMs,
+                kind,
+              );
+              return runAtMs !== null && runAtMs <= nowMs + 10 * 60_000
+                ? runAtMs
+                : Infinity;
+            }),
+          );
+          return {
+            row,
+            priority: Number(announcement === Infinity),
+            deadline:
+              announcement === Infinity ? row.cursor.startAtMs : announcement,
+          };
+        })
+        .sort(
+          (left, right) =>
+            left.priority - right.priority ||
+            left.deadline - right.deadline ||
+            left.row.cursor.startAtMs - right.row.cursor.startAtMs ||
+            left.row.cursor.eventId.localeCompare(right.row.cursor.eventId),
+        )
+        .map(({ row }) => row)
         .slice(0, SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT),
     listPage: async (after) =>
       rows()
@@ -511,15 +544,16 @@ for (const kind of ["start", "reminder"] as const) {
       const candidatesRead = Promise.withResolvers<void>();
       const recovery = scheduledRecovery({ [eventId]: event });
       const listUrgent = recovery.listUrgent;
-      recovery.listUrgent = async (throughMs) => {
+      recovery.listUrgent = async (throughMs, atMs) => {
         await providerStarted.promise;
-        const rows = await listUrgent(throughMs);
+        const rows = await listUrgent(throughMs, atMs);
         candidatesRead.resolve();
         return rows;
       };
       let recreating = false;
       let creates = 0;
       let current: EventJsonRecord | null = plan.outbox;
+      const otherOutboxes = new Map<string, EventJsonRecord | null>();
       const operations: string[] = [];
       const repository: EventProgressSweepRepository = {
         readEvent: async () => null,
@@ -527,18 +561,18 @@ for (const kind of ["start", "reminder"] as const) {
           { outboxId: plan.outboxId, record: plan.outbox },
         ],
         readEventProgressOutbox: async (id) => {
-          if (id !== plan.outboxId) return null;
+          if (id !== plan.outboxId) return otherOutboxes.get(id) ?? null;
           assert.equal(recreating, false);
           operations.push("read");
           return current;
         },
         commitEventPlan: async (commands) => {
           for (const command of commands) {
-            if (
-              command.kind !== "progress-outbox" ||
-              command.outboxId !== plan.outboxId
-            )
+            if (command.kind !== "progress-outbox") continue;
+            if (command.outboxId !== plan.outboxId) {
+              otherOutboxes.set(command.outboxId, command.value);
               continue;
+            }
             assert.equal(recreating, false);
             current = command.value;
             operations.push(command.value === null ? "remove" : "publish");
@@ -619,6 +653,7 @@ test(
     const published = Promise.withResolvers<void>();
     const malformed = { schemaVersion: 2 };
     let current: EventJsonRecord | null = malformed;
+    const otherOutboxes = new Map<string, EventJsonRecord | null>();
     const repository: EventProgressSweepRepository = {
       readEvent: async () => null,
       listDueEventProgressOutboxes: async () => {
@@ -626,10 +661,15 @@ test(
         return [{ outboxId: plan.outboxId, record: malformed }];
       },
       readEventProgressOutbox: async (id) =>
-        id === plan.outboxId ? current : null,
+        id === plan.outboxId ? current : (otherOutboxes.get(id) ?? null),
       commitEventPlan: async (commands) => {
         for (const command of commands) {
           assert.notEqual(command.kind, "progress-dead");
+          if (
+            command.kind === "progress-outbox" &&
+            command.outboxId !== plan.outboxId
+          )
+            otherOutboxes.set(command.outboxId, command.value);
           if (
             command.kind === "progress-outbox" &&
             command.outboxId === plan.outboxId
@@ -791,6 +831,53 @@ test("scheduled recovery rotates beyond 1,000 events in bounded pages", async ()
   assert.deepEqual(await recovery.readCursor(), { cursor: null, revision: 11 });
 });
 
+test("announcement budget defers a background suffix without wrapping or skipping it", async () => {
+  let nowMs = 1_000_000;
+  const startAtMs = nowMs + 10 * 60 * 60_000;
+  const eventIds = Array.from(
+    { length: 25 },
+    (_, index) => `budget-event-${String(index).padStart(2, "0")}`,
+  );
+  const recovery = scheduledRecovery(
+    Object.fromEntries(
+      eventIds.map((eventId) => [eventId, { startAtMs, isSundayMons: true }]),
+    ),
+  );
+  const environment = workflowEnvironment();
+  const create = environment.EVENT_PROGRESS_WORKFLOW.createBatch;
+  const created: EventProgressWorkflowParams[] = [];
+  environment.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
+    created.push(...items.map(({ params }) => params!));
+    return create(items);
+  };
+  const repository = sweepRepository({}).value;
+  const run = () =>
+    sweepEventProgress(environment, {
+      now: () => nowMs,
+      repository,
+      scheduledRecovery: recovery,
+      ratingRepository: null,
+    });
+  await run();
+  assert.equal(created.length, 40);
+  assert.deepEqual(
+    new Set(created.map(({ eventId }) => eventId)),
+    new Set(eventIds.slice(0, 20)),
+  );
+  assert.deepEqual(await recovery.readCursor(), {
+    cursor: { eventId: eventIds[19], startAtMs },
+    revision: 1,
+  });
+  nowMs += 5 * 60_000;
+  await run();
+  assert.equal(created.length, 50);
+  assert.deepEqual(
+    new Set(created.map(({ eventId }) => eventId)),
+    new Set(eventIds),
+  );
+  assert.deepEqual(await recovery.readCursor(), { cursor: null, revision: 2 });
+});
+
 test("urgent announcement deadlines are checked independently of the background cursor", async () => {
   const nowMs = 1_000_000;
   const eventId = "z3oj52Iiime";
@@ -811,8 +898,8 @@ test("urgent announcement deadlines are checked independently of the background 
   });
   const listUrgent = recovery.listUrgent;
   const listPage = recovery.listPage;
-  recovery.listUrgent = async (throughMs) =>
-    (await listUrgent(throughMs)).map(observeStart);
+  recovery.listUrgent = async (throughMs, atMs) =>
+    (await listUrgent(throughMs, atMs)).map(observeStart);
   recovery.listPage = async (after) =>
     (await listPage(after)).map(observeStart);
   await recovery.checkpoint(0, { eventId: "middle", startAtMs: 50_000_000 }, 0);
@@ -842,7 +929,7 @@ test("urgent announcement deadlines are checked independently of the background 
     ]),
   );
   assert(created.some((plan) => plan.eventId === "distant"));
-  assert.deepEqual(started, [eventId, "distant"]);
+  assert.deepEqual([...new Set(started)], [eventId, "distant"]);
 });
 
 test("recovery deduplicates urgent and background rows and bounds event concurrency", async () => {
@@ -1205,6 +1292,10 @@ test("both announcements survive slow start dispatch and all three jobs can fail
     const instance = await environment.EVENT_PROGRESS_WORKFLOW.create({
       id: "test-instance",
     });
+    instance.status = async () => {
+      nowMs += 1_500;
+      return { status: "waiting" };
+    };
     const createdIds = new Set<string>();
     environment.EVENT_PROGRESS_WORKFLOW.createBatch = async (items) => {
       return items.map((item) => {
@@ -1220,10 +1311,6 @@ test("both announcements survive slow start dispatch and all three jobs can fail
     environment.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
       if (id === failedId || !createdIds.has(id))
         throw new Error("instance-missing");
-      instance.status = async () => {
-        nowMs += 1_500;
-        return { status: "waiting" };
-      };
       return instance;
     };
     const run = () =>

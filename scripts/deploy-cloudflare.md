@@ -56,13 +56,51 @@ FIFO orders eligible tickets by `(enqueued_at_ms, invite_id)`. Prepared matches 
 
 ## Recovery outbox indexes
 
-`idx_automatch_telegram_projection_due` and `idx_game_session_projection_due` include the `keyOrderSql` expressions used by recovery queries. Keep their names, expressions, and retained outbox records. Verify actual query plans and stored-record compatibility locally:
+`idx_automatch_telegram_projection_due` and `idx_game_session_projection_due` include the `keyOrderSql` expressions used by older recovery queries. Keep their names, expressions, and retained outbox records for compatible rollback. Verify actual query plans and stored-record compatibility locally:
 
 ```sh
-npm run test:api:runtime -- automatchQueriesD1.test.ts recoveryOutboxOrderingMigration.test.ts
+npm run test:api:runtime -- automatchQueriesD1.test.ts recoveryOutboxOrderingMigration.test.ts outboxRecoverySortMigration.test.ts
 ```
 
-The Telegram plan searches its due index without a temporary ordering B-tree. The profile plan searches its due index in all four branches without branch-level ordering B-trees; the final union sort is intentional and bounded to four times the query limit. For incident diagnosis, use the exact expanded queries captured by `observeReads()` in the runtime tests rather than a simplified `ORDER BY record_key`. Retain these compatible indexes on rollback and never clear outboxes to verify them.
+The older Telegram plan searches its due index without a temporary ordering B-tree. The older profile plan searches its due index in all four branches without branch-level ordering B-trees; its final union sort is intentional and bounded to four times the query limit. Current recovery queries use the generated-column indexes below and require no temporary ordering B-tree. For incident diagnosis, use the exact queries captured by `observeReads()` in the runtime tests rather than a simplified `ORDER BY record_key`. Never clear outboxes to verify query plans.
+
+### Generated recovery columns
+
+`migrations/0027_outbox_recovery_sort_columns.sql` adds five VIRTUAL generated columns to `automatch_telegram_projection_outbox` and `game_session_projection_outbox`, plus `idx_automatch_telegram_projection_recovery` and `idx_game_session_projection_recovery`. The derived columns preserve the existing JSON-type and numeric-key ordering, including malformed values. `recovery_sort_value` deliberately has no declared type so SQLite retains numeric and text storage classes.
+
+The migration preserves canonical JSON bytes, revisions, tombstones, old indexes, and existing write interfaces. It requires no backfill, constraints, write freeze, Queue pause, or drain. Older Workers and version-pinned Workflows keep writing the original columns; generated values follow those writes automatically. Retaining both generations of indexes adds index storage and write work in exchange for rollback compatibility.
+
+Prepare and validate the API candidate first. Run `npm run check:api`, the migration/query tests above, projection recovery and combined scheduled-budget tests, and the affected socket suites. Upload the validated candidate before changing remote schema:
+
+```sh
+npm run upload:api
+npx wrangler d1 migrations list PROFILE_GAMES_DB --remote --config cloud/workers/api/wrangler.jsonc --env-file cloud/workers/api/release.env
+```
+
+Apply only when `0027_outbox_recovery_sort_columns.sql` is the sole reviewed pending gameplay migration:
+
+```sh
+npx wrangler d1 migrations apply PROFILE_GAMES_DB --remote --config cloud/workers/api/wrangler.jsonc --env-file cloud/workers/api/release.env
+```
+
+Before promotion, inspect both tables with `PRAGMA table_xinfo` and confirm the five generated columns, the untyped `recovery_sort_value`, and both old and new indexes. Require an empty `PRAGMA foreign_key_check` result:
+
+```sql
+PRAGMA table_xinfo(automatch_telegram_projection_outbox);
+PRAGMA table_xinfo(game_session_projection_outbox);
+SELECT name, sql FROM sqlite_schema
+WHERE type = 'index' AND name IN (
+  'idx_automatch_telegram_projection_due',
+  'idx_game_session_projection_due',
+  'idx_automatch_telegram_projection_recovery',
+  'idx_game_session_projection_recovery'
+) ORDER BY name;
+PRAGMA foreign_key_check;
+```
+
+Promote the exact uploaded Version ID using the routine API release below. Run the standard API smoke, authenticated `--require-history` check with its prepared fixture, isolated invite lifecycle smoke, and affected read-only socket checks. If Workflow dependency changes require publication, publish the owned definitions through the existing helper while preserving running instances. Do not force replay, corrupt data, or wait for a Cron interval to validate recovery; local tests cover paging and failure cases. Finish after the required checks pass.
+
+On Worker rollback, retain the new columns and both generations of indexes. If schema verification fails, keep the currently serving Worker and investigate before promotion; never remove retained outboxes or restore a coordinated database independently.
 
 ## Projection recovery quarantine
 
@@ -156,6 +194,23 @@ npm run publish:api:workflows -- --version-id <worker-version-id> --workflow mon
 This publication updates code for new instances and does not modify Queue delivery, Worker Cron, routes, or existing instances. Compatible releases preserve running instances on their original versions. A concrete incompatible state change requires the coordinated handoff described in its migration procedure.
 
 ## Scheduled-event recovery
+
+Scheduled-start recovery uses the sweep's existing admission to create only a missing progress outbox and read its snapshot in one guarded batch. Existing outboxes and deadlines are preserved, and Workflow creation results avoid redundant provider lookups. Deadline-aware discovery requires the additive index described below; no bindings, Cron changes, write freezes, or Queue pauses are required. Validate busy combined recovery, deadline priority, and admission/provider edge cases locally:
+
+```sh
+npm run test:api:runtime -- projectionRecoveryScheduledBudget.test.ts scheduledRecoveryDeadlines.test.ts eventScheduledRecoveryD1.test.ts eventProgressRecoveryD1.test.ts eventProgressDispatch.test.ts
+```
+
+The combined fixture includes a reminder-heavy background page and bulk recreation of errored/terminated Workflows alongside busy auth, transitions, and projections. Discovery returns at most 800 urgent candidates, prioritizing imminent announcement deadlines and missing schedules before matching checkpointed outboxes. Execution reserves 10 units per start and 40 per eligible announcement from separate 4,500-unit urgent and 1,000-unit background budgets. The background cursor advances only over the attempted prefix, retaining deferred work. Use the routine candidate, promotion, and affected event verification steps; do not add a Cron observation wait.
+
+After validating and uploading the exact API candidate, inspect the `EVENT_DB` migration list and apply `event-migrations/0008_event_recovery_announcement_index.sql` only when it is the sole reviewed pending event migration:
+
+```sh
+npx wrangler d1 migrations list EVENT_DB --remote --config cloud/workers/api/wrangler.jsonc --env-file cloud/workers/api/release.env
+npx wrangler d1 migrations apply EVENT_DB --remote --config cloud/workers/api/wrangler.jsonc --env-file cloud/workers/api/release.env
+```
+
+It adds only `idx_event_records_scheduled_sunday_start`, a partial index on `(status, start_at_ms, event_id)` for scheduled Sunday records. It rewrites no records and preserves old indexes and older writers. Verify its exact SQL in `sqlite_schema`, its columns with `PRAGMA index_info(idx_event_records_scheduled_sunday_start)`, and an empty `PRAGMA foreign_key_check` before promotion. The new reminder query explicitly uses this index, so do not promote before it exists. Retain it on rollback. If the candidate also needs gameplay migration `0027`, complete its separate verification above before promoting.
 
 `EVENT_DB.event_scheduled_recovery_cursor` stores the independent checkpoint for bounded scheduled-event recovery. The sweep combines urgent discovery with paginated background recovery and advances checkpoints using revision comparisons. Preserve canonical events, outboxes, Workflow identities, and the cursor during recovery or rollback; do not reset the cursor to replay announcements.
 

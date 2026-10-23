@@ -43,6 +43,7 @@ export type ProfileLinkProjectionJobs = Pick<
   ProfileLinkCatchupStore,
   | "read"
   | "scanDue"
+  | "scanDuePage"
   | "quarantineInvalidEntry"
   | "claimDispatch"
   | "advance"
@@ -100,7 +101,7 @@ export type ProfileLinkProcessingJobs = Pick<
 
 export type ProfileLinkRecoveryJobs = Pick<
   ProfileLinkProjectionJobs,
-  "scanDue" | "quarantineInvalidEntry" | "claimDispatch"
+  "scanDuePage" | "quarantineInvalidEntry" | "claimDispatch"
 >;
 
 export type ProfileGameProjectionQueueDependencies = Pick<

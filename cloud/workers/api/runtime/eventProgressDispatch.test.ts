@@ -19,6 +19,10 @@ import {
   releaseEventWriteAdmission,
 } from "../src/eventD1.ts";
 import { createEventProgressRecoveryStore } from "../src/eventProgressRecoveryD1.ts";
+import {
+  dispatchOutboxSnapshot,
+  withEventProgressDispatchAdmission,
+} from "../src/eventProgressDispatch.ts";
 import { readEventOwnedPath } from "./eventD1Fixture.ts";
 import { applyEventTestMigrations } from "./eventTestMigrations.ts";
 import { applyStrictMatchStateTestMigrations } from "./strictMatchStateTestFixture.ts";
@@ -170,6 +174,147 @@ describe("event-progress Workflow dispatch admissions", () => {
         "UPDATE event_runtime_control SET storage_mode = 'd1' WHERE singleton = 1",
       ),
     ]);
+  });
+
+  it("dispatches a supplied snapshot using the instance returned by creation", async () => {
+    const { plan } = await seedOutbox();
+    const f = environment();
+    await withEventProgressDispatchAdmission(
+      testEnv.EVENT_DB,
+      async (admission) => {
+        const recovery = createEventProgressRecoveryStore(
+          testEnv.EVENT_DB,
+          admission,
+        );
+        const current = (await recovery.read(plan.outboxId))!;
+        const read = vi.spyOn(recovery, "read");
+        await dispatchOutboxSnapshot(f.value, recovery, current, () => 200);
+        expect(read).not.toHaveBeenCalled();
+        expect(f.operations).toEqual(["get", "createBatch", "status"]);
+        expect(await recovery.read(plan.outboxId)).toEqual({
+          ...current,
+          nextReconcileAtMs: 300_000,
+        });
+      },
+    );
+    expect(await admissionCount()).toBe(0);
+  });
+
+  it("accepts an empty direct creation result without looking up the existing instance", async () => {
+    const { plan } = await seedOutbox();
+    const f = environment();
+    f.value.EVENT_PROGRESS_WORKFLOW.createBatch = async () => {
+      f.operations.push("createBatch");
+      return [];
+    };
+    f.value.EVENT_PROGRESS_WORKFLOW.get = async () => {
+      f.operations.push("get");
+      throw new Error("unexpected-direct-dispatch-lookup");
+    };
+    await expect(
+      ensureEventProgressWorkflow(f.value, plan),
+    ).resolves.toBeUndefined();
+    expect(f.operations).toEqual(["createBatch"]);
+    expect(await admissionCount()).toBe(0);
+  });
+
+  it.each(["empty", "throws"] as const)(
+    "reads an existing instance when a racing batch creation %s",
+    async (creation) => {
+      const { plan } = await seedOutbox();
+      const f = environment("waiting", undefined, [plan.workflowId]);
+      const get = f.value.EVENT_PROGRESS_WORKFLOW.get;
+      let firstRead = true;
+      f.value.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
+        if (firstRead) {
+          firstRead = false;
+          f.operations.push("get");
+          throw new Error("workflow-not-found-before-concurrent-create");
+        }
+        return get(id);
+      };
+      f.value.EVENT_PROGRESS_WORKFLOW.createBatch = async () => {
+        f.operations.push("createBatch");
+        if (creation === "throws") throw new Error("workflow-already-exists");
+        return [];
+      };
+      await withEventProgressDispatchAdmission(
+        testEnv.EVENT_DB,
+        async (admission) => {
+          const recovery = createEventProgressRecoveryStore(
+            testEnv.EVENT_DB,
+            admission,
+          );
+          const current = (await recovery.read(plan.outboxId))!;
+          await dispatchOutboxSnapshot(f.value, recovery, current, () => 200);
+          expect(f.operations).toEqual(["get", "createBatch", "get", "status"]);
+          expect(await recovery.read(plan.outboxId)).toEqual({
+            ...current,
+            nextReconcileAtMs: 300_000,
+          });
+        },
+      );
+    },
+  );
+
+  it("preserves the creation failure when the fallback lookup also fails", async () => {
+    const { plan } = await seedOutbox();
+    const f = environment();
+    const creationFailure = new Error("workflow-create-failed");
+    const lookupFailure = new Error("workflow-lookup-failed");
+    f.value.EVENT_PROGRESS_WORKFLOW.createBatch = async () => {
+      throw creationFailure;
+    };
+    f.value.EVENT_PROGRESS_WORKFLOW.get = async () => {
+      throw lookupFailure;
+    };
+    await withEventProgressDispatchAdmission(
+      testEnv.EVENT_DB,
+      async (admission) => {
+        const recovery = createEventProgressRecoveryStore(
+          testEnv.EVENT_DB,
+          admission,
+        );
+        const current = (await recovery.read(plan.outboxId))!;
+        await expect(
+          dispatchOutboxSnapshot(f.value, recovery, current, () => 200),
+        ).rejects.toBe(creationFailure);
+        expect(await recovery.read(plan.outboxId)).toEqual({
+          ...current,
+          nextReconcileAtMs: 300_000,
+        });
+      },
+    );
+    expect(await admissionCount()).toBe(0);
+  });
+
+  it("keeps a concurrent replacement when checkpointing a supplied snapshot", async () => {
+    const { plan, repository } = await seedOutbox();
+    const f = environment("waiting", undefined, [plan.workflowId]);
+    await withEventProgressDispatchAdmission(
+      testEnv.EVENT_DB,
+      async (admission) => {
+        const recovery = createEventProgressRecoveryStore(
+          testEnv.EVENT_DB,
+          admission,
+        );
+        const current = (await recovery.read(plan.outboxId))!;
+        const replacement = { ...plan.outbox, lastQueuedAtMs: 300 };
+        await repository.commitEventPlan([
+          {
+            kind: "progress-outbox",
+            outboxId: plan.outboxId,
+            value: replacement,
+          },
+        ]);
+        await dispatchOutboxSnapshot(f.value, recovery, current, () => 400);
+        expect(await recovery.read(plan.outboxId)).toEqual({
+          ...current,
+          record: replacement,
+          recordJson: JSON.stringify(replacement),
+        });
+      },
+    );
   });
 
   it("retains frozen outboxes without creating or recreating Workflows through either production entry point", async () => {

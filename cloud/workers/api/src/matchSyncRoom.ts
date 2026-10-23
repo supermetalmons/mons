@@ -12,12 +12,11 @@ import {
   type MatchSyncMetadata,
   type MatchSyncReadResult,
 } from "./matchSync.ts";
+import type { SocketSession, SocketSessions } from "./socketSession.ts";
 import {
-  socketSessionCurrent,
-  type SocketSession,
-  type SocketSessions,
-} from "./socketSession.ts";
-import { readSocketAdmission } from "./socketAdmission.ts";
+  readSocketAdmission,
+  validateCurrentSocketAdmission,
+} from "./socketAdmission.ts";
 import { acceptRoomSocket, sendSocketSnapshot } from "./socketUpgrade.ts";
 import {
   admissionSocketTags,
@@ -461,7 +460,7 @@ export class MatchSyncRoom {
       return new Response("Invalid match admission", { status: 400 });
     if (parsed.status === "expired")
       return new Response("Session expired", { status: 401 });
-    const { role, ip, revision, passwordProtected, session } = parsed.admission;
+    const { role, ip, session } = parsed.admission;
     if (this.dependencies.capacityFull(role, ip))
       return new Response("Match room is full", {
         status: 429,
@@ -488,13 +487,6 @@ export class MatchSyncRoom {
         return new Response("Match unavailable", {
           status: latest.status === "missing" ? 404 : 409,
         });
-      if (
-        latest.snapshot.revision !== revision ||
-        latest.metadata.passwordProtected !== passwordProtected
-      )
-        return new Response("Match admission changed", { status: 409 });
-      if (!socketSessionCurrent(session))
-        return new Response("Session expired", { status: 401 });
       const attachment: MatchSocketAttachment = {
         channel: "matches",
         schemaVersion: 1,
@@ -504,13 +496,18 @@ export class MatchSyncRoom {
         actorUid,
         ...session,
       };
-      if (!this.dependencies.canReceive(attachment, latest.metadata))
-        return new Response("Invite access denied", { status: 403 });
-      if (this.dependencies.capacityFull(role, ip))
-        return new Response("Match room is full", {
-          status: 429,
-          headers: { "Retry-After": "60" },
-        });
+      const rejected = validateCurrentSocketAdmission({
+        channel: "matches",
+        admission: parsed.admission,
+        current: {
+          revision: latest.snapshot.revision,
+          passwordProtected: latest.metadata.passwordProtected,
+        },
+        canReceive: () =>
+          this.dependencies.canReceive(attachment, latest.metadata),
+        capacityFull: () => this.dependencies.capacityFull(role, ip),
+      });
+      if (rejected) return rejected;
       const pair = acceptRoomSocket(
         this.ctx,
         attachment,

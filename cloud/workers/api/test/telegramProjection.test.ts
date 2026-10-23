@@ -1,3 +1,7 @@
+import {
+  projectionRecoveryEntryIdentity,
+  projectionRecoveryPage,
+} from "./projectionRecoveryFixtures.ts";
 import { recoveryCandidates } from "./recoveryScanTestFixtures.ts";
 import { attachProjectionTestPorts } from "./projectionTestPorts.ts";
 import {
@@ -156,6 +160,14 @@ function ratingRepository(
             ]
           : [],
       ),
+    async scanDueRatingTelegramProjectionsPage(nowMs, limit, excluded = []) {
+      return projectionRecoveryPage(
+        await this.scanDueRatingTelegramProjections(nowMs, limit),
+        projectionRecoveryEntryIdentity,
+        excluded,
+        limit,
+      );
+    },
     markRatingTelegramProjection: async (
       _operationId,
       state,

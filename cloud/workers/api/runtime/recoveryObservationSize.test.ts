@@ -2,6 +2,7 @@ import { env } from "cloudflare:workers";
 import type { D1Migration } from "cloudflare:test";
 import { beforeAll, beforeEach, expect, it } from "vitest";
 import { createProfileLinkCatchupStore } from "../src/profileLinkCatchupD1.ts";
+import { projectionRecoveryPages } from "../src/projectionRecoveryPages.ts";
 import {
   quarantineRatingRecoveryEntry,
   scanDueRatingEventProgress,
@@ -165,6 +166,43 @@ it("reads a large valid cleanup list and healthy neighbours in one size-safe sca
     { kind: "candidate", value: { loginUid: "healthy" } },
     { kind: "candidate", value: { loginUid: "large", cleanupProfileIds: ids } },
   ]);
+});
+
+it("keeps large valid cleanup records in bounded pages during catch-up", async () => {
+  const cleanup = JSON.stringify(largeCleanupIds());
+  for (let index = 0; index < 21; index++) {
+    await seedProfileLink(
+      `login-${String(index).padStart(2, "0")}`,
+      index === 0 || index === 10 ? cleanup : "[]",
+    );
+  }
+  const queries: string[] = [];
+  const jobs = createProfileLinkCatchupStore(sizeCheckedDatabase(queries));
+  const pageSizes: number[] = [];
+  const visited: string[] = [];
+  for await (const { entries } of projectionRecoveryPages((excluded) =>
+    jobs.scanDuePage(1_000, 10, excluded),
+  )) {
+    pageSizes.push(entries.length);
+    for (const entry of entries) {
+      expect(entry.kind).toBe("candidate");
+      if (entry.kind !== "candidate") throw new Error("unexpected-invalid-job");
+      visited.push(entry.value.loginUid);
+      if (
+        entry.value.loginUid === "login-00" ||
+        entry.value.loginUid === "login-10"
+      )
+        expect(entry.value.cleanupProfileIds).toHaveLength(2_000);
+    }
+  }
+  expect(queries).toHaveLength(2);
+  expect(pageSizes).toEqual([10, 10]);
+  expect(visited).toEqual(
+    Array.from(
+      { length: 20 },
+      (_, index) => `login-${String(index).padStart(2, "0")}`,
+    ),
+  );
 });
 
 it("quarantines large malformed JSON without expanding or rewriting it", async () => {

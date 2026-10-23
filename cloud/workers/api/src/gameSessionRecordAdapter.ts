@@ -68,10 +68,16 @@ export function createTypedGameSessionPort(
     projectionRecovery: {
       listDueAutomatchTelegramOutboxes: (...args) =>
         raw.listDueAutomatchTelegramOutboxes(...args),
+      listDueAutomatchTelegramOutboxesPage: (...args) =>
+        raw.listDueAutomatchTelegramOutboxesPage(...args),
       listDueAutomatchProfileOutboxes: (...args) =>
         raw.listDueAutomatchProfileOutboxes(...args),
+      listDueAutomatchProfileOutboxesPage: (...args) =>
+        raw.listDueAutomatchProfileOutboxesPage(...args),
       listMalformedAutomatchProfileOutboxes: (...args) =>
         raw.listMalformedAutomatchProfileOutboxes(...args),
+      listMalformedAutomatchProfileOutboxesPage: (...args) =>
+        raw.listMalformedAutomatchProfileOutboxesPage(...args),
       transactRawAutomatchTelegramOutbox: (...args) =>
         raw.transactAutomatchTelegramOutbox(...args),
       transactRawAutomatchProfileOutbox: (...args) =>

@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import type { D1Migration } from "cloudflare:test";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { EVENT_PRIZE_CONFIGS } from "@mons/shared/event-prizes";
 import {
   acquireEventWriteAdmission,
   releaseEventWriteAdmission,
@@ -8,8 +9,15 @@ import {
 } from "../src/eventD1.ts";
 import {
   createEventScheduledRecoveryStore,
+  SCHEDULED_EVENT_RECOVERY_MARGIN_MS,
   SCHEDULED_EVENT_RECOVERY_PAGE_SIZE,
+  SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT,
 } from "../src/eventScheduledRecoveryD1.ts";
+import {
+  EVENT_ANNOUNCEMENT_SPECS,
+  type EventAnnouncementKind,
+} from "../src/eventAnnouncementKinds.ts";
+import { buildEventProgressPlan } from "../src/eventProgressCodec.ts";
 import { applyEventTestMigrations } from "./eventTestMigrations.ts";
 
 const testEnv = env as Env & { TEST_EVENT_D1_MIGRATIONS: D1Migration[] };
@@ -41,6 +49,48 @@ async function seedEvents(
   }
 }
 
+async function seedAnnouncementOutboxes(
+  events: Array<{ eventId: string; startAtMs: number }>,
+  kind: EventAnnouncementKind,
+  nextReconcileAtMs: number,
+) {
+  const spec = EVENT_ANNOUNCEMENT_SPECS[kind];
+  const plans = await Promise.all(
+    events.map(({ eventId, startAtMs }) =>
+      buildEventProgressPlan(
+        {
+          eventId,
+          sourceKey: `${kind}:${eventId}:${startAtMs}`,
+          reason: spec.reason,
+          runAtMs: startAtMs - spec.leadMs,
+        },
+        0,
+      ),
+    ),
+  );
+  for (let index = 0; index < plans.length; index += 100) {
+    await db.batch(
+      plans.slice(index, index + 100).map((plan) =>
+        db
+          .prepare(
+            `INSERT INTO event_progress_outboxes (
+               status, outbox_id, event_id, run_at_ms, last_queued_at_ms,
+               record_json, next_reconcile_at_ms
+             ) VALUES ('pending', ?, ?, ?, 0, ?, ?)`,
+          )
+          .bind(
+            plan.outboxId,
+            plan.params.eventId,
+            plan.params.runAtMs,
+            JSON.stringify(plan.outbox),
+            nextReconcileAtMs,
+          ),
+      ),
+    );
+  }
+  return plans;
+}
+
 async function recoveryStore() {
   const admission = await acquireEventWriteAdmission(db);
   return { admission, store: createEventScheduledRecoveryStore(db, admission) };
@@ -48,19 +98,33 @@ async function recoveryStore() {
 
 async function observedRecoveryStore() {
   const rowsRead: number[] = [];
+  const reads: Array<{
+    sql: string;
+    values: unknown[];
+    count: number;
+    rowsRead: number;
+  }> = [];
   const observeStatement = (
     statement: D1PreparedStatement,
+    sql: string,
+    values: unknown[] = [],
   ): D1PreparedStatement =>
     new Proxy(statement, {
       get(target, property) {
         if (property === "bind") {
-          return (...values: unknown[]) =>
-            observeStatement(target.bind(...values));
+          return (...boundValues: unknown[]) =>
+            observeStatement(target.bind(...boundValues), sql, boundValues);
         }
         if (property === "all") {
           return async <T>() => {
             const result = await target.all<T>();
             rowsRead.push(result.meta.rows_read);
+            reads.push({
+              sql,
+              values,
+              count: result.results.length,
+              rowsRead: result.meta.rows_read,
+            });
             return result;
           };
         }
@@ -70,11 +134,12 @@ async function observedRecoveryStore() {
     });
   const observedDb: EventD1Connection = {
     batch: db.batch.bind(db),
-    prepare: (sql) => observeStatement(db.prepare(sql)),
+    prepare: (sql) => observeStatement(db.prepare(sql), sql),
   };
   const admission = await acquireEventWriteAdmission(db);
   return {
     rowsRead,
+    reads,
     store: createEventScheduledRecoveryStore(observedDb, admission),
   };
 }
@@ -108,7 +173,10 @@ describe("scheduled event recovery D1 cursor", () => {
     const { store } = await recoveryStore();
     expect(await store.readCursor()).toEqual({ cursor: null, revision: 0 });
     expect(await store.listUrgent(99)).toHaveLength(0);
-    expect(await store.listUrgent(100)).toHaveLength(1_000);
+    const urgent = await store.listUrgent(100);
+    expect(urgent).toHaveLength(800);
+    expect(urgent[0].cursor.eventId).toBe("event-0000");
+    expect(urgent[799].cursor.eventId).toBe("event-0799");
     const visited: string[] = [];
     for (let pageNumber = 0; pageNumber < 11; pageNumber += 1) {
       const snapshot = await store.readCursor();
@@ -184,7 +252,7 @@ describe("scheduled event recovery D1 cursor", () => {
       { eventId: "at-maximum", startAtMs: Number.MAX_SAFE_INTEGER },
       { eventId: "beyond-maximum", startAtMs: Number.MAX_SAFE_INTEGER + 1 },
     ]);
-    const { store } = await recoveryStore();
+    const { store, reads } = await observedRecoveryStore();
     expect(
       (await store.listUrgent(Number.MAX_SAFE_INTEGER - 1)).map(
         (row) => row.cursor.eventId,
@@ -195,6 +263,348 @@ describe("scheduled event recovery D1 cursor", () => {
         (row) => row.cursor.eventId,
       ),
     ).toEqual(["before-maximum", "at-maximum"]);
+    reads.length = 0;
+    expect(
+      (
+        await store.listUrgent(
+          Number.MAX_SAFE_INTEGER + 100,
+          Number.MAX_SAFE_INTEGER,
+        )
+      ).map((row) => row.cursor.eventId),
+    ).toEqual(["before-maximum", "at-maximum"]);
+    expect(reads).toHaveLength(1);
+    expect(reads[0].values.every(Number.isSafeInteger)).toBe(true);
+  });
+
+  it.each([
+    { prefix: "future", startOffsetMs: 30 * 60_000 },
+    { prefix: "overdue", startOffsetMs: -60_000 },
+  ])(
+    "discovers reminder and prize deadlines beyond a full $prefix start prefix with bounded indexed reads",
+    async ({ startOffsetMs }) => {
+      const nowMs = 1_000_000;
+      const reminderStart = nowMs + EVENT_ANNOUNCEMENT_SPECS.reminder.leadMs;
+      const prizeStart = nowMs + EVENT_ANNOUNCEMENT_SPECS.prizes.leadMs;
+      const throughMs = reminderStart + SCHEDULED_EVENT_RECOVERY_MARGIN_MS;
+      await seedEvents([
+        ...Array.from(
+          { length: SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT },
+          (_, index) => ({
+            eventId: `ordinary-${String(index).padStart(4, "0")}`,
+            startAtMs: nowMs + startOffsetMs,
+          }),
+        ),
+        ...Array.from({ length: 2_005 }, (_, index) => ({
+          eventId: `ordinary-in-reminder-window-${index}`,
+          startAtMs: reminderStart + index,
+        })),
+        ...Array.from({ length: 2_005 }, (_, index) => ({
+          eventId: `future-sunday-${index}`,
+          startAtMs: throughMs + 1 + index,
+          isSundayMons: true,
+        })),
+        {
+          eventId: "z3oj52Iiime",
+          startAtMs: prizeStart + 5 * 60_000,
+          isSundayMons: true,
+        },
+        {
+          eventId: "urgent-reminder",
+          startAtMs: reminderStart + 5 * 60_000,
+          isSundayMons: true,
+        },
+      ]);
+      const { store, reads } = await observedRecoveryStore();
+      const rows = await store.listUrgent(throughMs, nowMs);
+      expect(rows).toHaveLength(SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT);
+      expect(rows.slice(0, 2).map((row) => row.cursor.eventId)).toEqual([
+        "z3oj52Iiime",
+        "urgent-reminder",
+      ]);
+      expect(reads).toHaveLength(4);
+      for (const read of reads) {
+        const plan = await db
+          .prepare(`EXPLAIN QUERY PLAN ${read.sql}`)
+          .bind(...read.values)
+          .all<{ detail: string }>();
+        const details = plan.results.map(({ detail }) => detail).join("\n");
+        const prizeQuery = read.sql.includes("WHERE event_id IN");
+        if (prizeQuery) {
+          expect(read.values).toEqual([
+            JSON.stringify(Object.keys(EVENT_PRIZE_CONFIGS)),
+          ]);
+        }
+        const reminderQuery = read.sql.includes(
+          "INDEXED BY idx_event_records_scheduled_sunday_start",
+        );
+        expect(details).toContain(
+          prizeQuery
+            ? "USING PRIMARY KEY (event_id=?)"
+            : reminderQuery
+              ? "USING INDEX idx_event_records_scheduled_sunday_start"
+              : "USING INDEX idx_event_records_status_start",
+        );
+        expect(details).not.toContain("TEMP B-TREE");
+        expect(read.rowsRead).toBeLessThanOrEqual(
+          4 *
+            (prizeQuery
+              ? Object.keys(EVENT_PRIZE_CONFIGS).length + 1
+              : read.count + 1),
+        );
+      }
+    },
+  );
+
+  it("finds an unattempted reminder after 800 checkpointed reminders", async () => {
+    const nowMs = 1_000_000;
+    const startAtMs =
+      nowMs + EVENT_ANNOUNCEMENT_SPECS.reminder.leadMs + 5 * 60_000;
+    const covered = Array.from(
+      { length: SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT },
+      (_, index) => ({
+        eventId: `covered-${String(index).padStart(4, "0")}`,
+        startAtMs,
+        isSundayMons: true,
+      }),
+    );
+    await seedEvents([
+      ...covered,
+      { eventId: "zz-missing", startAtMs, isSundayMons: true },
+      ...Array.from({ length: 2_005 }, (_, index) => ({
+        eventId: `future-sunday-${index}`,
+        startAtMs: startAtMs + SCHEDULED_EVENT_RECOVERY_MARGIN_MS + index,
+        isSundayMons: true,
+      })),
+    ]);
+    await seedAnnouncementOutboxes(covered, "reminder", nowMs + 60_000);
+    const { store, reads } = await observedRecoveryStore();
+    const rows = await store.listUrgent(startAtMs, nowMs);
+    expect(rows).toHaveLength(SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT);
+    expect(rows[0].cursor.eventId).toBe("zz-missing");
+    expect(
+      rows.slice(1).every((row) => row.cursor.eventId.startsWith("covered-")),
+    ).toBe(true);
+    const missingRead = reads.find((read) =>
+      read.sql.includes("AND NOT EXISTS"),
+    );
+    expect(missingRead).toBeDefined();
+    expect(missingRead!.count).toBe(1);
+    expect(missingRead!.rowsRead).toBeLessThanOrEqual(8 * (covered.length + 1));
+    const plan = await db
+      .prepare(`EXPLAIN QUERY PLAN ${missingRead!.sql}`)
+      .bind(...missingRead!.values)
+      .all<{ detail: string }>();
+    const details = plan.results.map(({ detail }) => detail).join("\n");
+    expect(details).toContain(
+      "USING INDEX idx_event_records_scheduled_sunday_start",
+    );
+    expect(details).toContain("USING INDEX idx_event_progress_outboxes_event");
+    expect(details).not.toContain("TEMP B-TREE");
+  });
+
+  it("keeps uncheckpointed, rescheduled, and changed announcements ahead of attempted current and legacy schedules", async () => {
+    const nowMs = 1_000_000;
+    const startAtMs =
+      nowMs + EVENT_ANNOUNCEMENT_SPECS.reminder.leadMs + 5 * 60_000;
+    const prizeStartAtMs =
+      nowMs + EVENT_ANNOUNCEMENT_SPECS.prizes.leadMs + 5 * 60_000;
+    const reminderEvents = [
+      "covered",
+      "unattempted",
+      "rescheduled",
+      "changed",
+    ].map((eventId) => ({
+      eventId,
+      startAtMs,
+      isSundayMons: true,
+    }));
+    await seedEvents([
+      ...reminderEvents,
+      { eventId: "z3oj52Iiime", startAtMs: prizeStartAtMs, isSundayMons: true },
+      { eventId: "NN3eRzoZo80", startAtMs: prizeStartAtMs, isSundayMons: true },
+    ]);
+    const [covered] = await seedAnnouncementOutboxes(
+      reminderEvents.slice(0, 1),
+      "reminder",
+      nowMs + 60_000,
+    );
+    await db.batch([
+      db
+        .prepare(
+          `UPDATE event_progress_outboxes
+           SET record_json = replace(json_set(record_json, '$.runAtMs', ?),
+             '"schemaVersion":1,', '"schemaVersion":1.0,'), run_at_ms = ?
+           WHERE status = 'pending' AND outbox_id = ?`,
+        )
+        .bind(startAtMs - 10_800_000, startAtMs - 10_800_000, covered.outboxId),
+      db
+        .prepare(
+          `UPDATE event_progress_outboxes SET next_reconcile_at_ms = ?
+           WHERE status = 'pending' AND outbox_id = ?`,
+        )
+        .bind(nowMs + 60_000, covered.outboxId),
+    ]);
+    await seedAnnouncementOutboxes(reminderEvents.slice(1, 2), "reminder", 0);
+    await seedAnnouncementOutboxes(
+      [{ eventId: "rescheduled", startAtMs: startAtMs - 1 }],
+      "reminder",
+      nowMs + 60_000,
+    );
+    const [changed] = await seedAnnouncementOutboxes(
+      reminderEvents.slice(3),
+      "reminder",
+      nowMs + 60_000,
+    );
+    await db
+      .prepare(
+        `UPDATE event_progress_outboxes
+       SET record_json = json_set(record_json, '$.firstQueuedAtMs', 'invalid')
+       WHERE status = 'pending' AND outbox_id = ?`,
+      )
+      .bind(changed.outboxId)
+      .run();
+    expect(
+      await db
+        .prepare(
+          "SELECT next_reconcile_at_ms FROM event_progress_outboxes WHERE status = 'pending' AND outbox_id = ?",
+        )
+        .bind(changed.outboxId)
+        .first<number>("next_reconcile_at_ms"),
+    ).toBe(0);
+    await seedAnnouncementOutboxes(
+      [{ eventId: "z3oj52Iiime", startAtMs }],
+      "reminder",
+      nowMs + 60_000,
+    );
+    await seedAnnouncementOutboxes(
+      [{ eventId: "NN3eRzoZo80", startAtMs: prizeStartAtMs }],
+      "prizes",
+      nowMs + 60_000,
+    );
+    const { store } = await recoveryStore();
+    expect(
+      (await store.listUrgent(startAtMs, nowMs)).map(
+        (row) => row.cursor.eventId,
+      ),
+    ).toEqual([
+      "z3oj52Iiime",
+      "changed",
+      "rescheduled",
+      "unattempted",
+      "NN3eRzoZo80",
+      "covered",
+    ]);
+  });
+
+  it("prioritizes exact and upcoming announcement deadlines without expired or ineligible rows displacing them", async () => {
+    const nowMs = 1_000_000;
+    const reminderStart = nowMs + EVENT_ANNOUNCEMENT_SPECS.reminder.leadMs;
+    const prizeStart = nowMs + EVENT_ANNOUNCEMENT_SPECS.prizes.leadMs;
+    const margin = SCHEDULED_EVENT_RECOVERY_MARGIN_MS;
+    await seedEvents([
+      ...Array.from(
+        { length: SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT },
+        (_, index) => ({
+          eventId: `ordinary-${String(index).padStart(4, "0")}`,
+          startAtMs: nowMs + 15 * 60_000,
+        }),
+      ),
+      {
+        eventId: "reminder-at-deadline",
+        startAtMs: reminderStart,
+        isSundayMons: true,
+      },
+      { eventId: "z3oj52Iiime", startAtMs: prizeStart, isSundayMons: true },
+      {
+        eventId: "reminder-at-window-end",
+        startAtMs: reminderStart + margin,
+        isSundayMons: true,
+      },
+      {
+        eventId: "RpPjMNyrJJa",
+        startAtMs: prizeStart + margin,
+        isSundayMons: true,
+      },
+      {
+        eventId: "reminder-expired",
+        startAtMs: reminderStart - 1,
+        isSundayMons: true,
+      },
+      { eventId: "NN3eRzoZo80", startAtMs: prizeStart - 1, isSundayMons: true },
+      {
+        eventId: "reminder-too-far",
+        startAtMs: reminderStart + margin + 1,
+        isSundayMons: true,
+      },
+      {
+        eventId: "FRkdorMWaYW",
+        startAtMs: prizeStart + margin + 1,
+        isSundayMons: true,
+      },
+      {
+        eventId: "reminder-numeric-flag",
+        startAtMs: reminderStart,
+        isSundayMons: 1,
+      },
+      { eventId: "VOxalSrexcA", startAtMs: prizeStart, isSundayMons: 1 },
+      { eventId: "prize-no-config", startAtMs: prizeStart, isSundayMons: true },
+      { eventId: "mismatch", startAtMs: reminderStart, isSundayMons: true },
+      { eventId: "Q7uRdLXyVKF", startAtMs: prizeStart, isSundayMons: true },
+      { eventId: "wjFa2d03Ciu", startAtMs: prizeStart, isSundayMons: true },
+    ]);
+    await db.batch([
+      db.prepare(
+        `UPDATE event_records SET record_json = json_set(record_json, '$.status', 'active')
+         WHERE event_id = 'mismatch'`,
+      ),
+      db.prepare(
+        `UPDATE event_records SET status = 'active',
+         record_json = json_set(record_json, '$.status', 'active')
+         WHERE event_id = 'Q7uRdLXyVKF'`,
+      ),
+      db.prepare(
+        `UPDATE event_records SET start_at_ms = 'invalid'
+         WHERE event_id = 'wjFa2d03Ciu'`,
+      ),
+    ]);
+    const { store } = await recoveryStore();
+    const rows = await store.listUrgent(reminderStart + margin, nowMs);
+    expect(rows).toHaveLength(SCHEDULED_EVENT_RECOVERY_URGENT_LIMIT);
+    expect(rows.slice(0, 4).map((row) => row.cursor.eventId)).toEqual([
+      "z3oj52Iiime",
+      "reminder-at-deadline",
+      "RpPjMNyrJJa",
+      "reminder-at-window-end",
+    ]);
+    expect(
+      rows.slice(4).every((row) => row.cursor.eventId.startsWith("ordinary-")),
+    ).toBe(true);
+  });
+
+  it("deduplicates overlapping discovery and orders deadline ties by binary event IDs", async () => {
+    const nowMs = 1_000_000;
+    const reminderStart = nowMs + EVENT_ANNOUNCEMENT_SPECS.reminder.leadMs;
+    await seedEvents([
+      { eventId: "a", startAtMs: reminderStart, isSundayMons: true },
+      { eventId: "Z", startAtMs: reminderStart, isSundayMons: true },
+      { eventId: "ordinary", startAtMs: nowMs + 10_000 },
+      { eventId: "later-ordinary", startAtMs: nowMs + 30 * 60_000 },
+      {
+        eventId: "z3oj52Iiime",
+        startAtMs:
+          nowMs +
+          EVENT_ANNOUNCEMENT_SPECS.prizes.leadMs +
+          SCHEDULED_EVENT_RECOVERY_MARGIN_MS +
+          1,
+        isSundayMons: true,
+      },
+    ]);
+    const { store } = await recoveryStore();
+    expect(
+      (await store.listUrgent(reminderStart, nowMs)).map(
+        (row) => row.cursor.eventId,
+      ),
+    ).toEqual(["Z", "a", "ordinary", "later-ordinary", "z3oj52Iiime"]);
   });
 
   it("keeps a cursor usable after its event is deleted and detects rescheduling through urgency", async () => {

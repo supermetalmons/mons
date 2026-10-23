@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { applyD1Migrations, type D1Migration } from "cloudflare:test";
 import { beforeAll, describe, expect, it } from "vitest";
-import { createAutomatchD1Store } from "../src/automatchD1.ts";
+import { createLegacyAutomatchD1Store } from "../test/legacyAutomatchStoreFixture.ts";
 
 const db = env.PROFILE_GAMES_DB;
 const migrations = (env as Env & { TEST_D1_MIGRATIONS: D1Migration[] })
@@ -9,19 +9,30 @@ const migrations = (env as Env & { TEST_D1_MIGRATIONS: D1Migration[] })
 const migrationIndex = migrations.findIndex(
   ({ name }) => name === "0026_recovery_outbox_ordering.sql",
 );
-const store = createAutomatchD1Store(db);
+const store = createLegacyAutomatchD1Store(db);
 const outboxes = [
   {
     table: "automatch_telegram_projection_outbox",
     index: "idx_automatch_telegram_projection_due",
     field: "updatedAtMs",
-    read: () => store.listDueAutomatchTelegramOutboxes(10, 1),
+    read: () =>
+      store.getPath("telegramProjectionOutbox/automatch", {
+        orderBy: "updatedAtMs",
+        startAt: 0,
+        endAt: 10,
+        limitToFirst: 1,
+      }),
   },
   {
     table: "game_session_projection_outbox",
     index: "idx_game_session_projection_due",
     field: "lastQueuedAtMs",
-    read: () => store.listDueAutomatchProfileOutboxes(10, 1),
+    read: () =>
+      store.getPath("profileGameProjectionOutbox/automatch", {
+        orderBy: "lastQueuedAtMs",
+        endAt: 10,
+        limitToFirst: 1,
+      }),
   },
 ] as const;
 

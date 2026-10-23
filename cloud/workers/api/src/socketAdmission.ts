@@ -1,5 +1,9 @@
 import { isCanonicalLoginUid } from "./recordKeys.ts";
-import { readSocketSession, type SocketSession } from "./socketSession.ts";
+import {
+  readSocketSession,
+  socketSessionCurrent,
+  type SocketSession,
+} from "./socketSession.ts";
 import type { SocketRole } from "./socketTags.ts";
 
 type SocketAdmission = {
@@ -9,6 +13,54 @@ type SocketAdmission = {
   passwordProtected: boolean;
   session: SocketSession;
 };
+
+export function validateCurrentSocketAdmission({
+  channel,
+  admission,
+  current,
+  canReceive,
+  capacityFull,
+}: {
+  channel: "matches" | "metadata" | "wagers";
+  admission: Pick<
+    SocketAdmission,
+    "revision" | "passwordProtected" | "session"
+  >;
+  current: { revision: number; passwordProtected: boolean };
+  canReceive: () => boolean;
+  capacityFull: () => boolean;
+}): Response | null {
+  if (
+    current.revision !== admission.revision ||
+    current.passwordProtected !== admission.passwordProtected
+  ) {
+    return new Response(
+      channel === "matches"
+        ? "Match admission changed"
+        : `Invite ${channel} changed`,
+      { status: 409 },
+    );
+  }
+  if (channel === "matches" && !socketSessionCurrent(admission.session))
+    return new Response("Session expired", { status: 401 });
+  if (!canReceive())
+    return new Response("Invite access denied", { status: 403 });
+  if (channel !== "matches" && !socketSessionCurrent(admission.session))
+    return new Response("Session expired", { status: 401 });
+  if (capacityFull()) {
+    const name =
+      channel === "matches"
+        ? "Match"
+        : channel === "metadata"
+          ? "Metadata"
+          : "Wagers";
+    return new Response(`${name} room is full`, {
+      status: 429,
+      headers: { "Retry-After": "60" },
+    });
+  }
+  return null;
+}
 
 export function readSocketAdmission(
   request: Request,

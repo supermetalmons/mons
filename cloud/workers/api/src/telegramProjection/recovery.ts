@@ -26,6 +26,7 @@ import {
   sendQueueTasks,
 } from "../projectionSweep.ts";
 import { PROJECTION_SWEEP_LIMIT } from "./policy.ts";
+import { projectionRecoveryPages } from "../projectionRecoveryPages.ts";
 import type {
   ProjectionRecoveryDependencies,
   ProjectionLogger,
@@ -140,59 +141,69 @@ export async function sweepAutomatchProjections(
   nowMs: number,
 ): Promise<number> {
   try {
-    const value =
-      await state.projectionRecovery.listDueAutomatchTelegramOutboxes(
+    const pages = projectionRecoveryPages((excludedIdentities) =>
+      state.projectionRecovery.listDueAutomatchTelegramOutboxesPage(
         nowMs,
         PROJECTION_SWEEP_LIMIT,
+        excludedIdentities,
+      ),
+    );
+    let sentCount = 0;
+    const claimFailures: Error[] = [];
+    const repairFailures: Error[] = [];
+    for await (const { entries: value, itemOffset } of pages) {
+      const entries = automatchSweepEntries(value);
+      const candidates = entries.flatMap((entry) =>
+        entry.kind === "candidate" ? [entry.value] : [],
       );
-    const entries = automatchSweepEntries(value);
-    const candidates = entries.flatMap((entry) =>
-      entry.kind === "candidate" ? [entry.value] : [],
-    );
-    const invalidInviteIds = entries.flatMap((entry) =>
-      entry.kind === "invalid" ? [entry.inviteId] : [],
-    );
-    const { failures: repairFailures } = await collectProjectionRepairs(
-      invalidInviteIds,
-      (inviteId) => markInvalidAutomatchSweepEntry(state, inviteId, nowMs),
-      "projection-invalid-record-failed",
-      (inviteId, error, itemIndex) =>
-        reportRecoveryFailure(
-          logger,
-          {
-            event: "telegram_projection_recovery_record_failed",
-            scope: "telegram",
-            source: "automatch",
-            phase: "repair",
-            itemIndex,
-            inviteId,
-          },
-          error,
-        ),
-    );
-    const { sentCount, claimFailure } = await claimAndEnqueueProjectionTasks({
-      candidates,
-      claim: (candidate) =>
-        claimAutomatchSweepCandidate(state, candidate, nowMs),
-      toTask: ({ task }) => task,
-      queue: env.TELEGRAM_PROJECTION_QUEUE,
-      fallbackErrorMessage: "projection-claim-failed",
-      onClaimFailure: ({ task }, error, itemIndex) =>
-        reportRecoveryFailure(
-          logger,
-          {
-            event: "telegram_projection_recovery_record_failed",
-            scope: "telegram",
-            source: "automatch",
-            phase: "claim",
-            itemIndex,
-            inviteId: task.inviteId,
-          },
-          error,
-        ),
-    });
-    if (claimFailure) {
-      throw claimFailure;
+      const invalidInviteIds = entries.flatMap((entry) =>
+        entry.kind === "invalid" ? [entry.inviteId] : [],
+      );
+      const { failures: pageRepairFailures } = await collectProjectionRepairs(
+        invalidInviteIds,
+        (inviteId) => markInvalidAutomatchSweepEntry(state, inviteId, nowMs),
+        "projection-invalid-record-failed",
+        (inviteId, error, itemIndex) =>
+          reportRecoveryFailure(
+            logger,
+            {
+              event: "telegram_projection_recovery_record_failed",
+              scope: "telegram",
+              source: "automatch",
+              phase: "repair",
+              itemIndex: itemOffset + itemIndex,
+              inviteId,
+            },
+            error,
+          ),
+      );
+      const result = await claimAndEnqueueProjectionTasks({
+        candidates,
+        claim: (candidate) =>
+          claimAutomatchSweepCandidate(state, candidate, nowMs),
+        toTask: ({ task }) => task,
+        queue: env.TELEGRAM_PROJECTION_QUEUE,
+        fallbackErrorMessage: "projection-claim-failed",
+        onClaimFailure: ({ task }, error, itemIndex) =>
+          reportRecoveryFailure(
+            logger,
+            {
+              event: "telegram_projection_recovery_record_failed",
+              scope: "telegram",
+              source: "automatch",
+              phase: "claim",
+              itemIndex: itemOffset + itemIndex,
+              inviteId: task.inviteId,
+            },
+            error,
+          ),
+      });
+      sentCount += result.sentCount;
+      claimFailures.push(...result.claimFailures);
+      repairFailures.push(...pageRepairFailures);
+    }
+    if (claimFailures.length > 0) {
+      throw claimFailures[0];
     }
     if (repairFailures.length > 0) {
       throw repairFailures[0];
@@ -220,58 +231,69 @@ export async function sweepRatingProjections(
   nowMs: number,
 ): Promise<number> {
   try {
-    const entries = await rating.scanDueRatingTelegramProjections(
-      nowMs,
-      PROJECTION_SWEEP_LIMIT,
+    const pages = projectionRecoveryPages((excludedIdentities) =>
+      rating.scanDueRatingTelegramProjectionsPage(
+        nowMs,
+        PROJECTION_SWEEP_LIMIT,
+        excludedIdentities,
+      ),
     );
-    const { sentCount, failures } = await recoverAndEnqueueProjectionScan({
-      entries,
-      queue: env.TELEGRAM_PROJECTION_QUEUE,
-      async quarantine(entry) {
-        const quarantined = await rating.quarantineRatingRecoveryEntry(
-          entry,
-          nowMs,
-        );
-        if (quarantined) {
-          logRecoveryEvent(logger, "error", {
-            event: "telegram_projection_recovery_record_quarantined",
-            scope: "telegram",
-            source: "rating",
-            ...quarantined,
-          });
-        }
-      },
-      async processCandidate(record) {
-        if (
-          await rating.claimRatingTelegramProjection(
-            record.operationId,
-            record.revision,
+    let sentCount = 0;
+    const failures: unknown[] = [];
+    for await (const { entries, itemOffset } of pages) {
+      const result = await recoverAndEnqueueProjectionScan({
+        entries,
+        queue: env.TELEGRAM_PROJECTION_QUEUE,
+        async quarantine(entry) {
+          const quarantined = await rating.quarantineRatingRecoveryEntry(
+            entry,
             nowMs,
-          )
-        ) {
-          return {
-            kind: "rating-telegram-projection",
-            operationId: record.operationId,
-          } satisfies TelegramProjectionTask;
-        }
-      },
-      onFailure: (entry, error, itemIndex, phase) =>
-        reportRecoveryFailure(
-          logger,
-          {
-            event: "telegram_projection_recovery_record_failed",
-            scope: "telegram",
-            source: "rating",
-            phase,
-            itemIndex,
-            operationId:
-              entry.kind === "candidate" ? entry.value.operationId : undefined,
-          },
-          error,
-        ),
-    });
+          );
+          if (quarantined) {
+            logRecoveryEvent(logger, "error", {
+              event: "telegram_projection_recovery_record_quarantined",
+              scope: "telegram",
+              source: "rating",
+              ...quarantined,
+            });
+          }
+        },
+        async processCandidate(record) {
+          if (
+            await rating.claimRatingTelegramProjection(
+              record.operationId,
+              record.revision,
+              nowMs,
+            )
+          ) {
+            return {
+              kind: "rating-telegram-projection",
+              operationId: record.operationId,
+            } satisfies TelegramProjectionTask;
+          }
+        },
+        onFailure: (entry, error, itemIndex, phase) =>
+          reportRecoveryFailure(
+            logger,
+            {
+              event: "telegram_projection_recovery_record_failed",
+              scope: "telegram",
+              source: "rating",
+              phase,
+              itemIndex: itemOffset + itemIndex,
+              operationId:
+                entry.kind === "candidate"
+                  ? entry.value.operationId
+                  : undefined,
+            },
+            error,
+          ),
+      });
+      sentCount += result.sentCount;
+      failures.push(...result.failures.map(({ error }) => error));
+    }
     if (failures.length > 0) {
-      const error = failures[0].error;
+      const error = failures[0];
       throw error instanceof Error
         ? error
         : new Error("projection-claim-failed");

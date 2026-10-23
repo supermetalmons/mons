@@ -21,6 +21,10 @@ import {
 import { createProfileGameProjectionLockStore } from "../profileGameProjectionLocksD1.ts";
 import { createProfileLinkCatchupStore } from "../profileLinkCatchupD1.ts";
 import {
+  projectionRecoveryPages,
+  PROJECTION_RECOVERY_MAX_PAGES,
+} from "../projectionRecoveryPages.ts";
+import {
   logRecoveryEvent,
   reportRecoveryFailure,
 } from "../recoveryReporting.ts";
@@ -316,74 +320,83 @@ export async function sweepRatingProfileGameProjections(
       ))
   )(env);
   const nowMs = now();
-  const entries = await rating.scanDueRatingProfileGameProjections(
-    nowMs,
-    PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+  const pages = projectionRecoveryPages((excludedIdentities) =>
+    rating.scanDueRatingProfileGameProjectionsPage(
+      nowMs,
+      PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+      excludedIdentities,
+    ),
   );
-  const { sentCount, failures } = await recoverAndEnqueueProjectionScan({
-    entries,
-    queue: env.PROFILE_GAME_PROJECTION_QUEUE,
-    concurrency: PROFILE_GAME_PROJECTION_SWEEP_CONCURRENCY,
-    async quarantine(entry) {
-      const quarantined = await rating.quarantineRatingRecoveryEntry(
-        entry,
-        nowMs,
-      );
-      if (quarantined) {
-        logRecoveryEvent(logger, "error", {
-          event: "profile_game_projection_recovery_record_quarantined",
-          scope: "profile-game",
-          source: "rating",
-          ...quarantined,
-        });
-      }
-    },
-    async processCandidate(record, setPhase) {
-      const claimed = await rating.claimRatingProfileGameProjection(
-        record.operationId,
-        record.revision,
-        nowMs,
-      );
-      if (!claimed) {
-        return;
-      }
-      if (
-        record.version !== PROFILE_GAME_PROJECTION_SCHEMA_VERSION ||
-        !isSafeRecordKey(record.inviteId) ||
-        !isSafeRecordKey(record.matchId) ||
-        record.operationId !== `${record.inviteId}__${record.matchId}`
-      ) {
-        setPhase("quarantine");
-        await rating.markRatingProfileGameProjection(
-          record.operationId,
-          "dead",
-          now(),
-          "invalid-recovery-marker",
+  let sentCount = 0;
+  const failures: unknown[] = [];
+  for await (const { entries, itemOffset } of pages) {
+    const result = await recoverAndEnqueueProjectionScan({
+      entries,
+      queue: env.PROFILE_GAME_PROJECTION_QUEUE,
+      concurrency: PROFILE_GAME_PROJECTION_SWEEP_CONCURRENCY,
+      async quarantine(entry) {
+        const quarantined = await rating.quarantineRatingRecoveryEntry(
+          entry,
+          nowMs,
         );
-        return;
-      }
-      return {
-        kind: "rating-profile-game-projection",
-        operationId: record.operationId,
-      } satisfies ProfileGameProjectionTask;
-    },
-    onFailure: (entry, error, itemIndex, phase) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "profile_game_projection_recovery_record_failed",
-          scope: "profile-game",
-          source: "rating",
-          phase,
-          itemIndex,
-          operationId:
-            entry.kind === "candidate" ? entry.value.operationId : undefined,
-        },
-        error,
-      ),
-  });
+        if (quarantined) {
+          logRecoveryEvent(logger, "error", {
+            event: "profile_game_projection_recovery_record_quarantined",
+            scope: "profile-game",
+            source: "rating",
+            ...quarantined,
+          });
+        }
+      },
+      async processCandidate(record, setPhase) {
+        const claimed = await rating.claimRatingProfileGameProjection(
+          record.operationId,
+          record.revision,
+          nowMs,
+        );
+        if (!claimed) {
+          return;
+        }
+        if (
+          record.version !== PROFILE_GAME_PROJECTION_SCHEMA_VERSION ||
+          !isSafeRecordKey(record.inviteId) ||
+          !isSafeRecordKey(record.matchId) ||
+          record.operationId !== `${record.inviteId}__${record.matchId}`
+        ) {
+          setPhase("quarantine");
+          await rating.markRatingProfileGameProjection(
+            record.operationId,
+            "dead",
+            now(),
+            "invalid-recovery-marker",
+          );
+          return;
+        }
+        return {
+          kind: "rating-profile-game-projection",
+          operationId: record.operationId,
+        } satisfies ProfileGameProjectionTask;
+      },
+      onFailure: (entry, error, itemIndex, phase) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "profile_game_projection_recovery_record_failed",
+            scope: "profile-game",
+            source: "rating",
+            phase,
+            itemIndex: itemOffset + itemIndex,
+            operationId:
+              entry.kind === "candidate" ? entry.value.operationId : undefined,
+          },
+          error,
+        ),
+    });
+    sentCount += result.sentCount;
+    failures.push(...result.failures.map(({ error }) => error));
+  }
   if (failures.length > 0) {
-    throw failures[0].error;
+    throw failures[0];
   }
   return sentCount;
 }
@@ -402,78 +415,106 @@ export async function sweepAutomatchProfileGameProjections(
     dependencies.createStateRepository ||
     ((workerEnv: Env) => createGameplayRepository(workerEnv))
   )(env);
-  const [dueValue, malformedValue] = await Promise.all([
-    state.projectionRecovery.listDueAutomatchProfileOutboxes(
+  const duePages = projectionRecoveryPages((excludedIdentities) =>
+    state.projectionRecovery.listDueAutomatchProfileOutboxesPage(
       dueBeforeMs,
       PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+      excludedIdentities,
     ),
-    state.projectionRecovery.listMalformedAutomatchProfileOutboxes(
+  );
+  const malformedPages = projectionRecoveryPages((excludedIdentities) =>
+    state.projectionRecovery.listMalformedAutomatchProfileOutboxesPage(
       PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+      excludedIdentities,
     ),
-  ]);
-  const entries = [
-    ...automatchSweepEntries(dueValue),
-    ...automatchSweepEntries(malformedValue),
-  ];
-  const invalidInviteIds = entries.flatMap((entry) =>
-    entry.kind === "invalid" ? [entry.inviteId] : [],
   );
-  const {
-    repairedTasks,
-    removedCount: invalidRemoved,
-    failures: repairFailures,
-  } = await collectProjectionRepairs(
-    invalidInviteIds,
-    (inviteId) =>
-      repairInvalidAutomatchSweepEntry(state, inviteId, nowMs, createRequestId),
-    "profile-game-projection-invalid-record-failed",
-    (inviteId, error, itemIndex) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "profile_game_projection_recovery_record_failed",
-          scope: "profile-game",
-          source: "automatch",
-          phase: "repair",
-          itemIndex,
+  let sentCount = 0;
+  const claimFailures: Error[] = [];
+  const repairFailures: Error[] = [];
+  for (
+    let pageIndex = 0;
+    pageIndex < PROJECTION_RECOVERY_MAX_PAGES;
+    pageIndex++
+  ) {
+    const [due, malformed] = await Promise.all([
+      duePages.next(),
+      malformedPages.next(),
+    ]);
+    if (due.done && malformed.done) break;
+    const itemOffset = pageIndex * PROFILE_GAME_PROJECTION_SWEEP_LIMIT * 2;
+    const entries = [
+      ...automatchSweepEntries(due.done ? null : due.value.entries),
+      ...automatchSweepEntries(malformed.done ? null : malformed.value.entries),
+    ];
+    const invalidInviteIds = entries.flatMap((entry) =>
+      entry.kind === "invalid" ? [entry.inviteId] : [],
+    );
+    const {
+      repairedTasks,
+      removedCount: invalidRemoved,
+      failures: pageRepairFailures,
+    } = await collectProjectionRepairs(
+      invalidInviteIds,
+      (inviteId) =>
+        repairInvalidAutomatchSweepEntry(
+          state,
           inviteId,
-        },
-        error,
-      ),
-  );
-  if (repairedTasks.length > 0 || invalidRemoved > 0) {
-    logRecoveryEvent(logger, "error", {
-      event: "profile_game_projection_invalid_outboxes_recovered",
-      repaired: repairedTasks.length,
-      removed: invalidRemoved,
+          nowMs,
+          createRequestId,
+        ),
+      "profile-game-projection-invalid-record-failed",
+      (inviteId, error, itemIndex) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "profile_game_projection_recovery_record_failed",
+            scope: "profile-game",
+            source: "automatch",
+            phase: "repair",
+            itemIndex: itemOffset + itemIndex,
+            inviteId,
+          },
+          error,
+        ),
+    );
+    if (repairedTasks.length > 0 || invalidRemoved > 0) {
+      logRecoveryEvent(logger, "error", {
+        event: "profile_game_projection_invalid_outboxes_recovered",
+        repaired: repairedTasks.length,
+        removed: invalidRemoved,
+      });
+    }
+    const candidates = entries.flatMap((entry) =>
+      entry.kind === "candidate" ? [entry.value] : [],
+    );
+    const result = await claimAndEnqueueProjectionTasks({
+      candidates,
+      claim: (candidate) =>
+        claimAutomatchSweepCandidate(state, candidate, nowMs),
+      toTask: ({ task }) => task,
+      queue: env.PROFILE_GAME_PROJECTION_QUEUE,
+      initialTasks: repairedTasks,
+      fallbackErrorMessage: "profile-game-projection-claim-failed",
+      onClaimFailure: ({ task }, error, itemIndex) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "profile_game_projection_recovery_record_failed",
+            scope: "profile-game",
+            source: "automatch",
+            phase: "claim",
+            itemIndex: itemOffset + itemIndex,
+            inviteId: task.inviteId,
+          },
+          error,
+        ),
     });
+    sentCount += result.sentCount;
+    claimFailures.push(...result.claimFailures);
+    repairFailures.push(...pageRepairFailures);
   }
-  const candidates = entries.flatMap((entry) =>
-    entry.kind === "candidate" ? [entry.value] : [],
-  );
-  const { sentCount, claimFailure } = await claimAndEnqueueProjectionTasks({
-    candidates,
-    claim: (candidate) => claimAutomatchSweepCandidate(state, candidate, nowMs),
-    toTask: ({ task }) => task,
-    queue: env.PROFILE_GAME_PROJECTION_QUEUE,
-    initialTasks: repairedTasks,
-    fallbackErrorMessage: "profile-game-projection-claim-failed",
-    onClaimFailure: ({ task }, error, itemIndex) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "profile_game_projection_recovery_record_failed",
-          scope: "profile-game",
-          source: "automatch",
-          phase: "claim",
-          itemIndex,
-          inviteId: task.inviteId,
-        },
-        error,
-      ),
-  });
-  if (claimFailure) {
-    throw claimFailure;
+  if (claimFailures.length > 0) {
+    throw claimFailures[0];
   }
   if (repairFailures.length > 0) {
     throw repairFailures[0];
@@ -496,91 +537,105 @@ export async function sweepEventProfileGameProjections(
     ((workerEnv: Env) =>
       createEventProjectionRecoveryStore(workerEnv.EVENT_DB, "profile-game"))
   )(env);
-  const records = await recovery.listDue(
-    dueBeforeMs,
-    PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+  const pages = projectionRecoveryPages((excludedIdentities) =>
+    recovery.listDuePage(
+      dueBeforeMs,
+      PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+      excludedIdentities,
+    ),
   );
-  if (records.length === 0) return 0;
-  return recovery.withAdmission(async (writer) => {
-    const entries = eventSweepEntries(records);
-    const invalidEventIds = Array.from(
-      new Set(
-        entries.flatMap((entry) =>
-          entry.kind === "invalid" ? [entry.eventId] : [],
+  let sentCount = 0;
+  const repairFailures: Error[] = [];
+  let firstClaimFailure: Error | null = null;
+  for await (const { entries: records, itemOffset } of pages) {
+    if (records.length === 0) continue;
+    const result = await recovery.withAdmission(async (writer) => {
+      const entries = eventSweepEntries(records);
+      const invalidEventIds = Array.from(
+        new Set(
+          entries.flatMap((entry) =>
+            entry.kind === "invalid" ? [entry.eventId] : [],
+          ),
         ),
-      ),
-    );
-    const {
-      repairedTasks,
-      removedCount: invalidRemoved,
-      failures,
-    } = await collectProjectionRepairs(
-      invalidEventIds,
-      (eventId) =>
-        repairInvalidEventSweepEntry(writer, eventId, nowMs, createRequestId),
-      "event-profile-game-invalid-record-failed",
-      (eventId, error, itemIndex) =>
-        reportRecoveryFailure(
-          logger,
-          {
-            event: "profile_game_projection_recovery_record_failed",
-            scope: "profile-game",
-            source: "event",
-            phase: "repair",
-            itemIndex,
-            eventId,
-          },
-          error,
-        ),
-    );
-    if (repairedTasks.length > 0 || invalidRemoved > 0) {
-      logRecoveryEvent(logger, "error", {
-        event: "event_profile_game_projection_invalid_outboxes_recovered",
-        repaired: repairedTasks.length,
-        removed: invalidRemoved,
-      });
-    }
-    const candidateByEventId = new Map<string, EventSweepCandidate>();
-    for (const entry of entries) {
-      if (entry.kind === "candidate") {
-        candidateByEventId.set(entry.value.task.eventId, entry.value);
-      }
-    }
-    const { sentCount, claimFailure } = await claimAndEnqueueProjectionTasks({
-      candidates: Array.from(candidateByEventId.values()),
-      claim: (candidate) => claimEventSweepCandidate(writer, candidate, nowMs),
-      toTask: ({ task }) => task,
-      queue: env.EVENT_PROFILE_GAME_PROJECTION_QUEUE,
-      initialTasks: repairedTasks,
-      fallbackErrorMessage: "profile-game-projection-claim-failed",
-      onClaimFailure: ({ task }, error, itemIndex) =>
-        reportRecoveryFailure(
-          logger,
-          {
-            event: "profile_game_projection_recovery_record_failed",
-            scope: "profile-game",
-            source: "event",
-            phase: "claim",
-            itemIndex,
-            eventId: task.eventId,
-          },
-          error,
-        ),
-    });
-    if (claimFailure) {
-      failures.push(claimFailure);
-    }
-    if (failures.length === 1) {
-      throw failures[0];
-    }
-    if (failures.length > 1) {
-      throw new AggregateError(
-        failures,
-        "event-profile-game-projection-sweep-failed",
       );
-    }
-    return sentCount;
-  });
+      const {
+        repairedTasks,
+        removedCount: invalidRemoved,
+        failures: pageFailures,
+      } = await collectProjectionRepairs(
+        invalidEventIds,
+        (eventId) =>
+          repairInvalidEventSweepEntry(writer, eventId, nowMs, createRequestId),
+        "event-profile-game-invalid-record-failed",
+        (eventId, error, itemIndex) =>
+          reportRecoveryFailure(
+            logger,
+            {
+              event: "profile_game_projection_recovery_record_failed",
+              scope: "profile-game",
+              source: "event",
+              phase: "repair",
+              itemIndex: itemOffset + itemIndex,
+              eventId,
+            },
+            error,
+          ),
+      );
+      if (repairedTasks.length > 0 || invalidRemoved > 0) {
+        logRecoveryEvent(logger, "error", {
+          event: "event_profile_game_projection_invalid_outboxes_recovered",
+          repaired: repairedTasks.length,
+          removed: invalidRemoved,
+        });
+      }
+      const candidateByEventId = new Map<string, EventSweepCandidate>();
+      for (const entry of entries) {
+        if (entry.kind === "candidate") {
+          candidateByEventId.set(entry.value.task.eventId, entry.value);
+        }
+      }
+      const { sentCount, claimFailure } = await claimAndEnqueueProjectionTasks({
+        candidates: Array.from(candidateByEventId.values()),
+        claim: (candidate) =>
+          claimEventSweepCandidate(writer, candidate, nowMs),
+        toTask: ({ task }) => task,
+        queue: env.EVENT_PROFILE_GAME_PROJECTION_QUEUE,
+        initialTasks: repairedTasks,
+        fallbackErrorMessage: "profile-game-projection-claim-failed",
+        onClaimFailure: ({ task }, error, itemIndex) =>
+          reportRecoveryFailure(
+            logger,
+            {
+              event: "profile_game_projection_recovery_record_failed",
+              scope: "profile-game",
+              source: "event",
+              phase: "claim",
+              itemIndex: itemOffset + itemIndex,
+              eventId: task.eventId,
+            },
+            error,
+          ),
+      });
+      return { sentCount, repairFailures: pageFailures, claimFailure };
+    });
+    sentCount += result.sentCount;
+    repairFailures.push(...result.repairFailures);
+    firstClaimFailure ||= result.claimFailure;
+  }
+  const failures = [
+    ...repairFailures,
+    ...(firstClaimFailure ? [firstClaimFailure] : []),
+  ];
+  if (failures.length === 1) {
+    throw failures[0];
+  }
+  if (failures.length > 1) {
+    throw new AggregateError(
+      failures,
+      "event-profile-game-projection-sweep-failed",
+    );
+  }
+  return sentCount;
 }
 
 export async function sweepProfileLinkProfileGameProjections(
@@ -593,57 +648,66 @@ export async function sweepProfileLinkProfileGameProjections(
     dependencies.createProfileLinkJobs ||
     ((workerEnv: Env) => createProfileLinkCatchupStore(workerEnv.PROFILE_DB))
   )(env);
-  const entries = await jobs.scanDue(
-    nowMs - PROFILE_GAME_PROJECTION_RECOVERY_DELAY_MS,
-    PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+  const pages = projectionRecoveryPages((excludedIdentities) =>
+    jobs.scanDuePage(
+      nowMs - PROFILE_GAME_PROJECTION_RECOVERY_DELAY_MS,
+      PROFILE_GAME_PROJECTION_SWEEP_LIMIT,
+      excludedIdentities,
+    ),
   );
-  const { sentCount, failures } = await recoverAndEnqueueProjectionScan({
-    entries,
-    queue: env.PROFILE_GAME_PROJECTION_QUEUE,
-    async quarantine(entry) {
-      const quarantined = await jobs.quarantineInvalidEntry(entry, nowMs);
-      if (quarantined) {
-        logRecoveryEvent(logger, "error", {
-          event: "profile_game_projection_recovery_record_quarantined",
-          scope: "profile-game",
-          source: "profile-link",
-          ...quarantined,
-        });
-      }
-    },
-    async processCandidate(job) {
-      if (
-        await jobs.claimDispatch(
-          job.loginUid,
-          job.requestId,
-          job.lastQueuedAtMs,
-          nowMs,
-        )
-      ) {
-        return {
-          kind: "profile-link-profile-game-projection",
-          loginUid: job.loginUid,
-          requestId: job.requestId,
-        } satisfies ProfileGameProjectionTask;
-      }
-    },
-    onFailure: (entry, error, itemIndex, phase) =>
-      reportRecoveryFailure(
-        logger,
-        {
-          event: "profile_game_projection_recovery_record_failed",
-          scope: "profile-game",
-          source: "profile-link",
-          phase,
-          itemIndex,
-          loginUid:
-            entry.kind === "candidate" ? entry.value.loginUid : undefined,
-        },
-        error,
-      ),
-  });
+  let sentCount = 0;
+  const failures: unknown[] = [];
+  for await (const { entries, itemOffset } of pages) {
+    const result = await recoverAndEnqueueProjectionScan({
+      entries,
+      queue: env.PROFILE_GAME_PROJECTION_QUEUE,
+      async quarantine(entry) {
+        const quarantined = await jobs.quarantineInvalidEntry(entry, nowMs);
+        if (quarantined) {
+          logRecoveryEvent(logger, "error", {
+            event: "profile_game_projection_recovery_record_quarantined",
+            scope: "profile-game",
+            source: "profile-link",
+            ...quarantined,
+          });
+        }
+      },
+      async processCandidate(job) {
+        if (
+          await jobs.claimDispatch(
+            job.loginUid,
+            job.requestId,
+            job.lastQueuedAtMs,
+            nowMs,
+          )
+        ) {
+          return {
+            kind: "profile-link-profile-game-projection",
+            loginUid: job.loginUid,
+            requestId: job.requestId,
+          } satisfies ProfileGameProjectionTask;
+        }
+      },
+      onFailure: (entry, error, itemIndex, phase) =>
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "profile_game_projection_recovery_record_failed",
+            scope: "profile-game",
+            source: "profile-link",
+            phase,
+            itemIndex: itemOffset + itemIndex,
+            loginUid:
+              entry.kind === "candidate" ? entry.value.loginUid : undefined,
+          },
+          error,
+        ),
+    });
+    sentCount += result.sentCount;
+    failures.push(...result.failures.map(({ error }) => error));
+  }
   if (failures.length > 0) {
-    const error = failures[0].error;
+    const error = failures[0];
     throw error instanceof Error
       ? error
       : new Error("profile-game-projection-claim-failed");

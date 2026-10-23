@@ -7,7 +7,10 @@ import {
   listDueEventProgressOutboxes,
   releaseEventWriteAdmission,
 } from "../src/eventD1.ts";
-import { buildEventProgressPlan } from "../src/eventProgressCodec.ts";
+import {
+  buildEventProgressPlan,
+  type EventProgressPlan,
+} from "../src/eventProgressCodec.ts";
 import {
   createEventProgressRecoveryStore,
   type EventProgressRecoveryStore,
@@ -17,6 +20,18 @@ import { observeD1FailureDatabase } from "./d1FailureTestUtils.ts";
 
 const testEnv = env as Env & { TEST_EVENT_D1_MIGRATIONS: D1Migration[] };
 const eventId = "recovery-deadline-event";
+
+function scheduledStartPlan(queuedAtMs = 100, id = eventId) {
+  return buildEventProgressPlan(
+    {
+      eventId: id,
+      reason: "scheduled-start-reconciliation",
+      sourceKey: `start:${id}:20000000`,
+      runAtMs: 20_000_000,
+    },
+    queuedAtMs,
+  );
+}
 
 async function seedEvent(id = eventId) {
   const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB);
@@ -159,6 +174,204 @@ describe("event progress recovery checkpoints", () => {
 
   it("adds an immediately eligible checkpoint without rewriting historical payloads", () => {
     expect(legacyAfter).toEqual({ ...legacyBefore, next_reconcile_at_ms: 0 });
+  });
+
+  describe("scheduled start initialization", () => {
+    it("creates and returns a canonical outbox in one batch under the existing admission", async () => {
+      const plan = await scheduledStartPlan();
+      const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB);
+      const reads: string[] = [];
+      const observed = observeD1FailureDatabase(testEnv.EVENT_DB, {
+        afterRead: async (query) => {
+          reads.push(query);
+        },
+      });
+      try {
+        const store = createEventProgressRecoveryStore(
+          observed.database,
+          admission,
+        );
+        expect(await store.ensureScheduledStart(plan)).toEqual({
+          outboxId: plan.outboxId,
+          record: plan.outbox,
+          recordJson: JSON.stringify(plan.outbox),
+          nextReconcileAtMs: 0,
+        });
+        expect(observed.batches).toHaveLength(1);
+        expect(observed.writeBatches[0]).toHaveLength(3);
+        expect(reads).toEqual([]);
+        expect(await storedOutboxes()).toEqual([
+          {
+            outbox_id: plan.outboxId,
+            event_id: eventId,
+            status: "pending",
+            run_at_ms: plan.params.runAtMs,
+            last_queued_at_ms: 100,
+            record_json: JSON.stringify(plan.outbox),
+            next_reconcile_at_ms: 0,
+          },
+        ]);
+        expect(
+          await testEnv.EVENT_DB.prepare(
+            "SELECT admission_id FROM event_write_admissions",
+          ).all(),
+        ).toMatchObject({ results: [{ admission_id: admission.admissionId }] });
+      } finally {
+        await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
+      }
+    });
+
+    it.each(["valid", "malformed"] as const)(
+      "preserves an existing %s payload, archive, and future checkpoint exactly",
+      async (kind) => {
+        const plan = await scheduledStartPlan();
+        await seedOutbox(plan.params.sourceKey);
+        await seedDeadOutbox(plan.outboxId);
+        const record =
+          kind === "valid"
+            ? { ...plan.outbox, retained: "legacy-extension" }
+            : { schemaVersion: 2, eventId, retained: "malformed" };
+        const recordJson = JSON.stringify(record, null, 2);
+        await testEnv.EVENT_DB.batch([
+          testEnv.EVENT_DB.prepare(
+            "UPDATE event_progress_outboxes SET record_json = ? WHERE status = 'pending' AND outbox_id = ?",
+          ).bind(recordJson, plan.outboxId),
+          testEnv.EVENT_DB.prepare(
+            "UPDATE event_progress_outboxes SET next_reconcile_at_ms = 3600000 WHERE status = 'pending' AND outbox_id = ?",
+          ).bind(plan.outboxId),
+        ]);
+        const before = await storedOutboxes();
+        await withStore(async (store) => {
+          expect(
+            await store.ensureScheduledStart(await scheduledStartPlan(200)),
+          ).toEqual({
+            outboxId: plan.outboxId,
+            record,
+            recordJson,
+            nextReconcileAtMs: 3_600_000,
+          });
+          expect(await store.listDue(3_599_999, 10)).toEqual([]);
+        });
+        expect(await storedOutboxes()).toEqual(before);
+      },
+    );
+
+    it("returns the same winning payload when overlapping initializations race", async () => {
+      const plans = await Promise.all([
+        scheduledStartPlan(100),
+        scheduledStartPlan(200),
+      ]);
+      await withStore(async (store) => {
+        const snapshots = await Promise.all(
+          plans.map((plan) => store.ensureScheduledStart(plan)),
+        );
+        expect(snapshots[0]).toEqual(snapshots[1]);
+        expect(plans.map((plan) => plan.outbox)).toContainEqual(
+          snapshots[0].record,
+        );
+        expect(await store.read(plans[0].outboxId)).toEqual(snapshots[0]);
+      });
+      expect(await storedOutboxes()).toHaveLength(1);
+    });
+
+    it.each(["released", "expired", "generation", "frozen"] as const)(
+      "rejects initialization under a %s admission without changing existing or absent rows",
+      async (condition) => {
+        const existing = await scheduledStartPlan();
+        await seedOutbox(existing.params.sourceKey);
+        const absent = await buildEventProgressPlan(
+          {
+            eventId,
+            reason: "scheduled-start-reconciliation",
+            sourceKey: `start:${eventId}:21000000`,
+            runAtMs: 21_000_000,
+          },
+          100,
+        );
+        const admission = await acquireEventWriteAdmission(testEnv.EVENT_DB);
+        const store = createEventProgressRecoveryStore(testEnv.EVENT_DB, {
+          ...admission,
+          freezeGeneration:
+            admission.freezeGeneration + Number(condition === "generation"),
+        });
+        try {
+          if (condition === "released" || condition === "frozen")
+            await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
+          if (condition === "expired")
+            await testEnv.EVENT_DB.prepare(
+              "UPDATE event_write_admissions SET created_at_ms = 0, expires_at_ms = 1 WHERE admission_id = ?",
+            )
+              .bind(admission.admissionId)
+              .run();
+          if (condition === "frozen")
+            await testEnv.EVENT_DB.prepare(
+              "UPDATE event_runtime_control SET storage_mode = 'frozen', freeze_generation = freeze_generation + 1 WHERE singleton = 1",
+            ).run();
+          const before = await storedOutboxes();
+          await expect(store.ensureScheduledStart(existing)).rejects.toThrow();
+          await expect(store.ensureScheduledStart(absent)).rejects.toThrow();
+          expect(await storedOutboxes()).toEqual(before);
+        } finally {
+          await releaseEventWriteAdmission(testEnv.EVENT_DB, admission);
+        }
+      },
+    );
+
+    it("retains the event foreign key when initializing an absent outbox", async () => {
+      const plan = await scheduledStartPlan(100, "missing-scheduled-event");
+      await withStore(async (store) => {
+        await expect(store.ensureScheduledStart(plan)).rejects.toThrow();
+      });
+      expect(await storedOutboxes()).toEqual([]);
+    });
+
+    it.each([
+      "reason",
+      "source-key",
+      "missing-run-time",
+      "outbox-identity",
+      "workflow-identity",
+      "parameters",
+      "queued-time",
+    ] as const)(
+      "rejects a plan with invalid %s before writing",
+      async (kind) => {
+        let plan: EventProgressPlan;
+        if (
+          kind === "reason" ||
+          kind === "source-key" ||
+          kind === "missing-run-time"
+        ) {
+          plan = await buildEventProgressPlan(
+            {
+              eventId,
+              reason:
+                kind === "reason"
+                  ? "sunday-mons-reminder"
+                  : "scheduled-start-reconciliation",
+              sourceKey:
+                kind === "source-key"
+                  ? "other-source"
+                  : `start:${eventId}:20000000`,
+              runAtMs: kind === "missing-run-time" ? null : 20_000_000,
+            },
+            100,
+          );
+        } else {
+          plan = await scheduledStartPlan();
+          if (kind === "outbox-identity")
+            plan.outboxId = `ep_${"a".repeat(64)}`;
+          if (kind === "workflow-identity")
+            plan.workflowId = `event-progress-${"a".repeat(64)}`;
+          if (kind === "parameters") plan.params.eventId = "other-event";
+          if (kind === "queued-time") plan.outbox.lastQueuedAtMs = -1;
+        }
+        await withStore(async (store) => {
+          await expect(store.ensureScheduledStart(plan)).rejects.toThrow();
+        });
+        expect(await storedOutboxes()).toEqual([]);
+      },
+    );
   });
 
   it("keeps metadata separate from JSON, queued time, and old readers", async () => {

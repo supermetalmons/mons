@@ -163,8 +163,11 @@ export function attachMemoryWagerFrozenStore(
     finishAutomatchProfileOutbox: unexpected,
     projectionRecovery: {
       listDueAutomatchTelegramOutboxes: unexpected,
+      listDueAutomatchTelegramOutboxesPage: unexpected,
       listDueAutomatchProfileOutboxes: unexpected,
+      listDueAutomatchProfileOutboxesPage: unexpected,
       listMalformedAutomatchProfileOutboxes: unexpected,
+      listMalformedAutomatchProfileOutboxesPage: unexpected,
       transactRawAutomatchTelegramOutbox: unexpected,
       transactRawAutomatchProfileOutbox: unexpected,
     },

@@ -15,6 +15,7 @@ import {
   type RecoveryFailureContext,
 } from "./recoveryReporting.ts";
 import { summarizeError } from "./errorSummary.ts";
+import { createScheduledRecoveryBudget } from "./scheduledRecoveryBudget.ts";
 import {
   createEventGameplayRepository,
   type EventGameplayRepository,
@@ -35,6 +36,7 @@ import {
 import type { EventWriteAdmission } from "./eventD1.ts";
 import {
   dispatchOutboxPlan,
+  dispatchOutboxSnapshot,
   withEventProgressDispatchAdmission,
 } from "./eventProgressDispatch.ts";
 import {
@@ -85,15 +87,13 @@ async function reconcileScheduledEvents(
   const maxLeadMs = Math.max(
     ...Object.values(EVENT_ANNOUNCEMENT_SPECS).map((spec) => spec.leadMs),
   );
-  const visited = new Set<string>();
+  const budget = createScheduledRecoveryBudget(discoveredAtMs);
   const failures: unknown[] = [];
   const recoverCandidate = async ({
     cursor,
     event,
   }: ScheduledEventRecoveryCandidate) => {
     const { eventId, startAtMs } = cursor;
-    if (visited.has(eventId)) return;
-    visited.add(eventId);
     if (!event) {
       console.error(
         JSON.stringify({
@@ -124,19 +124,8 @@ async function reconcileScheduledEvents(
           discoveredAtMs,
         );
         await execute(plan.workflowId, async () => {
-          const existing = await repository.readEventProgressOutbox(
-            plan.outboxId,
-          );
-          if (existing === null) {
-            await repository.commitEventPlan([
-              {
-                kind: "progress-outbox",
-                outboxId: plan.outboxId,
-                value: plan.outbox,
-              },
-            ]);
-          }
-          await dispatchOutboxPlan(env, outboxRecovery, plan.outboxId, now);
+          const current = await outboxRecovery.ensureScheduledStart(plan);
+          await dispatchOutboxSnapshot(env, outboxRecovery, current, now);
         });
       })(),
     ]);
@@ -163,8 +152,10 @@ async function reconcileScheduledEvents(
     (async () => {
       const rows = await recovery.listUrgent(
         discoveredAtMs + maxLeadMs + SCHEDULED_EVENT_RECOVERY_MARGIN_MS,
+        discoveredAtMs,
       );
-      await runRecoveryItems(rows, recoverCandidate, {
+      const { selected } = budget.select(rows, "urgent");
+      await runRecoveryItems(selected, recoverCandidate, {
         concurrency: EVENT_PROGRESS_SWEEP_CONCURRENCY,
         aggregateErrorMessage: "event-progress-records-failed",
       });
@@ -180,15 +171,17 @@ async function reconcileScheduledEvents(
   } else {
     const { snapshot, rows } = background.value;
     const page = rows.slice(0, SCHEDULED_EVENT_RECOVERY_PAGE_SIZE);
-    await runRecoveryItems(page, recoverCandidate, {
+    const { selected, traversedCount } = budget.select(page, "background");
+    await runRecoveryItems(selected, recoverCandidate, {
       concurrency: EVENT_PROGRESS_SWEEP_CONCURRENCY,
       aggregateErrorMessage: "event-progress-records-failed",
     });
-    if (urgent.status === "fulfilled") {
+    if (
+      urgent.status === "fulfilled" &&
+      (traversedCount > 0 || rows.length === 0)
+    ) {
       const nextCursor =
-        rows.length > SCHEDULED_EVENT_RECOVERY_PAGE_SIZE
-          ? page[page.length - 1].cursor
-          : null;
+        traversedCount < rows.length ? page[traversedCount - 1].cursor : null;
       try {
         await recovery.checkpoint(snapshot.revision, nextCursor, now());
       } catch (error) {

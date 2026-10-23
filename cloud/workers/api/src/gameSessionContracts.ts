@@ -27,8 +27,11 @@ type AutomatchRecordMethod =
   | "readAutomatchProfileOutbox"
   | "transactAutomatchProfileOutbox"
   | "listDueAutomatchTelegramOutboxes"
+  | "listDueAutomatchTelegramOutboxesPage"
   | "listDueAutomatchProfileOutboxes"
-  | "listMalformedAutomatchProfileOutboxes";
+  | "listDueAutomatchProfileOutboxesPage"
+  | "listMalformedAutomatchProfileOutboxes"
+  | "listMalformedAutomatchProfileOutboxesPage";
 
 export type GameSessionPort = Omit<RawGameSessionPort, AutomatchRecordMethod> &
   AutomatchProjectionCommands & {
@@ -84,8 +87,11 @@ export type AutomatchProjectionPort = Pick<
 export type AutomatchProjectionRecoveryPort = Pick<
   RawGameSessionPort,
   | "listDueAutomatchTelegramOutboxes"
+  | "listDueAutomatchTelegramOutboxesPage"
   | "listDueAutomatchProfileOutboxes"
+  | "listDueAutomatchProfileOutboxesPage"
   | "listMalformedAutomatchProfileOutboxes"
+  | "listMalformedAutomatchProfileOutboxesPage"
 > & {
   transactRawAutomatchTelegramOutbox: RawGameSessionPort["transactAutomatchTelegramOutbox"];
   transactRawAutomatchProfileOutbox: RawGameSessionPort["transactAutomatchProfileOutbox"];

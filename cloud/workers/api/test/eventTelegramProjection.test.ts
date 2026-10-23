@@ -114,6 +114,10 @@ function ratingRepository(): RatingProjectionRepository {
     },
     quarantineRatingRecoveryEntry: async () => null,
     scanDueRatingTelegramProjections: async () => [],
+    scanDueRatingTelegramProjectionsPage: async () => ({
+      entries: [],
+      scannedIdentities: [],
+    }),
     markRatingTelegramProjection: async () => undefined,
     putEventProgressOutbox: async () => undefined,
     readProfileOwnershipSnapshot: async () => {

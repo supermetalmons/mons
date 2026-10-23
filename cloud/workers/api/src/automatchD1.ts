@@ -40,8 +40,11 @@ export function createAutomatchD1Store(
     listAutomatchEntriesByLogin,
     readFirstAutomatchEntry,
     listDueAutomatchTelegramOutboxes,
+    listDueAutomatchTelegramOutboxesPage,
     listDueAutomatchProfileOutboxes,
+    listDueAutomatchProfileOutboxesPage,
     listMalformedAutomatchProfileOutboxes,
+    listMalformedAutomatchProfileOutboxesPage,
     listEntriesByLogins,
   } = reads;
   const {
@@ -94,6 +97,7 @@ export function createAutomatchD1Store(
         signal,
       ),
     listDueAutomatchTelegramOutboxes,
+    listDueAutomatchTelegramOutboxesPage,
     readAutomatchProfileOutbox: async (
       inviteId: string,
       signal?: AbortSignal,
@@ -112,7 +116,9 @@ export function createAutomatchD1Store(
         signal,
       ),
     listDueAutomatchProfileOutboxes,
+    listDueAutomatchProfileOutboxesPage,
     listMalformedAutomatchProfileOutboxes,
+    listMalformedAutomatchProfileOutboxesPage,
     listEntriesByLogins,
     buildRevisionGuardStatements,
     buildCommitStatements,

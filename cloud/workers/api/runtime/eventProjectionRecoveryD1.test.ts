@@ -106,6 +106,32 @@ describe("event projection recovery scopes", () => {
   });
 
   describe.each(families)("$kind", ({ kind, table }) => {
+    it("excludes visited identities before the page limit without changing stored snapshots", async () => {
+      for (let index = 0; index < 21; index++)
+        await seed(kind, `event-${String(index).padStart(2, "0")}`);
+      const store = createEventProjectionRecoveryStore(db, kind);
+      const first = await store.listDuePage(100, 10);
+      expect(first.entries).toHaveLength(10);
+      await store.withAdmission(async (writer) => {
+        for (const snapshot of first.entries)
+          expect(await writer.claim(snapshot, "request", 100, 100)).toBe(true);
+      });
+      const second = await store.listDuePage(
+        100,
+        10,
+        first.scannedIdentities.filter((key): key is string => key !== null),
+      );
+      expect(second.entries.map(({ eventId }) => eventId)).toEqual(
+        Array.from({ length: 10 }, (_, index) => `event-${index + 10}`),
+      );
+      expect(
+        second.entries.every(
+          ({ recordJson }) => recordJson === JSON.stringify(outbox(kind, 100)),
+        ),
+      ).toBe(true);
+      expect(await admissionCount()).toBe(0);
+    });
+
     it("returns ordered due snapshots with exact stored JSON and the requested limit", async () => {
       const noncanonical = JSON.stringify(outbox(kind, 100), null, 2).replace(
         "100",

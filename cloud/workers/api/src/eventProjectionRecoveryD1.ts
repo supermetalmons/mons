@@ -1,5 +1,6 @@
 import {
   listDueProjectionOutboxSnapshots,
+  listDueProjectionOutboxSnapshotsPage,
   type ProjectionOutboxKind,
   type ProjectionOutboxSnapshot,
 } from "./eventD1/reads.ts";
@@ -11,6 +12,7 @@ import {
 import { EventD1Failure, type EventD1Connection } from "./eventD1/types.ts";
 import type { EventRecordTransaction } from "./eventStoreContracts.ts";
 import { withEventWriteAdmission } from "./eventWriteAdmission.ts";
+import type { RecoveryScanPage } from "./recoveryScanPage.ts";
 
 export type EventProjectionRecoveryKind = ProjectionOutboxKind;
 export type EventProjectionRecoverySnapshot = ProjectionOutboxSnapshot;
@@ -31,6 +33,11 @@ export type EventProjectionRecoveryStore = {
     beforeMs: number,
     limit: number,
   ): Promise<EventProjectionRecoverySnapshot[]>;
+  listDuePage(
+    beforeMs: number,
+    limit: number,
+    excludedIdentities?: readonly string[],
+  ): Promise<RecoveryScanPage<EventProjectionRecoverySnapshot[]>>;
   withAdmission<T>(
     work: (writer: EventProjectionRecoveryWriter) => Promise<T>,
   ): Promise<T>;
@@ -47,6 +54,14 @@ export function createEventProjectionRecoveryStore(
   return {
     listDue: (beforeMs, limit) =>
       listDueProjectionOutboxSnapshots(db, kind, beforeMs, limit),
+    listDuePage: (beforeMs, limit, excludedIdentities) =>
+      listDueProjectionOutboxSnapshotsPage(
+        db,
+        kind,
+        beforeMs,
+        limit,
+        excludedIdentities,
+      ),
     withAdmission: (work) =>
       withEventWriteAdmission(
         db,

@@ -10,7 +10,12 @@ import {
   exactKey,
   isRecord,
   safeInteger,
+  validateEventProgressOutbox,
 } from "./eventD1/validation.ts";
+import {
+  parseEventProgressOutbox,
+  type EventProgressPlan,
+} from "./eventProgressCodec.ts";
 
 export type EventProgressRecoverySnapshot = {
   outboxId: string;
@@ -20,6 +25,9 @@ export type EventProgressRecoverySnapshot = {
 };
 
 export type EventProgressRecoveryStore = {
+  ensureScheduledStart(
+    plan: EventProgressPlan,
+  ): Promise<EventProgressRecoverySnapshot>;
   listDue(
     nowMs: number,
     limit: number,
@@ -65,6 +73,53 @@ export function createEventProgressRecoveryStore(
     return changes === 1;
   };
   return {
+    async ensureScheduledStart(plan) {
+      const record = validateEventProgressOutbox(plan.outboxId, plan.outbox);
+      const parsed = await parseEventProgressOutbox(plan.outboxId, record);
+      if (
+        !parsed ||
+        parsed.params.reason !== "scheduled-start-reconciliation" ||
+        parsed.params.runAtMs === null ||
+        parsed.params.sourceKey !==
+          `start:${parsed.params.eventId}:${parsed.params.runAtMs}` ||
+        parsed.workflowId !== plan.workflowId ||
+        Object.keys(parsed.params).length !== Object.keys(plan.params).length ||
+        Object.entries(parsed.params).some(
+          ([key, value]) =>
+            plan.params[key as keyof EventProgressPlan["params"]] !== value,
+        )
+      ) {
+        throw new EventD1Failure("invalid-scheduled-start-plan");
+      }
+      const results = await db.batch<RecoveryRow>([
+        eventWriteAdmissionGuard(db, admission),
+        db
+          .prepare(
+            `INSERT INTO event_progress_outboxes (
+               outbox_id, event_id, status, run_at_ms, last_queued_at_ms,
+               record_json
+             ) VALUES (?, ?, 'pending', ?, ?, ?)
+             ON CONFLICT (status, outbox_id) DO NOTHING`,
+          )
+          .bind(
+            parsed.outboxId,
+            record.eventId,
+            record.runAtMs,
+            record.lastQueuedAtMs,
+            encodeJson(record),
+          ),
+        db
+          .prepare(
+            `SELECT outbox_id, record_json, next_reconcile_at_ms
+             FROM event_progress_outboxes
+             WHERE status = 'pending' AND outbox_id = ?`,
+          )
+          .bind(parsed.outboxId),
+      ]);
+      const rows = results[2]?.results;
+      if (rows?.length !== 1) throw new EventD1Failure();
+      return snapshot(rows[0]);
+    },
     async listDue(nowMs, limit) {
       const rows = await db
         .prepare(

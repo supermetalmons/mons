@@ -1,5 +1,6 @@
 import type { EventOutboxReads } from "../src/eventOutboxReadRepository.ts";
 import type { EventStore } from "../src/eventStoreContracts.ts";
+import { recoveryScanIdentityFixture } from "./recoveryScanPageFixture.ts";
 import type {
   EventProjectionRecoveryKind,
   EventProjectionRecoveryStore,
@@ -22,6 +23,28 @@ function recoveryFixture(
         record,
         recordJson: JSON.stringify(record) ?? "null",
       }));
+    },
+    async listDuePage(beforeMs, limit, excludedIdentities = []) {
+      const entries = (
+        await listDue(beforeMs, limit + excludedIdentities.length)
+      )
+        .filter(({ eventId }) => {
+          const identity = recoveryScanIdentityFixture(eventId);
+          return identity === null || !excludedIdentities.includes(identity);
+        })
+        .slice(0, limit)
+        .map(({ eventId, record }) => ({
+          kind,
+          eventId,
+          record,
+          recordJson: JSON.stringify(record) ?? "null",
+        }));
+      return {
+        entries,
+        scannedIdentities: entries.map(({ eventId }) =>
+          recoveryScanIdentityFixture(eventId),
+        ),
+      };
     },
     withAdmission: (work) => work(writer),
   };

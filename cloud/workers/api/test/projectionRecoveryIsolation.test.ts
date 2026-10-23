@@ -1,3 +1,7 @@
+import {
+  projectionRecoveryEntryIdentity,
+  projectionRecoveryPage,
+} from "./projectionRecoveryFixtures.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createRatingRepository } from "../src/ratingRepository.ts";
@@ -108,11 +112,11 @@ function recoveryHarness(
         now: () => nowMs,
         logger,
         createProfileLinkJobs: () => ({
-          scanDue: async () => [
-            invalid,
-            ...scan(),
-            ...recoveryCandidates([job]),
-          ],
+          scanDuePage: async () =>
+            projectionRecoveryPage(
+              [invalid, ...scan(), ...recoveryCandidates([job])],
+              projectionRecoveryEntryIdentity,
+            ),
           quarantineInvalidEntry: async (entry, timestamp) => {
             assert.strictEqual(entry, invalid);
             return quarantine(timestamp)
@@ -181,7 +185,11 @@ function recoveryHarness(
       return claim(timestamp);
     };
     if (lane === "profile-game") {
-      rating.scanDueRatingProfileGameProjections = scanRatings;
+      rating.scanDueRatingProfileGameProjectionsPage = async () =>
+        projectionRecoveryPage(
+          await scanRatings(),
+          projectionRecoveryEntryIdentity,
+        );
       rating.claimRatingProfileGameProjection = claimRating;
       run = () =>
         sweepRatingProfileGameProjections(env, {
@@ -190,7 +198,11 @@ function recoveryHarness(
           logger,
         });
     } else {
-      rating.scanDueRatingTelegramProjections = scanRatings;
+      rating.scanDueRatingTelegramProjectionsPage = async () =>
+        projectionRecoveryPage(
+          await scanRatings(),
+          projectionRecoveryEntryIdentity,
+        );
       rating.claimRatingTelegramProjection = claimRating;
       run = () => sweepRatingProjections(env, rating, logger, nowMs);
     }
@@ -358,10 +370,13 @@ test("profile-link recovery keeps claims sequential and retains scanned task ide
     {
       now: () => nowMs,
       createProfileLinkJobs: () => ({
-        async scanDue(dueBeforeMs, limit) {
+        async scanDuePage(dueBeforeMs, limit) {
           assert.equal(dueBeforeMs, 300_000);
           assert.equal(limit, 10);
-          return recoveryCandidates(jobs);
+          return projectionRecoveryPage(
+            recoveryCandidates(jobs),
+            projectionRecoveryEntryIdentity,
+          );
         },
         quarantineInvalidEntry: async () =>
           assert.fail("unexpected-quarantine"),

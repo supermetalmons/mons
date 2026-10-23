@@ -4,7 +4,10 @@ import {
   type EventProgressPlan,
   type EventProgressWorkflowParams,
 } from "./eventProgressCodec.ts";
-import type { EventProgressRecoveryStore } from "./eventProgressRecoveryD1.ts";
+import type {
+  EventProgressRecoverySnapshot,
+  EventProgressRecoveryStore,
+} from "./eventProgressRecoveryD1.ts";
 import { requireActiveDurableMatchState } from "./matchStateAuthority.ts";
 import type { EventWriteAdmission } from "./eventD1.ts";
 import { withEventWriteAdmission } from "./eventWriteAdmission.ts";
@@ -32,18 +35,19 @@ export async function withEventProgressDispatchAdmission(
 async function ensureEventProgressWorkflowInstance(
   workflow: Workflow<EventProgressWorkflowParams>,
   plan: EventProgressPlan,
-): Promise<void> {
+): Promise<WorkflowInstance | undefined> {
   try {
-    await workflow.createBatch([
+    const [instance] = await workflow.createBatch([
       {
         id: plan.workflowId,
         params: plan.params,
         retention: { successRetention: "1 day", errorRetention: "30 days" },
       },
     ]);
+    return instance;
   } catch (error) {
     try {
-      await workflow.get(plan.workflowId);
+      return await workflow.get(plan.workflowId);
     } catch {
       throw error;
     }
@@ -55,9 +59,12 @@ export async function ensureEventProgressWorkflow(
   plan: EventProgressPlan,
 ): Promise<void> {
   await requireActiveDurableMatchState(env.PROFILE_GAMES_DB);
-  await withEventProgressDispatchAdmission(env.EVENT_DB, () =>
-    ensureEventProgressWorkflowInstance(env.EVENT_PROGRESS_WORKFLOW, plan),
-  );
+  await withEventProgressDispatchAdmission(env.EVENT_DB, async () => {
+    await ensureEventProgressWorkflowInstance(
+      env.EVENT_PROGRESS_WORKFLOW,
+      plan,
+    );
+  });
 }
 
 export async function removeOutbox(
@@ -76,7 +83,17 @@ export async function dispatchOutboxPlan(
   now: () => number,
 ): Promise<void> {
   const current = await recovery.read(outboxId);
-  if (!current || current.nextReconcileAtMs > now()) return;
+  if (current) await dispatchOutboxSnapshot(env, recovery, current, now);
+}
+
+export async function dispatchOutboxSnapshot(
+  env: Env,
+  recovery: EventProgressRecoveryStore,
+  current: EventProgressRecoverySnapshot,
+  now: () => number,
+): Promise<void> {
+  if (current.nextReconcileAtMs > now()) return;
+  const { outboxId } = current;
   const plan = await parseEventProgressOutbox(outboxId, current.record);
   if (!plan) return;
   try {
@@ -84,11 +101,11 @@ export async function dispatchOutboxPlan(
     try {
       instance = await env.EVENT_PROGRESS_WORKFLOW.get(plan.workflowId);
     } catch {
-      await ensureEventProgressWorkflowInstance(
-        env.EVENT_PROGRESS_WORKFLOW,
-        plan,
-      );
-      instance = await env.EVENT_PROGRESS_WORKFLOW.get(plan.workflowId);
+      instance =
+        (await ensureEventProgressWorkflowInstance(
+          env.EVENT_PROGRESS_WORKFLOW,
+          plan,
+        )) ?? (await env.EVENT_PROGRESS_WORKFLOW.get(plan.workflowId));
     }
     const status = await instance.status();
     if (status.status === "errored" || status.status === "terminated") {

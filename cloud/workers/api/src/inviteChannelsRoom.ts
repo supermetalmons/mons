@@ -23,12 +23,11 @@ import {
 import { composeInviteWagerSource } from "./inviteWagerSource.ts";
 import { createInviteChannelSnapshotStore } from "./inviteChannelSnapshotStore.ts";
 import type { WagerStateSnapshot } from "./wagerStateD1.ts";
+import type { SocketSession, SocketSessions } from "./socketSession.ts";
 import {
-  socketSessionCurrent,
-  type SocketSession,
-  type SocketSessions,
-} from "./socketSession.ts";
-import { readSocketAdmission } from "./socketAdmission.ts";
+  readSocketAdmission,
+  validateCurrentSocketAdmission,
+} from "./socketAdmission.ts";
 import { acceptRoomSocket, sendSocketSnapshot } from "./socketUpgrade.ts";
 import {
   socketCapacityFull,
@@ -662,7 +661,7 @@ export class InviteChannelsRoom {
     }
     if (parsed.status === "expired")
       return new Response("Session expired", { status: 401 });
-    const { role, ip, revision, passwordProtected, session } = parsed.admission;
+    const { role, ip, session } = parsed.admission;
     const attachment: InviteSocketAttachment = {
       channel,
       schemaVersion: 1,
@@ -700,23 +699,17 @@ export class InviteChannelsRoom {
             status: source.status === "missing" ? 404 : 409,
           });
         }
-        if (
-          source.snapshot.revision !== revision ||
-          metadata.passwordProtected !== passwordProtected
-        ) {
-          return new Response(`Invite ${channel} changed`, { status: 409 });
-        }
-        if (!canReceiveInvite(attachment, metadata)) {
-          return new Response("Invite access denied", { status: 403 });
-        }
-        if (!socketSessionCurrent(session))
-          return new Response("Session expired", { status: 401 });
-        if (this.inviteRoomFull(channel, role, ip)) {
-          return new Response(`${name} room is full`, {
-            status: 429,
-            headers: { "Retry-After": "60" },
-          });
-        }
+        const rejected = validateCurrentSocketAdmission({
+          channel,
+          admission: parsed.admission,
+          current: {
+            revision: source.snapshot.revision,
+            passwordProtected: metadata.passwordProtected,
+          },
+          canReceive: () => canReceiveInvite(attachment, metadata),
+          capacityFull: () => this.inviteRoomFull(channel, role, ip),
+        });
+        if (rejected) return rejected;
         const pair = acceptRoomSocket(
           this.ctx,
           attachment,

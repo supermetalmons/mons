@@ -15,6 +15,12 @@ import {
   type RecoveryRowObservation,
 } from "./recoveryObservation.ts";
 import { buildRecoveryQuarantineWrite } from "./recoveryQuarantine.ts";
+import {
+  readRecoveryScanIdentities,
+  recoveryScanExclusionSql,
+  recoveryScanIdentitySql,
+  type RecoveryScanPage,
+} from "./recoveryScanPage.ts";
 
 const ACTIVE_CONTROL = `EXISTS (
   SELECT 1 FROM profile_canonical_control
@@ -75,6 +81,11 @@ export type ProfileLinkCatchupStore = {
     dueBeforeMs: number,
     limit: number,
   ): Promise<ProfileLinkCatchupScanEntry[]>;
+  scanDuePage(
+    dueBeforeMs: number,
+    limit: number,
+    excludedIdentities?: readonly string[],
+  ): Promise<RecoveryScanPage<ProfileLinkCatchupScanEntry[]>>;
   quarantineInvalidEntry(
     entry: ProfileLinkCatchupInvalidEntry,
     nowMs: number,
@@ -229,6 +240,46 @@ async function inspectSweepJob(
 export function createProfileLinkCatchupStore(
   db: D1Database,
 ): ProfileLinkCatchupStore {
+  const scanDuePage = async (
+    dueBeforeMs: number,
+    limit: number,
+    excludedIdentities: readonly string[] = [],
+  ): Promise<RecoveryScanPage<ProfileLinkCatchupScanEntry[]>> => {
+    assertTimestamp(dueBeforeMs);
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1_000) {
+      throw new TypeError("invalid-profile-link-catchup-limit");
+    }
+    const exclusions = recoveryScanExclusionSql(
+      "job.login_uid",
+      excludedIdentities,
+      3,
+    );
+    const result = await db
+      .prepare(
+        `SELECT job.*, CAST(job.login_uid AS BLOB) AS recovery_key_bytes,
+                typeof(job.login_uid) AS recovery_key_type,
+                ${recoveryScanIdentitySql("job.login_uid")} AS recovery_scan_identity
+         FROM profile_link_catchup_jobs AS job
+         WHERE job.last_queued_at_ms <= ?1
+           AND NOT EXISTS (
+             SELECT 1 FROM profile_link_catchup_quarantine AS quarantine
+             WHERE quarantine.login_uid = job.login_uid
+               AND quarantine.revision_token = CAST(job.revision AS TEXT)
+           )${exclusions}
+         ORDER BY job.last_queued_at_ms, job.login_uid LIMIT ?2`,
+      )
+      .bind(dueBeforeMs, limit, ...excludedIdentities)
+      .all<
+        JobRow & RecoveryKeyRow & { recovery_scan_identity: string | null }
+      >();
+    const scannedIdentities = readRecoveryScanIdentities(result.results);
+    const entries: ProfileLinkCatchupScanEntry[] = [];
+    for (const row of result.results) {
+      const entry = await inspectSweepJob(db, row, dueBeforeMs);
+      if (entry) entries.push(entry);
+    }
+    return { entries, scannedIdentities };
+  };
   const read = async (loginUid: string) => {
     const row = await db
       .prepare("SELECT * FROM profile_link_catchup_jobs WHERE login_uid = ?")
@@ -299,33 +350,9 @@ export function createProfileLinkCatchupStore(
       }
       return job;
     },
-    async scanDue(dueBeforeMs, limit) {
-      assertTimestamp(dueBeforeMs);
-      if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1_000) {
-        throw new TypeError("invalid-profile-link-catchup-limit");
-      }
-      const result = await db
-        .prepare(
-          `SELECT job.*, CAST(job.login_uid AS BLOB) AS recovery_key_bytes,
-                  typeof(job.login_uid) AS recovery_key_type
-           FROM profile_link_catchup_jobs AS job
-           WHERE job.last_queued_at_ms <= ?
-             AND NOT EXISTS (
-               SELECT 1 FROM profile_link_catchup_quarantine AS quarantine
-               WHERE quarantine.login_uid = job.login_uid
-                 AND quarantine.revision_token = CAST(job.revision AS TEXT)
-             )
-           ORDER BY job.last_queued_at_ms, job.login_uid LIMIT ?`,
-        )
-        .bind(dueBeforeMs, limit)
-        .all<JobRow & RecoveryKeyRow>();
-      const entries: ProfileLinkCatchupScanEntry[] = [];
-      for (const row of result.results) {
-        const entry = await inspectSweepJob(db, row, dueBeforeMs);
-        if (entry) entries.push(entry);
-      }
-      return entries;
-    },
+    scanDue: async (dueBeforeMs, limit) =>
+      (await scanDuePage(dueBeforeMs, limit)).entries,
+    scanDuePage,
     async quarantineInvalidEntry({ observation, reason }, nowMs) {
       assertTimestamp(nowMs);
       const key = observation.keyBytes;

@@ -556,31 +556,131 @@ describe("socket session lifetime", () => {
       });
     });
 
-    it(`${channel} admission rechecks expiry after the source read`, async () => {
+    it.each([
+      "expired",
+      "expired-and-denied",
+      "stale-revision",
+      "changed-private-gate",
+    ] as const)(
+      `${channel} preserves final admission precedence for %s`,
+      async (failure) => {
+        const { room, inviteId } = await fixture();
+        const expiry = Date.now() + 300_000;
+        const clock = vi.spyOn(Date, "now");
+        const name =
+          channel === "metadata"
+            ? "Metadata"
+            : channel === "wagers"
+              ? "Wagers"
+              : "Match";
+        const result = await runInDurableObject(
+          room,
+          async (instance, state) => {
+            const mutable = instance as unknown as {
+              inviteReader: () => Promise<unknown>;
+            };
+            mutable.inviteReader = async () => {
+              clock.mockReturnValue(expiry);
+              return {
+                hostId: "host-login",
+                guestId: "guest-login",
+                hostColor: "white",
+                ...(failure === "changed-private-gate"
+                  ? { password: "private" }
+                  : {}),
+              };
+            };
+            const response = await instance.fetch(
+              request(channel, inviteId, expiry, {
+                ...(failure !== "expired"
+                  ? { [`X-Mons-${name}-Actor`]: "another-login" }
+                  : {}),
+                ...(failure === "stale-revision"
+                  ? { [`X-Mons-${name}-Revision`]: "2" }
+                  : {}),
+              }),
+            );
+            return {
+              status: response.status,
+              message: await response.text(),
+              retryAfter: response.headers.get("Retry-After"),
+              sockets: state.getWebSockets().length,
+            };
+          },
+        );
+        const changed =
+          failure === "stale-revision" || failure === "changed-private-gate";
+        const denied =
+          failure === "expired-and-denied" && channel !== "matches";
+        expect(result).toEqual({
+          status: changed ? 409 : denied ? 403 : 401,
+          message: changed
+            ? channel === "matches"
+              ? "Match admission changed"
+              : `Invite ${channel} changed`
+            : denied
+              ? "Invite access denied"
+              : "Session expired",
+          retryAfter: null,
+          sockets: 0,
+        });
+      },
+    );
+
+    it(`${channel} rechecks capacity after the source read before accepting a socket`, async () => {
       const { room, inviteId } = await fixture();
       const expiry = Date.now() + 300_000;
-      const clock = vi.spyOn(Date, "now");
       const result = await runInDurableObject(room, async (instance, state) => {
         const mutable = instance as unknown as {
           inviteReader: () => Promise<unknown>;
+          matchSync: { dependencies: { capacityFull: () => boolean } };
+          inviteChannels: { dependencies: { capacityFull: () => boolean } };
         };
+        let full = false;
+        const capacity = vi
+          .spyOn(
+            channel === "matches"
+              ? mutable.matchSync.dependencies
+              : mutable.inviteChannels.dependencies,
+            "capacityFull",
+          )
+          .mockImplementation(() => full);
         mutable.inviteReader = async () => {
-          clock.mockReturnValue(expiry);
+          full = true;
           return {
             hostId: "host-login",
             guestId: "guest-login",
             hostColor: "white",
           };
         };
-        const response = await instance.fetch(
-          request(channel, inviteId, expiry),
-        );
-        return {
-          status: response.status,
-          sockets: state.getWebSockets().length,
-        };
+        try {
+          const response = await instance.fetch(
+            request(channel, inviteId, expiry),
+          );
+          return {
+            status: response.status,
+            message: await response.text(),
+            retryAfter: response.headers.get("Retry-After"),
+            capacityChecks: capacity.mock.calls.length,
+            sockets: state.getWebSockets().length,
+          };
+        } finally {
+          capacity.mockRestore();
+        }
       });
-      expect(result).toEqual({ status: 401, sockets: 0 });
+      const name =
+        channel === "matches"
+          ? "Match"
+          : channel === "metadata"
+            ? "Metadata"
+            : "Wagers";
+      expect(result).toEqual({
+        status: 429,
+        message: `${name} room is full`,
+        retryAfter: "60",
+        capacityChecks: 2,
+        sockets: 0,
+      });
     });
   }
 

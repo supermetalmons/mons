@@ -27,6 +27,12 @@ import {
   type RecoveryKeyRow,
 } from "./recoveryObservation.ts";
 import { buildRecoveryQuarantineWrite } from "./recoveryQuarantine.ts";
+import {
+  readRecoveryScanIdentities,
+  recoveryScanExclusionSql,
+  recoveryScanIdentitySql,
+  type RecoveryScanPage,
+} from "./recoveryScanPage.ts";
 
 const EVENT_ID_BYTES_SQL = `(SELECT CASE WHEN type = 'text' THEN CAST(atom AS BLOB) ELSE NULL END
   FROM json_each(rating.payload_json)
@@ -216,13 +222,14 @@ async function inspectSweepRating<Row extends RatingRecoveryRow, Value>(
   }
 }
 
-async function scanDueRatings<Row extends RatingRecoveryRow, Value>(
+async function scanDueRatingsPage<Row extends RatingRecoveryRow, Value>(
   db: D1Database,
   projectionKind: RatingRecoveryProjectionKind,
   updatedBeforeMs: number,
   limit: number,
   parse: (row: Row) => Value,
-): Promise<RatingRecoveryScanEntry<Value>[]> {
+  excludedIdentities: readonly string[] = [],
+): Promise<RecoveryScanPage<RatingRecoveryScanEntry<Value>[]>> {
   if (
     !Number.isSafeInteger(updatedBeforeMs) ||
     updatedBeforeMs < 0 ||
@@ -234,29 +241,36 @@ async function scanDueRatings<Row extends RatingRecoveryRow, Value>(
   }
   const { prefix, sourceColumns, selectedColumns } =
     recoveryLane(projectionKind);
+  const exclusions = recoveryScanExclusionSql(
+    "rating.operation_id",
+    excludedIdentities,
+    3,
+  );
   const result = await db
     .prepare(
       `WITH observed AS MATERIALIZED (
          SELECT ${sourceColumns}
          FROM rating_updates AS rating
-         WHERE rating.${prefix}_state = 'pending' AND rating.${prefix}_updated_at_ms <= ?
+         WHERE rating.${prefix}_state = 'pending' AND rating.${prefix}_updated_at_ms <= ?1
            AND NOT EXISTS (
              SELECT 1 FROM rating_projection_recovery_quarantine AS quarantine
              WHERE quarantine.operation_id = rating.operation_id
                AND quarantine.projection_kind = '${projectionKind}'
                AND quarantine.revision_token = CAST(rating.revision AS TEXT)
-           )
+           )${exclusions}
          ORDER BY rating.${prefix}_updated_at_ms ASC, rating.operation_id ASC
-         LIMIT ?
+         LIMIT ?2
        )
        SELECT ${selectedColumns},
          CAST(observed.operation_id AS BLOB) AS recovery_key_bytes,
-         typeof(observed.operation_id) AS recovery_key_type
+         typeof(observed.operation_id) AS recovery_key_type,
+         ${recoveryScanIdentitySql("observed.operation_id")} AS recovery_scan_identity
        FROM observed
        ORDER BY observed.recovery_updated_at_ms ASC, observed.operation_id ASC`,
     )
-    .bind(updatedBeforeMs, limit)
-    .all<Row & RecoveryKeyRow>();
+    .bind(updatedBeforeMs, limit, ...excludedIdentities)
+    .all<Row & RecoveryKeyRow & { recovery_scan_identity: string | null }>();
+  const scannedIdentities = readRecoveryScanIdentities(result.results);
   const entries: RatingRecoveryScanEntry<Value>[] = [];
   for (const row of result.results) {
     const entry = await inspectSweepRating(
@@ -268,51 +282,80 @@ async function scanDueRatings<Row extends RatingRecoveryRow, Value>(
     );
     if (entry) entries.push(entry);
   }
-  return entries;
+  return { entries, scannedIdentities };
 }
 
-export function scanDueRatingEventProgress(
+export async function scanDueRatingEventProgress(
   db: D1Database,
   updatedBeforeMs: number,
   limit: number,
 ): Promise<RatingRecoveryScanEntry<PendingRatingEventProgress>[]> {
-  return scanDueRatings<RatingEventRecoveryRow, PendingRatingEventProgress>(
-    db,
-    "event-progress",
-    updatedBeforeMs,
-    limit,
-    (row) => ({
+  return (
+    await scanDueRatingsPage<
+      RatingEventRecoveryRow,
+      PendingRatingEventProgress
+    >(db, "event-progress", updatedBeforeMs, limit, (row) => ({
       ...parseRatingGameRecoveryRow(row),
       eventId: parseRatingEventId(row.event_id_bytes),
-    }),
-  );
+    }))
+  ).entries;
 }
 
-export function scanDueRatingProfileGameProjections(
+export async function scanDueRatingProfileGameProjections(
   db: D1Database,
   updatedBeforeMs: number,
   limit: number,
 ): Promise<RatingRecoveryScanEntry<PendingRatingProfileGameProjection>[]> {
-  return scanDueRatings(
+  return (
+    await scanDueRatingProfileGameProjectionsPage(db, updatedBeforeMs, limit)
+  ).entries;
+}
+
+export function scanDueRatingProfileGameProjectionsPage(
+  db: D1Database,
+  updatedBeforeMs: number,
+  limit: number,
+  excludedIdentities: readonly string[] = [],
+): Promise<
+  RecoveryScanPage<
+    RatingRecoveryScanEntry<PendingRatingProfileGameProjection>[]
+  >
+> {
+  return scanDueRatingsPage(
     db,
     "profile-game",
     updatedBeforeMs,
     limit,
     parseRatingGameRecoveryRow,
+    excludedIdentities,
   );
 }
 
-export function scanDueRatingTelegramProjections(
+export async function scanDueRatingTelegramProjections(
   db: D1Database,
   updatedBeforeMs: number,
   limit: number,
 ): Promise<RatingRecoveryScanEntry<PendingRatingTelegramProjection>[]> {
-  return scanDueRatings(
+  return (
+    await scanDueRatingTelegramProjectionsPage(db, updatedBeforeMs, limit)
+  ).entries;
+}
+
+export function scanDueRatingTelegramProjectionsPage(
+  db: D1Database,
+  updatedBeforeMs: number,
+  limit: number,
+  excludedIdentities: readonly string[] = [],
+): Promise<
+  RecoveryScanPage<RatingRecoveryScanEntry<PendingRatingTelegramProjection>[]>
+> {
+  return scanDueRatingsPage(
     db,
     "telegram",
     updatedBeforeMs,
     limit,
     parseRatingRecoveryRow,
+    excludedIdentities,
   );
 }
 

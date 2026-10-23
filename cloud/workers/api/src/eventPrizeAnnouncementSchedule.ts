@@ -5,6 +5,7 @@ import type {
 import {
   EVENT_ANNOUNCEMENT_KINDS,
   EVENT_ANNOUNCEMENT_SPECS,
+  eventAnnouncementRunAtMs,
   type EventAnnouncementKind,
 } from "./eventAnnouncementKinds.ts";
 import {
@@ -46,13 +47,9 @@ export async function buildEventAnnouncementPlan(
   kind: EventAnnouncementKind,
 ): Promise<EventProgressPlan | null> {
   const spec = EVENT_ANNOUNCEMENT_SPECS[kind];
-  if (!isSafeRecordKey(eventId) || !spec.isEligible(eventId, event)) {
-    return null;
-  }
-  const startAtMs = toRecord(event)?.startAtMs;
-  if (typeof startAtMs !== "number") return null;
-  const runAtMs = startAtMs - spec.leadMs;
-  if (runAtMs < 0 || nowMs > runAtMs) return null;
+  const runAtMs = eventAnnouncementRunAtMs(eventId, event, nowMs, kind);
+  if (runAtMs === null) return null;
+  const startAtMs = runAtMs + spec.leadMs;
   return buildEventProgressPlan(
     {
       eventId,

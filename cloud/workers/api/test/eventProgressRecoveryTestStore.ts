@@ -37,6 +37,20 @@ export function createEventProgressRecoveryTestStore(
   };
   return {
     read,
+    async ensureScheduledStart(plan) {
+      const current = await read(plan.outboxId);
+      if (current) return current;
+      await repository.commitEventPlan([
+        {
+          kind: "progress-outbox",
+          outboxId: plan.outboxId,
+          value: plan.outbox,
+        },
+      ]);
+      const created = await read(plan.outboxId);
+      if (!created) throw new Error("event-progress-outbox-unavailable");
+      return created;
+    },
     async listDue(nowMs, limit) {
       const rows = await repository.listDueEventProgressOutboxes(
         Number.MAX_SAFE_INTEGER,

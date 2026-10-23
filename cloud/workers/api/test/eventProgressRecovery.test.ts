@@ -185,13 +185,7 @@ for (const status of ["errored", "terminated"] as const) {
   });
 }
 
-for (const phase of [
-  "create",
-  "status",
-  "delete",
-  "recreate",
-  "created-get",
-] as const) {
+for (const phase of ["create", "status", "delete", "recreate"] as const) {
   test(`${phase} failure remains retryable and preserves the provider error`, async () => {
     const f = await fixture();
     const failure = new Error(`${phase}-failed`);
@@ -203,14 +197,6 @@ for (const phase of [
       f.setStatus("errored");
       f.instance.delete = async () => {
         throw failure;
-      };
-    } else if (phase === "created-get") {
-      f.setExists(false);
-      const get = f.env.EVENT_PROGRESS_WORKFLOW.get;
-      let reads = 0;
-      f.env.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
-        if (++reads === 2) throw failure;
-        return get(id);
       };
     } else {
       if (phase === "create") f.setExists(false);
@@ -230,6 +216,42 @@ for (const phase of [
     }
   });
 }
+
+test("lookup failure after an empty creation result remains retryable and preserves the provider error", async () => {
+  const f = await fixture();
+  const failure = new Error("empty-create-lookup-failed");
+  const get = f.env.EVENT_PROGRESS_WORKFLOW.get;
+  let reads = 0;
+  f.setExists(false);
+  f.env.EVENT_PROGRESS_WORKFLOW.createBatch = async () => {
+    f.calls.push("create");
+    f.setExists(true);
+    return [];
+  };
+  f.env.EVENT_PROGRESS_WORKFLOW.get = async (id) => {
+    if (++reads === 2) {
+      f.calls.push("get");
+      throw failure;
+    }
+    return get(id);
+  };
+  await assert.rejects(f.dispatch(), (error) => error === failure);
+  assert.deepEqual(f.calls, ["get", "create", "get"]);
+  assert.equal(
+    (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+    900_000,
+  );
+  assert.deepEqual(f.current(), f.plan.outbox);
+  f.env.EVENT_PROGRESS_WORKFLOW.get = get;
+  f.setNow(900_000);
+  await f.dispatch();
+  assert.deepEqual(f.calls, ["get", "create", "get", "get", "status"]);
+  assert.equal(
+    (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+    900_000 + HOUR,
+  );
+  assert.deepEqual(f.current(), f.plan.outbox);
+});
 
 for (const reason of ["missing", "retention-expired"] as const) {
   test(`${reason} instances are created with the original identity and retention`, async () => {
@@ -252,7 +274,7 @@ for (const reason of ["missing", "retention-expired"] as const) {
       return create(items);
     };
     await f.dispatch();
-    assert.deepEqual(f.calls, ["get", "create", "get", "status"]);
+    assert.deepEqual(f.calls, ["get", "create", "status"]);
     assert.equal(
       (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
       600_123 + (reason === "retention-expired" ? 2 : 1) * HOUR,
@@ -270,8 +292,13 @@ test("an initial provider lookup failure retains the existing creation fallback"
     return get(id);
   };
   await f.dispatch();
-  assert.deepEqual(f.calls, ["create", "get", "get", "status"]);
+  assert.deepEqual(f.calls, ["create", "get", "status"]);
   assert.equal(f.calls.includes("delete"), false);
+  assert.equal(
+    (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+    600_123 + HOUR,
+  );
+  assert.deepEqual(f.current(), f.plan.outbox);
 });
 
 for (const race of ["concurrent-create", "ambiguous-create"] as const) {
@@ -285,7 +312,11 @@ for (const race of ["concurrent-create", "ambiguous-create"] as const) {
       throw new Error("provider-response-lost");
     };
     await f.dispatch();
-    assert.deepEqual(f.calls, ["get", "create", "get", "get", "status"]);
+    assert.deepEqual(f.calls, ["get", "create", "get", "status"]);
+    assert.equal(
+      (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+      600_123 + HOUR,
+    );
     assert.deepEqual(f.current(), f.plan.outbox);
   });
 }
@@ -307,7 +338,12 @@ test("an instance deleted after lookup is retried on the next sweep without eage
   f.instance.status = status;
   f.setNow(900_000);
   await f.dispatch();
-  assert.deepEqual(f.calls, ["get", "get", "create", "get", "status"]);
+  assert.deepEqual(f.calls, ["get", "get", "create", "status"]);
+  assert.equal(
+    (await f.recovery.read(f.plan.outboxId))?.nextReconcileAtMs,
+    900_000 + HOUR,
+  );
+  assert.deepEqual(f.current(), f.plan.outbox);
 });
 
 for (const status of ["waiting", "complete"] as const) {

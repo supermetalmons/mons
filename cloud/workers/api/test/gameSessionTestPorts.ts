@@ -13,6 +13,7 @@ import {
   parseAutomatchProfileGameProjectionOutbox,
 } from "../src/profileGameProjectionOutbox.ts";
 import { parseAutomatchTelegramProjectionOutbox } from "../src/telegramProjectionOutbox.ts";
+import { recoveryRecordPageFixture } from "./recoveryScanPageFixture.ts";
 
 export function legacySessionChanges(
   updates: Record<string, unknown>,
@@ -263,6 +264,26 @@ export function rawGameplayTestPort(
         { orderBy: "updatedAtMs", startAt: 0, endAt: now, limitToFirst: limit },
         signal,
       )) as Record<string, unknown> | null,
+    listDueAutomatchTelegramOutboxesPage: async (
+      now,
+      limit,
+      excludedIdentities = [],
+      signal,
+    ) =>
+      recoveryRecordPageFixture(
+        (await state.getPath(
+          "telegramProjectionOutbox/automatch",
+          {
+            orderBy: "updatedAtMs",
+            startAt: 0,
+            endAt: now,
+            limitToFirst: limit + excludedIdentities.length,
+          },
+          signal,
+        )) as Record<string, unknown> | null,
+        limit,
+        excludedIdentities,
+      ),
     readAutomatchProfileOutbox: (id, signal) =>
       state.getPath(
         `profileGameProjectionOutbox/automatch/${id}`,
@@ -358,12 +379,49 @@ export function rawGameplayTestPort(
         { orderBy: "lastQueuedAtMs", endAt: now, limitToFirst: limit },
         signal,
       )) as Record<string, unknown> | null,
+    listDueAutomatchProfileOutboxesPage: async (
+      now,
+      limit,
+      excludedIdentities = [],
+      signal,
+    ) =>
+      recoveryRecordPageFixture(
+        (await state.getPath(
+          "profileGameProjectionOutbox/automatch",
+          {
+            orderBy: "lastQueuedAtMs",
+            endAt: now,
+            limitToFirst: limit + excludedIdentities.length,
+          },
+          signal,
+        )) as Record<string, unknown> | null,
+        limit,
+        excludedIdentities,
+      ),
     listMalformedAutomatchProfileOutboxes: async (limit, signal) =>
       (await state.getPath(
         "profileGameProjectionOutbox/automatch",
         { orderBy: "lastQueuedAtMs", startAt: "", limitToFirst: limit },
         signal,
       )) as Record<string, unknown> | null,
+    listMalformedAutomatchProfileOutboxesPage: async (
+      limit,
+      excludedIdentities = [],
+      signal,
+    ) =>
+      recoveryRecordPageFixture(
+        (await state.getPath(
+          "profileGameProjectionOutbox/automatch",
+          {
+            orderBy: "lastQueuedAtMs",
+            startAt: "",
+            limitToFirst: limit + excludedIdentities.length,
+          },
+          signal,
+        )) as Record<string, unknown> | null,
+        limit,
+        excludedIdentities,
+      ),
   };
 }
 
