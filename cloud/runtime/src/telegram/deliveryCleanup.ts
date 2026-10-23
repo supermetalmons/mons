@@ -32,10 +32,7 @@ import type {
   TelegramRepository,
 } from "./deliveryTypes.js";
 import { validateTelegramMessageKey } from "./desiredStateCore.js";
-import {
-  TELEGRAM_PENDING_DELETE_TASK_KIND,
-  TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
-} from "./taskKinds.js";
+import { TELEGRAM_PENDING_DELETE_TASK_KIND } from "./taskKinds.js";
 import { readProperty } from "./values.js";
 export function createTelegramCleanupDelivery({
   repository,
@@ -61,12 +58,10 @@ export function createTelegramCleanupDelivery({
     | "acquireApiGate"
     | "buildGateBlockedFailure"
     | "scheduleExactRetry"
-    | "applyRateLimitBarrierProof"
-    | "clearAppliedRateLimitProofMarker"
   >;
   recovery: Pick<
     TelegramDeliveryRecovery,
-    "applyPendingDeleteRetryWindowProof"
+    "applyPendingDeleteRetryWindowProof" | "resumeRateLimitProof"
   >;
 }) {
   const {
@@ -76,10 +71,8 @@ export function createTelegramCleanupDelivery({
     acquireApiGate,
     buildGateBlockedFailure,
     scheduleExactRetry,
-    applyRateLimitBarrierProof,
-    clearAppliedRateLimitProofMarker,
   } = control;
-  const { applyPendingDeleteRetryWindowProof } = recovery;
+  const { applyPendingDeleteRetryWindowProof, resumeRateLimitProof } = recovery;
   const orphanPendingDelete = async ({
     messageKey,
     pendingDeleteId,
@@ -475,47 +468,13 @@ export function createTelegramCleanupDelivery({
           "apiGateProofRequired",
         ),
       );
-      const proofRetryState = {
-        retryStartedAtMs: normalizeTimestamp(proof.retryStartedAtMs),
-        retryDeadlineAtMs: normalizeTimestamp(proof.retryDeadlineAtMs),
-        retryAtMs: normalizeTimestamp(proof.retryAtMs),
-        retrySequence: normalizeRetrySequence(proof.retrySequence),
-      };
-      await scheduleExactRetry({
+      await resumeRateLimitProof({
         messageKey: normalizedMessageKey,
-        revision:
-          normalizeString(proof.revision) || requestedRevision || "latest",
-        taskKind: TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
-        retryState: proofRetryState,
-        pendingDeleteId:
-          normalizeString(proof.pendingDeleteId) || requestedPendingDeleteId,
-        retryProofLeaseOwner: normalizeString(proof.retryProofLeaseOwner),
-        proofTaskKind: TELEGRAM_PENDING_DELETE_TASK_KIND,
-        barrierProofOwner: proof.owner,
-        barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
-        scheduleTimeMs: nowMs,
+        proof,
+        requestedRevision,
+        nowMs,
+        target: { kind: "pending-delete", requestedPendingDeleteId },
       });
-      let barrierProof = { applied: false };
-      try {
-        barrierProof = await applyRateLimitBarrierProof({
-          barrierProofOwner: proof.owner,
-          barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
-        });
-      } catch (_error) {
-        barrierProof = { applied: false };
-      }
-      if (barrierProof.applied) {
-        await applyPendingDeleteRetryWindowProof(normalizedMessageKey, {
-          pendingDeleteId:
-            normalizeString(proof.pendingDeleteId) || requestedPendingDeleteId,
-          retryProofLeaseOwner: proof.retryProofLeaseOwner,
-          ...proofRetryState,
-        });
-        await clearAppliedRateLimitProofMarker(
-          normalizedMessageKey,
-          proof.owner,
-        );
-      }
       return {
         status: "retryable",
         cleanup: decision,

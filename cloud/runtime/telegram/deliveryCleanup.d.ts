@@ -32,12 +32,10 @@ export declare function createTelegramCleanupDelivery({
     | "acquireApiGate"
     | "buildGateBlockedFailure"
     | "scheduleExactRetry"
-    | "applyRateLimitBarrierProof"
-    | "clearAppliedRateLimitProofMarker"
   >;
   recovery: Pick<
     TelegramDeliveryRecovery,
-    "applyPendingDeleteRetryWindowProof"
+    "applyPendingDeleteRetryWindowProof" | "resumeRateLimitProof"
   >;
 }): {
   reconcilePendingDelete: ({

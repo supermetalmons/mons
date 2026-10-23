@@ -40,8 +40,6 @@ export declare function createTelegramDesiredDelivery({
     | "buildGateBlockedFailure"
     | "logFailure"
     | "scheduleExactRetry"
-    | "applyRateLimitBarrierProof"
-    | "clearAppliedRateLimitProofMarker"
   >;
   recovery: TelegramDeliveryRecovery;
 }): {

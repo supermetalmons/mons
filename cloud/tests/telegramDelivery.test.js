@@ -21,6 +21,12 @@ const {
   createTelegramLocalRetryBarrier,
 } = require("../runtime/telegram/deliveryEngine");
 const {
+  createTelegramDeliveryControl,
+} = require("../runtime/telegram/deliveryControl");
+const {
+  createTelegramDeliveryRecovery,
+} = require("../runtime/telegram/deliveryRecovery");
+const {
   buildTelegramDeliveryTaskId,
 } = require("../runtime/telegram/taskIdentity");
 
@@ -4606,5 +4612,215 @@ test("retry coordination preserves scheduled proof payloads and generations", as
         ]);
       });
     }
+  }
+});
+
+test("persisted rate proofs retain recovery state when retry delivery fails", async (t) => {
+  for (const kind of ["desired", "pending-delete"]) {
+    for (const failure of [
+      "enqueue",
+      "barrier-error",
+      "barrier-unapplied",
+      "recovery-write",
+    ]) {
+      await t.test(`${kind} ${failure}`, async () => {
+        const desired = sendDesired();
+        const proof = {
+          owner: "rate-gate",
+          revision: desired.revision,
+          retryStartedAtMs: 10_000,
+          retryDeadlineAtMs: 610_000,
+          retryAtMs: 18_000,
+          retrySequence: 1,
+          retryNotBeforeMs: 18_000,
+          retryProofLeaseOwner: "owner-1",
+          ...(kind === "desired"
+            ? { safeRejectedAttemptId: "attempt-1" }
+            : { pendingDeleteId: "cleanup-1" }),
+        };
+        const processing = {
+          status: "processing",
+          revision: desired.revision,
+          leaseOwner: "owner-1",
+          leaseExpiresAtMs: 70_000,
+          apiGateOwner: proof.owner,
+          apiGateProofRequired: proof,
+        };
+        const initial = {
+          desired,
+          delivery:
+            kind === "desired"
+              ? {
+                  ...processing,
+                  sendInFlight: {
+                    attemptId: "attempt-1",
+                    revision: desired.revision,
+                  },
+                }
+              : {
+                  status: "delivered",
+                  revision: desired.revision,
+                  pendingDelete: {
+                    ...processing,
+                    pendingDeleteId: "cleanup-1",
+                  },
+                },
+        };
+        const repository = createRepository(
+          { key: initial },
+          {
+            apiGate: {
+              owner:
+                failure === "barrier-unapplied" ? "newer-gate" : proof.owner,
+            },
+            rejectBarrierProofWrite: failure === "barrier-error",
+          },
+        );
+        if (failure === "recovery-write") {
+          repository.transactMessage = async () => {
+            throw new Error("recovery-write-failed");
+          };
+        }
+        const scheduled = [];
+        const control = createTelegramDeliveryControl({
+          repository,
+          logger: { error() {}, info() {} },
+          now: () => 71_000,
+          localRetryBarrier: repository.localRetryBarrier,
+          scheduleRetry: async (task) => {
+            assert.deepEqual(repository.state.get("key"), initial);
+            assert.ok(repository.control.apiGate);
+            if (failure === "enqueue") throw new Error("queue-unavailable");
+            scheduled.push(task);
+          },
+        });
+        const recovery = createTelegramDeliveryRecovery({
+          repository,
+          now: () => 71_000,
+          control,
+        });
+        const resume = () =>
+          recovery.resumeRateLimitProof({
+            messageKey: "key",
+            proof,
+            requestedRevision: desired.revision,
+            nowMs: 71_000,
+            target: { kind },
+          });
+        if (failure === "enqueue" || failure === "recovery-write") {
+          await assert.rejects(
+            resume,
+            failure === "enqueue"
+              ? /queue-unavailable/
+              : /recovery-write-failed/,
+          );
+        } else {
+          await resume();
+        }
+        assert.deepEqual(repository.state.get("key"), initial);
+        assert.equal(scheduled.length, failure === "enqueue" ? 0 : 1);
+        if (scheduled.length) {
+          assert.equal(scheduled[0].taskKind, "rate-limit-proof");
+          assert.equal(scheduled[0].proofTaskKind, kind);
+          assert.equal(scheduled[0].scheduleTimeMs, 71_000);
+        }
+        assert.equal(
+          repository.control.retryNotBeforeMs,
+          failure === "recovery-write" ? 18_000 : 0,
+        );
+        assert.equal(
+          Boolean(repository.control.apiGate),
+          failure !== "recovery-write",
+        );
+      });
+    }
+  }
+});
+
+test("persisted cleanup proofs use a requested ID only for cleanup wakes", async (t) => {
+  for (const scenario of [
+    { name: "desired wake", expectedStatus: "processing" },
+    {
+      name: "cleanup wake fallback",
+      requestedPendingDeleteId: " cleanup-1 ",
+      expectedScheduledId: " cleanup-1 ",
+      expectedStatus: "retryable",
+    },
+    {
+      name: "stored ID wins",
+      requestedPendingDeleteId: "different-cleanup",
+      storedPendingDeleteId: " cleanup-1 ",
+      expectedScheduledId: "cleanup-1",
+      expectedStatus: "retryable",
+    },
+  ]) {
+    await t.test(scenario.name, async () => {
+      const desired = sendDesired();
+      const proof = {
+        owner: "rate-gate",
+        revision: desired.revision,
+        retryStartedAtMs: 10_000,
+        retryDeadlineAtMs: 610_000,
+        retryAtMs: 18_000,
+        retrySequence: 1,
+        retryNotBeforeMs: 18_000,
+        retryProofLeaseOwner: "owner-1",
+        ...(scenario.storedPendingDeleteId
+          ? { pendingDeleteId: scenario.storedPendingDeleteId }
+          : {}),
+      };
+      const repository = createRepository(
+        {
+          key: {
+            desired,
+            delivery: {
+              status: "delivered",
+              revision: desired.revision,
+              pendingDelete: {
+                pendingDeleteId: "cleanup-1",
+                status: "processing",
+                leaseOwner: "owner-1",
+                leaseExpiresAtMs: 70_000,
+                apiGateOwner: proof.owner,
+                apiGateProofRequired: proof,
+              },
+            },
+          },
+        },
+        { apiGate: { owner: proof.owner } },
+      );
+      const scheduled = [];
+      const control = createTelegramDeliveryControl({
+        repository,
+        logger: { error() {}, info() {} },
+        now: () => 71_000,
+        localRetryBarrier: repository.localRetryBarrier,
+        scheduleRetry: async (task) => scheduled.push(task),
+      });
+      const recovery = createTelegramDeliveryRecovery({
+        repository,
+        now: () => 71_000,
+        control,
+      });
+      await recovery.resumeRateLimitProof({
+        messageKey: "key",
+        proof,
+        requestedRevision: desired.revision,
+        nowMs: 71_000,
+        target: {
+          kind: "pending-delete",
+          ...(scenario.requestedPendingDeleteId === undefined
+            ? {}
+            : { requestedPendingDeleteId: scenario.requestedPendingDeleteId }),
+        },
+      });
+      assert.equal(scheduled.length, 1);
+      assert.equal(scheduled[0].pendingDeleteId, scenario.expectedScheduledId);
+      const pendingDelete = repository.state.get("key").delivery.pendingDelete;
+      assert.equal(pendingDelete.status, scenario.expectedStatus);
+      assert.equal(pendingDelete.apiGateProofRequired, undefined);
+      assert.equal(repository.control.retryNotBeforeMs, 18_000);
+      assert.equal(repository.control.apiGate, undefined);
+    });
   }
 });

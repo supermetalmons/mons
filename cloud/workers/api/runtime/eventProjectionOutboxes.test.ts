@@ -423,6 +423,45 @@ describe("native event projection outbox mutations", () => {
       });
 
       it.each([false, true])(
+        "reports a committed claim when cancellation follows the write with snapshot=%s",
+        async (fromSnapshot) => {
+          await seed(kind);
+          const snapshot = await readSnapshot();
+          const admission = await acquireEventWriteAdmission(db);
+          const controller = new AbortController();
+          const reason = new Error("cancelled-after-commit");
+          const observed = observe();
+          const database: EventD1Connection = {
+            ...observed.database,
+            async batch<T>(statements: D1PreparedStatement[]) {
+              const results = await observed.database.batch<T>(statements);
+              controller.abort(reason);
+              return results;
+            },
+          };
+          const options = { admission, signal: controller.signal };
+          const result = fromSnapshot
+            ? await claimEventProjectionOutboxSnapshot(
+                database,
+                snapshot,
+                "request",
+                100,
+                200,
+                options,
+              )
+            : await claim(database, "event", "request", 100, 200, options);
+          expect(result).toBe(true);
+          expect(controller.signal.reason).toBe(reason);
+          expect(observed.writeBatches).toHaveLength(1);
+          expect((await readSnapshot()).record).toMatchObject(
+            kind === "profile"
+              ? { lastQueuedAtMs: 200 }
+              : { firstQueuedAtMs: 100, updatedAtMs: 200 },
+          );
+        },
+      );
+
+      it.each([false, true])(
         "claims scan bytes without another read when noncanonical=%s",
         async (noncanonical) => {
           await seed(kind);

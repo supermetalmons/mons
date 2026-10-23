@@ -4,9 +4,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTelegramDeliveryRecovery = createTelegramDeliveryRecovery;
 const deliveryPolicy_js_1 = require("./deliveryPolicy.js");
 const deliveryState_js_1 = require("./deliveryState.js");
+const taskKinds_js_1 = require("./taskKinds.js");
 const values_js_1 = require("./values.js");
 function createTelegramDeliveryRecovery({ repository, now, control }) {
-  const { transact } = control;
+  const {
+    transact,
+    scheduleExactRetry,
+    applyRateLimitBarrierProof,
+    clearAppliedRateLimitProofMarker,
+  } = control;
   const applySafeRetryProof = async (
     messageKey,
     {
@@ -547,11 +553,94 @@ function createTelegramDeliveryRecovery({ repository, now, control }) {
     });
     return { applied: applied && result.committed };
   };
+  const resumeRateLimitProof = async ({
+    messageKey,
+    proof,
+    requestedRevision,
+    nowMs,
+    target,
+  }) => {
+    const proofRetryState = {
+      retryStartedAtMs: (0, deliveryPolicy_js_1.normalizeTimestamp)(
+        proof.retryStartedAtMs,
+      ),
+      retryDeadlineAtMs: (0, deliveryPolicy_js_1.normalizeTimestamp)(
+        proof.retryDeadlineAtMs,
+      ),
+      retryAtMs: (0, deliveryPolicy_js_1.normalizeTimestamp)(proof.retryAtMs),
+      retrySequence: (0, deliveryPolicy_js_1.normalizeRetrySequence)(
+        proof.retrySequence,
+      ),
+    };
+    await scheduleExactRetry({
+      messageKey,
+      revision:
+        (0, deliveryState_js_1.normalizeString)(proof.revision) ||
+        requestedRevision ||
+        "latest",
+      taskKind: taskKinds_js_1.TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
+      retryState: proofRetryState,
+      ...(target.kind === "desired"
+        ? {
+            safeRejectedAttemptId: (0, deliveryState_js_1.normalizeString)(
+              proof.safeRejectedAttemptId,
+            ),
+            proofTaskKind: taskKinds_js_1.TELEGRAM_DESIRED_TASK_KIND,
+          }
+        : {
+            pendingDeleteId:
+              (0, deliveryState_js_1.normalizeString)(proof.pendingDeleteId) ||
+              target.requestedPendingDeleteId ||
+              "",
+            proofTaskKind: taskKinds_js_1.TELEGRAM_PENDING_DELETE_TASK_KIND,
+          }),
+      retryProofLeaseOwner: (0, deliveryState_js_1.normalizeString)(
+        proof.retryProofLeaseOwner,
+      ),
+      barrierProofOwner: proof.owner,
+      barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
+      scheduleTimeMs: nowMs,
+    });
+    let barrierProof = { applied: false };
+    try {
+      barrierProof = await applyRateLimitBarrierProof({
+        barrierProofOwner: proof.owner,
+        barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
+      });
+    } catch (_error) {
+      barrierProof = { applied: false };
+    }
+    if (!barrierProof.applied) return;
+    if (target.kind === "desired") {
+      await applySafeRetryProof(messageKey, {
+        requestedRevision: proof.revision,
+        safeRejectedAttemptId: proof.safeRejectedAttemptId,
+        ...proofRetryState,
+      });
+      await applyDesiredRetryWindowProof(messageKey, {
+        requestedRevision: proof.revision,
+        retryProofLeaseOwner: proof.retryProofLeaseOwner,
+        ...proofRetryState,
+      });
+    } else {
+      await applyPendingDeleteRetryWindowProof(messageKey, {
+        pendingDeleteId:
+          target.requestedPendingDeleteId === undefined
+            ? proof.pendingDeleteId
+            : (0, deliveryState_js_1.normalizeString)(proof.pendingDeleteId) ||
+              target.requestedPendingDeleteId,
+        retryProofLeaseOwner: proof.retryProofLeaseOwner,
+        ...proofRetryState,
+      });
+    }
+    await clearAppliedRateLimitProofMarker(messageKey, proof.owner);
+  };
   return {
     applySafeRetryProof,
     applyDesiredRetryWindowProof,
     applyManualRecovery,
     settleManualApiGateRelease,
     applyPendingDeleteRetryWindowProof,
+    resumeRateLimitProof,
   };
 }

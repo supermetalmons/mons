@@ -41,7 +41,6 @@ import { validateTelegramMessageKey } from "./desiredStateCore.js";
 import {
   TELEGRAM_DESIRED_TASK_KIND,
   TELEGRAM_PENDING_DELETE_TASK_KIND,
-  TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
 } from "./taskKinds.js";
 import { readProperty } from "./values.js";
 export function createTelegramDesiredDelivery({
@@ -77,8 +76,6 @@ export function createTelegramDesiredDelivery({
     | "buildGateBlockedFailure"
     | "logFailure"
     | "scheduleExactRetry"
-    | "applyRateLimitBarrierProof"
-    | "clearAppliedRateLimitProofMarker"
   >;
   recovery: TelegramDeliveryRecovery;
 }) {
@@ -92,15 +89,13 @@ export function createTelegramDesiredDelivery({
     buildGateBlockedFailure,
     logFailure,
     scheduleExactRetry,
-    applyRateLimitBarrierProof,
-    clearAppliedRateLimitProofMarker,
   } = control;
   const {
     applySafeRetryProof,
     applyDesiredRetryWindowProof,
     applyManualRecovery,
     settleManualApiGateRelease,
-    applyPendingDeleteRetryWindowProof,
+    resumeRateLimitProof,
   } = recovery;
   const acquire = async (
     messageKey: string,
@@ -927,45 +922,13 @@ export function createTelegramDesiredDelivery({
           "apiGateProofRequired",
         ),
       );
-      const proofRetryState = {
-        retryStartedAtMs: normalizeTimestamp(proof.retryStartedAtMs),
-        retryDeadlineAtMs: normalizeTimestamp(proof.retryDeadlineAtMs),
-        retryAtMs: normalizeTimestamp(proof.retryAtMs),
-        retrySequence: normalizeRetrySequence(proof.retrySequence),
-      };
-      await scheduleExactRetry({
+      await resumeRateLimitProof({
         messageKey: normalizedMessageKey,
-        revision:
-          normalizeString(proof.revision) || requestedRevision || "latest",
-        taskKind: TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
-        retryState: proofRetryState,
-        pendingDeleteId: normalizeString(proof.pendingDeleteId),
-        retryProofLeaseOwner: normalizeString(proof.retryProofLeaseOwner),
-        proofTaskKind: TELEGRAM_PENDING_DELETE_TASK_KIND,
-        barrierProofOwner: proof.owner,
-        barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
-        scheduleTimeMs: nowMs,
+        proof,
+        requestedRevision,
+        nowMs,
+        target: { kind: "pending-delete" },
       });
-      let barrierProof = { applied: false };
-      try {
-        barrierProof = await applyRateLimitBarrierProof({
-          barrierProofOwner: proof.owner,
-          barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
-        });
-      } catch (_error) {
-        barrierProof = { applied: false };
-      }
-      if (barrierProof.applied) {
-        await applyPendingDeleteRetryWindowProof(normalizedMessageKey, {
-          pendingDeleteId: proof.pendingDeleteId,
-          retryProofLeaseOwner: proof.retryProofLeaseOwner,
-          ...proofRetryState,
-        });
-        await clearAppliedRateLimitProofMarker(
-          normalizedMessageKey,
-          proof.owner,
-        );
-      }
       return {
         status: "retryable",
         reason: "pending-rate-limit-proof-pending",
@@ -977,50 +940,13 @@ export function createTelegramDesiredDelivery({
       const proof = asObject(
         readProperty(acquired.value?.delivery, "apiGateProofRequired"),
       );
-      const proofRetryState = {
-        retryStartedAtMs: normalizeTimestamp(proof.retryStartedAtMs),
-        retryDeadlineAtMs: normalizeTimestamp(proof.retryDeadlineAtMs),
-        retryAtMs: normalizeTimestamp(proof.retryAtMs),
-        retrySequence: normalizeRetrySequence(proof.retrySequence),
-      };
-      await scheduleExactRetry({
+      await resumeRateLimitProof({
         messageKey: normalizedMessageKey,
-        revision:
-          normalizeString(proof.revision) || requestedRevision || "latest",
-        taskKind: TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
-        retryState: proofRetryState,
-        safeRejectedAttemptId: normalizeString(proof.safeRejectedAttemptId),
-        retryProofLeaseOwner: normalizeString(proof.retryProofLeaseOwner),
-        proofTaskKind: TELEGRAM_DESIRED_TASK_KIND,
-        barrierProofOwner: proof.owner,
-        barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
-        scheduleTimeMs: nowMs,
+        proof,
+        requestedRevision,
+        nowMs,
+        target: { kind: "desired" },
       });
-      let barrierProof = { applied: false };
-      try {
-        barrierProof = await applyRateLimitBarrierProof({
-          barrierProofOwner: proof.owner,
-          barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
-        });
-      } catch (_error) {
-        barrierProof = { applied: false };
-      }
-      if (barrierProof.applied) {
-        await applySafeRetryProof(normalizedMessageKey, {
-          requestedRevision: proof.revision,
-          safeRejectedAttemptId: proof.safeRejectedAttemptId,
-          ...proofRetryState,
-        });
-        await applyDesiredRetryWindowProof(normalizedMessageKey, {
-          requestedRevision: proof.revision,
-          retryProofLeaseOwner: proof.retryProofLeaseOwner,
-          ...proofRetryState,
-        });
-        await clearAppliedRateLimitProofMarker(
-          normalizedMessageKey,
-          proof.owner,
-        );
-      }
       return {
         status: "retryable",
         reason: "rate-limit-proof-pending",

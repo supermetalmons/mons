@@ -22,6 +22,7 @@ import {
   consumeWagerReservationOperation,
   createWagerReservationOperationId,
   removeWagerProposal as removeWagerProposalImpl,
+  resolveWagerParticipantProfiles,
   resolveWagerParticipantUids,
   sendWagerProposal as sendWagerProposalImpl,
   type WagerProposalAction,
@@ -248,6 +249,144 @@ test("metadata participant checks preserve missing and invalid participant failu
     ),
     /invalid-wager-participant/,
   );
+});
+
+test("linked wager participants reuse one ownership snapshot through profile resolution", async () => {
+  for (const playerUid of ["host", "guest"]) {
+    const opponentUid = playerUid === "host" ? "guest" : "host";
+    for (const opponentPresent of [true, false]) {
+      const reads: ProfileOwnershipQuery[] = [];
+      const snapshots: ProfileOwnershipSnapshot[] = [];
+      const value = repository({
+        readProfileOwnershipSnapshot: async (query) => {
+          reads.push(query);
+          const snapshot = ownershipSnapshot(query, (uid) =>
+            uid === "linked-login" || uid === playerUid
+              ? `profile-${playerUid}`
+              : opponentPresent
+                ? `profile-${opponentUid}`
+                : null,
+          );
+          snapshots.push(snapshot);
+          return snapshot;
+        },
+      });
+      const participants = await resolveWagerParticipantUids(
+        { uid: "linked-login" },
+        "invite",
+        value,
+      );
+      assert.ok(!("ok" in participants));
+      assert.deepEqual(participants, {
+        playerUid,
+        opponentUid,
+        ownership: snapshots[0],
+        ...(opponentPresent
+          ? {
+              playerProfileId: `profile-${playerUid}`,
+              opponentProfileId: `profile-${opponentUid}`,
+            }
+          : {}),
+      });
+      assert.strictEqual(participants.ownership, snapshots[0]);
+      const resolved = await resolveWagerParticipantProfiles(
+        participants,
+        value,
+      );
+      if (opponentPresent) assert.strictEqual(resolved, participants);
+      else
+        assert.deepEqual(resolved, { ok: false, reason: "profile-not-found" });
+      assert.deepEqual(reads, [
+        { loginUids: ["linked-login", "host", "guest"], profileIds: [] },
+      ]);
+    }
+  }
+});
+
+test("direct wager guests retain their actor while linked shared owners prefer the host", async () => {
+  const reads: ProfileOwnershipQuery[] = [];
+  const value = repository({
+    readProfileOwnershipSnapshot: async (query) => {
+      reads.push(query);
+      return ownershipSnapshot(query, () => "shared-profile");
+    },
+  });
+  assert.deepEqual(
+    await resolveWagerParticipantUids({ uid: "guest" }, "invite", value),
+    { playerUid: "guest", opponentUid: "host", ownership: null },
+  );
+  assert.deepEqual(reads, []);
+  const linked = await resolveWagerParticipantUids(
+    { uid: "linked-login" },
+    "invite",
+    value,
+  );
+  assert.ok(!("ok" in linked) && "playerProfileId" in linked);
+  assert.equal(linked.playerUid, "host");
+  assert.equal(linked.opponentUid, "guest");
+  assert.equal(linked.playerProfileId, "shared-profile");
+  assert.equal(linked.opponentProfileId, "shared-profile");
+  assert.deepEqual(reads, [
+    { loginUids: ["linked-login", "host", "guest"], profileIds: [] },
+  ]);
+});
+
+test("unrelated wager actors retain missing-profile precedence over permission errors", async () => {
+  for (const identityProfileId of [null, "unrelated-profile"]) {
+    for (const missingUid of [null, "host", "guest"]) {
+      let reads = 0;
+      const value = repository({
+        readProfileOwnershipSnapshot: async (query) => {
+          reads++;
+          return ownershipSnapshot(query, (uid) =>
+            uid === "viewer"
+              ? identityProfileId
+              : uid === missingUid
+                ? null
+                : `profile-${uid}`,
+          );
+        },
+      });
+      const resolve = () =>
+        resolveWagerParticipantUids({ uid: "viewer" }, "invite", value);
+      if (missingUid) {
+        assert.deepEqual(await resolve(), {
+          ok: false,
+          reason: "profile-not-found",
+        });
+      } else {
+        await assert.rejects(
+          resolve(),
+          (error: unknown) =>
+            error instanceof AuthApiFailure &&
+            error.status === 403 &&
+            error.message === "permission-denied",
+        );
+      }
+      assert.equal(reads, 1);
+    }
+  }
+});
+
+test("wager actor resolution fails closed on unavailable or malformed ownership", async () => {
+  for (const malformed of [false, true]) {
+    let reads = 0;
+    const value = repository({
+      readProfileOwnershipSnapshot: async () => {
+        reads++;
+        if (!malformed) throw new Error("ownership-unavailable");
+        return ownershipSnapshot({ loginUids: [], profileIds: [] });
+      },
+    });
+    await assert.rejects(
+      resolveWagerParticipantUids({ uid: "linked-login" }, "invite", value),
+      (error: unknown) =>
+        error instanceof AuthApiFailure &&
+        error.status === 503 &&
+        error.message === "profile-ownership-unavailable",
+    );
+    assert.equal(reads, 1);
+  }
 });
 
 function applyTransaction(

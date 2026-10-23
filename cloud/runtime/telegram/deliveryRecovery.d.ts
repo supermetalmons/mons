@@ -1,7 +1,21 @@
 // Generated from src/telegram/deliveryRecovery.ts. Run npm run generate:runtime.
 import type { TelegramDeliveryControl } from "./deliveryControl.js";
-import { type ProofInput } from "./deliveryState.js";
+import { type ProofInput, type RawRecord } from "./deliveryState.js";
 import type { TelegramRepository } from "./deliveryTypes.js";
+type RateLimitProofRecoveryInput = {
+  messageKey: string;
+  proof: RawRecord;
+  requestedRevision: string;
+  nowMs: number;
+  target:
+    | {
+        kind: "desired";
+      }
+    | {
+        kind: "pending-delete";
+        requestedPendingDeleteId?: string;
+      };
+};
 export declare function createTelegramDeliveryRecovery({
   repository,
   now,
@@ -9,7 +23,13 @@ export declare function createTelegramDeliveryRecovery({
 }: {
   repository: TelegramRepository;
   now: () => number;
-  control: Pick<TelegramDeliveryControl, "transact">;
+  control: Pick<
+    TelegramDeliveryControl,
+    | "transact"
+    | "scheduleExactRetry"
+    | "applyRateLimitBarrierProof"
+    | "clearAppliedRateLimitProofMarker"
+  >;
 }): {
   applySafeRetryProof: (
     messageKey: string,
@@ -63,7 +83,15 @@ export declare function createTelegramDeliveryRecovery({
   ) => Promise<{
     applied: boolean;
   }>;
+  resumeRateLimitProof: ({
+    messageKey,
+    proof,
+    requestedRevision,
+    nowMs,
+    target,
+  }: RateLimitProofRecoveryInput) => Promise<void>;
 };
 export type TelegramDeliveryRecovery = ReturnType<
   typeof createTelegramDeliveryRecovery
 >;
+export {};

@@ -82,7 +82,10 @@ async function stored(table: string) {
   );
 }
 
-function observeDatabase(beforeWrite?: () => Promise<void>) {
+function observeDatabase(
+  beforeWrite?: () => Promise<void>,
+  afterWrite?: () => void,
+) {
   const reads: string[] = [];
   const writes: string[] = [];
   let writeBatches = 0;
@@ -118,7 +121,9 @@ function observeDatabase(beforeWrite?: () => Promise<void>) {
         return async (statements: D1PreparedStatement[]) => {
           writeBatches++;
           await beforeWrite?.();
-          return target.batch(statements);
+          const results = await target.batch(statements);
+          afterWrite?.();
+          return results;
         };
       const value = Reflect.get(target, property, target);
       return typeof value === "function" ? value.bind(target) : value;
@@ -424,32 +429,79 @@ describe("native automatch projection outboxes", () => {
     expect(observed.batches()).toBe(25);
   });
 
-  it("preserves server-marker normalization using the initial operation clock", async () => {
-    await seed(
-      profileTable,
-      profileOutbox({
-        future: {
-          at: { ".sv": "timestamp" },
-          count: { ".sv": { increment: 2 } },
-        },
-      }),
-    );
-    let clock = nowMs;
-    const store = await writableStore(db, () => clock++);
-    const operationClock = clock;
-    expect(
-      await store.claimAutomatchProfileOutbox(
-        "invite",
-        "request-one",
-        100,
-        200,
-      ),
-    ).toBe(true);
-    expect(await stored(profileTable)).toMatchObject({
-      value: { future: { at: operationClock, count: 2 } },
-      updated_at_ms: operationClock + 1,
-    });
-  });
+  it.each([false, true])(
+    "preserves the initial server-marker clock with conflict=%s",
+    async (conflict) => {
+      await seed(
+        profileTable,
+        profileOutbox({
+          future: {
+            at: { ".sv": "timestamp" },
+            count: { ".sv": { increment: 2 } },
+          },
+        }),
+      );
+      let clock = nowMs;
+      let changed = false;
+      const observed = observeDatabase(async () => {
+        if (!conflict || changed) return;
+        changed = true;
+        await db
+          .prepare(`UPDATE ${profileTable} SET revision = revision + 1`)
+          .run();
+      });
+      const store = await writableStore(observed.database, () => clock++);
+      const operationClock = clock;
+      expect(
+        await store.claimAutomatchProfileOutbox(
+          "invite",
+          "request-one",
+          100,
+          200,
+        ),
+      ).toBe(true);
+      expect(await stored(profileTable)).toMatchObject({
+        value: { future: { at: operationClock, count: 2 } },
+        updated_at_ms: operationClock + (conflict ? 2 : 1),
+      });
+      expect(observed.batches()).toBe(conflict ? 2 : 1);
+    },
+  );
+
+  it.each(["claim", "finish"])(
+    "reports a committed %s when cancellation follows the write",
+    async (operation) => {
+      await seed(profileTable, profileOutbox());
+      const controller = new AbortController();
+      const reason = new Error("cancelled-after-commit");
+      const observed = observeDatabase(undefined, () =>
+        controller.abort(reason),
+      );
+      const store = await writableStore(observed.database);
+      const result =
+        operation === "claim"
+          ? await store.claimAutomatchProfileOutbox(
+              "invite",
+              "request-one",
+              100,
+              200,
+              controller.signal,
+            )
+          : await store.finishAutomatchProfileOutbox(
+              "invite",
+              "request-one",
+              200,
+              controller.signal,
+            );
+      expect(result).toBe(operation === "claim" ? true : "projected");
+      expect(controller.signal.reason).toBe(reason);
+      expect(observed.batches()).toBe(1);
+      expect(await stored(profileTable)).toMatchObject({
+        revision: 2,
+        value: operation === "claim" ? { lastQueuedAtMs: 200 } : null,
+      });
+    },
+  );
 
   it("rejects invalid stored keys before writing and skips validation for tombstones", async () => {
     await seed(profileTable, profileOutbox({ "invalid/key": true }));

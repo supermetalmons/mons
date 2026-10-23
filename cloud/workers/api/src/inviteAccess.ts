@@ -14,10 +14,17 @@ import {
 import { isSafeRecordKey } from "./recordKeys.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 
-type InviteActorResolution = (
-  | { actorUid: string; role: "host" | "guest" }
-  | { actorUid: null; role: "watch" }
-) & { ownership: ProfileOwnershipSnapshot | null };
+type InviteActorResolution =
+  | {
+      actorUid: string;
+      role: "host" | "guest";
+      ownership: ProfileOwnershipSnapshot | null;
+    }
+  | {
+      actorUid: null;
+      role: "watch";
+      ownership: ProfileOwnershipSnapshot;
+    };
 
 type ParticipantResolution = {
   actorUid: string;
@@ -30,7 +37,7 @@ function readStoredString(value: unknown): string {
   return typeof value === "string" ? value : "";
 }
 
-async function resolveInviteActor(
+export async function resolveInviteActor(
   identity: RequestIdentity,
   hostUid: string,
   guestUid: string | null,

@@ -29,6 +29,7 @@ import type {
   WagerWriteRepository,
 } from "./gameplayRepository.ts";
 import { withGameSessionMutationLease } from "./gameSessionMutationRunner.ts";
+import { resolveInviteActor } from "./inviteAccess.ts";
 import { ensureWagerAgreementLineageReady } from "./wagerAgreementLineage.ts";
 import {
   getLoginProfileId,
@@ -163,28 +164,17 @@ export async function resolveWagerParticipantUids(
   if (!isSafeRecordKey(hostId) || !isSafeRecordKey(guestId)) {
     throw new Error("invalid-wager-participant");
   }
-  if (identity.uid === hostId) {
-    return { opponentUid: guestId, ownership: null, playerUid: hostId };
+  const actor = await resolveInviteActor(identity, hostId, guestId, repository);
+  const { ownership } = actor;
+  const isHost = actor.role === "host";
+  if (ownership === null) {
+    return isHost
+      ? { opponentUid: guestId, ownership, playerUid: hostId }
+      : { opponentUid: hostId, ownership, playerUid: guestId };
   }
-  if (identity.uid === guestId) {
-    return { opponentUid: hostId, ownership: null, playerUid: guestId };
-  }
-  const ownership = await requireProfileOwnershipSnapshot(repository, {
-    loginUids: [identity.uid, hostId, guestId],
-    profileIds: [],
-  });
-  const identityProfileId = getLoginProfileId(ownership, identity.uid);
   const hostProfileId = getLoginProfileId(ownership, hostId);
   const guestProfileId = getLoginProfileId(ownership, guestId);
-  const isHost =
-    !!identityProfileId &&
-    !!hostProfileId &&
-    identityProfileId === hostProfileId;
-  const isGuest =
-    !!identityProfileId &&
-    !!guestProfileId &&
-    identityProfileId === guestProfileId;
-  if (!isHost && !isGuest) {
+  if (actor.role === "watch") {
     if (!hostProfileId || !guestProfileId) {
       return { ok: false, reason: "profile-not-found" };
     }

@@ -1,4 +1,5 @@
 import type { AutomatchProjectionPort } from "../gameSessionContracts.ts";
+import { runOptimisticTransaction } from "../optimisticTransaction.ts";
 import {
   decideAutomatchProfileOutboxCompletion,
   parseAutomatchProfileGameProjectionOutbox,
@@ -74,61 +75,81 @@ export function createAutomatchProjectionOutboxes(
   ): Promise<Result> {
     const resolvedAtMs = now();
     const { table, valueColumn, revisionColumn } = requireRoot(root);
-    for (let attempt = 0; attempt < 25; attempt++) {
-      const current = await read(root, inviteId, signal);
-      const decision = decide(current.value);
-      if (decision.write === undefined) return decision.result;
-      timestamp(resolvedAtMs);
-      let expression = "NULL";
-      const values: Array<string | number | null> = [];
-      if (decision.write !== null) {
-        const next = { ...toRecord(current.value), ...decision.write };
-        validateAutomatchJson(next);
-        if (hasServerValues(next)) {
-          expression = "?";
-          values.push(
-            encodeValue(
-              resolveAutomatchServerValues(next, current.value, resolvedAtMs),
-            ),
-          );
-        } else {
-          const fields = Object.entries(decision.write);
-          expression = `json_set(${valueColumn}, ${fields
-            .map(
-              ([key, value]) =>
-                `'$.${key}', ${typeof value === "number" ? "?" : "json(?)"}`,
-            )
-            .join(", ")})`;
-          values.push(
-            ...fields.map(([, value]) =>
-              typeof value === "number" ? value : JSON.stringify(value),
-            ),
-          );
+    const transaction = await runOptimisticTransaction({
+      maxAttempts: 25,
+      read: () => read(root, inviteId, signal),
+      getValue: (current) => decide(current.value),
+      decide: (
+        decision,
+      ):
+        | { commit: false }
+        | { value: { result: Result; write: OutboxPatch | null } } =>
+        decision.write === undefined
+          ? { commit: false }
+          : { value: { result: decision.result, write: decision.write } },
+      async write(current, decision) {
+        timestamp(resolvedAtMs);
+        let expression = "NULL";
+        const values: Array<string | number | null> = [];
+        if (decision.write !== null) {
+          const next = { ...toRecord(current.value), ...decision.write };
+          validateAutomatchJson(next);
+          if (hasServerValues(next)) {
+            expression = "?";
+            values.push(
+              encodeValue(
+                resolveAutomatchServerValues(next, current.value, resolvedAtMs),
+              ),
+            );
+          } else {
+            const fields = Object.entries(decision.write);
+            expression = `json_set(${valueColumn}, ${fields
+              .map(
+                ([key, value]) =>
+                  `'$.${key}', ${typeof value === "number" ? "?" : "json(?)"}`,
+              )
+              .join(", ")})`;
+            values.push(
+              ...fields.map(([, value]) =>
+                typeof value === "number" ? value : JSON.stringify(value),
+              ),
+            );
+          }
         }
-      }
-      const guards = buildWriteGuardStatements();
-      if (!Number.isSafeInteger(current.revision + 1))
-        throw new TypeError("invalid-automatch-revision");
-      const updatedAtMs = timestamp(now());
-      signal?.throwIfAborted();
-      const results = await db.batch<{ record_key: string }>([
-        ...guards,
-        db
-          .prepare(
-            `UPDATE ${table}
+        const guards = buildWriteGuardStatements();
+        if (!Number.isSafeInteger(current.revision + 1))
+          throw new TypeError("invalid-automatch-revision");
+        const updatedAtMs = timestamp(now());
+        signal?.throwIfAborted();
+        const results = await db.batch<{ record_key: string }>([
+          ...guards,
+          db
+            .prepare(
+              `UPDATE ${table}
              SET ${valueColumn} = ${expression},
                ${revisionColumn} = ${revisionColumn} + 1,
                updated_at_ms = MAX(updated_at_ms, ?)
              WHERE record_key = ? AND ${revisionColumn} = ?
                AND json_extract(${valueColumn}, '$.requestId') = ?
              RETURNING record_key`,
-          )
-          .bind(...values, updatedAtMs, inviteId, current.revision, requestId),
-      ]);
-      if (results[results.length - 1].results.length > 0)
-        return decision.result;
-    }
-    throw new AutomatchD1Failure("automatch-transaction-contention");
+            )
+            .bind(
+              ...values,
+              updatedAtMs,
+              inviteId,
+              current.revision,
+              requestId,
+            ),
+        ]);
+        return {
+          applied: results[results.length - 1].results.length > 0,
+          value: decision,
+        };
+      },
+      conflictError: () =>
+        new AutomatchD1Failure("automatch-transaction-contention"),
+    });
+    return transaction.value.result;
   }
 
   return {

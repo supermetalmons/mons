@@ -21,7 +21,23 @@ import {
   type RawRecord,
 } from "./deliveryState.js";
 import type { TelegramRepository } from "./deliveryTypes.js";
+import {
+  TELEGRAM_DESIRED_TASK_KIND,
+  TELEGRAM_PENDING_DELETE_TASK_KIND,
+  TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
+} from "./taskKinds.js";
 import { readProperty } from "./values.js";
+
+type RateLimitProofRecoveryInput = {
+  messageKey: string;
+  proof: RawRecord;
+  requestedRevision: string;
+  nowMs: number;
+  target:
+    | { kind: "desired" }
+    | { kind: "pending-delete"; requestedPendingDeleteId?: string };
+};
+
 export function createTelegramDeliveryRecovery({
   repository,
   now,
@@ -29,9 +45,20 @@ export function createTelegramDeliveryRecovery({
 }: {
   repository: TelegramRepository;
   now: () => number;
-  control: Pick<TelegramDeliveryControl, "transact">;
+  control: Pick<
+    TelegramDeliveryControl,
+    | "transact"
+    | "scheduleExactRetry"
+    | "applyRateLimitBarrierProof"
+    | "clearAppliedRateLimitProofMarker"
+  >;
 }) {
-  const { transact } = control;
+  const {
+    transact,
+    scheduleExactRetry,
+    applyRateLimitBarrierProof,
+    clearAppliedRateLimitProofMarker,
+  } = control;
   const applySafeRetryProof = async (
     messageKey: string,
     {
@@ -500,12 +527,83 @@ export function createTelegramDeliveryRecovery({
     });
     return { applied: applied && result.committed };
   };
+  const resumeRateLimitProof = async ({
+    messageKey,
+    proof,
+    requestedRevision,
+    nowMs,
+    target,
+  }: RateLimitProofRecoveryInput): Promise<void> => {
+    const proofRetryState = {
+      retryStartedAtMs: normalizeTimestamp(proof.retryStartedAtMs),
+      retryDeadlineAtMs: normalizeTimestamp(proof.retryDeadlineAtMs),
+      retryAtMs: normalizeTimestamp(proof.retryAtMs),
+      retrySequence: normalizeRetrySequence(proof.retrySequence),
+    };
+    await scheduleExactRetry({
+      messageKey,
+      revision:
+        normalizeString(proof.revision) || requestedRevision || "latest",
+      taskKind: TELEGRAM_RATE_LIMIT_PROOF_TASK_KIND,
+      retryState: proofRetryState,
+      ...(target.kind === "desired"
+        ? {
+            safeRejectedAttemptId: normalizeString(proof.safeRejectedAttemptId),
+            proofTaskKind: TELEGRAM_DESIRED_TASK_KIND,
+          }
+        : {
+            pendingDeleteId:
+              normalizeString(proof.pendingDeleteId) ||
+              target.requestedPendingDeleteId ||
+              "",
+            proofTaskKind: TELEGRAM_PENDING_DELETE_TASK_KIND,
+          }),
+      retryProofLeaseOwner: normalizeString(proof.retryProofLeaseOwner),
+      barrierProofOwner: proof.owner,
+      barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
+      scheduleTimeMs: nowMs,
+    });
+    let barrierProof = { applied: false };
+    try {
+      barrierProof = await applyRateLimitBarrierProof({
+        barrierProofOwner: proof.owner,
+        barrierRetryNotBeforeMs: proof.retryNotBeforeMs,
+      });
+    } catch (_error) {
+      barrierProof = { applied: false };
+    }
+    if (!barrierProof.applied) return;
+    if (target.kind === "desired") {
+      await applySafeRetryProof(messageKey, {
+        requestedRevision: proof.revision,
+        safeRejectedAttemptId: proof.safeRejectedAttemptId,
+        ...proofRetryState,
+      });
+      await applyDesiredRetryWindowProof(messageKey, {
+        requestedRevision: proof.revision,
+        retryProofLeaseOwner: proof.retryProofLeaseOwner,
+        ...proofRetryState,
+      });
+    } else {
+      await applyPendingDeleteRetryWindowProof(messageKey, {
+        pendingDeleteId:
+          target.requestedPendingDeleteId === undefined
+            ? proof.pendingDeleteId
+            : normalizeString(proof.pendingDeleteId) ||
+              target.requestedPendingDeleteId,
+        retryProofLeaseOwner: proof.retryProofLeaseOwner,
+        ...proofRetryState,
+      });
+    }
+    await clearAppliedRateLimitProofMarker(messageKey, proof.owner);
+  };
   return {
     applySafeRetryProof,
     applyDesiredRetryWindowProof,
     applyManualRecovery,
     settleManualApiGateRelease,
     applyPendingDeleteRetryWindowProof,
+    resumeRateLimitProof,
   };
 }
 export type TelegramDeliveryRecovery = ReturnType<
