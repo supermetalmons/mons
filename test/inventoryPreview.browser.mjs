@@ -424,6 +424,16 @@ test(
         .evaluate((button) => {
           button.click();
           button.click();
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "Escape",
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+          document
+            .querySelector('[data-inventory-item-preview="true"]')
+            .click();
         });
       await page
         .getByRole("button", { name: "Sending...", exact: true })
@@ -447,6 +457,10 @@ test(
         await page.evaluate(() => window.harness.environment.outsideDismissals),
         0,
       );
+      assert.equal(
+        await page.evaluate(() => window.harness.environment.bubbledEscapes),
+        0,
+      );
       await page.evaluate(() =>
         window.harness.reject(
           0,
@@ -458,6 +472,10 @@ test(
         .getByText("Retry with the original destination address.")
         .waitFor();
       assert.equal(await address.isEnabled(), true);
+      assert.equal(
+        await address.evaluate((node) => node === document.activeElement),
+        true,
+      );
       await address.fill(` ${recipientAddress} `);
       assert.equal(
         await page
@@ -483,7 +501,8 @@ test(
       await page.waitForFunction(
         () => window.harness.environment.withdrawals.length === 3,
       );
-      await page.clock.install();
+      await page.clock.install({ time: new Date("2026-01-01T00:00:00Z") });
+      await page.clock.pauseAt(new Date("2026-01-01T00:00:01Z"));
       await page.evaluate(() => window.harness.resolve(2));
       await page
         .getByRole("button", { name: "Success", exact: true })
@@ -496,7 +515,15 @@ test(
       );
       await page.keyboard.press("Escape");
       assert.equal(await preview(page).isVisible(), true);
-      await page.clock.fastForward(1000);
+      await page.clock.runFor(999);
+      assert.equal(await preview(page).isVisible(), true);
+      assert.equal(
+        await page
+          .getByRole("button", { name: "Success", exact: true })
+          .isDisabled(),
+        true,
+      );
+      await page.clock.runFor(1);
       await preview(page).waitFor({ state: "hidden" });
       assert.equal(
         await page
@@ -504,6 +531,78 @@ test(
           .isVisible(),
         true,
       );
+      assert.equal(
+        await page.evaluate(() => window.harness.environment.outsideDismissals),
+        0,
+      );
+    });
+  },
+);
+
+test(
+  "prize withdrawal preserves server error messages and restores editing for retry",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await openPrize(page);
+      const address = page.getByRole("textbox", { name: "Solana address" });
+      const cases = [
+        [
+          { code: "functions/invalid-argument" },
+          "Enter a valid Solana address.",
+        ],
+        [
+          {
+            code: "invalid-argument",
+            message: "Choose a destination other than the current owner",
+          },
+          "Choose a different destination address.",
+        ],
+        [{ code: "not-found" }, "This prize is no longer available."],
+        [
+          { code: "functions/permission-denied" },
+          "This prize is no longer available.",
+        ],
+        [
+          { code: "aborted" },
+          "Withdrawal is already being processed. Try again shortly.",
+        ],
+        [
+          { code: "functions/failed-precondition", message: "Unavailable" },
+          "This prize cannot be withdrawn right now.",
+        ],
+        [
+          { code: 42, message: 42 },
+          "Could not send the prize. Please try again.",
+        ],
+        [null, "Could not send the prize. Please try again."],
+      ];
+      for (const [index, [error, message]] of cases.entries()) {
+        await address.fill(`${recipientAddress}${" ".repeat(index + 1)}`);
+        assert.equal(await preview(page).getByRole("status").textContent(), "");
+        await page.getByRole("button", { name: "Send", exact: true }).click();
+        await page.evaluate(
+          ({ index, error }) =>
+            window.harness.environment.withdrawals[index].reject(error),
+          { index, error },
+        );
+        await page.getByText(message, { exact: true }).waitFor();
+        assert.equal(await address.inputValue(), recipientAddress);
+        assert.equal(await address.getAttribute("aria-invalid"), "true");
+        assert.equal(await address.isEnabled(), true);
+        assert.equal(
+          await address.evaluate((node) => node === document.activeElement),
+          true,
+        );
+        assert.equal(
+          await page
+            .getByRole("button", { name: prizeTileLabel, exact: true })
+            .count(),
+          1,
+        );
+      }
+      await page.keyboard.press("Escape");
+      await preview(page).waitFor({ state: "hidden" });
     });
   },
 );
@@ -605,6 +704,63 @@ test(
           .getByRole("textbox", { name: "Solana address" })
           .evaluate((node) => node === document.activeElement),
         true,
+      );
+    });
+  },
+);
+
+test(
+  "late withdrawal rejection cannot change a new identity's preview or an unmounted modal",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      await openPrize(page);
+      await page.getByRole("button", { name: "Send", exact: true }).click();
+      await page.evaluate(() => window.harness.render("b"));
+      await openPrize(page);
+      const address = page.getByRole("textbox", { name: "Solana address" });
+      await address.fill(` ${recipientAddress} `);
+      await page.evaluate(async () => {
+        window.harness.reject(0, "functions/permission-denied");
+        await new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        );
+      });
+      assert.equal(await preview(page).isVisible(), true);
+      assert.equal(await preview(page).getByRole("status").textContent(), "");
+      assert.equal(await address.inputValue(), ` ${recipientAddress} `);
+      assert.equal(
+        await address.evaluate((node) => node === document.activeElement),
+        true,
+      );
+      assert.equal(
+        await page
+          .getByRole("button", { name: "Send", exact: true })
+          .isEnabled(),
+        true,
+      );
+      assert.equal(
+        await page
+          .getByRole("button", { name: prizeTileLabel, exact: true })
+          .count(),
+        1,
+      );
+      await address.press("Enter");
+      await page.evaluate(async () => {
+        window.harness.dispose();
+        window.harness.reject(1, "functions/aborted");
+        await new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        );
+      });
+      assert.equal(await page.locator("#root").innerHTML(), "");
+      assert.equal(await preview(page).count(), 0);
+      assert.deepEqual(
+        await page.evaluate(() => [
+          window.harness.environment.outsideDismissals,
+          window.harness.environment.inventoryDismissals,
+        ]),
+        [0, 0],
       );
     });
   },

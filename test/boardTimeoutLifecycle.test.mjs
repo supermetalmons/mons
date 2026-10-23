@@ -28,7 +28,8 @@ registerHooks({
 });
 
 const scheduler = await import("../src/game/boardRuntimeScheduler.ts");
-const wagerModels = await import("../src/game/boardWagerModels.ts");
+const { createBoardWagerRuntime } =
+  await import("../src/game/boardWagerRuntime.ts");
 const diagnostics = await import("../src/lifecycle/lifecycleDiagnostics.ts");
 const source = ts.createSourceFile(
   "board.ts",
@@ -42,22 +43,12 @@ const source = ts.createSourceFile(
 );
 const declarations = [
   "currentTextAnimation",
-  "disappearingPileTimers",
-  "WAGER_DISAPPEAR_ANIMATION_MS",
   "startTextAnimation",
   "fastForwardInstructionsIfNeeded",
   "toggleFromTalkingToIdle",
-  "ensureWagerPile",
-  "updateWagerLayout",
-  "clearDisappearingPile",
-  "emitWagerRenderState",
-  "cancelWagerWinAnimation",
-  "resetWagerPile",
-  "resetWagerAnimationState",
   "markWagerInitialStateReceived",
-  "clearWagerPiles",
-  "clearWagerPilesForNewMatch",
   "setWagerPiles",
+  "showResolvedWager",
   "disposeBoardRuntime",
 ].map((name) => {
   const declaration = source.statements.find(
@@ -76,7 +67,12 @@ function harness(t) {
   const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
   const originalSetTimeout = globalThis.setTimeout;
   const originalClearTimeout = globalThis.clearTimeout;
+  const originalCancelAnimationFrame = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "cancelAnimationFrame",
+  );
   const timers = new Map();
+  const rafs = new Map();
   let now = 0;
   let nextId = 1;
   const setTimeout = (callback, delay = 0) => {
@@ -85,26 +81,36 @@ function harness(t) {
     return id;
   };
   const clearTimeout = (id) => timers.delete(id);
+  const requestAnimationFrame = (callback) => {
+    const id = nextId++;
+    rafs.set(id, callback);
+    return id;
+  };
+  const cancelAnimationFrame = (id) => rafs.delete(id);
   Object.defineProperty(globalThis, "window", {
     configurable: true,
-    value: { setTimeout, clearTimeout },
+    value: {
+      setTimeout,
+      clearTimeout,
+      requestAnimationFrame,
+      cancelAnimationFrame,
+    },
+  });
+  Object.defineProperty(globalThis, "cancelAnimationFrame", {
+    configurable: true,
+    value: cancelAnimationFrame,
   });
   globalThis.setTimeout = setTimeout;
   globalThis.clearTimeout = clearTimeout;
   const initialCounters = diagnostics.getLifecycleCounters();
   const renders = [];
   const noop = () => {};
-  const rect = { x: 0, y: 0, w: 2, h: 1 };
   const dependencies = {
     ...scheduler,
-    ...wagerModels,
     ...diagnostics,
-    updateWagerPileLayout: (pile, layout) =>
-      wagerModels.updateWagerPileLayout(pile, layout, 1),
-    getWagerPileRect: () => rect,
-    getWagerWinnerRect: () => rect,
+    createBoardWagerRuntime,
+    currentTime: () => now,
     handleWagerRenderState: (state) => renders.push(structuredClone(state)),
-    logBoardWagerDebug: noop,
     stopMonsBoardAsDisplayAnimations: noop,
     hideTimerCountdownDigits: noop,
     stopConfetti: noop,
@@ -123,26 +129,6 @@ function harness(t) {
     talkingDudeIsTalking: true,
     instructionsContainerElement: undefined,
     instructionsCloudBg: null,
-    playerWagerPile: null,
-    opponentWagerPile: null,
-    winnerWagerPile: null,
-    wagerWinAnimRaf: null,
-    wagerWinAnimActive: false,
-    wagerWinAnimState: null,
-    winnerPileActive: false,
-    lastWagerWinnerIsOpponent: false,
-    wagerAnimationsReady: false,
-    suppressNextWagerPileTransition: false,
-    previousPlayerPileVisible: false,
-    previousOpponentPileVisible: false,
-    lastVisiblePlayerPileState: null,
-    lastVisibleOpponentPileState: null,
-    disappearingPlayerPile: null,
-    disappearingOpponentPile: null,
-    playerPilePending: false,
-    opponentPilePending: false,
-    deferredResolvedWager: null,
-    lastWagerEmitSignature: "",
     boardRuntimeToken: 1,
     preserveDisplayAnimation: false,
     cleanupInviteBotButtonThemeListener: null,
@@ -183,19 +169,34 @@ function harness(t) {
     `
       const { ${Object.keys(dependencies).join(", ")} } = dependencies;
       let { ${Object.keys(initial).join(", ")} } = initial;
+      const wagerRuntime = createBoardWagerRuntime({
+        canLayout: () => Boolean(controlsLayer && boardBackgroundLayer),
+        getAvatarSize: () => 1,
+        getDisplaySlot: opponent => opponent ? "opponent" : "player",
+        getFallbackRect: () => ({ x: 0, y: 0, w: 2, h: 1 }),
+        setTimeout: setManagedBoardTimeout,
+        cancelTimeout: cancelManagedBoardTimeout,
+        requestAnimationFrame: setManagedBoardRaf,
+        cancelAnimationFrame: cancelManagedBoardRaf,
+        now: currentTime,
+        random: () => 0.5,
+        log: () => {},
+      });
+      wagerRuntime.setWagerRenderHandler(handleWagerRenderState);
+      wagerRuntime.setWagerSlotLayouts({}, 0);
       ${declarations.join("\n")}
       return {
         startTextAnimation,
         fastForwardInstructionsIfNeeded,
         setWagerPiles,
         markWagerInitialStateReceived,
+        showResolvedWager,
         disposeBoardRuntime,
         state: () => ({
           textElement: talkingDudeTextDiv,
           isAnimating: currentTextAnimation.isAnimating,
           textTimer: currentTextAnimation.timer,
           talkingDudeIsTalking,
-          pileTimers: { ...disappearingPileTimers },
         }),
         attachPresentation: () => {
           talkingDudeTextDiv = { textContent: "" };
@@ -216,10 +217,20 @@ function harness(t) {
       scheduler.clearTrackedBoardTimeouts();
       scheduler.clearTrackedBoardRafs();
       assert.equal(timers.size, 0);
+      assert.equal(rafs.size, 0);
       assert.deepEqual(diagnostics.getLifecycleCounters(), initialCounters);
     } finally {
       globalThis.setTimeout = originalSetTimeout;
       globalThis.clearTimeout = originalClearTimeout;
+      if (originalCancelAnimationFrame) {
+        Object.defineProperty(
+          globalThis,
+          "cancelAnimationFrame",
+          originalCancelAnimationFrame,
+        );
+      } else {
+        delete globalThis.cancelAnimationFrame;
+      }
       if (originalWindow) {
         Object.defineProperty(globalThis, "window", originalWindow);
       } else {
@@ -227,29 +238,41 @@ function harness(t) {
       }
     }
   });
+  const advance = (milliseconds) => {
+    const until = now + milliseconds;
+    let callbacks = 0;
+    while (true) {
+      const next = [...timers.entries()]
+        .filter(([, timer]) => timer.due <= until)
+        .sort((a, b) => a[1].due - b[1].due || a[0] - b[0])[0];
+      if (!next) break;
+      assert.ok(callbacks++ < 1000, "timer loop did not settle");
+      const [id, timer] = next;
+      timers.delete(id);
+      now = timer.due;
+      timer.callback();
+    }
+    now = until;
+  };
   return {
     ...api,
     renders,
     latestRender: () => renders.at(-1),
     pending: () => timers.size,
+    pendingFrames: () => rafs.size,
     counter: () =>
       diagnostics.getLifecycleCounters().boardTimeouts -
       initialCounters.boardTimeouts,
-    advance(milliseconds) {
-      const until = now + milliseconds;
-      let callbacks = 0;
-      while (true) {
-        const next = [...timers.entries()]
-          .filter(([, timer]) => timer.due <= until)
-          .sort((a, b) => a[1].due - b[1].due || a[0] - b[0])[0];
-        if (!next) break;
-        assert.ok(callbacks++ < 1000, "timer loop did not settle");
-        const [id, timer] = next;
-        timers.delete(id);
-        now = timer.due;
-        timer.callback();
+    frameCounter: () =>
+      diagnostics.getLifecycleCounters().boardRaf - initialCounters.boardRaf,
+    advance,
+    frame(milliseconds) {
+      advance(milliseconds);
+      for (const [id, callback] of [...rafs]) {
+        if (!rafs.has(id)) continue;
+        rafs.delete(id);
+        callback(now);
       }
-      now = until;
     },
   };
 }
@@ -320,7 +343,6 @@ test("both wager disappearance timers retain their snapshots for 280 ms", (t) =>
   h.advance(1);
   assert.equal(h.latestRender().playerDisappearing, null);
   assert.equal(h.latestRender().opponentDisappearing, null);
-  assert.deepEqual(h.state().pileTimers, { player: null, opponent: null });
   assert.equal(h.pending(), 0);
   assert.equal(h.counter(), 0);
 });
@@ -364,7 +386,6 @@ test("board disposal cancels all three owners once and allows new timers", (t) =
   const renderCount = h.renders.length;
   assert.equal(h.state().textElement, null);
   assert.equal(h.state().textTimer, null);
-  assert.deepEqual(h.state().pileTimers, { player: null, opponent: null });
   assert.equal(h.pending(), 0);
   assert.equal(h.counter(), 0);
   h.advance(1000);
@@ -382,4 +403,34 @@ test("board disposal cancels all three owners once and allows new timers", (t) =
   assert.equal(h.latestRender().opponentDisappearing, null);
   assert.equal(h.pending(), 0);
   assert.equal(h.counter(), 0);
+});
+
+test("board disposal cancels tutorial and win animation owners without leaking managed frames on reuse", (t) => {
+  const h = harness(t);
+  h.startTextAnimation("unfinished instructions");
+  h.showResolvedWager(false, "dust", 2, true);
+  assert.equal(h.pending(), 1);
+  assert.equal(h.counter(), 1);
+  assert.equal(h.pendingFrames(), 1);
+  assert.equal(h.frameCounter(), 1);
+  h.disposeBoardRuntime();
+  h.disposeBoardRuntime();
+  assert.equal(h.pending(), 0);
+  assert.equal(h.counter(), 0);
+  assert.equal(h.pendingFrames(), 0);
+  assert.equal(h.frameCounter(), 0);
+  const renderCount = h.renders.length;
+  h.frame(1000);
+  assert.equal(h.renders.length, renderCount);
+
+  h.attachPresentation();
+  h.showResolvedWager(true, "dust", 2, true);
+  assert.equal(h.frameCounter(), 1);
+  h.frame(400);
+  assert.equal(h.latestRender().winAnimationActive, true);
+  assert.equal(h.frameCounter(), 1);
+  h.frame(400);
+  assert.equal(h.latestRender().winAnimationActive, false);
+  assert.equal(h.pendingFrames(), 0);
+  assert.equal(h.frameCounter(), 0);
 });
