@@ -24,6 +24,7 @@ function mutationStatements(
     case "insert-active-profile":
     case "update-active-profile":
     case "patch-active-profile":
+    case "patch-profile-fields":
     case "retire-profile-with-redirect":
     case "delete-retired-profile":
     case "insert-login-owner":

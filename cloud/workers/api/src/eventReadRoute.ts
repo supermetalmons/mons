@@ -24,14 +24,12 @@ import {
   verifySessionRequest,
   type WorkerExecutionContext,
 } from "./sessionAuth.ts";
-import {
-  createGameplayRepository,
-  type GameplayRepository,
-} from "./gameplayRepository.ts";
+import { createD1ProfileOwnershipReader } from "./profileOwnershipD1.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
 import {
   getLoginProfileId,
   requireProfileOwnershipSnapshot,
+  type ProfileOwnershipReader,
 } from "./profileOwnership.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 import {
@@ -45,7 +43,7 @@ export const EVENT_SNAPSHOT_PATH = "/events/snapshot";
 export const PROFILE_EVENT_PRIZES_PATH = "/events/prizes";
 
 type ReadDependencies = {
-  repository?: Pick<GameplayRepository, "readProfileOwnershipSnapshot">;
+  repository?: ProfileOwnershipReader;
   verifyIdentity?: (
     request: Request,
     env: Env,
@@ -110,7 +108,7 @@ function assertBounded(value: unknown): void {
 }
 
 async function callerProfileId(
-  repository: Pick<GameplayRepository, "readProfileOwnershipSnapshot">,
+  repository: ProfileOwnershipReader,
   identity: RequestIdentity,
 ): Promise<string | null> {
   const ownership = await requireProfileOwnershipSnapshot(repository, {
@@ -176,7 +174,6 @@ export async function handleEventReadRoute(
     )(request, env, ctx);
     const authenticatedAt = Date.now();
     const url = new URL(request.url);
-    const repository = dependencies.repository || createGameplayRepository(env);
     const bookmarkEpoch = requireEventBookmarkEpoch(
       env.EVENT_DB_BOOKMARK_EPOCH,
     );
@@ -208,6 +205,9 @@ export async function handleEventReadRoute(
         result.notModified ? result.revision : result.snapshot.revision,
       );
     } else if (url.pathname === PROFILE_EVENT_PRIZES_PATH) {
+      const repository =
+        dependencies.repository ||
+        createD1ProfileOwnershipReader(env.PROFILE_DB);
       const profileId = await callerProfileId(repository, identity);
       result = await readPrizeResponse(
         session,

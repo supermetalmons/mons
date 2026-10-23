@@ -5,6 +5,10 @@ import type {
   CanonicalMutation,
 } from "./types.ts";
 import { profileWriteRow } from "./profiles.ts";
+import {
+  assertMutableProfileValue,
+  mutableProfileWriteRow,
+} from "./mutableProfiles.ts";
 import { guardStatement } from "./guards.ts";
 import { canonicalRowMutationStatement } from "./rowStatements.ts";
 
@@ -15,6 +19,7 @@ type ProfileMutation = Extract<
       | "insert-active-profile"
       | "update-active-profile"
       | "patch-active-profile"
+      | "patch-profile-fields"
       | "retire-profile-with-redirect"
       | "delete-retired-profile"
       | "insert-login-owner"
@@ -231,6 +236,27 @@ export function buildProfileMutationStatements(
           mutation.kind === "patch-active-profile"
             ? mutation.current
             : undefined,
+        ),
+      ];
+    case "patch-profile-fields":
+      assertMutableProfileValue(mutation.value);
+      return [
+        guardStatement(
+          db,
+          `NOT EXISTS (
+             SELECT 1 FROM profile_records
+             WHERE profile_id = ? AND state = 'active'
+           )`,
+          [mutation.value.profile.id],
+          "invariant",
+        ),
+        canonicalRowMutationStatement(
+          db,
+          "profile_records",
+          "profile_id",
+          mutableProfileWriteRow({ ...mutation.current, ...mutation.value }),
+          false,
+          mutableProfileWriteRow(mutation.current),
         ),
       ];
     case "retire-profile-with-redirect":

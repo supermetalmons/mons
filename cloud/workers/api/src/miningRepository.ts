@@ -3,12 +3,14 @@ import {
   normalizeMiningSnapshot,
   type MiningSnapshot,
 } from "@mons/shared/mining";
-import { CanonicalProfileConflict } from "./profileCanonicalD1.ts";
 import {
-  commitCanonicalProfileUpdate,
-  materializeCanonicalProfileUpdate,
-  readCanonicalProfileMutationByLogin,
-} from "./profileMutationD1.ts";
+  CanonicalProfileConflict,
+  commitCanonicalPlan,
+} from "./profileCanonicalD1.ts";
+import {
+  buildMutableProfileMutation,
+  readMutableProfileMutationByLogin,
+} from "./profileMutableD1.ts";
 
 export type MiningProfile = {
   readonly mining: MiningSnapshot;
@@ -31,14 +33,14 @@ export function createMiningRepository(
 ): MiningRepository {
   return {
     async getOwnedProfileSnapshot(loginUid) {
-      const snapshot = await readCanonicalProfileMutationByLogin(d1, loginUid);
+      const snapshot = await readMutableProfileMutationByLogin(d1, loginUid);
       if (!snapshot) return null;
       const { owner, profile } = snapshot;
       return {
         profileId: profile.profileId,
         mining: normalizeMiningSnapshot(profile.profile.mining),
         async commitMining(mining) {
-          const value = materializeCanonicalProfileUpdate(
+          const mutation = buildMutableProfileMutation(
             profile,
             { ...profile.profile, mining },
             now(),
@@ -49,7 +51,22 @@ export function createMiningRepository(
             },
           );
           try {
-            await commitCanonicalProfileUpdate(d1, profile, value, { owner });
+            await commitCanonicalPlan(d1, {
+              expectations: [
+                {
+                  kind: "profile-revision",
+                  profileId: profile.profileId,
+                  revision: profile.revision,
+                },
+                {
+                  kind: "login-owner-revision",
+                  loginUid: owner.loginUid,
+                  profileId: owner.profileId,
+                  revision: owner.revision,
+                },
+              ],
+              mutations: [mutation],
+            });
             return "updated";
           } catch (error) {
             if (error instanceof CanonicalProfileConflict) return "conflict";

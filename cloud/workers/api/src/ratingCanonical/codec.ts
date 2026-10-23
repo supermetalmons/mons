@@ -5,8 +5,8 @@ import {
 import type {
   CanonicalRatingUpdateSnapshot,
   CanonicalRatingUpdateValue,
+  CanonicalProfileSnapshot,
 } from "../profileCanonical/types.ts";
-import type { CanonicalProfileMutationSnapshot } from "../profileMutationD1.ts";
 import type { RatingProfile, RatingUpdateData } from "../ratingContracts.ts";
 
 function string(value: unknown): string {
@@ -38,7 +38,12 @@ function projectionVersion(value: unknown): number | null {
 }
 
 export function ratingProfileFromSnapshot(
-  value: CanonicalProfileMutationSnapshot | null,
+  value: {
+    profile: Pick<
+      CanonicalProfileSnapshot,
+      "profile" | "gameplayEmoji" | "sortPresence" | "sortValues"
+    >;
+  } | null,
 ): RatingProfile | null {
   if (!value) return null;
   const snapshot = value.profile;

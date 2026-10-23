@@ -10,7 +10,6 @@ import { EventPrizeWithdrawalError } from "../../../../runtime/eventPrizes/error
 import { createEventPrizeUmi as createConfiguredEventPrizeUmi } from "../../../../runtime/eventPrizes/solana.js";
 import { handleWithdrawEventPrize } from "../../../../runtime/eventPrizes/withdrawalOrchestrator.js";
 import type { WithdrawalRuntimeDependencies } from "../../../../runtime/eventPrizes/solanaTypes.js";
-import { createEventGameplayRepository } from "../eventRepository.ts";
 import {
   getCanonicalProfileId,
   requireProfileOwnershipSnapshot,
@@ -131,12 +130,7 @@ export async function executeEventPrizeWithdrawal(
   params: EventPrizeWithdrawalWorkflowParams,
   dependencies: RuntimeOptions = {},
 ): Promise<EventPrizeWithdrawalCompletedResponse> {
-  const repository =
-    dependencies.repository || createEventGameplayRepository(env);
-  const runtime = await createEventPrizeRuntimeDependencies(env, {
-    ...dependencies,
-    repository,
-  });
+  const runtime = await createEventPrizeRuntimeDependencies(env, dependencies);
   const executionParams = await resolveEventPrizeWithdrawalExecutionParams(
     params,
     runtime,

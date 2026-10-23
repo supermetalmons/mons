@@ -2,16 +2,16 @@ import {
   commitCanonicalPlan,
   readCanonicalRatingUpdate,
   CanonicalProfileConflict,
-  type CanonicalProfileSnapshot,
   type CanonicalExpectation,
   type CanonicalMutation,
 } from "../profileCanonicalD1.ts";
 import { readCanonicalRatingUpdates } from "../profileCanonical/accounting.ts";
 import {
-  patchCanonicalProfile,
-  readCanonicalRatingProfiles,
-  type CanonicalProfileMutationSnapshot,
-} from "../profileMutationD1.ts";
+  readMutableRatingProfiles,
+  type CanonicalMutableProfileSnapshot,
+  type CanonicalOwnedMutableProfileSnapshot,
+} from "../profileMutableD1.ts";
+import { buildMutableGameplayProfileMutation } from "../profileMutableGameplay.ts";
 import type {
   RatingCommitPlan,
   RatingFinalizeInput,
@@ -229,11 +229,11 @@ export function createRatingOperations(
         ) {
           return { status: "lost" };
         }
-        let playerSnapshot: CanonicalProfileMutationSnapshot | null;
-        let opponentSnapshot: CanonicalProfileMutationSnapshot | null;
+        let playerSnapshot: CanonicalOwnedMutableProfileSnapshot | null;
+        let opponentSnapshot: CanonicalOwnedMutableProfileSnapshot | null;
         try {
           ({ player: playerSnapshot, opponent: opponentSnapshot } =
-            await readCanonicalRatingProfiles(db, {
+            await readMutableRatingProfiles(db, {
               playerLoginUid: input.playerId,
               opponentLoginUid: input.opponentId,
             }));
@@ -279,7 +279,10 @@ export function createRatingOperations(
         const mutations: CanonicalMutation[] = [];
         const profileWrites = new Map<
           string,
-          { snapshot: CanonicalProfileSnapshot; patch: RatingProfilePatch }
+          {
+            snapshot: CanonicalMutableProfileSnapshot;
+            patch: RatingProfilePatch;
+          }
         >();
         if (playerSnapshot && plan.playerUpdate) {
           profileWrites.set(playerSnapshot.profile.profileId, {
@@ -297,15 +300,13 @@ export function createRatingOperations(
           });
         }
         for (const { snapshot, patch } of profileWrites.values()) {
-          mutations.push({
-            kind: "patch-active-profile",
-            current: snapshot,
-            value: patchCanonicalProfile(
+          mutations.push(
+            buildMutableGameplayProfileMutation(
               snapshot,
               patch,
               number(plan.ratingUpdate.updatedAtMs) || options.now(),
             ),
-          });
+          );
         }
         const nextRating = mergedRatingValue(operation, plan.ratingUpdate);
         mutations.push({ kind: "update-rating-update", value: nextRating });

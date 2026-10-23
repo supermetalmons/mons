@@ -1,9 +1,7 @@
 import { MATERIAL_KEYS, normalizeMaterials } from "@mons/shared/mining";
 import {
   commitCanonicalPlan,
-  readCanonicalProfileOwnershipSnapshot,
   readCanonicalWagerSettlement,
-  resolveCanonicalProfiles,
   resolveCanonicalPublicProfile,
   CanonicalProfileConflict,
   type CanonicalProfileSnapshot,
@@ -11,7 +9,8 @@ import {
   type CanonicalMutation,
   type CanonicalWagerSettlement,
 } from "./profileCanonicalD1.ts";
-import { patchCanonicalProfile } from "./profileMutationD1.ts";
+import { resolveMutableProfiles } from "./profileMutableD1.ts";
+import { buildMutableGameplayProfileMutation } from "./profileMutableGameplay.ts";
 import {
   deleteD1NavigationGame,
   getD1NavigationGame,
@@ -26,7 +25,7 @@ import {
   reconciliationFailure,
   retryCount,
 } from "./gameplayRepositoryPolicy.ts";
-import { mapCanonicalOwnershipSnapshot } from "./profileOwnershipMapping.ts";
+import { createD1ProfileOwnershipReader } from "./profileOwnershipD1.ts";
 
 function canonicalProfileFields(
   snapshot: CanonicalProfileSnapshot,
@@ -112,6 +111,7 @@ export function createCanonicalGameplayRepository(
 > {
   const attempts = retryCount(options.maxAttempts);
   return {
+    ...createD1ProfileOwnershipReader(db, options),
     async applyWagerTransferOnce(input: WagerTransferInput) {
       if (
         !input.operationId ||
@@ -140,7 +140,7 @@ export function createCanonicalGameplayRepository(
       let lastConflict: CanonicalProfileConflict | undefined;
       for (let attempt = 0; attempt < attempts; attempt++) {
         try {
-          const [winner, loser] = await resolveCanonicalProfiles(db, [
+          const [winner, loser] = await resolveMutableProfiles(db, [
             input.winnerProfileId,
             input.loserProfileId,
           ]);
@@ -187,36 +187,28 @@ export function createCanonicalGameplayRepository(
                 },
               );
               mutations.push(
-                {
-                  kind: "patch-active-profile",
-                  current: winner,
-                  value: patchCanonicalProfile(
-                    winner,
-                    {
-                      mining: {
-                        ...winner.profile.mining,
-                        materials: nextWinnerMaterials,
-                      },
+                buildMutableGameplayProfileMutation(
+                  winner,
+                  {
+                    mining: {
+                      ...winner.profile.mining,
+                      materials: nextWinnerMaterials,
                     },
-                    input.appliedAtMs,
-                    [material],
-                  ),
-                },
-                {
-                  kind: "patch-active-profile",
-                  current: loser,
-                  value: patchCanonicalProfile(
-                    loser,
-                    {
-                      mining: {
-                        ...loser.profile.mining,
-                        materials: nextLoserMaterials,
-                      },
+                  },
+                  input.appliedAtMs,
+                  [material],
+                ),
+                buildMutableGameplayProfileMutation(
+                  loser,
+                  {
+                    mining: {
+                      ...loser.profile.mining,
+                      materials: nextLoserMaterials,
                     },
-                    input.appliedAtMs,
-                    [material],
-                  ),
-                },
+                  },
+                  input.appliedAtMs,
+                  [material],
+                ),
               );
             }
           }
@@ -261,18 +253,6 @@ export function createCanonicalGameplayRepository(
       throw options.createFailure("applyWagerTransferOnce", {
         cause: lastConflict,
       });
-    },
-
-    async readProfileOwnershipSnapshot(query) {
-      try {
-        return mapCanonicalOwnershipSnapshot(
-          await readCanonicalProfileOwnershipSnapshot(db, query),
-        );
-      } catch (error) {
-        throw options.createFailure("readProfileOwnershipSnapshot", {
-          cause: error,
-        });
-      }
     },
 
     async getMiningMaterials(profileId) {

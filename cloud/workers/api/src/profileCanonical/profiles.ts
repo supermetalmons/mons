@@ -20,6 +20,7 @@ import {
   type CanonicalMergeTarget,
   type MergeTargetRow,
   type CanonicalProfileValue,
+  type CanonicalProfileFieldsValue,
   type JsonObject,
   type CanonicalProfileState,
   CANONICAL_PROFILE_INTERNAL_REDIRECT_LIMIT,
@@ -232,7 +233,10 @@ export function parseCanonicalMergeTargetRow(
   };
 }
 
-function assertCanonicalProfileValue(value: CanonicalProfileValue): void {
+function assertProfileFields(
+  value: CanonicalProfileFieldsValue,
+  legacyFieldsValid = true,
+): void {
   if (
     !isPlayerProfile(value.profile) ||
     !value.profile.id ||
@@ -246,7 +250,7 @@ function assertCanonicalProfileValue(value: CanonicalProfileValue): void {
     value.updatedAtMs < value.createdAtMs ||
     (value.mergedAtMs !== null &&
       (!Number.isSafeInteger(value.mergedAtMs) || value.mergedAtMs < 0)) ||
-    !record(value.legacyFields) ||
+    !legacyFieldsValid ||
     (typeof value.gameplayEmoji !== "string" &&
       (typeof value.gameplayEmoji !== "number" ||
         !Number.isFinite(value.gameplayEmoji))) ||
@@ -279,7 +283,17 @@ function assertCanonicalProfileValue(value: CanonicalProfileValue): void {
   }
 }
 
-export function materializeCanonicalProfile(input: {
+function assertCanonicalProfileValue(value: CanonicalProfileValue): void {
+  assertProfileFields(value, Boolean(record(value.legacyFields)));
+}
+
+export function assertCanonicalProfileFields(
+  value: CanonicalProfileFieldsValue,
+): void {
+  assertProfileFields(value);
+}
+
+type ProfileMaterializationInput = {
   createdAtMs: number;
   emojiPresent?: boolean;
   gameplayEmoji?: string | number;
@@ -292,7 +306,11 @@ export function materializeCanonicalProfile(input: {
   state?: CanonicalProfileState;
   updatedAtMs: number;
   winPresent?: boolean;
-}): CanonicalProfileValue {
+};
+
+function materializeProfileFields(
+  input: Omit<ProfileMaterializationInput, "legacyFields">,
+): CanonicalProfileFieldsValue {
   const derivedSortValues: Record<CanonicalSortKey, number | null> = {
     rating: input.profile.rating,
     mp: input.profile.totalManaPoints,
@@ -326,7 +344,7 @@ export function materializeCanonicalProfile(input: {
     sortValues,
     winPresent,
   }).profile;
-  const value: CanonicalProfileValue = {
+  return {
     profile,
     gameplayEmoji: input.gameplayEmoji ?? (emojiPresent ? profile.emoji : ""),
     state: input.state || "active",
@@ -334,7 +352,6 @@ export function materializeCanonicalProfile(input: {
       ? buildUsernameLookupKey(profile.username)
       : null,
     mergedIntoProfileId: input.mergedIntoProfileId || null,
-    legacyFields: input.legacyFields || {},
     createdAtMs: input.createdAtMs,
     updatedAtMs: input.updatedAtMs,
     mergedAtMs: input.mergedAtMs ?? null,
@@ -342,6 +359,23 @@ export function materializeCanonicalProfile(input: {
     sortValues,
     winPresent,
     emojiPresent,
+  };
+}
+
+export function materializeCanonicalProfileFields(
+  input: Omit<ProfileMaterializationInput, "legacyFields">,
+): CanonicalProfileFieldsValue {
+  const value = materializeProfileFields(input);
+  assertCanonicalProfileFields(value);
+  return value;
+}
+
+export function materializeCanonicalProfile(
+  input: ProfileMaterializationInput,
+): CanonicalProfileValue {
+  const value = {
+    ...materializeProfileFields(input),
+    legacyFields: input.legacyFields || {},
   };
   assertCanonicalProfileValue(value);
   return value;
@@ -422,6 +456,8 @@ export async function readCanonicalMergeTarget(
   return row ? parseCanonicalMergeTargetRow(row) : null;
 }
 
+type CanonicalProfileProjection = string | { plain: string; qualified: string };
+
 async function resolveCanonicalProfileIteratively<
   T extends Pick<
     CanonicalPublicProfileSnapshot,
@@ -432,7 +468,7 @@ async function resolveCanonicalProfileIteratively<
   profileId: string,
   redirectLimit: number,
   onRedirectFailure: "null" | "throw",
-  columns: "*" | string,
+  columns: CanonicalProfileProjection,
   parseProfile: (value: unknown) => T,
 ): Promise<T | null> {
   const visited = new Set<string>();
@@ -445,7 +481,9 @@ async function resolveCanonicalProfileIteratively<
     visited.add(currentProfileId);
     const results = await db.batch([
       db
-        .prepare(`SELECT ${columns} FROM profile_records WHERE profile_id = ?`)
+        .prepare(
+          `SELECT ${typeof columns === "string" ? columns : columns.plain} FROM profile_records WHERE profile_id = ?`,
+        )
         .bind(currentProfileId),
       db
         .prepare(
@@ -507,20 +545,48 @@ export function resolveCanonicalProfile(
   );
 }
 
-export async function resolveCanonicalProfiles(
+export function resolveCanonicalProfiles(
   db: D1Database,
   profileIds: readonly string[],
 ): Promise<Array<CanonicalProfileSnapshot | null>> {
+  return resolveCanonicalProfilesUsing(
+    db,
+    profileIds,
+    "*",
+    parseCanonicalProfileRow,
+  );
+}
+
+export async function resolveCanonicalProfilesUsing<
+  T extends Pick<
+    CanonicalPublicProfileSnapshot,
+    "mergedIntoProfileId" | "state"
+  >,
+>(
+  db: D1Database,
+  profileIds: readonly string[],
+  columns: CanonicalProfileProjection,
+  parseProfile: (value: unknown) => T,
+): Promise<Array<T | null>> {
   if (profileIds.length === 0) return [];
+  const redirectLimit = CANONICAL_PROFILE_INTERNAL_REDIRECT_LIMIT;
   if (profileIds.some((profileId) => !profileId.isWellFormed())) {
     return Promise.all(
-      profileIds.map((profileId) => resolveCanonicalProfile(db, profileId)),
+      profileIds.map((profileId) =>
+        resolveCanonicalProfileUsing(
+          db,
+          profileId,
+          redirectLimit,
+          "throw",
+          columns,
+          parseProfile,
+        ),
+      ),
     );
   }
-  const redirectLimit = CANONICAL_PROFILE_INTERNAL_REDIRECT_LIMIT;
   const results = await db.batch<Record<string, unknown>>(
     profileIds.map((profileId) =>
-      prepareCanonicalProfileResolution(db, profileId, redirectLimit, "*"),
+      prepareCanonicalProfileResolution(db, profileId, redirectLimit, columns),
     ),
   );
   return profileIds.map((profileId, index) =>
@@ -529,7 +595,7 @@ export async function resolveCanonicalProfiles(
       profileId,
       redirectLimit,
       "throw",
-      parseCanonicalProfileRow,
+      parseProfile,
     ),
   );
 }
@@ -544,7 +610,7 @@ async function resolveCanonicalProfileUsing<
   profileId: string,
   redirectLimit: number,
   onRedirectFailure: "null" | "throw",
-  columns: string,
+  columns: CanonicalProfileProjection,
   parseProfile: (value: unknown) => T,
 ): Promise<T | null> {
   if (!profileId.isWellFormed()) {
@@ -580,15 +646,19 @@ function prepareCanonicalProfileResolution(
   db: D1Database,
   profileId: string,
   redirectLimit: number,
-  columns: string,
+  columns: CanonicalProfileProjection,
 ): D1PreparedStatement {
   return db
     .prepare(
       `${canonicalProfileRedirectCte("profile")}
-       SELECT ${columns
-         .split(",")
-         .map((column) => `profile.${column.trim()}`)
-         .join(", ")},
+       SELECT ${
+         typeof columns === "string"
+           ? columns
+               .split(",")
+               .map((column) => `profile.${column.trim()}`)
+               .join(", ")
+           : columns.qualified
+       },
               chain.chain_profile_id, chain.depth AS chain_depth,
               target.source_profile_id AS redirect_source_profile_id,
               target.target_profile_id AS redirect_target_profile_id,

@@ -1258,7 +1258,13 @@ describe("canonical gameplay repositories", () => {
     const observedDb = beforeMatchingBatch(
       testEnv.PROFILE_DB,
       (queries) => {
-        if (queries.every((query) => query.includes("SELECT profile.*"))) {
+        if (
+          queries.every(
+            (query) =>
+              query.includes("chain.depth AS chain_depth") &&
+              query.includes("redirect_target_profile_id"),
+          )
+        ) {
           profileReadBatches.push([...queries]);
         }
         return false;
@@ -1494,7 +1500,13 @@ describe("canonical gameplay repositories", () => {
       const racedDb = beforeMatchingBatch(
         testEnv.PROFILE_DB,
         (queries) => {
-          if (queries.every((query) => query.includes("SELECT profile.*"))) {
+          if (
+            queries.every(
+              (query) =>
+                query.includes("chain.depth AS chain_depth") &&
+                query.includes("redirect_target_profile_id"),
+            )
+          ) {
             profileReadBatches.push([...queries]);
           }
           return queries.some((query) =>

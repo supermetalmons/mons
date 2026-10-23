@@ -2,15 +2,15 @@ import { resolveProfileMergeTargetPath } from "../../../../runtime/profileMergeT
 import { isMatchingProfileEventPrizeAssignment } from "../../../../runtime/eventPrizeWithdrawalState.js";
 import { EventPrizeWithdrawalError } from "../../../../runtime/eventPrizes/errors.js";
 import {
-  createEventGameplayRepository,
-  type EventGameplayRepository,
-} from "../eventRepository.ts";
+  createEventPrizeRepository,
+  type EventPrizeRepository,
+} from "../eventPrizeRepository.ts";
 import {
   createD1EventPrizeWithdrawalStore,
   readEventPrizeWithdrawalStorageMode,
   type EventPrizeWithdrawalStore,
 } from "../eventPrizeWithdrawalD1.ts";
-import { readCanonicalMergeTarget } from "../profileCanonicalD1.ts";
+import { readCanonicalMergeTarget } from "../profileCanonical/profiles.ts";
 import {
   getCanonicalProfileId,
   getLoginProfileId,
@@ -21,7 +21,7 @@ import {
 
 export type EventPrizeContext = {
   withdrawals: EventPrizeWithdrawalStore;
-  readProfileEventPrizeAssignment: EventGameplayRepository["readProfileEventPrizeAssignment"];
+  readProfileEventPrizeAssignment: EventPrizeRepository["readProfileEventPrizeAssignment"];
   now(): number;
   readWithdrawal(
     eventId: string,
@@ -53,12 +53,7 @@ export type EventPrizeRequestDependencies = EventPrizeStatusDependencies &
     withdrawals: Pick<EventPrizeWithdrawalStore, "record">;
   };
 
-export type EventPrizeGameplayRepository = Pick<
-  EventGameplayRepository,
-  | "readProfileOwnershipSnapshot"
-  | "readProfileEventPrizeAssignment"
-  | "transactProfileEventPrize"
->;
+export type EventPrizeGameplayRepository = EventPrizeRepository;
 
 export type RuntimeOptions = {
   now?: () => number;
@@ -73,7 +68,7 @@ export async function createEventPrizeContext(
     allowFrozen = false,
     now = Date.now,
     profileDb = env.PROFILE_DB,
-    repository = createEventGameplayRepository(env),
+    repository = createEventPrizeRepository(env.PROFILE_DB, env.EVENT_DB),
     withdrawalStore: withdrawalStoreOverride,
   }: RuntimeOptions & { allowFrozen?: boolean } = {},
 ): Promise<EventPrizeContext> {

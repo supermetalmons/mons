@@ -74,12 +74,15 @@ type CanonicalGameplayProfilePatch = {
   mining?: unknown;
 };
 
-export function patchCanonicalProfile(
-  snapshot: CanonicalProfileSnapshot,
+export function prepareCanonicalGameplayProfileUpdate(
+  snapshot: Pick<
+    CanonicalProfileSnapshot,
+    "profile" | "winPresent" | "updatedAtMs"
+  >,
   patch: CanonicalGameplayProfilePatch,
   updatedAtMs: number,
   miningSortKeys: readonly MiningMaterialName[] = MATERIAL_KEYS,
-): CanonicalProfileValue {
+) {
   const profile = { ...snapshot.profile };
   const sortUpdates: Partial<Record<CanonicalSortKey, number>> = {};
   if (typeof patch.rating === "number" && Number.isFinite(patch.rating)) {
@@ -114,11 +117,31 @@ export function patchCanonicalProfile(
       sortUpdates[material] = profile.mining.materials[material];
     }
   }
+  return {
+    profile,
+    updatedAtMs: Math.max(snapshot.updatedAtMs, updatedAtMs),
+    sortUpdates,
+    winPresent,
+  };
+}
+
+export function patchCanonicalProfile(
+  snapshot: CanonicalProfileSnapshot,
+  patch: CanonicalGameplayProfilePatch,
+  updatedAtMs: number,
+  miningSortKeys: readonly MiningMaterialName[] = MATERIAL_KEYS,
+): CanonicalProfileValue {
+  const prepared = prepareCanonicalGameplayProfileUpdate(
+    snapshot,
+    patch,
+    updatedAtMs,
+    miningSortKeys,
+  );
   return materializeCanonicalProfileUpdate(
     snapshot,
-    profile,
-    Math.max(snapshot.updatedAtMs, updatedAtMs),
-    { sortUpdates, winPresent },
+    prepared.profile,
+    prepared.updatedAtMs,
+    { sortUpdates: prepared.sortUpdates, winPresent: prepared.winPresent },
   );
 }
 

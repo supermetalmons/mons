@@ -102,6 +102,22 @@ export function validateCanonicalCommitPlan(plan: CanonicalCommitPlan): void {
           ),
         );
         break;
+      case "patch-profile-fields":
+        requireUniqueLifecycleProfile(mutation.value.profile.id);
+        requireExpectation(
+          mutation.current.state === "active" &&
+            mutation.current.profileId === mutation.value.profile.id &&
+            mutation.current.profile.id === mutation.value.profile.id,
+        );
+        requireExpectation(
+          has(
+            (expectation) =>
+              expectation.kind === "profile-revision" &&
+              expectation.profileId === mutation.value.profile.id &&
+              expectation.revision === mutation.current.revision,
+          ),
+        );
+        break;
       case "retire-profile-with-redirect": {
         const sourceProfileId = mutation.profile.profile.id;
         const targetProfileId = mutation.redirect.targetProfileId;
@@ -425,6 +441,7 @@ export function canonicalTopologyProfileIds(
       case "insert-active-profile":
       case "update-active-profile":
       case "patch-active-profile":
+      case "patch-profile-fields":
         profileIds.add(mutation.value.profile.id);
         break;
       case "retire-profile-with-redirect":

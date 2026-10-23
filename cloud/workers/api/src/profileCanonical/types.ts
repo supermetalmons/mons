@@ -57,6 +57,32 @@ export type CanonicalProfileSnapshot = CanonicalProfileValue & {
   revision: number;
 };
 
+export type CanonicalProfileFieldsValue = Omit<
+  CanonicalProfileValue,
+  "legacyFields"
+>;
+
+export type CanonicalProfileFieldsSnapshot = CanonicalProfileFieldsValue & {
+  profileId: string;
+  revision: number;
+};
+
+export type CanonicalMutableProfileSnapshot =
+  | (CanonicalProfileFieldsSnapshot & { storageShape: "mutable" })
+  | (CanonicalProfileSnapshot & { storageShape: "full" });
+
+export type CanonicalMutableProfileValue = Pick<
+  CanonicalProfileFieldsValue,
+  | "profile"
+  | "gameplayEmoji"
+  | "usernameKey"
+  | "updatedAtMs"
+  | "sortPresence"
+  | "sortValues"
+  | "winPresent"
+  | "emojiPresent"
+>;
+
 export type CanonicalPublicProfileSnapshot = {
   emojiPresent: boolean;
   gameplayEmoji: string | number;
@@ -536,6 +562,11 @@ export type CanonicalMutation =
       value: CanonicalProfileValue;
     }
   | {
+      kind: "patch-profile-fields";
+      current: CanonicalProfileFieldsSnapshot;
+      value: CanonicalMutableProfileValue;
+    }
+  | {
       kind: "retire-profile-with-redirect";
       profile: CanonicalProfileValue;
       redirect: CanonicalMergeTargetValue;
@@ -626,6 +657,7 @@ type CanonicalLifecycleMutation = Extract<
       | "insert-active-profile"
       | "update-active-profile"
       | "patch-active-profile"
+      | "patch-profile-fields"
       | "retire-profile-with-redirect"
       | "delete-retired-profile";
   }

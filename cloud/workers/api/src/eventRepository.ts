@@ -19,6 +19,7 @@ import {
   type PrepareMatchPresentations,
 } from "./matchPresentationRegistry.ts";
 import { createEventTransitionCoordinator } from "./eventTransitionCoordinator.ts";
+import { transactProfileEventPrizeWithAdmission } from "./eventPrizeRepository.ts";
 
 export type EventGameplayRepository = GameplayRepository & EventStore;
 export type EventStateRepository = MatchStatePort & EventStore;
@@ -134,11 +135,12 @@ function createEventStore(
         }),
       ),
     transactProfileEventPrize: (profileId, eventId, updater, signal) =>
-      admit((admission) =>
-        eventD1.transactProfileEventPrize(db, profileId, eventId, updater, {
-          admission,
-          signal,
-        }),
+      transactProfileEventPrizeWithAdmission(
+        db,
+        profileId,
+        eventId,
+        updater,
+        signal,
       ),
     transactStoredProfileEventPrizeWithEventLease: (
       profileId,
