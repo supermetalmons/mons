@@ -88,6 +88,22 @@ export async function readAutomatchResourceSnapshot(
   return { mode, pending, value };
 }
 
+export async function readInviteMetadata(
+  db: D1Database,
+  inviteId: string,
+  signal?: AbortSignal,
+): Promise<Record<string, unknown> | null> {
+  const snapshot = await readAutomatchResourceSnapshot(
+    db,
+    inviteId,
+    "invite",
+    inviteId,
+    signal,
+  );
+  assertNoGameSessionResourceTransition(snapshot.pending);
+  return snapshot.value as Record<string, unknown> | null;
+}
+
 export async function readInviteMetadataMany(
   db: D1Database,
   inviteIds: readonly string[],

@@ -15,9 +15,9 @@ import {
 } from "./sessionAuth.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
 import {
-  createGameplayRepository,
-  type GameplayRepository,
-} from "./gameplayRepository.ts";
+  createInviteReadRepository,
+  type InviteReadRepository,
+} from "./inviteReadRepository.ts";
 import { resolveInviteRoleFromSnapshot } from "./inviteAccess.ts";
 import { readBoundedJson } from "./http.ts";
 import type { InviteReactions } from "./inviteReactions.ts";
@@ -35,7 +35,7 @@ const PRESENTATION_ROUTE_PATTERN =
 
 export type MatchPresentationRouteDependencies =
   MatchPresentationReadDependencies & {
-    repository?: GameplayRepository;
+    repository?: InviteReadRepository;
     room?: Pick<InviteReactions, "updatePresentation">;
     verifyIdentity?: (
       request: Request,
@@ -95,7 +95,8 @@ export async function handleMatchPresentationRoute(
         429,
         { ...corsHeaders, "Retry-After": "60" },
       );
-    const repository = dependencies.repository || createGameplayRepository(env);
+    const repository =
+      dependencies.repository || createInviteReadRepository(env);
     const identity =
       request.method === "POST" || request.headers.has("Authorization")
         ? await (dependencies.verifyIdentity || verifySessionRequest)(

@@ -13,9 +13,9 @@ import {
   isAllowedAuthOrigin,
 } from "./authHttp.ts";
 import {
-  createGameplayRepository,
-  type GameplayRepository,
-} from "./gameplayRepository.ts";
+  createInviteReadRepository,
+  type InviteReadRepository,
+} from "./inviteReadRepository.ts";
 import { readBoundedJson } from "./http.ts";
 import { resolveInviteRole } from "./inviteAccess.ts";
 import type { InviteReactions } from "./inviteReactions.ts";
@@ -93,7 +93,7 @@ async function reactionRateLimit(
 
 export type InviteReactionRouteDependencies =
   MatchPresentationReadDependencies & {
-    repository?: GameplayRepository;
+    repository?: InviteReadRepository;
     room?: Pick<InviteReactions, "fetch" | "publish">;
     verifyIdentity?: (
       request: Request,
@@ -169,7 +169,8 @@ export async function handleInviteReactionRoute(
       }
     }
     const ip = request.headers.get("CF-Connecting-IP")?.trim() || "unknown";
-    const repository = dependencies.repository || createGameplayRepository(env);
+    const repository =
+      dependencies.repository || createInviteReadRepository(env);
     if (route.socket) {
       const token = readSocketToken(request);
       if (!route.matchId) {

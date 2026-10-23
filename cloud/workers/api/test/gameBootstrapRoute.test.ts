@@ -162,6 +162,50 @@ async function read(state: ReturnType<typeof setup>, incoming = request()) {
   return handleGameBootstrapRoute(incoming, state.env, ctx, state.dependencies);
 }
 
+test("bootstrap accepts ownership-only injection without reading unrelated bindings", async () => {
+  const state = setup(metadata(), "spectator-login");
+  state.dependencies.repository = {
+    readProfileOwnershipSnapshot: state.repository.readProfileOwnershipSnapshot,
+  };
+  for (const key of [
+    "PROFILE_DB",
+    "PROFILE_GAMES_DB",
+    "INVITE_REACTIONS",
+    "EVENT_DB",
+  ] as const)
+    Object.defineProperty(state.env, key, {
+      get() {
+        throw new Error(`unexpected-${key}`);
+      },
+    });
+  const response = await read(state);
+  assert.equal(response.status, 200);
+  assert.equal(state.calls.admission, 1);
+  assert.equal(state.calls.roles, 1);
+  assert.equal(state.calls.metadata, 0);
+  assert.deepEqual(state.calls.matches, [inviteId]);
+});
+
+test("default bootstrap ownership does not construct an invite metadata repository", async () => {
+  const state = setup();
+  state.dependencies.repository = undefined;
+  for (const key of [
+    "PROFILE_GAMES_DB",
+    "INVITE_REACTIONS",
+    "EVENT_DB",
+  ] as const)
+    Object.defineProperty(state.env, key, {
+      get() {
+        throw new Error(`unexpected-${key}`);
+      },
+    });
+  const response = await read(state);
+  assert.equal(response.status, 200);
+  assert.equal(state.calls.admission, 1);
+  assert.equal(state.calls.roles, 0);
+  assert.equal(state.calls.metadata, 0);
+});
+
 test("shared selection preserves actor proposals, approved prefixes and end overrides", () => {
   const base = metadata().snapshot;
   const cases: Array<

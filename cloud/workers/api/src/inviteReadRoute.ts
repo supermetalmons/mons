@@ -21,8 +21,9 @@ import {
 import { cancelResponseBody } from "./boundedStreams.ts";
 import { summarizeError } from "./errorSummary.ts";
 import { resolveInviteRoleFromSnapshot } from "./inviteAccess.ts";
-import { createGameplayRepository } from "./gameplayRepository.ts";
+import { createInviteReadRepository } from "./inviteReadRepository.ts";
 import type { InviteAccessRepository } from "./gameplayContracts.ts";
+import type { ProfileOwnershipReader } from "./profileOwnership.ts";
 import type { InviteReactions } from "./inviteReactions.ts";
 import { readInviteSocketToken } from "./inviteSocketAuth.ts";
 import { isSafeRecordKey } from "./recordKeys.ts";
@@ -68,6 +69,10 @@ type InviteReadAccess = {
   inviteId: string;
   identity: RequestIdentity | null;
   repository: InviteAccessRepository;
+};
+
+type InviteRoleAccess = Omit<InviteReadAccess, "repository"> & {
+  repository: ProfileOwnershipReader;
 };
 
 type InviteReadRole = {
@@ -131,7 +136,7 @@ export function readInviteRoute(
 }
 
 export async function resolveInviteReadRole(
-  { inviteId, identity, repository }: InviteReadAccess,
+  { inviteId, identity, repository }: InviteRoleAccess,
   snapshot: InviteMetadataSnapshot,
   passwordProtected: boolean,
 ): Promise<InviteReadRole> {
@@ -233,7 +238,8 @@ export async function handleInviteReadRoute<
         { ...corsHeaders, "Retry-After": "60" },
       );
     }
-    const repository = dependencies.repository || createGameplayRepository(env);
+    const repository =
+      dependencies.repository || createInviteReadRepository(env);
     const invite = await repository.readInviteMetadata(inviteId);
     if (invite === null || invite === undefined) {
       throw new AuthApiFailure(404, "not-found", "invite-not-found");

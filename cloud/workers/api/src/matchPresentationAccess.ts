@@ -10,7 +10,7 @@ import {
 } from "@mons/shared/rematches";
 import { AuthApiFailure } from "./authErrors.ts";
 import { decodeCanonicalInviteParticipants } from "./canonicalInviteParticipants.ts";
-import type { GameplayRepository } from "./gameplayRepository.ts";
+import type { InviteReadRepository } from "./inviteReadRepository.ts";
 import {
   readMatchPresentationControl,
   readRegisteredMatchPresentations,
@@ -43,7 +43,7 @@ export function isPresentationMatchId(
 }
 
 export async function readPresentationInvite(
-  repository: GameplayRepository,
+  repository: Pick<InviteReadRepository, "readInviteMetadata">,
   inviteId: string,
 ): Promise<PresentationInvite> {
   const value = await repository.readInviteMetadata(inviteId);

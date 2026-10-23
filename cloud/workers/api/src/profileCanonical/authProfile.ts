@@ -2,30 +2,84 @@ import { parseCanonicalAuthMethodRow } from "./auth.ts";
 import {
   CanonicalProfileCorruption,
   type CanonicalAuthMethodSnapshot,
+  type CanonicalProfileFieldsSnapshot,
+  type CanonicalProfileSnapshot,
 } from "./types.ts";
 import {
-  CANONICAL_OWNED_PROFILE_COLUMNS,
-  CANONICAL_OWNED_PROFILE_FROM,
-  parseCanonicalOwnedProfileRow,
+  prepareCanonicalOwnedProfileRead,
+  parseCanonicalOwnedProfileRowWith,
   type CanonicalOwnedProfileSnapshot,
 } from "./ownedProfile.ts";
+import { parseCanonicalProfileRow } from "./profiles.ts";
+import {
+  mutableProfileColumns,
+  parseMutableProfileRow,
+} from "./mutableProfiles.ts";
 
 export type CanonicalAuthProfileSnapshot = CanonicalOwnedProfileSnapshot & {
   authMethods: CanonicalAuthMethodSnapshot[];
 };
 
-export async function readCanonicalAuthProfileByLogin(
+export type CanonicalAuthReadSnapshot =
+  CanonicalOwnedProfileSnapshot<CanonicalProfileFieldsSnapshot> & {
+    authMethods: CanonicalAuthMethodSnapshot[];
+  };
+
+function parseAuthReadProfileRow(
+  value: unknown,
+): CanonicalProfileFieldsSnapshot {
+  const snapshot = parseMutableProfileRow(value);
+  if (snapshot.storageShape === "full") {
+    const {
+      storageShape: _storageShape,
+      legacyFields: _legacyFields,
+      ...profile
+    } = snapshot;
+    return profile;
+  }
+  const { storageShape: _storageShape, ...profile } = snapshot;
+  return profile;
+}
+
+export function readCanonicalAuthProfileByLogin(
   db: D1Database,
   loginUid: string,
 ): Promise<CanonicalAuthProfileSnapshot | null> {
+  return readCanonicalAuthSnapshot(
+    db,
+    loginUid,
+    "profile.*",
+    parseCanonicalProfileRow,
+  );
+}
+
+export function readCanonicalAuthReadSnapshotByLogin(
+  db: D1Database,
+  loginUid: string,
+): Promise<CanonicalAuthReadSnapshot | null> {
+  return readCanonicalAuthSnapshot(
+    db,
+    loginUid,
+    mutableProfileColumns("profile"),
+    parseAuthReadProfileRow,
+  );
+}
+
+async function readCanonicalAuthSnapshot<
+  Profile extends Pick<CanonicalProfileSnapshot, "profileId" | "state">,
+>(
+  db: D1Database,
+  loginUid: string,
+  profileColumns: string,
+  parseProfile: (value: unknown) => Profile,
+): Promise<
+  | (CanonicalOwnedProfileSnapshot<Profile> & {
+      authMethods: CanonicalAuthMethodSnapshot[];
+    })
+  | null
+> {
   const results = await db.batch<Record<string, unknown>>([
-    db
-      .prepare(
-        `SELECT ${CANONICAL_OWNED_PROFILE_COLUMNS}
-       ${CANONICAL_OWNED_PROFILE_FROM}
-       WHERE owner.login_uid = ?`,
-      )
-      .bind(loginUid),
+    prepareCanonicalOwnedProfileRead(db, loginUid, profileColumns),
     db
       .prepare(
         `SELECT method.method, method.normalized_value, method.profile_id,
@@ -49,9 +103,10 @@ export async function readCanonicalAuthProfileByLogin(
   ) {
     throw new CanonicalProfileCorruption();
   }
-  const snapshot = parseCanonicalOwnedProfileRow(
+  const snapshot = parseCanonicalOwnedProfileRowWith(
     results[0].results[0],
     loginUid,
+    parseProfile,
   );
   if (!snapshot) {
     if (results[1].results.length !== 0) throw new CanonicalProfileCorruption();

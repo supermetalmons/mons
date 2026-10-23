@@ -7,7 +7,11 @@ import {
 } from "../src/authProfileRepository.ts";
 import { AuthApiFailure } from "../src/authErrors.ts";
 import { handleAuthRoute } from "../src/authRoutes.ts";
-import { readCanonicalAuthProfileByLogin } from "../src/profileCanonical/authProfile.ts";
+import {
+  readCanonicalAuthProfileByLogin,
+  readCanonicalAuthReadSnapshotByLogin,
+  type CanonicalAuthProfileSnapshot,
+} from "../src/profileCanonical/authProfile.ts";
 import {
   CanonicalProfileCorruption,
   commitCanonicalPlan,
@@ -19,6 +23,7 @@ import { applyRetiredProfileMigrations } from "./profileTestMigrations.ts";
 
 const testEnv = env as Env & { TEST_PROFILE_D1_MIGRATIONS: D1Migration[] };
 const db = testEnv.PROFILE_DB;
+const validationTable = "auth_profile_read_cases";
 const unlinked = { apple: false, eth: false, sol: false, x: false };
 const validMethodValues = {
   apple: "apple-subject",
@@ -105,6 +110,7 @@ async function createProfile(
 
 function observeDatabase(
   options: {
+    database?: D1Database;
     mapRow?: (
       row: Record<string, unknown>,
       resultIndex: number,
@@ -117,16 +123,20 @@ function observeDatabase(
 ) {
   const batchQueries: string[][] = [];
   const batchResults: D1Result<Record<string, unknown>>[][] = [];
+  const batchBindings: unknown[][][] = [];
   const nativeStatements = new WeakMap<object, D1PreparedStatement>();
   const statementQueries = new WeakMap<object, string>();
+  const statementBindings = new WeakMap<object, unknown[]>();
   const wrap = (
     statement: D1PreparedStatement,
     query: string,
+    values: unknown[] = [],
   ): D1PreparedStatement => {
     const wrapped = new Proxy(statement, {
       get(target, property) {
         if (property === "bind") {
-          return (...values: unknown[]) => wrap(target.bind(...values), query);
+          return (...values: unknown[]) =>
+            wrap(target.bind(...values), query, values);
         }
         if (["all", "first", "run", "raw"].includes(String(property))) {
           return () => {
@@ -139,9 +149,10 @@ function observeDatabase(
     });
     nativeStatements.set(wrapped, statement);
     statementQueries.set(wrapped, query);
+    statementBindings.set(wrapped, values);
     return wrapped;
   };
-  const database = new Proxy(db, {
+  const database = new Proxy(options.database || db, {
     get(target, property) {
       if (property === "prepare") {
         return (query: string) => wrap(target.prepare(query), query);
@@ -152,6 +163,11 @@ function observeDatabase(
             (statement) => statementQueries.get(statement) || "",
           );
           batchQueries.push(queries);
+          batchBindings.push(
+            statements.map(
+              (statement) => statementBindings.get(statement) || [],
+            ),
+          );
           expect(queries).toHaveLength(2);
           for (const query of queries) expect(query).toMatch(/^\s*SELECT\b/);
           if (options.failure) throw options.failure;
@@ -179,7 +195,38 @@ function observeDatabase(
       return typeof member === "function" ? member.bind(target) : member;
     },
   });
-  return { database, batchQueries, batchResults };
+  return { database, batchQueries, batchResults, batchBindings };
+}
+
+function validationDatabase(): D1Database {
+  return new Proxy(db, {
+    get(target, property) {
+      if (property === "prepare")
+        return (sql: string) =>
+          target.prepare(sql.replace(/\bprofile_records\b/g, validationTable));
+      const member = Reflect.get(target, property, target);
+      return typeof member === "function" ? member.bind(target) : member;
+    },
+  });
+}
+
+async function outcome<T>(work: () => Promise<T>) {
+  try {
+    return { ok: true as const, value: await work() };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: {
+        name: error instanceof Error ? error.name : typeof error,
+        message: error instanceof Error ? error.message : "unknown",
+      },
+    };
+  }
+}
+
+function withoutRetainedFields(snapshot: CanonicalAuthProfileSnapshot) {
+  const { legacyFields: _legacyFields, ...profile } = snapshot.profile;
+  return { ...snapshot, profile };
 }
 
 describe("canonical auth profile reads", () => {
@@ -189,6 +236,11 @@ describe("canonical auth profile reads", () => {
       testEnv.TEST_PROFILE_D1_MIGRATIONS,
       "c".repeat(64),
     );
+    await db
+      .prepare(
+        `CREATE TABLE ${validationTable} AS SELECT * FROM profile_records WHERE 0`,
+      )
+      .run();
   });
 
   it("returns the missing-login response in one batch", async () => {
@@ -299,6 +351,256 @@ describe("canonical auth profile reads", () => {
     await expect(readCanonicalProfile(db, profile.profileId)).resolves.toEqual(
       before,
     );
+  });
+
+  it("preserves absent-login results and exact bindings in narrow auth snapshots", async () => {
+    const loginUid = " missing-login' OR 1 = 1 -- ";
+    for (const read of [
+      readCanonicalAuthProfileByLogin,
+      readCanonicalAuthReadSnapshotByLogin,
+    ]) {
+      const observed = observeDatabase();
+      await expect(read(observed.database, loginUid)).resolves.toBeNull();
+      expect(observed.batchQueries).toHaveLength(1);
+      expect(observed.batchBindings).toEqual([[[loginUid], [loginUid]]]);
+      expect(
+        observed.batchResults[0].map((result) => result.meta.rows_written),
+      ).toEqual([0, 0]);
+    }
+  });
+
+  const retainedCases = [
+    { label: "empty object", value: "{}", valid: true },
+    {
+      label: "whitespace and duplicate keys",
+      value: ' { "a": 1, "a": 2 } ',
+      valid: true,
+    },
+    { label: "escaped NUL", value: '{"a":"\\u0000"}', valid: true },
+    { label: "surrogate escape", value: '{"a":"\\ud800"}', valid: true },
+    { label: "overflow number", value: '{"a":1e999}', valid: true },
+    { label: "BOM inside string", value: '{"a":"\ufeff"}', valid: true },
+    { label: "array", value: "[]", valid: false },
+    { label: "scalar", value: '"value"', valid: false },
+    { label: "JSON null", value: "null", valid: false },
+    { label: "SQL null", value: null, valid: false },
+    { label: "numeric value", value: 5, valid: false },
+    { label: "malformed text", value: '{"a":', valid: false },
+    { label: "JSON5", value: "{a:1}", valid: false },
+    { label: "leading BOM", value: '\ufeff{"a":1}', valid: false },
+    { label: "trailing BOM", value: '{"a":1}\ufeff', valid: false },
+    { label: "raw NUL", value: '{"a":1}\u0000', valid: false },
+    {
+      label: "JSON BLOB",
+      value: new TextEncoder().encode('{"a":1}'),
+      valid: false,
+    },
+    {
+      label: "invalid UTF-8 inside a string",
+      value: new Uint8Array([123, 34, 97, 34, 58, 34, 255, 34, 125]),
+      castText: true,
+      valid: true,
+    },
+    ...[998, 999, 1000, 1100, 20_000].map((depth) => ({
+      label: `nesting depth ${depth}`,
+      value: '{"a":' + "[".repeat(depth) + "0" + "]".repeat(depth) + "}",
+      valid: true,
+    })),
+  ];
+
+  it.each(retainedCases)(
+    "preserves full-reader validation and discards retained data for $label",
+    async ({ value, valid, ...options }) => {
+      const { profileId, loginUid } = await createProfile({
+        sol: validMethodValues.sol,
+      });
+      await db
+        .prepare(
+          `INSERT INTO ${validationTable} SELECT * FROM profile_records WHERE profile_id = ?`,
+        )
+        .bind(profileId)
+        .run();
+      await db
+        .prepare(
+          `UPDATE ${validationTable} SET legacy_fields_json = ${"castText" in options && options.castText ? "CAST(? AS TEXT)" : "?"} WHERE profile_id = ?`,
+        )
+        .bind(value, profileId)
+        .run();
+      const retainedBytes = () =>
+        db
+          .prepare(
+            `SELECT typeof(legacy_fields_json) AS storage_type,
+               hex(CAST(legacy_fields_json AS BLOB)) AS stored_bytes
+             FROM ${validationTable} WHERE profile_id = ?`,
+          )
+          .bind(profileId)
+          .first();
+      const before = await retainedBytes();
+      const fullDb = observeDatabase({ database: validationDatabase() });
+      const narrowDb = observeDatabase({ database: validationDatabase() });
+      const full = await outcome(() =>
+        readCanonicalAuthProfileByLogin(fullDb.database, loginUid),
+      );
+      const narrow = await outcome(async () => {
+        const stringify = JSON.stringify;
+        const spy = vi
+          .spyOn(JSON, "stringify")
+          .mockImplementation((entry, ...args) => {
+            if (
+              options.label === "nesting depth 20000" &&
+              entry &&
+              typeof entry === "object" &&
+              Object.hasOwn(entry, "a")
+            ) {
+              throw new Error("unexpected-retained-serialization");
+            }
+            return stringify(entry, ...args);
+          });
+        try {
+          return await readCanonicalAuthReadSnapshotByLogin(
+            narrowDb.database,
+            loginUid,
+          );
+        } finally {
+          spy.mockRestore();
+        }
+      });
+      expect(full.ok).toBe(valid);
+      expect(narrow.ok).toBe(full.ok);
+      if (full.ok && narrow.ok) {
+        expect(full.value).not.toBeNull();
+        expect(narrow.value).toEqual(withoutRetainedFields(full.value!));
+        expect(narrow.value!.profile).not.toHaveProperty("legacyFields");
+        expect(narrow.value!.profile).not.toHaveProperty("storageShape");
+        expect(() => JSON.stringify(narrow.value)).not.toThrow();
+      } else {
+        expect(narrow).toEqual(full);
+      }
+      for (const consumer of ["identity", "methods"] as const) {
+        const observed = observeDatabase({ database: validationDatabase() });
+        const result = await outcome<unknown>(() =>
+          consumer === "identity"
+            ? readAuthIdentityProfile(observed.database, loginUid)
+            : createAuthProfileRepository(testEnv, {
+                d1: observed.database,
+              }).getLinkedAuthMethods(loginUid),
+        );
+        if (full.ok) {
+          expect(result).toEqual({
+            ok: true,
+            value:
+              consumer === "identity"
+                ? { ok: true, profile: full.value!.profile.profile }
+                : {
+                    ok: true,
+                    profileId,
+                    linkedMethods: { ...unlinked, sol: true },
+                    appleLinked: false,
+                  },
+          });
+        } else {
+          expect(result).toEqual(full);
+        }
+        expect(observed.batchQueries).toHaveLength(1);
+        expect(observed.batchBindings).toEqual([[[loginUid], [loginUid]]]);
+        expect(
+          observed.batchResults[0].map((result) => result.meta.rows_written),
+        ).toEqual([0, 0]);
+      }
+      for (const observed of [fullDb, narrowDb]) {
+        expect(observed.batchQueries).toHaveLength(1);
+        expect(observed.batchBindings).toEqual([[[loginUid], [loginUid]]]);
+        expect(
+          observed.batchResults[0].map((result) => result.meta.rows_written),
+        ).toEqual([0, 0]);
+      }
+      expect(await retainedBytes()).toEqual(before);
+    },
+  );
+
+  it("bounds auth read payloads independently of retained JSON size", async () => {
+    const { profileId, loginUid } = await createProfile(
+      validMethodValues,
+      "ReadOnlyProfile",
+    );
+    const narrowSizes: number[] = [];
+    const samples: Array<Record<string, number>> = [];
+    for (const retainedBytes of [0, 64 * 1024, 256 * 1024]) {
+      const legacyJson = JSON.stringify({ archive: "x".repeat(retainedBytes) });
+      await db
+        .prepare(
+          "UPDATE profile_records SET legacy_fields_json = ? WHERE profile_id = ?",
+        )
+        .bind(legacyJson, profileId)
+        .run();
+      const before = await db
+        .prepare("SELECT * FROM profile_records WHERE profile_id = ?")
+        .bind(profileId)
+        .first();
+      const fullDb = observeDatabase();
+      const narrowDb = observeDatabase();
+      const full = (await readCanonicalAuthProfileByLogin(
+        fullDb.database,
+        loginUid,
+      ))!;
+      const narrow = await readCanonicalAuthReadSnapshotByLogin(
+        narrowDb.database,
+        loginUid,
+      );
+      expect(narrow).toEqual(withoutRetainedFields(full));
+      const rowBytes = (observed: ReturnType<typeof observeDatabase>) =>
+        new TextEncoder().encode(
+          JSON.stringify(
+            observed.batchResults[0].map((result) => result.results),
+          ),
+        ).byteLength;
+      const fullBytes = rowBytes(fullDb);
+      const narrowBytes = rowBytes(narrowDb);
+      narrowSizes.push(narrowBytes);
+      for (const consumer of ["identity", "methods"] as const) {
+        const observed = observeDatabase();
+        if (consumer === "identity") {
+          await expect(
+            readAuthIdentityProfile(observed.database, loginUid),
+          ).resolves.toEqual({ ok: true, profile: full.profile.profile });
+        } else {
+          await expect(
+            createAuthProfileRepository(testEnv, {
+              d1: observed.database,
+            }).getLinkedAuthMethods(loginUid),
+          ).resolves.toEqual({
+            ok: true,
+            profileId,
+            linkedMethods: { apple: true, eth: true, sol: true, x: true },
+            appleLinked: true,
+          });
+        }
+        expect(observed.batchQueries).toHaveLength(1);
+        expect(observed.batchBindings).toEqual([[[loginUid], [loginUid]]]);
+        expect(rowBytes(observed)).toBe(narrowBytes);
+        const [profileResult, methodsResult] = observed.batchResults[0];
+        expect(profileResult.results[0]).not.toHaveProperty(
+          "legacy_fields_json",
+        );
+        expect(profileResult.results[0].legacy_fields_fallback_json).toBeNull();
+        expect(methodsResult.results).toEqual(
+          fullDb.batchResults[0][1].results,
+        );
+        expect(
+          observed.batchResults[0].map((result) => result.meta.rows_written),
+        ).toEqual([0, 0]);
+      }
+      expect(
+        await db
+          .prepare("SELECT * FROM profile_records WHERE profile_id = ?")
+          .bind(profileId)
+          .first(),
+      ).toEqual(before);
+      samples.push({ retainedBytes, fullBytes, narrowBytes });
+    }
+    expect(new Set(narrowSizes).size).toBe(1);
+    expect(samples[2].narrowBytes).toBeLessThan(samples[2].fullBytes / 50);
+    console.info(JSON.stringify({ event: "auth_profile_read_sizes", samples }));
   });
 
   it.each([
@@ -476,7 +778,18 @@ describe("canonical auth profile reads", () => {
     ["owner timestamp", 0, { canonical_owner_created_at_ms: -1 }],
     ["profile revision", 0, { revision: 0 }],
     ["profile payload", 0, { payload_json: "{}" }],
-    ["legacy fields", 0, { legacy_fields_json: "[]" }],
+    ["legacy fields", 0, { legacy_fields_validation: 0 }],
+    ["missing legacy validation", 0, { legacy_fields_validation: undefined }],
+    [
+      "invalid legacy fallback",
+      0,
+      { legacy_fields_validation: 2, legacy_fields_fallback_json: "[]" },
+    ],
+    [
+      "unexpected legacy fallback",
+      0,
+      { legacy_fields_validation: 1, legacy_fields_fallback_json: "{}" },
+    ],
     [
       "retiring profile",
       0,

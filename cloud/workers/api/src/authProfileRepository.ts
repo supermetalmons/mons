@@ -5,7 +5,7 @@ import {
 import type { ProfileLookupResponse } from "@mons/shared/profiles";
 import { AuthApiFailure } from "./authErrors.ts";
 import { hasValidUsername } from "./authIdentityCanonical/policy.ts";
-import { readCanonicalAuthProfileByLogin } from "./profileCanonical/authProfile.ts";
+import { readCanonicalAuthReadSnapshotByLogin } from "./profileCanonical/authProfile.ts";
 
 export type AuthProfileRepository = {
   getLinkedAuthMethods: (uid: string) => Promise<LinkedAuthMethodsResponse>;
@@ -21,7 +21,7 @@ export async function readAuthIdentityProfile(
   db: D1Database,
   uid: string,
 ): Promise<ProfileLookupResponse> {
-  const snapshot = await readCanonicalAuthProfileByLogin(db, uid);
+  const snapshot = await readCanonicalAuthReadSnapshotByLogin(db, uid);
   if (!snapshot) return { ok: true, profile: null };
   const methods = new Set(snapshot.authMethods.map((method) => method.method));
   if (
@@ -45,7 +45,7 @@ function createCanonicalAuthProfileRepository(
   const linkedMethodsResponse = async (
     uid: string,
   ): Promise<LinkedAuthMethodsResponse> => {
-    const resolved = await readCanonicalAuthProfileByLogin(db, uid);
+    const resolved = await readCanonicalAuthReadSnapshotByLogin(db, uid);
     if (!resolved) {
       const linkedMethods = {
         apple: false,

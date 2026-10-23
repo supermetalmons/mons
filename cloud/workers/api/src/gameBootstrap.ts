@@ -7,10 +7,8 @@ import { selectInviteMatch } from "@mons/shared/rematches";
 import type { SessionBootstrapTarget } from "@mons/shared/session-bootstrap";
 import { AuthApiFailure } from "./authErrors.ts";
 import { readGameBootstrapAdmission } from "./gameBootstrapAdmission.ts";
-import {
-  createGameplayRepository,
-  type GameplayRepository,
-} from "./gameplayRepository.ts";
+import { createD1ProfileOwnershipReader } from "./profileOwnershipD1.ts";
+import type { ProfileOwnershipReader } from "./profileOwnership.ts";
 import {
   normalizeInviteMetadata,
   type InviteMetadataReadResult,
@@ -27,7 +25,7 @@ export type GameBootstrapMeasure = <T>(
 
 export type GameBootstrapDependencies = {
   readAdmission?: (inviteId: string, signal: AbortSignal) => Promise<unknown>;
-  repository?: GameplayRepository;
+  repository?: ProfileOwnershipReader;
   room?: {
     readMetadata(inviteId: string): Promise<InviteMetadataReadResult>;
     readMatches(
@@ -108,7 +106,8 @@ export async function readAuthenticatedGameBootstrap(
     }),
   );
   if (!limited.success) throw new GameBootstrapRateLimitFailure();
-  const repository = dependencies.repository || createGameplayRepository(env);
+  const repository =
+    dependencies.repository || createD1ProfileOwnershipReader(env.PROFILE_DB);
   let metadata = requireMetadata(
     await measure("admission", async () =>
       normalizeInviteMetadata(inviteId, await readAdmission(inviteId, signal)),

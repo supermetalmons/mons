@@ -40,6 +40,7 @@ import {
 import {
   assertAutomatchBackend,
   readAutomatchResourceSnapshot,
+  readInviteMetadata,
   readInviteMetadataMany,
 } from "./automatchReadD1.ts";
 import {
@@ -271,11 +272,8 @@ export function createAutomatchPersistence(
       withProjectionWrite(inviteId, (guarded) =>
         guarded.acknowledgeAutomatchTelegramOutbox(inviteId, requestId, signal),
       ),
-    readInviteMetadata: async (inviteId, signal) =>
-      (await readResource(inviteId, "invite", inviteId, signal)) as Record<
-        string,
-        unknown
-      > | null,
+    readInviteMetadata: (inviteId, signal) =>
+      readInviteMetadata(db, inviteId, signal),
     readInviteMetadataMany: (inviteIds, signal) =>
       readInviteMetadataMany(db, inviteIds, signal),
     readAutomatchEntry: (inviteId, signal) =>
