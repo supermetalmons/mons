@@ -11,10 +11,15 @@ export type RecoveryFailureContext = {
     | "enqueue"
     | "quarantine"
     | "cleanup"
-    | "sweep";
+    | "sweep"
+    | "logins"
+    | "prizes"
+    | "games"
+    | "finalize";
   source?: "automatch" | "event" | "profile-link" | "rating" | "outbox";
   itemIndex?: number;
   profileId?: string;
+  sourceProfileId?: string;
   inviteId?: string;
   eventId?: string;
   operationId?: string;
@@ -64,6 +69,7 @@ export function reportRecoveryFailure(
     }
     for (const key of [
       "profileId",
+      "sourceProfileId",
       "inviteId",
       "eventId",
       "operationId",

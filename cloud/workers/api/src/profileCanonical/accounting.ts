@@ -173,10 +173,11 @@ export async function readCanonicalWagerSettlement(
   operationId: string,
   fingerprint?: string,
 ): Promise<CanonicalWagerSettlement | null> {
-  const row = await db
-    .prepare("SELECT * FROM wager_settlements WHERE operation_id = ?")
-    .bind(operationId)
-    .first<WagerRow>();
+  const row = await readD1FirstRow<WagerRow>(
+    db
+      .prepare("SELECT * FROM wager_settlements WHERE operation_id = ?")
+      .bind(operationId),
+  );
   if (!row) return null;
   const settlement = parseCanonicalWagerSettlementRow(row);
   if (fingerprint !== undefined && settlement.fingerprint !== fingerprint) {

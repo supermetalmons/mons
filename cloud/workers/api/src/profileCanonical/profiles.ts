@@ -399,10 +399,11 @@ export async function readCanonicalProfile(
   db: D1Database,
   profileId: string,
 ): Promise<CanonicalProfileSnapshot | null> {
-  const row = await db
-    .prepare("SELECT * FROM profile_records WHERE profile_id = ?")
-    .bind(profileId)
-    .first<ProfileRow>();
+  const row = await readD1FirstRow<ProfileRow>(
+    db
+      .prepare("SELECT * FROM profile_records WHERE profile_id = ?")
+      .bind(profileId),
+  );
   return row ? parseCanonicalProfileRow(row) : null;
 }
 
@@ -410,13 +411,14 @@ export async function readCanonicalMergeTarget(
   db: D1Database,
   sourceProfileId: string,
 ): Promise<CanonicalMergeTarget | null> {
-  const row = await db
-    .prepare(
-      `SELECT source_profile_id, target_profile_id, merged_at_ms, op_id
+  const row = await readD1FirstRow<MergeTargetRow>(
+    db
+      .prepare(
+        `SELECT source_profile_id, target_profile_id, merged_at_ms, op_id
        FROM profile_merge_targets WHERE source_profile_id = ?`,
-    )
-    .bind(sourceProfileId)
-    .first<MergeTargetRow>();
+      )
+      .bind(sourceProfileId),
+  );
   return row ? parseCanonicalMergeTargetRow(row) : null;
 }
 

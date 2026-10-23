@@ -7,6 +7,8 @@ import {
 } from "../src/authRecovery.ts";
 import type { AuthRecoveryPrizeStore as TypedAuthRecoveryPrizeStore } from "../src/eventRepository.ts";
 import type { ProfileLinkCatchupJob } from "../src/profileLinkCatchupD1.ts";
+import { createProfileLinkCatchupStore } from "../src/profileLinkCatchupD1.ts";
+import { CanonicalProfileConflict } from "../src/profileCanonicalD1.ts";
 import type {
   EventPrizeAssignmentRecord,
   ProfileEventPrizePageQuery,
@@ -333,6 +335,7 @@ test("event prize recovery leaves copying pending while the event lease is busy"
 
 function recoveryProfileDb(
   overrides: Partial<{
+    login_uids_json: string;
     phase_started_at_ms: number;
     prize_cursor: string | null;
     source_phase: "finalize" | "games" | "prizes";
@@ -374,8 +377,175 @@ function recoveryProfileDb(
       ];
     },
   } as unknown as D1Database;
-  return { db, mutationBatches: () => mutationBatches };
+  return {
+    db,
+    mutationBatches: () => mutationBatches,
+    snapshot: () => structuredClone(recoveryRow),
+  };
 }
+
+test("login recovery reports safe context while retaining failed login work", async () => {
+  for (const failure of [
+    new Error("private-provider-detail", {
+      cause: new Error("private-cause"),
+    }),
+    new CanonicalProfileConflict(),
+  ]) {
+    const profile = recoveryProfileDb({ login_uids_json: '["login-uid"]' });
+    const before = profile.snapshot();
+    const logs: string[] = [];
+    const reads: unknown[] = [];
+    const service = createAuthRecoveryService(TELEGRAM_TEST_ENV, {
+      profileDb: profile.db,
+      catchupStore: {
+        ...createProfileLinkCatchupStore(profile.db),
+        async readForOwner(...input) {
+          reads.push(input);
+          throw failure;
+        },
+      },
+      logger: { error: (message) => logs.push(message), info() {} },
+    });
+
+    assert.equal(await service.recoverProfile("target-profile"), "deferred");
+    assert.deepEqual(reads, [["login-uid", "target-profile"]]);
+    assert.deepEqual(profile.snapshot(), before);
+    assert.equal(profile.mutationBatches(), 0);
+    assert.deepEqual(
+      logs.map((entry) => JSON.parse(entry)),
+      [
+        {
+          event: "auth_login_recovery_pending",
+          scope: "auth",
+          phase: "logins",
+          profileId: "target-profile",
+          loginUid: "login-uid",
+          code: "auth-recovery-operation-failed",
+          error: { name: "Error", message: "auth-recovery-operation-failed" },
+        },
+      ],
+    );
+  }
+});
+
+for (const phase of ["prizes", "games", "finalize"] as const) {
+  test(`${phase} recovery reports safe failure context without advancing work`, async () => {
+    for (const loggerThrows of [false, true]) {
+      const profile = recoveryProfileDb({ source_phase: phase });
+      const before = profile.snapshot();
+      const failure = Object.assign(
+        new Error("private-provider-detail", {
+          cause: new Error("private-cause"),
+        }),
+        { code: "private-code", name: "private-name", token: "private-token" },
+      );
+      const logs: string[] = [];
+      let reads = 0;
+      let clockCalls = 0;
+      const failRead = () => {
+        reads++;
+        throw failure;
+      };
+      const prizeStore = recoveryPrizeStore({ liveAssignment: null });
+      const service = createAuthRecoveryService(TELEGRAM_TEST_ENV, {
+        profileDb: profile.db,
+        d1: { prepare: failRead } as unknown as D1Database,
+        prizeStore: {
+          ...prizeStore.client,
+          listProfileEventPrizeAssignments: async () => failRead(),
+        },
+        now: () => {
+          clockCalls++;
+          return 1_000;
+        },
+        logger: {
+          error(message) {
+            logs.push(message);
+            if (loggerThrows) throw new Error("logger-unavailable");
+          },
+          info() {},
+        },
+      });
+
+      assert.equal(await service.recoverProfile("target-profile"), "deferred");
+      assert.deepEqual(profile.snapshot(), before);
+      assert.equal(profile.mutationBatches(), 0);
+      assert.equal(reads, 1);
+      assert.equal(clockCalls, 0);
+      assert.deepEqual(
+        logs.map((entry) => JSON.parse(entry)),
+        [
+          {
+            event: "auth_recovery_pending",
+            scope: "auth",
+            phase,
+            profileId: "target-profile",
+            sourceProfileId: "source-profile",
+            code: "auth-recovery-operation-failed",
+            error: { name: "Error", message: "auth-recovery-operation-failed" },
+          },
+        ],
+      );
+    }
+  });
+}
+
+test("prize recovery retains safe domain codes and suppresses canonical conflicts", async () => {
+  for (const failure of [
+    ...[
+      "auth-recovery-prize-lock-busy",
+      "auth-recovery-prize-invalid",
+      "auth-recovery-prize-lock-lost",
+      "auth-recovery-prize-conflict",
+    ].map((code) => new Error(code, { cause: new Error("private-cause") })),
+    new CanonicalProfileConflict(),
+    { token: "private-token" },
+  ]) {
+    const profile = recoveryProfileDb();
+    const before = profile.snapshot();
+    const logs: string[] = [];
+    const prizeStore = recoveryPrizeStore({ liveAssignment: null });
+    const service = createAuthRecoveryService(TELEGRAM_TEST_ENV, {
+      profileDb: profile.db,
+      prizeStore: {
+        ...prizeStore.client,
+        async listProfileEventPrizeAssignments() {
+          throw failure;
+        },
+      },
+      logger: { error: (message) => logs.push(message), info() {} },
+    });
+
+    assert.equal(await service.recoverProfile("target-profile"), "deferred");
+    assert.deepEqual(profile.snapshot(), before);
+    assert.equal(profile.mutationBatches(), 0);
+    if (failure instanceof CanonicalProfileConflict) {
+      assert.deepEqual(logs, []);
+      continue;
+    }
+    const code = failure instanceof Error ? failure.message : "unknown";
+    assert.deepEqual(
+      logs.map((entry) => JSON.parse(entry)),
+      [
+        {
+          event:
+            code === "auth-recovery-prize-conflict"
+              ? "auth_recovery_prize_conflict"
+              : "auth_recovery_pending",
+          scope: "auth",
+          phase: "prizes",
+          profileId: "target-profile",
+          sourceProfileId: "source-profile",
+          code,
+          error:
+            failure instanceof Error
+              ? { name: "Error", message: code }
+              : { type: "object" },
+        },
+      ],
+    );
+  }
+});
 
 function prizeAssignment(
   prizeId: string,

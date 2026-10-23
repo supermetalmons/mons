@@ -27,6 +27,7 @@ test("recovery failure logs allowlisted identity and bounded cause details", () 
     ...context,
     operationId: "invite__match",
     profileId: "profile-1",
+    sourceProfileId: "profile-previous",
     loginUid: "login-1",
     outboxId: "ep_outbox-1",
     record: { secret: "private" },
@@ -36,6 +37,7 @@ test("recovery failure logs allowlisted identity and bounded cause details", () 
     ...context,
     operationId: "invite__match",
     profileId: "profile-1",
+    sourceProfileId: "profile-previous",
     loginUid: "login-1",
     outboxId: "ep_outbox-1",
     code: "claim-failed",
@@ -70,6 +72,7 @@ test("recovery failure logs omit malformed IDs and raw non-Error payloads", () =
       {
         ...context,
         profileId: value,
+        sourceProfileId: value,
         eventId: value,
         inviteId: value,
         operationId: value,

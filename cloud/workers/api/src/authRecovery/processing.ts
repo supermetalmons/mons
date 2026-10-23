@@ -34,6 +34,7 @@ import {
   readCanonicalAuthRecoveryJob,
 } from "../profileCanonicalD1.ts";
 import { readCanonicalRecoveryFinalizationSnapshot } from "../profileCanonical/recoverySnapshot.ts";
+import { reportRecoveryFailure } from "../recoveryReporting.ts";
 import { dispatchProfileLinkCatchupForOwner } from "./dispatch.ts";
 import {
   canonicalRecoveryJob,
@@ -51,6 +52,26 @@ export const MERGE_PRIZE_RECOVERY_PAGE_SIZE = 20;
 const LOGIN_RECOVERY_PAGE_SIZE = 20;
 const AUTH_RECOVERY_EVENT_PRIZE_OWNER_UID = "auth-recovery-worker";
 const AUTH_RECOVERY_PRIZE_OPERATION_TIMEOUT_MS = 20_000;
+const AUTH_RECOVERY_LOG_CODES = new Set([
+  "auth-recovery-prize-lock-busy",
+  "auth-recovery-prize-invalid",
+  "auth-recovery-prize-lock-lost",
+  "auth-recovery-prize-conflict",
+]);
+
+function authRecoveryLogError(error: unknown): unknown {
+  try {
+    if (!(error instanceof Error)) return error;
+    const message = error.message;
+    return new Error(
+      AUTH_RECOVERY_LOG_CODES.has(message)
+        ? message
+        : "auth-recovery-operation-failed",
+    );
+  } catch {
+    return new Error("auth-recovery-operation-failed");
+  }
+}
 
 export type AuthRecoveryDependencies = {
   catchupStore?: ProfileLinkCatchupStore;
@@ -275,8 +296,18 @@ function createCanonicalAuthRecoveryService(
           now,
         );
         progressed ||= removed;
-      } catch {
-        logger.error(JSON.stringify({ event: "auth_login_recovery_pending" }));
+      } catch (error) {
+        reportRecoveryFailure(
+          logger,
+          {
+            event: "auth_login_recovery_pending",
+            scope: "auth",
+            phase: "logins",
+            profileId: job.profileId,
+            loginUid: uid,
+          },
+          authRecoveryLogError(error),
+        );
       }
     }
     return progressed;
@@ -589,14 +620,21 @@ function createCanonicalAuthRecoveryService(
       }
     } catch (error) {
       if (!(error instanceof CanonicalProfileConflict)) {
-        logger.error(
-          JSON.stringify({
+        const failure = authRecoveryLogError(error);
+        reportRecoveryFailure(
+          logger,
+          {
             event:
-              error instanceof Error &&
-              error.message === "auth-recovery-prize-conflict"
+              failure instanceof Error &&
+              failure.message === "auth-recovery-prize-conflict"
                 ? "auth_recovery_prize_conflict"
                 : "auth_recovery_pending",
-          }),
+            scope: "auth",
+            phase: job.sourcePhase,
+            profileId,
+            sourceProfileId,
+          },
+          failure,
         );
       }
     }

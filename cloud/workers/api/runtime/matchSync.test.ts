@@ -193,7 +193,7 @@ function accept(response: Response) {
 }
 
 async function connect(
-  room: Room,
+  room: Pick<InviteReactions, "readMatches" | "fetch">,
   inviteId: string,
   matchId = inviteId,
   overrides: Record<string, string> = {},
@@ -255,6 +255,104 @@ afterEach(async () => {
 });
 
 describe("live match snapshots", () => {
+  it.each([false, true])(
+    "keeps single-match notification reads bounded with duplicate targets %s",
+    async (duplicate) => {
+      const now = Date.now();
+      vi.spyOn(Date, "now").mockReturnValue(now);
+      const { room, inviteId, source } = await fixture(false);
+      addRematches(source, inviteId, 2);
+      const matchIds = [inviteId, `${inviteId}1`, `${inviteId}2`];
+      for (const matchId of matchIds) {
+        const channel = await connect(room, inviteId, matchId);
+        await channel.snapshot();
+      }
+      await runInDurableObject(room, async (instance, state) => {
+        const attachments = state
+          .getWebSockets("channel:matches")
+          .map((socket) => vi.spyOn(socket, "deserializeAttachment"));
+        const enumerate = vi.spyOn(state, "getWebSockets");
+        try {
+          await instance.notifyMatchesChanged(
+            inviteId,
+            duplicate ? [inviteId, inviteId] : [inviteId],
+          );
+          expect(
+            enumerate.mock.calls.filter(([tag]) => tag === "channel:matches"),
+          ).toHaveLength(1);
+          for (const spy of attachments) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy.mock.calls.length).toBeLessThanOrEqual(2);
+          }
+          expect(
+            state.storage.sql
+              .exec<{ match_id: string; next_at_ms: number }>(
+                "SELECT match_id, next_at_ms FROM match_sync_snapshots ORDER BY match_id",
+              )
+              .toArray(),
+          ).toEqual(
+            matchIds.map((matchId) => ({
+              match_id: matchId,
+              next_at_ms:
+                matchId === inviteId ? now : now + MATCH_SYNC_REPAIR_MS,
+            })),
+          );
+        } finally {
+          enumerate.mockRestore();
+          for (const spy of attachments) spy.mockRestore();
+        }
+      });
+    },
+  );
+
+  it.each(["all", "explicit"] as const)(
+    "groups subscribers once when notifying %s match targets",
+    async (targets) => {
+      const now = Date.now();
+      vi.spyOn(Date, "now").mockReturnValue(now);
+      const { room, inviteId, source } = await fixture(false);
+      addRematches(source, inviteId, 3);
+      const subscribedIds = [inviteId, `${inviteId}1`, `${inviteId}2`];
+      for (const matchId of subscribedIds) {
+        const channel = await connect(room, inviteId, matchId);
+        await channel.snapshot();
+      }
+      const idleMatchId = `${inviteId}3`;
+      await room.readMatches(inviteId, idleMatchId);
+      await runInDurableObject(room, async (instance, state) => {
+        const enumerate = vi.spyOn(state, "getWebSockets");
+        try {
+          await instance.notifyMatchesChanged(
+            inviteId,
+            targets === "explicit"
+              ? [...subscribedIds, subscribedIds[0], idleMatchId]
+              : undefined,
+          );
+          expect(
+            enumerate.mock.calls.filter(([tag]) => tag === "channel:matches"),
+          ).toHaveLength(1);
+          const scheduled = state.storage.sql
+            .exec<{ match_id: string; next_at_ms: number | null }>(
+              "SELECT match_id, next_at_ms FROM match_sync_snapshots ORDER BY match_id",
+            )
+            .toArray();
+          expect(scheduled).toEqual([
+            ...subscribedIds.map((matchId) => ({
+              match_id: matchId,
+              next_at_ms: now,
+            })),
+            { match_id: idleMatchId, next_at_ms: null },
+          ]);
+          enumerate.mockClear();
+          await instance.notifyMatchesChanged(inviteId, []);
+          expect(enumerate).not.toHaveBeenCalled();
+        } finally {
+          enumerate.mockRestore();
+        }
+      });
+    },
+  );
+
   it("preserves a recent match snapshot after a wager-only notification", async () => {
     vi.spyOn(Date, "now").mockReturnValue(Date.now());
     const { room, inviteId, source } = await fixture();
@@ -975,6 +1073,130 @@ describe("live match snapshots", () => {
       ),
     ).toBeNull();
   });
+
+  it.each(["joins", "closes", "expires", "is admitting"] as const)(
+    "rechecks subscriptions after awaited repairs when a later subscriber %s",
+    async (change) => {
+      const now = Date.now();
+      const clock = vi.spyOn(Date, "now").mockReturnValue(now);
+      const { room, inviteId, source } = await fixture();
+      addRematches(source, inviteId, 4);
+      const matchIds = [
+        inviteId,
+        ...Array.from({ length: 4 }, (_, index) => `${inviteId}${index + 1}`),
+      ];
+      for (const matchId of matchIds.slice(0, 4)) {
+        const channel = await connect(room, inviteId, matchId, {
+          "X-Mons-Match-Role": "spectator",
+          "X-Mons-Match-Actor": "",
+          "X-Mons-Match-Authenticated": "0",
+        });
+        await channel.snapshot();
+      }
+      const laterMatchId = matchIds[4];
+      if (change === "closes" || change === "expires") {
+        const laterChannel = await connect(room, inviteId, laterMatchId, {
+          "X-Mons-Session-Expires-At": String(now + 1_000),
+        });
+        await laterChannel.snapshot();
+      } else {
+        await room.readMatches(inviteId, laterMatchId);
+      }
+      await runInDurableObject(room, async (instance, state) => {
+        for (const [index, matchId] of matchIds.entries()) {
+          state.storage.sql.exec(
+            "UPDATE match_sync_snapshots SET next_at_ms = ? WHERE match_id = ?",
+            now - matchIds.length + index,
+            matchId,
+          );
+        }
+        const target = instance as unknown as {
+          matchSync: {
+            readSyncState: SyncReader;
+            alarm: () => Promise<void>;
+            admissions: Map<string, number>;
+          };
+        };
+        const readSyncState = target.matchSync.readSyncState;
+        const started = Promise.withResolvers<void>();
+        const release = Promise.withResolvers<void>();
+        let joinedChannel: Awaited<ReturnType<typeof connect>> | undefined;
+        let blocked = 0;
+        target.matchSync.readSyncState = async (input) => {
+          if (input.matchId !== laterMatchId) {
+            if (++blocked === 4) started.resolve();
+            await release.promise;
+          }
+          return readSyncState(input);
+        };
+        const repairing = target.matchSync.alarm();
+        try {
+          await Promise.race([
+            started.promise,
+            repairing.then(() => {
+              throw new Error("alarm-completed-before-repairs-blocked");
+            }),
+          ]);
+          if (change === "joins") {
+            joinedChannel = await connect(instance, inviteId, laterMatchId);
+            await joinedChannel.snapshot();
+            setMatch(source, `host-login/${laterMatchId}`, {
+              ...match,
+              fen: "joined-during-repair",
+            });
+          } else if (change === "closes") {
+            const socket = state
+              .getWebSockets("channel:matches")
+              .find(
+                (candidate) =>
+                  candidate.deserializeAttachment().matchId === laterMatchId,
+              )!;
+            instance.webSocketClose(socket);
+          } else if (change === "expires") {
+            clock.mockReturnValue(now + 1_000);
+          } else {
+            target.matchSync.admissions.set(laterMatchId, 1);
+          }
+          const reads = source.revisionReads.filter(
+            (matchId) => matchId === laterMatchId,
+          ).length;
+          release.resolve();
+          await repairing;
+          expect(
+            source.revisionReads.filter((matchId) => matchId === laterMatchId),
+          ).toHaveLength(reads + (change === "joins" ? 1 : 0));
+          const due = state.storage.sql
+            .exec<{ next_at_ms: number | null }>(
+              "SELECT next_at_ms FROM match_sync_snapshots WHERE match_id = ?",
+              laterMatchId,
+            )
+            .one().next_at_ms;
+          expect(due).toBe(
+            change === "joins" || change === "is admitting"
+              ? Date.now() + MATCH_SYNC_REPAIR_MS
+              : null,
+          );
+          if (joinedChannel) {
+            expect(await joinedChannel.snapshot()).toMatchObject({
+              hostMatch: { fen: "joined-during-repair" },
+            });
+          }
+        } finally {
+          release.resolve();
+          try {
+            await repairing;
+          } finally {
+            target.matchSync.readSyncState = readSyncState;
+            target.matchSync.admissions.delete(laterMatchId);
+            if (joinedChannel) {
+              sockets.splice(sockets.indexOf(joinedChannel.socket), 1);
+              await close(joinedChannel.socket);
+            }
+          }
+        }
+      });
+    },
+  );
 
   it("shares one metadata read when match and metadata repairs are due together", async () => {
     vi.spyOn(Date, "now").mockReturnValue(Date.now() + 60_000);

@@ -238,62 +238,69 @@ export class InviteReactions
   }
 
   async createCanonicalMatch(input: MatchStateCreateRequest) {
-    return captureMatchStateRpc(async () => {
-      this.inviteChannels.pinInvite(input.inviteId);
-      const result = this.matchState.createRecords(input);
-      await this.notifyCanonicalMatches(input.inviteId, result.changedMatchIds);
-      return result;
-    });
+    return this.mutateCanonicalMatch(
+      input,
+      () => this.matchState.createRecords(input),
+      (result) => result.changedMatchIds,
+    );
   }
 
   async submitCanonicalMove(input: MatchStateMoveRequest) {
-    return captureMatchStateRpc(async () => {
-      this.inviteChannels.pinInvite(input.inviteId);
-      const result = this.matchState.move(input);
-      await this.notifyCanonicalMatches(input.inviteId, [input.matchId]);
-      return result;
-    });
+    return this.mutateCanonicalMatch(
+      input,
+      () => this.matchState.move(input),
+      () => [input.matchId],
+    );
   }
 
   async surrenderCanonicalMatch(input: MatchStateSurrenderRequest) {
-    return captureMatchStateRpc(async () => {
-      this.inviteChannels.pinInvite(input.inviteId);
-      const result = this.matchState.surrender(input);
-      await this.notifyCanonicalMatches(input.inviteId, [input.matchId]);
-      return result;
-    });
+    return this.mutateCanonicalMatch(
+      input,
+      () => this.matchState.surrender(input),
+      () => [input.matchId],
+    );
   }
 
   async startCanonicalMatchTimer(input: MatchStateStartTimerRequest) {
-    return captureMatchStateRpc(async () => {
-      this.inviteChannels.pinInvite(input.inviteId);
-      const result = await this.matchState.startTimer(input);
-      await this.notifyCanonicalMatches(input.inviteId, [input.matchId]);
-      return result;
-    });
+    return this.mutateCanonicalMatch(
+      input,
+      () => this.matchState.startTimer(input),
+      () => [input.matchId],
+    );
   }
 
   async claimCanonicalMatchTimer(input: MatchStateClaimTimerRequest) {
-    return captureMatchStateRpc(async () => {
-      this.inviteChannels.pinInvite(input.inviteId);
-      const result = await this.matchState.claimTimer(input);
-      await this.notifyCanonicalMatches(input.inviteId, [input.matchId]);
-      return result;
-    });
+    return this.mutateCanonicalMatch(
+      input,
+      () => this.matchState.claimTimer(input),
+      () => [input.matchId],
+    );
   }
 
   async applyCanonicalMatchEventEffects(
     input: MatchStateEventEffectsRequest,
     options: { deferNotifications?: boolean } = {},
   ) {
+    return this.mutateCanonicalMatch(
+      input,
+      () => Promise.resolve(this.matchState.applyEventEffects(input)),
+      (result) => (options.deferNotifications ? null : result.changedMatchIds),
+    );
+  }
+
+  private mutateCanonicalMatch<T>(
+    input: { inviteId: string },
+    mutate: () => T | Promise<T>,
+    changedMatchIds: (result: T) => string[] | null,
+  ) {
     return captureMatchStateRpc(async () => {
-      this.inviteChannels.pinInvite(input.inviteId);
-      const result = await this.matchState.applyEventEffects(input);
-      if (!options.deferNotifications)
-        await this.notifyCanonicalMatches(
-          input.inviteId,
-          result.changedMatchIds,
-        );
+      const inviteId = input.inviteId;
+      this.inviteChannels.pinInvite(inviteId);
+      const mutation = mutate();
+      const result = mutation instanceof Promise ? await mutation : mutation;
+      const matchIds = changedMatchIds(result);
+      if (matchIds !== null)
+        await this.notifyCanonicalMatches(inviteId, matchIds);
       return result;
     });
   }

@@ -6,7 +6,11 @@ import {
 } from "cloudflare:test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Game } from "mons-rules";
-import { formatMatchTimer, MATCH_TIMER_TERMINAL } from "@mons/shared/timers";
+import {
+  formatMatchTimer,
+  MATCH_TIMER_DURATION_MS,
+  MATCH_TIMER_TERMINAL,
+} from "@mons/shared/timers";
 import { MATCH_SYNC_SOCKET_PROTOCOL } from "@mons/shared/match-sync";
 import type { InviteReactions } from "../src/inviteReactions.ts";
 import type {
@@ -17,6 +21,10 @@ import type {
 import { getMatchStateRpc, unwrapMatchStateRpc } from "../src/matchStateRpc.ts";
 import { resolveMatchTimerGame } from "../src/matchTimer.ts";
 import { socketTestSessionHeaders } from "../test/socketTestSession.ts";
+import { AuthApiFailure } from "../src/authErrors.ts";
+import type { MatchStateStore } from "../src/matchStateStore.ts";
+import type { MatchSyncRoom } from "../src/matchSyncRoom.ts";
+import type { InviteChannelsRoom } from "../src/inviteChannelsRoom.ts";
 
 type Room = DurableObjectStub<InviteReactions>;
 const rooms: Room[] = [];
@@ -103,6 +111,221 @@ afterEach(async () => {
 });
 
 describe("canonical match room integration", () => {
+  it("preserves mutation notification targets and synchronous ordering", async () => {
+    const { room, inviteId, input } = await fixture();
+    await runInDurableObject(room, async (instance) => {
+      const target = instance as unknown as {
+        matchState: MatchStateStore;
+        matchSync: MatchSyncRoom;
+        inviteChannels: InviteChannelsRoom;
+      };
+      const events: string[] = [];
+      const mutated = <T>(value: T): T => {
+        events.push("mutation");
+        return value;
+      };
+      vi.spyOn(target.inviteChannels, "pinInvite").mockImplementation((id) => {
+        expect(id).toBe(inviteId);
+        events.push("pin");
+      });
+      const notify = vi
+        .spyOn(target.matchSync, "notify")
+        .mockImplementation(async () => {
+          events.push("notify");
+        });
+      const creation = {
+        records: [],
+        changedMatchIds: [inviteId, `${inviteId}1`],
+      };
+      const surrendered = {
+        ok: true as const,
+        inviteId,
+        matchId: inviteId,
+        actorUid: "host-login",
+      };
+      const moved = { ...surrendered, outcome: "applied" as const };
+      const timer = {
+        ok: true as const,
+        timer: "1;90000",
+        duration: MATCH_TIMER_DURATION_MS,
+      } as const;
+      const claimed = { ok: true as const };
+      const applied = { records: [], changedMatchIds: [] };
+      vi.spyOn(target.matchState, "createRecords").mockImplementation(() =>
+        mutated(creation),
+      );
+      vi.spyOn(target.matchState, "move").mockImplementation(() =>
+        mutated(moved),
+      );
+      vi.spyOn(target.matchState, "surrender").mockImplementation(() =>
+        mutated(surrendered),
+      );
+      vi.spyOn(target.matchState, "startTimer").mockImplementation(async () =>
+        mutated(timer),
+      );
+      vi.spyOn(target.matchState, "claimTimer").mockImplementation(async () =>
+        mutated(claimed),
+      );
+      vi.spyOn(target.matchState, "applyEventEffects").mockImplementation(() =>
+        mutated(applied),
+      );
+      const request = {
+        inviteId,
+        epoch: 2,
+        matchId: inviteId,
+        playerId: "host-login",
+        opponentId: "guest-login",
+      };
+      const cases = [
+        {
+          run: () => instance.createCanonicalMatch(input),
+          value: creation,
+          ids: creation.changedMatchIds,
+          immediate: true,
+        },
+        {
+          run: () =>
+            instance.submitCanonicalMove({
+              ...request,
+              previousFlatMovesString: "",
+              flatMovesString: "",
+              fen: match.fen,
+            }),
+          value: moved,
+          ids: [inviteId],
+          immediate: true,
+        },
+        {
+          run: () => instance.surrenderCanonicalMatch(request),
+          value: surrendered,
+          ids: [inviteId],
+          immediate: true,
+        },
+        {
+          run: () => instance.startCanonicalMatchTimer(request),
+          value: timer,
+          ids: [inviteId],
+          immediate: false,
+        },
+        {
+          run: () => instance.claimCanonicalMatchTimer(request),
+          value: claimed,
+          ids: [inviteId],
+          immediate: false,
+        },
+        {
+          run: () =>
+            instance.applyCanonicalMatchEventEffects({
+              inviteId,
+              epoch: 2,
+              operationId: "effect",
+            }),
+          value: applied,
+          ids: [],
+          immediate: false,
+        },
+      ];
+      for (const { run, value, ids, immediate } of cases) {
+        events.length = 0;
+        notify.mockClear();
+        const pending = run();
+        expect(events).toEqual(
+          immediate ? ["pin", "mutation", "notify"] : ["pin", "mutation"],
+        );
+        await expect(pending).resolves.toEqual({ ok: true, value });
+        expect(events).toEqual(["pin", "mutation", "notify"]);
+        expect(notify).toHaveBeenCalledExactlyOnceWith(inviteId, ids);
+      }
+    });
+  });
+
+  it("serializes mutation failures without notifying subscribers", async () => {
+    const { room, inviteId, input } = await fixture();
+    await runInDurableObject(room, async (instance) => {
+      const target = instance as unknown as {
+        matchState: MatchStateStore;
+        matchSync: MatchSyncRoom;
+      };
+      const failure = new AuthApiFailure(
+        409,
+        "failed-precondition",
+        "mutation-conflict",
+      );
+      vi.spyOn(target.matchState, "createRecords").mockImplementation(() => {
+        throw failure;
+      });
+      vi.spyOn(target.matchState, "startTimer").mockRejectedValue(failure);
+      const notify = vi.spyOn(target.matchSync, "notify");
+      const expected = {
+        ok: false,
+        status: 409,
+        code: "failed-precondition",
+        message: "mutation-conflict",
+      };
+      expect(await instance.createCanonicalMatch(input)).toEqual(expected);
+      expect(
+        await instance.startCanonicalMatchTimer({
+          inviteId,
+          epoch: 2,
+          matchId: inviteId,
+          playerId: "host-login",
+          opponentId: "guest-login",
+        }),
+      ).toEqual(expected);
+      expect(notify).not.toHaveBeenCalled();
+    });
+  });
+
+  it("keeps invalid mutation inputs inside the RPC error boundary", async () => {
+    const { room } = await fixture();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await runInDurableObject(room, async (instance) => {
+      for (const method of [
+        instance.createCanonicalMatch,
+        instance.submitCanonicalMove,
+        instance.surrenderCanonicalMatch,
+        instance.startCanonicalMatchTimer,
+        instance.claimCanonicalMatchTimer,
+        instance.applyCanonicalMatchEventEffects,
+      ]) {
+        expect(await Reflect.apply(method, instance, [null])).toEqual({
+          ok: false,
+          status: 503,
+          code: "unavailable",
+          message: "match-state-unavailable",
+        });
+      }
+    });
+  });
+
+  it("returns a committed mutation when subscriber notification fails", async () => {
+    const { room, rpc, inviteId, input } = await fixture();
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    await runInDurableObject(room, (instance) => {
+      const target = instance as unknown as { matchSync: MatchSyncRoom };
+      vi.spyOn(target.matchSync, "notify").mockRejectedValue(
+        new Error("notification-failed"),
+      );
+    });
+    const result = unwrapMatchStateRpc(await rpc.createCanonicalMatch(input));
+    expect(result.changedMatchIds).toEqual([inviteId]);
+    expect(
+      unwrapMatchStateRpc(
+        await rpc.readCanonicalMatchRecord({
+          inviteId,
+          epoch: 2,
+          matchId: inviteId,
+          playerId: "host-login",
+        }),
+      ),
+    ).toEqual({ ...match, sessionCreation: "host-created" });
+    expect(log).toHaveBeenCalledExactlyOnceWith({
+      event: "canonical_match_notification_failed",
+      inviteId,
+      kind: "Error",
+    });
+  });
+
   it.each([false, true])(
     "keeps event receipts compatible when deferred notifications are %s",
     async (deferNotifications) => {

@@ -106,6 +106,18 @@ export class MatchSyncRoom {
       });
   }
 
+  private socketGroups(): Map<string, WebSocket[]> {
+    const groups = new Map<string, WebSocket[]>();
+    for (const socket of this.sockets()) {
+      const { matchId } =
+        socket.deserializeAttachment() as MatchSocketAttachment;
+      const group = groups.get(matchId);
+      if (group) group.push(socket);
+      else groups.set(matchId, [socket]);
+    }
+    return groups;
+  }
+
   private state(matchId: string): MatchReadState {
     let state = this.states.get(matchId);
     if (!state) {
@@ -383,20 +395,15 @@ export class MatchSyncRoom {
 
   async notify(inviteId: string, matchIds?: string[]): Promise<void> {
     this.dependencies.pinInvite(inviteId);
+    let groups: Map<string, WebSocket[]> | undefined;
     const ids =
       matchIds === undefined
-        ? [
-            ...this.states.keys(),
-            ...this.sockets().map(
-              (socket) =>
-                (socket.deserializeAttachment() as MatchSocketAttachment)
-                  .matchId,
-            ),
-          ]
+        ? [...this.states.keys(), ...(groups = this.socketGroups()).keys()]
         : matchIds;
+    const targets = new Set(ids);
     let subscribed = false;
     const now = Date.now();
-    for (const matchId of new Set(ids)) {
+    for (const matchId of targets) {
       if (matchId !== matchId.trim() || !isSafeRecordKey(matchId))
         throw new TypeError("invalid-match-sync-target");
       const state = this.states.get(matchId);
@@ -404,7 +411,15 @@ export class MatchSyncRoom {
         state.generation++;
         state.result = undefined;
       }
-      if (this.sockets(matchId).length === 0) continue;
+      const hasSubscribers =
+        groups === undefined && targets.size === 1
+          ? this.sockets(matchId).length > 0
+          : (groups ??= this.socketGroups())
+              .get(matchId)
+              ?.some((socket) =>
+                this.dependencies.socketSessions.active(socket),
+              );
+      if (!hasSubscribers) continue;
       this.ctx.storage.sql.exec(
         "UPDATE match_sync_snapshots SET next_at_ms = ? WHERE match_id = ?",
         now,
@@ -553,11 +568,16 @@ export class MatchSyncRoom {
         Date.now(),
       )
       .toArray();
+    let groups: Map<string, WebSocket[]> | undefined;
     let cursor = 0;
     const run = async () => {
       while (cursor < due.length) {
         const { match_id: matchId } = due[cursor++];
-        const socket = this.sockets(matchId)[0];
+        const socket = (groups ??= this.socketGroups())
+          .get(matchId)
+          ?.find((candidate) =>
+            this.dependencies.socketSessions.active(candidate),
+          );
         const inviteId = (
           socket?.deserializeAttachment() as MatchSocketAttachment | undefined
         )?.inviteId;
@@ -593,6 +613,8 @@ export class MatchSyncRoom {
             kind: error instanceof Error ? error.name : "unknown",
             ...(code ? { code } : {}),
           });
+        } finally {
+          groups = undefined;
         }
       }
     };
