@@ -4,6 +4,7 @@ import {
 } from "../stateCompatibility.ts";
 import { isSafeRecordKey } from "../recordKeys.ts";
 import { classifyD1Failure } from "../d1Failure.ts";
+import { validateStoredJson } from "../jsonValidation.ts";
 import {
   AUTOMATCH_RECORD_TABLES,
   AutomatchD1Failure,
@@ -37,33 +38,7 @@ function record(value: unknown): value is Record<string, unknown> {
 }
 
 export function validateAutomatchJson(value: unknown): void {
-  const active = new Set<object>();
-  const validate = (nested: unknown, depth: number): void => {
-    if (depth > 64) throw new TypeError("invalid-automatch-json");
-    if (
-      nested === null ||
-      typeof nested === "string" ||
-      typeof nested === "boolean" ||
-      (typeof nested === "number" && Number.isFinite(nested))
-    ) {
-      return;
-    }
-    if (!nested || typeof nested !== "object" || active.has(nested)) {
-      throw new TypeError("invalid-automatch-json");
-    }
-    const prototype = Object.getPrototypeOf(nested);
-    if (
-      !Array.isArray(nested) &&
-      prototype !== Object.prototype &&
-      prototype !== null
-    ) {
-      throw new TypeError("invalid-automatch-json");
-    }
-    active.add(nested);
-    for (const value of Object.values(nested)) validate(value, depth + 1);
-    active.delete(nested);
-  };
-  validate(value, 0);
+  validateStoredJson(value, "invalid-automatch-json");
 }
 
 export function encodeValue(value: unknown): string | null {

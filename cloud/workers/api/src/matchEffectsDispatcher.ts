@@ -5,6 +5,7 @@ import { commitEventMutations } from "./eventD1.ts";
 import { withEventWriteAdmission } from "./eventWriteAdmission.ts";
 import { buildEventProgressPlan } from "./eventProgressCodec.ts";
 import { ensureEventProgressWorkflow } from "./eventProgressDispatch.ts";
+import { summarizeError } from "./errorSummary.ts";
 import { assertProfileBackgroundMutationsEnabled } from "./profileCanonicalActivation.ts";
 
 type MatchEffectsStore = Pick<
@@ -93,6 +94,7 @@ export class MatchEffectsDispatcher {
           inviteId: effect.inviteId,
           matchId: effect.matchId,
           kind: error instanceof Error ? error.name : "unknown",
+          error: summarizeError(error),
         });
       }
     }

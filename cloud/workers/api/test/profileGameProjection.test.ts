@@ -2021,20 +2021,33 @@ test("automatch Queue retries transient work without settling its outbox", async
   assert.deepEqual(values.get(outboxPath), automatchOutbox());
 });
 
-test("event Queue retries transient work without settling its outbox", async () => {
+test("event Queue preserves the shared state override and retries without settling its outbox", async () => {
   const failed = queueMessage(eventTask(), 3);
   const outboxPath = "profileGameProjectionOutbox/event/event-1";
   const values = new Map<string, unknown>([[outboxPath, eventOutbox()]]);
+  let stateCreations = 0;
+  let projections = 0;
+  const unrelatedDependency = () => {
+    throw new Error("unexpected-non-event-dependency");
+  };
   await handleProfileGameProjectionMessage(failed.message, TELEGRAM_TEST_ENV, {
-    createLocks: () => locks,
+    createLocks: unrelatedDependency,
+    createRating: unrelatedDependency,
+    createRuntime: unrelatedDependency,
     createEventRuntime: () => ({
       reconcileEventProjection: async () => {
+        projections++;
         throw new Error("temporary-event-projection-failure");
       },
     }),
-    createStateRepository: () => projectionLockState(values),
+    createStateRepository: () => {
+      stateCreations++;
+      return projectionLockState(values);
+    },
     logger: { error() {}, info() {} },
   });
+  assert.equal(stateCreations, 1);
+  assert.equal(projections, 1);
   assert.equal(failed.acknowledgements(), 0);
   assert.deepEqual(failed.retries, [{ delaySeconds: 4 }]);
   assert.deepEqual(values.get(outboxPath), eventOutbox());

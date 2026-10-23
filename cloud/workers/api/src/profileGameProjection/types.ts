@@ -114,6 +114,7 @@ export type ProfileGameProjectionQueueDependencies = Pick<
   | "now"
   | "processProfileLink"
 > & {
+  createEventStateRepository?: (env: Env) => EventProfileProjectionState;
   createProfileLinkJobs?: (env: Env) => ProfileLinkProcessingJobs;
   createStateRepository?: (
     env: Env,

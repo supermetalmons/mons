@@ -104,7 +104,11 @@ test("a failed effect retries in sixty seconds without starving the next effect"
     f.delivered.push(effect.effectId);
     if (effect.effectId === firstId) {
       f.setNow(500);
-      throw new Error("delivery-unavailable");
+      throw new Error("delivery-unavailable", {
+        cause: Object.assign(new Error("database-unavailable"), {
+          code: "D1_ERROR",
+        }),
+      });
     }
   };
   await f.dispatcher.dispatch();
@@ -119,6 +123,15 @@ test("a failed effect retries in sixty seconds without starving the next effect"
       inviteId: "invite",
       matchId: "match-0",
       kind: "Error",
+      error: {
+        name: "Error",
+        message: "delivery-unavailable",
+        cause: {
+          name: "Error",
+          message: "database-unavailable",
+          code: "D1_ERROR",
+        },
+      },
     },
   ]);
 });

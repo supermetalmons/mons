@@ -19,6 +19,7 @@ import {
   isAllowedAuthOrigin,
 } from "./authHttp.ts";
 import { cancelResponseBody } from "./boundedStreams.ts";
+import { summarizeError } from "./errorSummary.ts";
 import { resolveInviteRoleFromSnapshot } from "./inviteAccess.ts";
 import { createGameplayRepository } from "./gameplayRepository.ts";
 import type { InviteAccessRepository } from "./gameplayContracts.ts";
@@ -279,6 +280,7 @@ export async function handleInviteReadRoute<
             channel === "matches"
               ? "match_sync_failure"
               : `invite_${channel}_failure`,
+          error: summarizeError(error),
         }))
     )();
     return authErrorResponse(

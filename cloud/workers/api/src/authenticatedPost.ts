@@ -4,6 +4,7 @@ import {
   isProfileWritesDisabledFailure,
 } from "./authErrors.ts";
 import { authPreflightResponse, getAuthCorsHeaders } from "./authHttp.ts";
+import { summarizeError } from "./errorSummary.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 import {
   verifySessionRequest,
@@ -64,7 +65,13 @@ export async function authenticatedPost(
       (
         options.logFailure ||
         ((kind) =>
-          console.error(JSON.stringify({ event: options.failureEvent, kind })))
+          console.error(
+            JSON.stringify({
+              event: options.failureEvent,
+              kind,
+              error: summarizeError(error),
+            }),
+          ))
       )(failure.message);
     }
     return authErrorResponse(failure, corsHeaders);

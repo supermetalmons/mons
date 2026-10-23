@@ -508,6 +508,61 @@ test("metadata rejects malformed paths, origins, protocols and credentials befor
   }
 });
 
+test("default metadata failure logs retain causes and preserve custom callbacks", async (t) => {
+  const logged = t.mock.method(console, "error", () => {});
+  const state = setup();
+  delete state.dependencies.logFailure;
+  state.repository.readInviteMetadata = async () => {
+    throw new Error("invite-source-unavailable", {
+      cause: Object.assign(new Error("database-unavailable"), {
+        code: "D1_ERROR",
+      }),
+    });
+  };
+  const response = await handleInviteMetadataRoute(
+    request(),
+    state.env,
+    ctx,
+    state.dependencies,
+  );
+  assert.equal(response.status, 503);
+  const expectedBody = {
+    ok: false,
+    error: "unavailable",
+    message: "invite-metadata-unavailable",
+  };
+  assert.deepEqual(await response.json(), expectedBody);
+  assert.equal(logged.mock.callCount(), 1);
+  assert.deepEqual(logged.mock.calls[0].arguments, [
+    {
+      event: "invite_metadata_failure",
+      error: {
+        name: "Error",
+        message: "invite-source-unavailable",
+        cause: {
+          name: "Error",
+          message: "database-unavailable",
+          code: "D1_ERROR",
+        },
+      },
+    },
+  ]);
+  const logFailure = t.mock.fn(() => {});
+  state.dependencies.logFailure = logFailure;
+  const customResponse = await handleInviteMetadataRoute(
+    request(),
+    state.env,
+    ctx,
+    state.dependencies,
+  );
+  assert.equal(customResponse.status, response.status);
+  assert.deepEqual([...customResponse.headers], [...response.headers]);
+  assert.deepEqual(await customResponse.json(), expectedBody);
+  assert.equal(logged.mock.callCount(), 1);
+  assert.equal(logFailure.mock.callCount(), 1);
+  assert.deepEqual(logFailure.mock.calls[0].arguments, []);
+});
+
 test("missing, malformed, forbidden and transient source failures stay distinct", async () => {
   const state = setup();
   for (const [result, status] of [

@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { prepareEventProfileGameProjection } from "../src/eventProfileGameProjectionProducer.ts";
 import { handleProfileGameProjectionMessage } from "../src/profileGameProjection.ts";
+import { handleProfileGameProjectionMessage as handleQueueMessage } from "../src/profileGameProjection/queue.ts";
+import { createEventProfileGameProjectionState } from "../src/eventProfileGameProjectionState.ts";
 import {
   EVENT_PROFILE_GAME_PROJECTION_QUEUE_NAME,
   PROFILE_GAME_PROJECTION_QUEUE_NAME,
@@ -47,6 +49,67 @@ function batch(
 }
 
 const logger = { info: () => undefined, error: () => undefined };
+
+test("event projection state avoids constructing profile gameplay dependencies", async () => {
+  const state = createEventProfileGameProjectionState({
+    ...TELEGRAM_TEST_ENV,
+    get PROFILE_DB(): D1Database {
+      throw new Error("event-state-must-not-construct-profile-gameplay");
+    },
+  });
+  assert.equal(await state.readEvent(task.eventId), null);
+  assert.deepEqual(await state.readInviteMetadataMany([]), []);
+  const aborted = AbortSignal.abort(new Error("projection-aborted"));
+  await assert.rejects(
+    state.readInviteMetadataMany([], aborted),
+    /projection-aborted/,
+  );
+});
+
+test("event messages use their narrow state without unrelated dependencies", async () => {
+  const tracked = delivery();
+  const logs: unknown[] = [];
+  let reads = 0;
+  const unrelatedDependency = () => {
+    throw new Error("unexpected-non-event-dependency");
+  };
+  await handleQueueMessage(tracked.message, TELEGRAM_TEST_ENV, {
+    createEventStateRepository: () => ({
+      ...createEventProfileGameProjectionState(TELEGRAM_TEST_ENV),
+      readEventProfileGameProjectionOutbox: async (eventId) => {
+        assert.equal(eventId, task.eventId);
+        reads++;
+        return null;
+      },
+    }),
+    createEventRuntime: () => ({
+      reconcileEventProjection: unrelatedDependency,
+    }),
+    createStateRepository: unrelatedDependency,
+    createRuntime: unrelatedDependency,
+    createRating: unrelatedDependency,
+    createLocks: unrelatedDependency,
+    createProfileLinkJobs: unrelatedDependency,
+    logger: {
+      info: (value) => logs.push(JSON.parse(String(value))),
+      error: logger.error,
+    },
+  });
+  assert.equal(reads, 1);
+  assert.deepEqual(tracked.outcomes, ["ack"]);
+  assert.deepEqual(tracked.retries, []);
+  assert.deepEqual(logs, [
+    {
+      event: "profile_game_projection_queue_processed",
+      kind: task.kind,
+      eventId: task.eventId,
+      requestId: task.requestId,
+      status: "stale",
+      messageId: tracked.message.id,
+      attempts: tracked.message.attempts,
+    },
+  ]);
+});
 
 test("event producers use the dedicated queue with unchanged task payloads", async () => {
   const sent: unknown[] = [];

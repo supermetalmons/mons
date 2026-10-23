@@ -188,6 +188,68 @@ describe("canonical wager state", () => {
     expect(observed.queries).toHaveLength(1);
     expect(observed.sessions).toEqual(["first-primary"]);
   });
+  it("rejects invalid JSON with the wager error before writing any mutation", async () => {
+    await withWriter(async (writeGuards) => {
+      const store = createWagerStateD1Store(db, { writeGuards, now });
+      const valid = await store.read(key("json-valid-before-invalid"));
+      const invalid = await store.read(key("json-invalid"));
+      const commit = store.commit([
+        {
+          current: valid,
+          value: { wager: { retained: true }, resolutionMarker: null },
+        },
+        {
+          current: invalid,
+          value: { wager: { nested: Infinity }, resolutionMarker: null },
+        },
+      ]);
+      await expect(commit).rejects.toBeInstanceOf(TypeError);
+      await expect(commit).rejects.toHaveProperty(
+        "message",
+        "invalid-wager-state-json",
+      );
+      expect(await store.read(valid)).toEqual(valid);
+      expect(await store.read(invalid)).toEqual(invalid);
+    });
+  });
+  it("preserves JSON payload bytes and SQL null without normalizing values", async () => {
+    await withWriter(async (writeGuards) => {
+      const store = createWagerStateD1Store(db, { writeGuards, now });
+      const id = key("json-encoding");
+      const sparse = new Array(3);
+      sparse[1] = { z: 2, a: 1 };
+      const wager = { retained: null, empty: {}, sparse };
+      Object.setPrototypeOf(wager, null);
+      expect(
+        await store.commit([
+          {
+            current: await store.read(id),
+            value: { wager, resolutionMarker: false },
+          },
+        ]),
+      ).toBe(true);
+      const readPayload = () =>
+        db
+          .prepare(
+            "SELECT wager_json FROM invite_wager_states WHERE invite_id = ? AND match_id = ?",
+          )
+          .bind(id.inviteId, id.matchId)
+          .first<{ wager_json: string | null }>();
+      expect(await readPayload()).toEqual({
+        wager_json:
+          '{"retained":null,"empty":{},"sparse":[null,{"z":2,"a":1},null]}',
+      });
+      expect(
+        await store.commit([
+          {
+            current: await store.read(id),
+            value: { wager: null, resolutionMarker: false },
+          },
+        ]),
+      ).toBe(true);
+      expect(await readPayload()).toEqual({ wager_json: null });
+    });
+  });
   it("commits completion and its marker atomically, preserves extensions, and retains deletion revisions", async () => {
     await withWriter(async (writeGuards) => {
       const notices: boolean[] = [];

@@ -1,7 +1,7 @@
 import {
-  createEventGameplayRepository,
-  type EventGameplayRepository,
-} from "./eventRepository.ts";
+  createEventProfileGameProjectionState,
+  type EventProfileGameProjectionState,
+} from "./eventProfileGameProjectionState.ts";
 import { type HistoricalMatchPair } from "@mons/shared/game-sessions";
 import { isMatchPresentationSnapshot } from "@mons/shared/match-presentation";
 import {
@@ -275,13 +275,14 @@ export function createEventProfileGameProjectionRuntime(
   env: Env,
   dependencies: Omit<ProfileGameProjectionDependencies, "state"> & {
     state?: Pick<
-      EventGameplayRepository,
+      EventProfileGameProjectionState,
       "readMatchRecords" | "readInviteMetadataMany" | "readEvent"
     >;
   } = {},
 ): EventProfileGameProjectionRuntime {
   const profileDb = dependencies.profileDb || env.PROFILE_DB;
-  const state = dependencies.state || createEventGameplayRepository(env);
+  const state =
+    dependencies.state || createEventProfileGameProjectionState(env);
   const d1 = dependencies.d1 || env.PROFILE_GAMES_DB;
   const repository: EventProfileGameProjectionRepository = {
     async commitProjectionWrites(

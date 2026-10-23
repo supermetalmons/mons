@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { AuthApiFailure } from "../src/authErrors.ts";
+import { authenticatedPost } from "../src/authenticatedPost.ts";
 import { EventWritesDisabled } from "../src/eventD1.ts";
 import { handleEventRoute } from "../src/eventRoute.ts";
 import { handleGameplayRoute } from "../src/gameplayRoute.ts";
@@ -31,6 +32,71 @@ function request(path: string, method = "POST", origin = "https://mons.link") {
     ...(method === "POST" ? { body: "invalid-json" } : {}),
   });
 }
+
+test("default failure logs retain original causes without changing custom callbacks or responses", async (t) => {
+  const logged = t.mock.method(console, "error", () => {});
+  const failure = Object.assign(
+    new Error("profile-read-failed", {
+      cause: Object.assign(new Error("database-unavailable"), {
+        code: "D1_ERROR",
+      }),
+    }),
+    { request: { authorization: "private" } },
+  );
+  const options = {
+    failureMessage: "profile-service-unavailable",
+    failureEvent: "profile_route_failure",
+  };
+  const handle = async () => {
+    throw failure;
+  };
+  const response = await authenticatedPost(
+    request("/profiles/custom"),
+    TELEGRAM_TEST_ENV,
+    ctx,
+    options,
+    handle,
+  );
+  assert.equal(response.status, 503);
+  const expectedBody = {
+    ok: false,
+    error: "unavailable",
+    message: "profile-service-unavailable",
+  };
+  assert.deepEqual(await response.json(), expectedBody);
+  assert.equal(logged.mock.callCount(), 1);
+  const [entry] = logged.mock.calls[0].arguments;
+  assert.equal(typeof entry, "string");
+  assert.deepEqual(JSON.parse(entry), {
+    event: "profile_route_failure",
+    kind: "profile-service-unavailable",
+    error: {
+      name: "Error",
+      message: "profile-read-failed",
+      cause: {
+        name: "Error",
+        message: "database-unavailable",
+        code: "D1_ERROR",
+      },
+    },
+  });
+  const logFailure = t.mock.fn((_kind: string) => {});
+  const customResponse = await authenticatedPost(
+    request("/profiles/custom"),
+    TELEGRAM_TEST_ENV,
+    ctx,
+    { ...options, logFailure },
+    handle,
+  );
+  assert.equal(customResponse.status, response.status);
+  assert.deepEqual([...customResponse.headers], [...response.headers]);
+  assert.deepEqual(await customResponse.json(), expectedBody);
+  assert.equal(logged.mock.callCount(), 1);
+  assert.equal(logFailure.mock.callCount(), 1);
+  assert.deepEqual(logFailure.mock.calls[0].arguments, [
+    "profile-service-unavailable",
+  ]);
+});
 
 for (const route of routes) {
   test(`${route.domain} keeps preflight, origin, and method rejection ahead of authentication`, async () => {

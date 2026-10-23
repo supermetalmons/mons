@@ -1,5 +1,6 @@
 import { isSafeRecordKey } from "./recordKeys.ts";
 import { classifyD1Failure } from "./d1Failure.ts";
+import { validateStoredJson } from "./jsonValidation.ts";
 
 export const WAGER_STATE_WRITER_EPOCH = 1;
 
@@ -93,33 +94,7 @@ function decodeState(row: StateRow): WagerStateSnapshot {
 
 function encodeWager(value: unknown): string | null {
   if (value === null) return null;
-  const visited = new Set<object>();
-  const validate = (entry: unknown, depth: number): void => {
-    if (depth > 64) throw new TypeError("invalid-wager-state-json");
-    if (
-      entry === null ||
-      typeof entry === "string" ||
-      typeof entry === "boolean" ||
-      (typeof entry === "number" && Number.isFinite(entry))
-    ) {
-      return;
-    }
-    if (!entry || typeof entry !== "object" || visited.has(entry)) {
-      throw new TypeError("invalid-wager-state-json");
-    }
-    const prototype = Object.getPrototypeOf(entry);
-    if (
-      !Array.isArray(entry) &&
-      prototype !== Object.prototype &&
-      prototype !== null
-    ) {
-      throw new TypeError("invalid-wager-state-json");
-    }
-    visited.add(entry);
-    for (const nested of Object.values(entry)) validate(nested, depth + 1);
-    visited.delete(entry);
-  };
-  validate(value, 0);
+  validateStoredJson(value, "invalid-wager-state-json");
   return JSON.stringify(value);
 }
 
