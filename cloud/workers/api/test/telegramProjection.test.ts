@@ -561,6 +561,167 @@ test("projection queue acknowledges poison tasks and retries transient failures"
   ]);
 });
 
+test("projection queue constructs task dependencies after each storage check", async () => {
+  const calls: string[] = [];
+  const store = memoryState({});
+  const factory =
+    <T>(name: string, value: T) =>
+    () => {
+      calls.push(name);
+      return value;
+    };
+  const dependencies = {
+    readStorageMode: async () => {
+      calls.push("storage");
+      return "d1" as const;
+    },
+    createStateRepository: factory("state", store.client),
+    createTelegram: factory("telegram", store.telegram),
+    createRating: factory("rating", ratingRepository(null, [])),
+    createAnnouncements: factory("announcements", { get: async () => null }),
+    logger: { info() {}, error() {} },
+  };
+  const cases: Array<[TelegramProjectionTask, string[]]> = [
+    [
+      {
+        kind: "automatch-telegram-projection",
+        inviteId: "auto_example",
+        requestId: "request-1",
+      },
+      ["storage", "state", "telegram"],
+    ],
+    [
+      {
+        kind: "event-telegram-projection",
+        eventId: "event-1",
+        requestId: "request-1",
+      },
+      ["storage", "state", "telegram", "rating", "announcements"],
+    ],
+    [
+      {
+        kind: "rating-telegram-projection",
+        operationId: "auto_example__auto_example",
+      },
+      ["storage", "state", "telegram", "rating"],
+    ],
+  ];
+  for (const [task, expected] of cases) {
+    calls.length = 0;
+    for (let index = 0; index < 2; index++) {
+      const tracked = queueMessage(task);
+      await handleTelegramProjectionMessage(
+        tracked.message,
+        PROJECTION_TEST_ENV,
+        dependencies,
+      );
+      assert.equal(tracked.acknowledgements(), 1);
+      assert.deepEqual(tracked.retries, []);
+    }
+    assert.deepEqual(calls, [...expected, ...expected]);
+  }
+});
+
+test("projection queue preserves acknowledgement and retry boundaries when logging fails", async () => {
+  const invalid = queueMessage({ invalid: true });
+  await assert.rejects(
+    handleTelegramProjectionMessage(invalid.message, PROJECTION_TEST_ENV, {
+      readStorageMode: async () => assert.fail("unexpected-storage-read"),
+      logger: {
+        info() {},
+        error() {
+          throw new Error("invalid-log-failed");
+        },
+      },
+    }),
+    /invalid-log-failed/,
+  );
+  assert.equal(invalid.acknowledgements(), 1);
+  assert.deepEqual(invalid.retries, []);
+  const processed = queueMessage(
+    {
+      kind: "automatch-telegram-projection",
+      inviteId: "auto_example",
+      requestId: "request-1",
+    },
+    3,
+  );
+  const store = memoryState({});
+  const errors: unknown[] = [];
+  await handleTelegramProjectionMessage(
+    processed.message,
+    PROJECTION_TEST_ENV,
+    {
+      readStorageMode: async () => "d1",
+      createStateRepository: () => store.client,
+      createTelegram: () => store.telegram,
+      logger: {
+        info() {
+          throw new Error("processed-log-failed");
+        },
+        error: (entry) => errors.push(JSON.parse(String(entry))),
+      },
+    },
+  );
+  assert.equal(processed.acknowledgements(), 1);
+  assert.deepEqual(processed.retries, [{ delaySeconds: 4 }]);
+  assert.equal((errors[0] as { code: string }).code, "processed-log-failed");
+});
+
+test("projection batch observes storage becoming frozen between messages", async (t) => {
+  t.mock.method(console, "info", () => undefined);
+  const errors: unknown[] = [];
+  t.mock.method(console, "error", (value: unknown) => errors.push(value));
+  const task = {
+    kind: "rating-telegram-projection",
+    operationId: "auto_example__auto_example",
+  };
+  const invalid = queueMessage({ invalid: true });
+  const first = queueMessage(task);
+  const frozen = queueMessage(task);
+  let reads = 0;
+  let bindings = 0;
+  const env: Env = {
+    ...PROJECTION_TEST_ENV,
+    get TELEGRAM_DB() {
+      bindings++;
+      return {
+        ...PROJECTION_TEST_ENV.TELEGRAM_DB,
+        prepare(query: string): D1PreparedStatement {
+          assert.match(query, /telegram_runtime_control/);
+          const storage_mode = reads++ === 0 ? "d1" : "frozen";
+          const base: D1PreparedStatement =
+            PROJECTION_TEST_ENV.TELEGRAM_DB.prepare();
+          return {
+            all: base.all.bind(base),
+            bind: base.bind.bind(base),
+            first: async <T>() => ({ storage_mode }) as T,
+            raw: base.raw.bind(base),
+            run: base.run.bind(base),
+          };
+        },
+      };
+    },
+  };
+  await handleTelegramProjectionQueue(
+    {
+      queue: "mons-link-telegram-projection",
+      messages: [invalid.message, first.message, frozen.message],
+      metadata: { metrics: { backlogCount: 0, backlogBytes: 0 } },
+      ackAll: () => assert.fail("unexpected-batch-ack"),
+      retryAll: () => assert.fail("unexpected-batch-retry"),
+    },
+    env,
+  );
+  assert.equal(invalid.acknowledgements(), 1);
+  assert.equal(first.acknowledgements(), 1, JSON.stringify(errors));
+  assert.deepEqual(first.retries, []);
+  assert.equal(frozen.acknowledgements(), 0);
+  assert.deepEqual(frozen.retries, [{ delaySeconds: 60 }]);
+  assert.equal(reads, 2);
+  assert.equal(bindings, 3);
+});
+
 test("projection queue retries storage checks including TypeError", async () => {
   for (const failure of [
     new Error("storage-unavailable"),

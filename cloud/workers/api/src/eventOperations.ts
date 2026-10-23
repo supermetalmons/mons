@@ -17,6 +17,7 @@ import {
   type SyncEventStateResponse,
 } from "@mons/shared/events";
 import { AuthApiFailure, type AuthErrorCode } from "./authErrors.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import { createGameplayRepository } from "./gameplayRepository.ts";
 import { buildEventProgressPlan } from "./eventProgressCodec.ts";
 import { ensureEventProgressWorkflow } from "./eventProgressDispatch.ts";
@@ -134,19 +135,11 @@ async function enforceEventSyncRateLimit(
   uid: string,
   eventId: string,
 ): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await rateLimiter.limit({ key: `event-sync:${uid}:${eventId}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many event sync attempts.",
-    );
-  }
+  return enforceRateLimit(
+    rateLimiter,
+    `event-sync:${uid}:${eventId}`,
+    "Too many event sync attempts.",
+  );
 }
 
 export async function createEvent(

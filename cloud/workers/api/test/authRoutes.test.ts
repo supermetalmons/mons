@@ -376,6 +376,11 @@ test("validates intent bodies, fails closed, and bounds ID collisions", async ()
     { stateRepository: stateRepository(), verifyIdentity },
   );
   assert.equal(denied.status, 429);
+  assert.deepEqual(await responseJson(denied), {
+    ok: false,
+    error: "resource-exhausted",
+    message: "Too many auth attempts.",
+  });
 
   const unavailable = await handleAuthRoute(
     request("/auth/intents", "POST", { method: "eth" }),

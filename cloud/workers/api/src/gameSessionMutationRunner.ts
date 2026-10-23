@@ -10,6 +10,7 @@ import type {
   GameSessionResponse,
 } from "../../../runtime/automatchRecords.js";
 import { AuthApiFailure } from "./authErrors.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import type { AutomatchPersistence } from "./automatchPersistence.ts";
 import type { GameSessionChange } from "./gameSessionContracts.ts";
 import { requestAutomatchProfileProjection } from "./gameSessionProjectionChanges.ts";
@@ -137,19 +138,11 @@ export async function enforceGameSessionMutationRateLimit(
   rateLimiter: RateLimit,
   uid: string,
 ): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await rateLimiter.limit({ key: `game-session:${uid}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many game session attempts.",
-    );
-  }
+  return enforceRateLimit(
+    rateLimiter,
+    `game-session:${uid}`,
+    "Too many game session attempts.",
+  );
 }
 
 export async function refreshGameSessionMutationLease(

@@ -3103,10 +3103,14 @@ test("moves fail closed for auth, rate limits, unavailable ownership and mutatio
     ],
   ] as const) {
     const h = moveFixture();
-    assert.equal(
-      (await h.call({ ...env, MOVE_RATE_LIMITER: { limit } })).status,
-      status,
-    );
+    const response = await h.call({ ...env, MOVE_RATE_LIMITER: { limit } });
+    assert.equal(response.status, status);
+    assert.deepEqual(await response.json(), {
+      ok: false,
+      error: status === 429 ? "resource-exhausted" : "unavailable",
+      message:
+        status === 429 ? "Too many move attempts." : "rate-limit-unavailable",
+    });
     assert.deepEqual(h.calls, []);
   }
   const unavailable = moveFixture({ loginUid: "alternate" });

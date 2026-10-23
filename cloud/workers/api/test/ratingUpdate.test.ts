@@ -2,13 +2,11 @@ import type { MatchStateRecord } from "../src/matchStateTypes.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { isHistoricalMatchPair } from "@mons/shared/game-sessions";
-import { createRatingUpdater } from "@mons/shared/ratings";
 import {
   MAX_MATCH_FEN_BYTES,
   MAX_MATCH_HISTORY_ENTRIES,
 } from "@mons/shared/match-protocol";
 import { MATCH_TIMER_TERMINAL } from "@mons/shared/timers";
-import glicko2 from "glicko2";
 import { Color, Game } from "mons-rules";
 import { AuthApiFailure } from "../src/authErrors.ts";
 import type { RequestIdentity } from "../src/requestIdentity.ts";
@@ -23,6 +21,7 @@ import type {
   ProfileOwnershipSnapshot,
 } from "../src/profileOwnership.ts";
 import {
+  FEB_CHALLENGE_END_UTC,
   FEB_CHALLENGE_START_UTC,
   buildRatingPlan,
   readMatchRecord,
@@ -133,6 +132,24 @@ function profile(
     username: profileId.endsWith("player") ? "Alice" : "Bob",
     ...overrides,
   };
+}
+
+function ratingPlan(
+  overrides: Partial<Parameters<typeof buildRatingPlan>[0]> = {},
+) {
+  return buildRatingPlan({
+    historicalMatchPair: historicalMatchPair(),
+    invite: {},
+    matchId: request.matchId,
+    nowMs: Date.UTC(2026, 7, 21),
+    player: profile("profile-player"),
+    opponent: profile("profile-opponent", { nonce: 8 }),
+    playerMatch: match("white"),
+    opponentMatch: match("black"),
+    request,
+    result: "win",
+    ...overrides,
+  });
 }
 
 function completedData(
@@ -303,8 +320,9 @@ test("builds exact non-event rating, mana, and Telegram fields", () => {
   const playerMatch = match("white");
   const opponentMatch = match("black", { status: "surrendered" });
   const nowMs = Date.UTC(2026, 7, 21);
+  const historical = historicalMatchPair();
   const result = buildRatingPlan({
-    historicalMatchPair: historicalMatchPair(),
+    historicalMatchPair: historical,
     invite: {
       telegramDeliveryVersion: 2,
       wagers: {
@@ -322,52 +340,66 @@ test("builds exact non-event rating, mana, and Telegram fields", () => {
     request,
     result: "win",
   });
-  const expectedRatings = createRatingUpdater(glicko2.Glicko2)(
-    1500,
-    5,
-    1400,
-    9,
-  );
-  assert.deepEqual(result.playerUpdate, {
-    rating: expectedRatings[0],
-    nonce: 5,
-    win: true,
-    totalManaPoints: 10,
-  });
-  assert.deepEqual(result.opponentUpdate, {
-    rating: expectedRatings[1],
-    nonce: 9,
-    win: false,
-    totalManaPoints: 10,
-  });
-  assert.equal(result.ratingUpdate.didApplyRatingDelta, true);
-  assert.equal(result.ratingUpdate.telegramDeliveryVersion, 2);
-  assert.equal(result.ratingUpdate.telegramProjectionVersion, 1);
-  assert.equal(result.ratingUpdate.telegramProjectionState, "pending");
-  assert.equal(result.ratingUpdate.telegramProjectionUpdatedAtMs, nowMs);
-  assert.equal(result.ratingUpdate.profileGameProjectionVersion, 1);
-  assert.equal(result.ratingUpdate.profileGameProjectionState, "pending");
-  assert.equal(result.ratingUpdate.profileGameProjectionUpdatedAtMs, nowMs);
-  assert.equal(result.ratingUpdate.profileGameProjectionReason, null);
-  assert.equal(result.ratingUpdate.status, "done");
-  assert.match(String(result.ratingUpdate.updateRatingMessage), /Alice/);
-  assert.match(String(result.ratingUpdate.updateRatingMessage), /Bob/);
-  assert.match(
-    String(result.ratingUpdate.updateRatingMessage),
-    /5235835141238063097/,
-  );
-  assert.match(
-    String(result.ratingUpdate.updateRatingMessage),
-    /5228702136862282659/,
-  );
+  const expected: RatingCommitPlan = {
+    playerUpdate: { rating: 1631, nonce: 5, win: true, totalManaPoints: 10 },
+    opponentUpdate: { rating: 1272, nonce: 9, win: false, totalManaPoints: 10 },
+    repairData: {
+      playerProfileId: "profile-player",
+      opponentProfileId: "profile-opponent",
+      shouldUpdateFebruaryChallenge: false,
+    },
+    ratingUpdate: {
+      inviteId: request.inviteId,
+      matchId: request.matchId,
+      playerId: request.playerId,
+      opponentId: request.opponentId,
+      status: "done",
+      historicalMatchArchiveVersion: 1,
+      historicalMatchPair: historical,
+      result: "win",
+      canUpdateRatings: true,
+      didApplyRatingDelta: true,
+      winnerDisplayName: "Alice",
+      loserDisplayName: "Bob",
+      winnerNewRating: 1631,
+      loserNewRating: 1272,
+      playerManaPoints: 0,
+      opponentManaPoints: 0,
+      shouldUpdateFebruaryChallenge: false,
+      playerProfileId: "profile-player",
+      opponentProfileId: "profile-opponent",
+      profileGameProjectionVersion: 1,
+      profileGameProjectionState: "pending",
+      profileGameProjectionUpdatedAtMs: nowMs,
+      profileGameProjectionReason: null,
+      updateRatingMessage:
+        'Alice 1631↑ Bob 1272↓ (0 - 0) <tg-emoji emoji-id="5228702136862282659">&#11088;</tg-emoji> <tg-emoji emoji-id="5235835141238063097">&#11088;</tg-emoji> 3',
+      telegramDeliveryVersion: 2,
+      telegramProjectionVersion: 1,
+      telegramProjectionState: "pending",
+      telegramProjectionUpdatedAtMs: nowMs,
+      telegramProjectionReason: null,
+      isEventMatch: false,
+      eventOwned: false,
+      eventId: null,
+      updatedAtMs: nowMs,
+      completedAtMs: nowMs,
+      leaseExpiresAtMs: nowMs,
+    },
+  };
+  assert.deepEqual(result, expected);
+  assert.equal(JSON.stringify(result), JSON.stringify(expected));
+  assert.equal(result.ratingUpdate.historicalMatchPair, historical);
 });
 
 test("event ratings preserve win and mana without applying a rating delta", () => {
+  const historical = historicalMatchPair();
+  const nowMs = FEB_CHALLENGE_START_UTC + 1;
   const built = buildRatingPlan({
-    historicalMatchPair: historicalMatchPair(),
+    historicalMatchPair: historical,
     invite: { eventOwned: true, eventId: "event-1" },
     matchId: request.matchId,
-    nowMs: FEB_CHALLENGE_START_UTC + 1,
+    nowMs,
     opponent: profile("profile-opponent"),
     opponentMatch: match("black", { timer: MATCH_TIMER_TERMINAL }),
     player: profile("profile-player"),
@@ -375,26 +407,218 @@ test("event ratings preserve win and mana without applying a rating delta", () =
     request,
     result: "gg",
   });
-  assert.equal(built.ratingUpdate.didApplyRatingDelta, false);
-  assert.equal(built.ratingUpdate.isEventMatch, true);
-  assert.equal(built.ratingUpdate.eventOwned, true);
-  assert.equal(built.ratingUpdate.eventId, "event-1");
-  assert.equal(built.ratingUpdate.eventProgressVersion, 1);
-  assert.equal(built.ratingUpdate.eventProgressState, "pending");
+  const expected: RatingCommitPlan = {
+    playerUpdate: { nonce: 5, win: false, totalManaPoints: 10 },
+    opponentUpdate: { nonce: 5, win: true, totalManaPoints: 10 },
+    repairData: {
+      playerProfileId: "profile-player",
+      opponentProfileId: "profile-opponent",
+      shouldUpdateFebruaryChallenge: false,
+    },
+    ratingUpdate: {
+      inviteId: request.inviteId,
+      matchId: request.matchId,
+      playerId: request.playerId,
+      opponentId: request.opponentId,
+      status: "done",
+      historicalMatchArchiveVersion: 1,
+      historicalMatchPair: historical,
+      result: "gg",
+      canUpdateRatings: true,
+      didApplyRatingDelta: false,
+      winnerDisplayName: "Bob",
+      loserDisplayName: "Alice",
+      winnerNewRating: null,
+      loserNewRating: null,
+      playerManaPoints: 0,
+      opponentManaPoints: 0,
+      shouldUpdateFebruaryChallenge: false,
+      playerProfileId: "profile-player",
+      opponentProfileId: "profile-opponent",
+      profileGameProjectionVersion: 1,
+      profileGameProjectionState: "pending",
+      profileGameProjectionUpdatedAtMs: nowMs,
+      profileGameProjectionReason: null,
+      updateRatingMessage:
+        'Bob ↑ Alice (0 - 0) <tg-emoji emoji-id="5229098317530568280">&#11088;</tg-emoji>',
+      telegramDeliveryVersion: null,
+      eventProgressVersion: 1,
+      eventProgressState: "pending",
+      eventProgressUpdatedAtMs: nowMs,
+      eventProgressReason: null,
+      isEventMatch: true,
+      eventOwned: true,
+      eventId: "event-1",
+      updatedAtMs: nowMs,
+      completedAtMs: nowMs,
+      leaseExpiresAtMs: nowMs,
+    },
+  };
+  assert.deepEqual(built, expected);
+  assert.equal(JSON.stringify(built), JSON.stringify(expected));
+});
+
+test("preserves Telegram wording, fallback names, and terminal marker precedence", () => {
+  const cases: Array<{
+    input: Partial<Parameters<typeof buildRatingPlan>[0]>;
+    message: string;
+  }> = [
+    { input: {}, message: "Alice 1631↑ Bob 1272↓ (0 - 0)" },
+    {
+      input: {
+        result: "gg",
+        opponentMatch: match("black", { timer: MATCH_TIMER_TERMINAL }),
+      },
+      message:
+        'Bob 1589↑ Alice 1307↓ (0 - 0) <tg-emoji emoji-id="5229098317530568280">&#11088;</tg-emoji>',
+    },
+    {
+      input: {
+        playerMatch: match("white", { timer: MATCH_TIMER_TERMINAL }),
+        opponentMatch: match("black", { status: "surrendered" }),
+      },
+      message:
+        'Alice 1631↑ Bob 1272↓ (0 - 0) <tg-emoji emoji-id="5228702136862282659">&#11088;</tg-emoji>',
+    },
+    {
+      input: {
+        player: profile("profile-player", {
+          username: "",
+          eth: "0x1234567890123456789012345678901234567890",
+          sol: "ignored-sol-address",
+          emoji: "",
+        }),
+        opponent: profile("profile-opponent", {
+          nonce: 8,
+          username: "",
+          sol: "Abcdefghijklmnopqrstuvwxyz123456789",
+        }),
+      },
+      message: "0x12...7890 1631↑ Abcd...6789 1272↓ (0 - 0)",
+    },
+    {
+      input: {
+        player: profile("profile-player", { username: "<b>Alice & A</b>" }),
+        opponent: profile("profile-opponent", { nonce: 8, username: "" }),
+      },
+      message: "<b>Alice & A</b> 1631↑ anon 1272↓ (0 - 0)",
+    },
+  ];
+  for (const { input, message } of cases) {
+    assert.equal(ratingPlan(input).ratingUpdate.updateRatingMessage, message);
+  }
+});
+
+test("preserves wager message coercion and the explicit wager match key", () => {
+  for (const [material, emojiId] of [
+    ["dust", "5235835141238063097"],
+    ["slime", "5235497595463303384"],
+    ["gum", "5233425978117621609"],
+    ["metal", "5235794850149863190"],
+    ["ice", "5233743994676086020"],
+  ]) {
+    const built = ratingPlan({
+      matchId: "wager-match",
+      invite: {
+        wagers: {
+          "wager-match": {
+            agreed: { material: ` ${material} `, count: "2.5" },
+          },
+          [request.matchId]: { agreed: { material: "dust", count: 99 } },
+        },
+      },
+    });
+    assert.equal(
+      built.ratingUpdate.updateRatingMessage,
+      `Alice 1631↑ Bob 1272↓ (0 - 0) <tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji> 3`,
+    );
+    assert.equal(built.ratingUpdate.matchId, request.matchId);
+  }
+  for (const agreed of [
+    { material: "unknown", count: 3 },
+    ...[0, -1, Infinity, "invalid", null].map((count) => ({
+      material: "dust",
+      count,
+    })),
+  ]) {
+    assert.equal(
+      ratingPlan({
+        invite: { wagers: { [request.matchId]: { agreed } } },
+      }).ratingUpdate.updateRatingMessage,
+      "Alice 1631↑ Bob 1272↓ (0 - 0)",
+    );
+  }
+});
+
+test("keeps the February challenge interval and next-nonce rating inputs", () => {
+  assert.equal(FEB_CHALLENGE_START_UTC, Date.UTC(2026, 1, 1));
+  assert.equal(FEB_CHALLENGE_END_UTC, Date.UTC(2026, 2, 1));
+  for (const [nowMs, eligible] of [
+    [FEB_CHALLENGE_START_UTC - 1, false],
+    [FEB_CHALLENGE_START_UTC, true],
+    [FEB_CHALLENGE_END_UTC - 1, true],
+    [FEB_CHALLENGE_END_UTC, false],
+  ] as const) {
+    const built = ratingPlan({ nowMs });
+    assert.equal(built.repairData.shouldUpdateFebruaryChallenge, eligible);
+    assert.equal(built.ratingUpdate.shouldUpdateFebruaryChallenge, eligible);
+  }
+  for (const missingMoves of ["player", "opponent"] as const) {
+    const built = ratingPlan({
+      nowMs: FEB_CHALLENGE_START_UTC,
+      playerMatch: match("white", {
+        flatMovesString: missingMoves === "player" ? "" : "move",
+      }),
+      opponentMatch: match("black", {
+        flatMovesString: missingMoves === "opponent" ? "" : "move",
+      }),
+    });
+    assert.deepEqual(built.playerUpdate, {
+      rating: 1631,
+      nonce: 4,
+      win: true,
+      totalManaPoints: 10,
+    });
+    assert.deepEqual(built.opponentUpdate, {
+      rating: 1272,
+      nonce: 8,
+      win: false,
+      totalManaPoints: 10,
+    });
+    assert.equal(built.repairData.shouldUpdateFebruaryChallenge, false);
+    assert.equal(built.ratingUpdate.shouldUpdateFebruaryChallenge, false);
+  }
+});
+
+test("preserves event eligibility and omitted projection keys", () => {
+  for (const invite of [
+    { eventId: " event-1 ", telegramDeliveryVersion: 2 },
+    { eventOwned: true, telegramDeliveryVersion: 2 },
+  ]) {
+    const built = ratingPlan({ invite, nowMs: FEB_CHALLENGE_START_UTC });
+    assert.equal(built.ratingUpdate.isEventMatch, true);
+    assert.equal(built.ratingUpdate.didApplyRatingDelta, false);
+    assert.equal(built.ratingUpdate.telegramDeliveryVersion, null);
+    assert.equal(built.repairData.shouldUpdateFebruaryChallenge, false);
+    assert.equal(Object.hasOwn(built.playerUpdate!, "rating"), false);
+    assert.equal(Object.hasOwn(built.opponentUpdate!, "rating"), false);
+    assert.equal(
+      Object.keys(built.ratingUpdate).some(
+        (key) =>
+          key.startsWith("telegramProjection") ||
+          key.startsWith("eventProgress"),
+      ),
+      false,
+    );
+  }
+  const legacy = ratingPlan();
+  assert.equal(legacy.ratingUpdate.telegramDeliveryVersion, null);
   assert.equal(
-    built.ratingUpdate.eventProgressUpdatedAtMs,
-    FEB_CHALLENGE_START_UTC + 1,
+    Object.keys(legacy.ratingUpdate).some((key) =>
+      key.startsWith("telegramProjection"),
+    ),
+    false,
   );
-  assert.equal(built.ratingUpdate.eventProgressReason, null);
-  assert.equal(built.ratingUpdate.telegramDeliveryVersion, null);
-  assert.equal(built.ratingUpdate.telegramProjectionState, undefined);
-  assert.equal(built.ratingUpdate.telegramProjectionVersion, undefined);
-  assert.equal(built.repairData.shouldUpdateFebruaryChallenge, false);
-  assert.deepEqual(built.playerUpdate, {
-    nonce: 5,
-    win: false,
-    totalManaPoints: 10,
-  });
 });
 
 test("completes rating records without profile writes when profiles are absent", () => {
@@ -725,6 +949,32 @@ test("repairs completed replays without reacquiring or finalizing", async () => 
   assert.equal(state.getFinalized(), 0);
   assert.equal(state.getOperationReads(), 1);
   assert.equal(state.patches.length, 0);
+});
+
+test("replays the stored February challenge flag after the challenge has ended", async () => {
+  const state = createRepository({ completed: true, failMatchReads: true });
+  state.repository.readRatingUpdate = async () =>
+    completedData({ shouldUpdateFebruaryChallenge: true });
+  const steps: string[] = [];
+  coordination(state.repository).timerStarts.deletePair = async () => {
+    steps.push("timers");
+  };
+  state.repository.applyFebruaryChallengeReplay = async (...args) => {
+    assert.deepEqual(args, ["profile-player", "profile-opponent"]);
+    steps.push("challenge");
+  };
+  assert.deepEqual(
+    await updateRatings(identity, request, state.repository, {
+      now: () => Date.UTC(2026, 9, 23),
+      assertMutationAllowed: async () => {
+        steps.push("guard");
+      },
+    }),
+    { ok: true },
+  );
+  assert.deepEqual(steps, ["guard", "timers", "challenge"]);
+  assert.equal(state.getAttempts(), 0);
+  assert.equal(state.getFinalized(), 0);
 });
 
 test("observed completions dispatch only pending projections in recovery order", async (t) => {

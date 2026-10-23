@@ -21,6 +21,7 @@ import {
 } from "./guards.ts";
 import { readEventLease, readEventSyncThrottle } from "./reads.ts";
 import { readD1FirstRow } from "../d1Reads.ts";
+import { runOptimisticTransaction } from "../optimisticTransaction.ts";
 
 const EVENT_WRITE_ADMISSION_TTL_MS = 5 * 60 * 1_000;
 
@@ -105,211 +106,198 @@ export async function releaseEventWriteAdmission(
   return result.meta.changes === 1;
 }
 
-async function transactEventCoordination<
-  T extends EventLeaseRecord | EventSyncThrottleRecord,
->(
+async function runCoordinationMutation(
   db: EventD1Connection,
-  kind: "lease" | "throttle",
-  eventId: string,
-  updater: (current: T | null) => TransactionDecision<T>,
+  statement: D1PreparedStatement,
   options: { admission: EventWriteAdmission },
-): Promise<TransactionResult<T>> {
-  const runMutation = async (
-    statement: D1PreparedStatement,
-  ): Promise<D1Result> => {
-    try {
-      const results = await db.batch([
-        eventWriteAdmissionGuard(db, options.admission),
-        statement,
-      ]);
-      return results[1];
-    } catch (error) {
-      return rethrowEventBatchFailure(db, error, options);
-    }
-  };
-  eventId = exactKey(eventId);
-  if (!eventId) throw new EventD1Failure("invalid-event-path");
-  for (
-    let attempt = 0;
-    attempt < MAX_EVENT_TRANSACTION_ATTEMPTS;
-    attempt += 1
-  ) {
-    const current = (await (kind === "lease"
-      ? readEventLease(db, eventId)
-      : readEventSyncThrottle(db, eventId))) as T | null;
-    const decision = updater(current);
-    if ("commit" in decision) {
-      return {
-        committed: false,
-        decision: decision.decision,
-        value: current,
-      };
-    }
-    if (kind === "lease") {
-      const currentRecord: Record<string, unknown> | null = isRecord(current)
-        ? current
-        : null;
-      if (decision.value === null) {
-        if (!currentRecord) {
-          return { committed: true, decision: decision.decision, value: null };
-        }
-        const result = await runMutation(
-          db
-            .prepare(
-              `DELETE FROM event_leases
+): Promise<D1Result> {
+  try {
+    const results = await db.batch([
+      eventWriteAdmissionGuard(db, options.admission),
+      statement,
+    ]);
+    return results[1];
+  } catch (error) {
+    return rethrowEventBatchFailure(db, error, options);
+  }
+}
+
+async function writeEventLease(
+  db: EventD1Connection,
+  eventId: string,
+  current: EventLeaseRecord | null,
+  value: EventLeaseRecord | null,
+  options: { admission: EventWriteAdmission },
+): Promise<{ applied: boolean; value: EventLeaseRecord | null }> {
+  const currentRecord = isRecord(current) ? current : null;
+  if (value === null) {
+    if (!currentRecord) return { applied: true, value: null };
+    const result = await runCoordinationMutation(
+      db,
+      db
+        .prepare(
+          `DELETE FROM event_leases
              WHERE event_id = ? AND lease_id = ? AND owner_uid = ?
                AND expires_at_ms = ?`,
-            )
-            .bind(
-              eventId,
-              currentRecord.lockId,
-              currentRecord.ownerUid,
-              currentRecord.expiresAtMs,
-            ),
-        );
-        if (result.meta.changes === 1) {
-          return { committed: true, decision: decision.decision, value: null };
-        }
-        continue;
-      }
-      const next: Record<string, unknown> | null = isRecord(decision.value)
-        ? decision.value
-        : null;
-      const lockId = next ? exactKey(next.lockId) : "";
-      const ownerUid = next ? exactKey(next.ownerUid) : "";
-      if (!next || !lockId || !ownerUid) {
-        throw new EventD1Failure("invalid-event-lease");
-      }
-      const acquiredAtMs = safeInteger(next.acquiredAtMs);
-      const refreshedAtMs = safeInteger(next.refreshedAtMs);
-      const expiresAtMs = safeInteger(next.expiresAtMs, refreshedAtMs + 1);
-      const statement = currentRecord
-        ? db
-            .prepare(
-              `UPDATE event_leases SET
+        )
+        .bind(
+          eventId,
+          currentRecord.lockId,
+          currentRecord.ownerUid,
+          currentRecord.expiresAtMs,
+        ),
+      options,
+    );
+    return { applied: result.meta.changes === 1, value: null };
+  }
+  const next = isRecord(value) ? value : null;
+  const lockId = next ? exactKey(next.lockId) : "";
+  const ownerUid = next ? exactKey(next.ownerUid) : "";
+  if (!next || !lockId || !ownerUid) {
+    throw new EventD1Failure("invalid-event-lease");
+  }
+  const acquiredAtMs = safeInteger(next.acquiredAtMs);
+  const refreshedAtMs = safeInteger(next.refreshedAtMs);
+  const expiresAtMs = safeInteger(next.expiresAtMs, refreshedAtMs + 1);
+  const statement = currentRecord
+    ? db
+        .prepare(
+          `UPDATE event_leases SET
                  lease_id = ?, owner_uid = ?, acquired_at_ms = ?,
                  refreshed_at_ms = ?, expires_at_ms = ?
                WHERE event_id = ? AND lease_id = ? AND owner_uid = ?
                  AND expires_at_ms = ?`,
-            )
-            .bind(
-              lockId,
-              ownerUid,
-              acquiredAtMs,
-              refreshedAtMs,
-              expiresAtMs,
-              eventId,
-              currentRecord.lockId,
-              currentRecord.ownerUid,
-              currentRecord.expiresAtMs,
-            )
-        : db
-            .prepare(
-              `INSERT INTO event_leases (
+        )
+        .bind(
+          lockId,
+          ownerUid,
+          acquiredAtMs,
+          refreshedAtMs,
+          expiresAtMs,
+          eventId,
+          currentRecord.lockId,
+          currentRecord.ownerUid,
+          currentRecord.expiresAtMs,
+        )
+    : db
+        .prepare(
+          `INSERT INTO event_leases (
                  event_id, lease_id, owner_uid, acquired_at_ms,
                  refreshed_at_ms, expires_at_ms
                ) VALUES (?, ?, ?, ?, ?, ?)
                ON CONFLICT (event_id) DO NOTHING`,
-            )
-            .bind(
-              eventId,
-              lockId,
-              ownerUid,
-              acquiredAtMs,
-              refreshedAtMs,
-              expiresAtMs,
-            );
-      const result = await runMutation(statement);
-      if (result.meta.changes === 1) {
-        return {
-          committed: true,
-          decision: decision.decision,
-          value: cloneJson(next) as T,
-        };
-      }
-      continue;
-    }
-    const currentRecord: Record<string, unknown> | null = isRecord(current)
-      ? current
-      : null;
-    if (decision.value === null) {
-      const result = currentRecord
-        ? await runMutation(
-            db
-              .prepare(
-                `DELETE FROM event_sync_throttles
+        )
+        .bind(
+          eventId,
+          lockId,
+          ownerUid,
+          acquiredAtMs,
+          refreshedAtMs,
+          expiresAtMs,
+        );
+  const result = await runCoordinationMutation(db, statement, options);
+  return result.meta.changes === 1
+    ? { applied: true, value: cloneJson(next) }
+    : { applied: false, value: null };
+}
+
+async function writeEventSyncThrottle(
+  db: EventD1Connection,
+  eventId: string,
+  current: EventSyncThrottleRecord | null,
+  value: EventSyncThrottleRecord | null,
+  options: { admission: EventWriteAdmission },
+): Promise<{ applied: boolean; value: EventSyncThrottleRecord | null }> {
+  const currentRecord = isRecord(current) ? current : null;
+  if (value === null) {
+    const result = currentRecord
+      ? await runCoordinationMutation(
+          db,
+          db
+            .prepare(
+              `DELETE FROM event_sync_throttles
                WHERE event_id = ? AND token = ? AND started_at_ms = ?`,
-              )
-              .bind(eventId, currentRecord.token, currentRecord.startedAtMs),
-          )
-        : null;
-      if (!result || result.meta.changes === 1) {
-        return { committed: true, decision: decision.decision, value: null };
-      }
-      continue;
-    }
-    const next: Record<string, unknown> | null = isRecord(decision.value)
-      ? decision.value
+            )
+            .bind(eventId, currentRecord.token, currentRecord.startedAtMs),
+          options,
+        )
       : null;
-    const ownerUid = next ? exactKey(next.ownerUid) : "";
-    const token = next ? exactKey(next.token) : "";
-    if (!next || !ownerUid || !token) {
-      throw new EventD1Failure("invalid-event-sync-throttle");
-    }
-    const startedAtMs = safeInteger(next.startedAtMs);
-    const statement = currentRecord
-      ? db
-          .prepare(
-            `UPDATE event_sync_throttles
+    return { applied: !result || result.meta.changes === 1, value: null };
+  }
+  const next = isRecord(value) ? value : null;
+  const ownerUid = next ? exactKey(next.ownerUid) : "";
+  const token = next ? exactKey(next.token) : "";
+  if (!next || !ownerUid || !token) {
+    throw new EventD1Failure("invalid-event-sync-throttle");
+  }
+  const startedAtMs = safeInteger(next.startedAtMs);
+  const statement = currentRecord
+    ? db
+        .prepare(
+          `UPDATE event_sync_throttles
              SET owner_uid = ?, token = ?, started_at_ms = ?
              WHERE event_id = ? AND token = ? AND started_at_ms = ?`,
-          )
-          .bind(
-            ownerUid,
-            token,
-            startedAtMs,
-            eventId,
-            currentRecord.token,
-            currentRecord.startedAtMs,
-          )
-      : db
-          .prepare(
-            `INSERT INTO event_sync_throttles (
+        )
+        .bind(
+          ownerUid,
+          token,
+          startedAtMs,
+          eventId,
+          currentRecord.token,
+          currentRecord.startedAtMs,
+        )
+    : db
+        .prepare(
+          `INSERT INTO event_sync_throttles (
                event_id, owner_uid, token, started_at_ms
              ) VALUES (?, ?, ?, ?)
              ON CONFLICT (event_id) DO NOTHING`,
-          )
-          .bind(eventId, ownerUid, token, startedAtMs);
-    const result = await runMutation(statement);
-    if (result.meta.changes === 1) {
-      return {
-        committed: true,
-        decision: decision.decision,
-        value: cloneJson(next) as T,
-      };
-    }
-  }
-  throw new EventD1Conflict();
+        )
+        .bind(eventId, ownerUid, token, startedAtMs);
+  const result = await runCoordinationMutation(db, statement, options);
+  return result.meta.changes === 1
+    ? { applied: true, value: cloneJson(next) }
+    : { applied: false, value: null };
 }
 
-export function transactEventLease(
+export async function transactEventLease(
   db: EventD1Connection,
   key: string,
   updater: (
     current: EventLeaseRecord | null,
   ) => TransactionDecision<EventLeaseRecord>,
   options: { admission: EventWriteAdmission },
-) {
-  return transactEventCoordination(db, "lease", key, updater, options);
+): Promise<TransactionResult<EventLeaseRecord>> {
+  const eventId = exactKey(key);
+  if (!eventId) throw new EventD1Failure("invalid-event-path");
+  return runOptimisticTransaction({
+    maxAttempts: MAX_EVENT_TRANSACTION_ATTEMPTS,
+    read: () => readEventLease(db, eventId),
+    getValue: (current) => current,
+    decide: (current) => updater(current),
+    write: (current, value) =>
+      writeEventLease(db, eventId, current, value, options),
+    conflictError: () => new EventD1Conflict(),
+  });
 }
 
-export function transactEventSyncThrottle(
+export async function transactEventSyncThrottle(
   db: EventD1Connection,
   eventId: string,
   updater: (
     current: EventSyncThrottleRecord | null,
   ) => TransactionDecision<EventSyncThrottleRecord>,
   options: { admission: EventWriteAdmission },
-) {
-  return transactEventCoordination(db, "throttle", eventId, updater, options);
+): Promise<TransactionResult<EventSyncThrottleRecord>> {
+  eventId = exactKey(eventId);
+  if (!eventId) throw new EventD1Failure("invalid-event-path");
+  return runOptimisticTransaction({
+    maxAttempts: MAX_EVENT_TRANSACTION_ATTEMPTS,
+    read: () => readEventSyncThrottle(db, eventId),
+    getValue: (current) => current,
+    decide: (current) => updater(current),
+    write: (current, value) =>
+      writeEventSyncThrottle(db, eventId, current, value, options),
+    conflictError: () => new EventD1Conflict(),
+  });
 }

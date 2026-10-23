@@ -8,6 +8,7 @@ import {
   type MineRockResponse,
 } from "@mons/shared/mining";
 import { AuthApiFailure } from "./authErrors.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import { authJsonResponse } from "./authHttp.ts";
 import type { WorkerExecutionContext } from "./sessionAuth.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
@@ -80,19 +81,11 @@ function dateIsInRange(date: string, nowMs: number): boolean {
 }
 
 async function enforceMiningRateLimit(env: Env, uid: string): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await env.AUTH_RATE_LIMITER.limit({ key: `mining:${uid}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many mining attempts.",
-    );
-  }
+  return enforceRateLimit(
+    env.AUTH_RATE_LIMITER,
+    `mining:${uid}`,
+    "Too many mining attempts.",
+  );
 }
 
 async function mineRock(

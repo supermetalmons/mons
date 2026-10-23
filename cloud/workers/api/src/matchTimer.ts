@@ -21,6 +21,7 @@ import {
 } from "@mons/shared/rematches";
 import { Game } from "mons-rules";
 import { AuthApiFailure } from "./authErrors.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 import type { InviteAccessRepository } from "./gameplayContracts.ts";
 import {
@@ -182,38 +183,22 @@ export async function enforceMatchTimerRateLimit(
   rateLimiter: RateLimit,
   uid: string,
 ): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await rateLimiter.limit({ key: `timer:${uid}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many timer attempts.",
-    );
-  }
+  return enforceRateLimit(
+    rateLimiter,
+    `timer:${uid}`,
+    "Too many timer attempts.",
+  );
 }
 
 export async function enforceMatchTimerClaimRateLimit(
   rateLimiter: RateLimit,
   uid: string,
 ): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await rateLimiter.limit({ key: `timer-claim:${uid}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many timer claim attempts.",
-    );
-  }
+  return enforceRateLimit(
+    rateLimiter,
+    `timer-claim:${uid}`,
+    "Too many timer claim attempts.",
+  );
 }
 
 export async function startMatchTimer(

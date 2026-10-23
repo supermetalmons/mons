@@ -4,6 +4,7 @@ import {
   type SubmitMoveResponse,
 } from "@mons/shared/game-sessions";
 import { AuthApiFailure } from "./authErrors.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import {
   authorizeMatchMutation,
   type MatchMutationAdmissionDependencies,
@@ -19,19 +20,11 @@ export async function enforceMatchMoveRateLimit(
   rateLimiter: RateLimit,
   uid: string,
 ): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await rateLimiter.limit({ key: `match-move:${uid}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many move attempts.",
-    );
-  }
+  return enforceRateLimit(
+    rateLimiter,
+    `match-move:${uid}`,
+    "Too many move attempts.",
+  );
 }
 
 export async function submitMove(

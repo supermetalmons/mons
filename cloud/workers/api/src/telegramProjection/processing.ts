@@ -135,7 +135,7 @@ export async function processAutomatchTask(
   enqueueDelivery: (input: InitialTelegramDelivery) => Promise<unknown>,
   now: () => number,
   telegram: TelegramRepository,
-): Promise<string> {
+): Promise<"stale" | "dead" | "projected"> {
   const outbox = (await state.readAutomatchTelegramOutbox(task.inviteId)).value;
   if (!outbox || outbox.requestId !== task.requestId) {
     return "stale";
@@ -167,7 +167,7 @@ export async function processRatingTask(
   enqueueDelivery: (input: InitialTelegramDelivery) => Promise<unknown>,
   now: () => number,
   telegram: TelegramRepository,
-): Promise<string> {
+): Promise<"stale" | "dead" | "projected" | "duplicate"> {
   const update = await rating.readRatingUpdate(task.operationId);
   if (!update || update.telegramProjectionState !== "pending") {
     return "stale";

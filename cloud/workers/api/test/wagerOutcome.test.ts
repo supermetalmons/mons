@@ -2223,28 +2223,46 @@ function request(body: unknown): Request {
   });
 }
 
-test("rate limits outcome requests before repository work", async () => {
-  let reads = 0;
-  const response = await handleGameplayRoute(
-    request({ inviteId: "invite", matchId: "invite" }),
-    {
-      ...env,
-      AUTH_RATE_LIMITER: { limit: async () => ({ success: false }) },
-    } as Env,
-    context(),
-    {
-      repository: {
-        ...createRepository().repository,
-        readInviteMetadata: async () => {
-          reads += 1;
-          return null;
+test("rate limits outcome requests before repository work", async (t) => {
+  for (const unavailable of [false, true]) {
+    await t.test(unavailable ? "unavailable" : "denied", async () => {
+      let reads = 0;
+      const keys: string[] = [];
+      const rateLimiter: RateLimit = {
+        async limit({ key }) {
+          assert.equal(this, rateLimiter);
+          keys.push(key);
+          if (unavailable) throw new Error("private-rate-limit-detail");
+          return { success: false };
         },
-      },
-      verifyIdentity: async () => identity,
-    },
-  );
-  assert.equal(response.status, 429);
-  assert.equal(reads, 0);
+      };
+      const response = await handleGameplayRoute(
+        request({ inviteId: "invite", matchId: "invite" }),
+        { ...env, AUTH_RATE_LIMITER: rateLimiter } as Env,
+        context(),
+        {
+          repository: {
+            ...createRepository().repository,
+            readInviteMetadata: async () => {
+              reads += 1;
+              return null;
+            },
+          },
+          verifyIdentity: async () => identity,
+        },
+      );
+      assert.equal(response.status, unavailable ? 503 : 429);
+      assert.deepEqual(await response.json(), {
+        ok: false,
+        error: unavailable ? "unavailable" : "resource-exhausted",
+        message: unavailable
+          ? "rate-limit-unavailable"
+          : "Too many wager resolution attempts.",
+      });
+      assert.deepEqual(keys, [`wager-resolve:${identity.uid}`]);
+      assert.equal(reads, 0);
+    });
+  }
 });
 
 test("queues a durable retry before settling", async () => {

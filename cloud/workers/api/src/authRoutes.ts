@@ -26,6 +26,7 @@ import {
 } from "./sessionAuth.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 import { createRequestTiming } from "./requestTiming.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import {
   AuthApiFailure,
   authErrorResponse,
@@ -99,19 +100,11 @@ async function parseBody(request: Request): Promise<Record<string, unknown>> {
 }
 
 async function enforceAuthRateLimit(env: Env, key: string): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await env.AUTH_RATE_LIMITER.limit({ key });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many auth attempts.",
-    );
-  }
+  return enforceRateLimit(
+    env.AUTH_RATE_LIMITER,
+    key,
+    "Too many auth attempts.",
+  );
 }
 
 async function handleBeginIntent(

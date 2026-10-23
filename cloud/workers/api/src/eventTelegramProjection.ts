@@ -200,7 +200,15 @@ export async function processEventProjectionTask(
     repository: Pick<TelegramAnnouncementRepository, "get">;
     chatId: string;
   },
-): Promise<string> {
+): Promise<
+  | "stale"
+  | "missing"
+  | "not-v2"
+  | "skip"
+  | "unchanged"
+  | "projected"
+  | "superseded"
+> {
   const outbox = parseEventProjectionOutbox(
     await state.readEventTelegramProjectionOutbox(task.eventId),
   );

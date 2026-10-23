@@ -165,6 +165,11 @@ test("authenticates and rate limits before reading the request body", async () =
     { verifyIdentity },
   );
   assert.equal(limited.status, 429);
+  assert.deepEqual(await responseJson(limited), {
+    ok: false,
+    error: "resource-exhausted",
+    message: "Too many mining attempts.",
+  });
   assert.equal(limitedRequest.bodyUsed, false);
   assert.deepEqual(keys, ["mining:login-uid"]);
 

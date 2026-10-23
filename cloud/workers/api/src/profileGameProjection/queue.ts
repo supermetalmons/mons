@@ -1,30 +1,13 @@
 import { ackQueueMessage, retryQueueMessage } from "../queueMessage.ts";
-import { createGameplayRepository } from "../gameplayRepository.ts";
-import { createRatingRepository } from "../ratingRepository.ts";
-import {
-  createEventGameplayRepository,
-  createEventProgressOutboxWriter,
-} from "../eventRepository.ts";
-import { createEventProfileGameProjectionState } from "../eventProfileGameProjectionState.ts";
-import {
-  createEventProfileGameProjectionRuntime,
-  createProfileGameProjectionRuntime,
-} from "../profileGameProjectionRepository.ts";
 import { parseProfileGameProjectionTask } from "../profileGameProjectionTasks.ts";
-import { createProfileLinkProjectionRuntime } from "../profileLinkProfileGameProjection.ts";
-import {
-  createProfileGameProjectionLockStore,
-  ProfileGameProjectionLockFailure,
-} from "../profileGameProjectionLocksD1.ts";
-import { createProfileLinkCatchupStore } from "../profileLinkCatchupD1.ts";
-import {
-  processAutomatchProfileGameProjection,
-  processEventProfileGameProjection,
-  processProfileLinkProfileGameProjection,
-  processRatingProfileGameProjection,
-} from "./processing.ts";
+import { ProfileGameProjectionLockFailure } from "../profileGameProjectionLocksD1.ts";
 import { profileGameProjectionRetryDelaySeconds } from "./policy.ts";
 import type { ProfileGameProjectionQueueDependencies } from "./types.ts";
+import {
+  createProfileGameProjectionBatchDependencies,
+  createEventProfileGameProjectionBatchDependencies,
+  runProfileGameProjectionTask,
+} from "./taskRunner.ts";
 
 export async function handleProfileGameProjectionMessage(
   message: Message<unknown>,
@@ -68,102 +51,15 @@ export async function handleProfileGameProjectionMessage(
       });
       return;
     }
-    const ownerId = crypto.randomUUID();
-    let status: string;
-    if (task.kind === "event-profile-game-projection") {
-      status = await processEventProfileGameProjection(
-        task,
-        (
-          dependencies.createEventStateRepository ||
-          dependencies.createStateRepository ||
-          createEventProfileGameProjectionState
-        )(env),
-        (
-          dependencies.createEventRuntime ||
-          createEventProfileGameProjectionRuntime
-        )(env),
-        ownerId,
-        now,
-      );
-    } else {
-      const state = (
-        dependencies.createStateRepository ||
-        ((workerEnv: Env) => createEventGameplayRepository(workerEnv))
-      )(env);
-      const runtime = (
-        dependencies.createRuntime || createProfileGameProjectionRuntime
-      )(env);
-      const locks = (
-        dependencies.createLocks ||
-        ((workerEnv: Env) =>
-          createProfileGameProjectionLockStore(workerEnv.PROFILE_GAMES_DB))
-      )(env);
-      if (task.kind === "automatch-profile-game-projection") {
-        status = await processAutomatchProfileGameProjection(
-          task,
-          state,
-          runtime,
-          locks,
-          ownerId,
-          now,
-          logger,
-        );
-        if (status === "continued") {
-          await env.PROFILE_GAME_PROJECTION_QUEUE.send(task);
-        }
-      } else if (task.kind === "profile-link-profile-game-projection") {
-        status = await processProfileLinkProfileGameProjection(
-          task,
-          (
-            dependencies.createProfileLinkJobs ||
-            ((workerEnv: Env) =>
-              createProfileLinkCatchupStore(workerEnv.PROFILE_DB))
-          )(env),
-          async (input) => {
-            if (dependencies.processProfileLink) {
-              return dependencies.processProfileLink(input);
-            }
-            const linkLogger = {
-              error(event: string, context?: unknown) {
-                logger.error(JSON.stringify({ event, context }));
-              },
-              info(event: string, context?: unknown) {
-                logger.info(JSON.stringify({ event, context }));
-              },
-            };
-            return createProfileLinkProjectionRuntime(env, {
-              logger: linkLogger,
-              now,
-              projection: runtime,
-              state,
-              withInviteProjectionLock: input.withInviteProjectionLock,
-            }).process(input);
-          },
-          locks,
-          ownerId,
-          now,
-        );
-        if (status === "continued") {
-          await env.PROFILE_GAME_PROJECTION_QUEUE.send(task);
-        }
-      } else {
-        status = await processRatingProfileGameProjection(
-          task.operationId,
-          (
-            dependencies.createRating ||
-            ((workerEnv: Env) =>
-              createRatingRepository(
-                workerEnv.PROFILE_DB,
-                createGameplayRepository(workerEnv),
-                createEventProgressOutboxWriter(workerEnv.EVENT_DB),
-              ))
-          )(env),
-          runtime,
-          now,
-          locks,
-          ownerId,
-        );
-      }
+    const status = await runProfileGameProjectionTask(
+      task,
+      env,
+      dependencies,
+      now,
+      logger,
+    );
+    if (status === "continued") {
+      await env.PROFILE_GAME_PROJECTION_QUEUE.send(task);
     }
     ackQueueMessage(message, {
       entry: {
@@ -199,18 +95,9 @@ export async function handleProfileGameProjectionQueue(
   batch: MessageBatch<unknown>,
   env: Env,
 ): Promise<void> {
-  const state = createEventGameplayRepository(env);
-  const rating = createRatingRepository(env.PROFILE_DB, state, state);
-  const runtime = createProfileGameProjectionRuntime(env, { state });
-  const locks = createProfileGameProjectionLockStore(env.PROFILE_GAMES_DB);
+  const dependencies = createProfileGameProjectionBatchDependencies(env);
   for (const message of batch.messages) {
-    await handleProfileGameProjectionMessage(message, env, {
-      forwardEventTasks: true,
-      createLocks: () => locks,
-      createRating: () => rating,
-      createStateRepository: () => state,
-      createRuntime: () => runtime,
-    });
+    await handleProfileGameProjectionMessage(message, env, dependencies);
   }
 }
 
@@ -218,8 +105,7 @@ export async function handleEventProfileGameProjectionQueue(
   batch: MessageBatch<unknown>,
   env: Env,
 ): Promise<void> {
-  const state = createEventProfileGameProjectionState(env);
-  const eventRuntime = createEventProfileGameProjectionRuntime(env, { state });
+  const dependencies = createEventProfileGameProjectionBatchDependencies(env);
   for (const message of batch.messages) {
     if (
       parseProfileGameProjectionTask(message.body)?.kind !==
@@ -234,9 +120,6 @@ export async function handleEventProfileGameProjectionQueue(
       });
       continue;
     }
-    await handleProfileGameProjectionMessage(message, env, {
-      createEventRuntime: () => eventRuntime,
-      createEventStateRepository: () => state,
-    });
+    await handleProfileGameProjectionMessage(message, env, dependencies);
   }
 }

@@ -24,6 +24,7 @@ import type {
 import { MATCH_TIMER_TERMINAL } from "@mons/shared/timers";
 import { resolveMatch } from "mons-rules";
 import { AuthApiFailure } from "./authErrors.ts";
+import { enforceRateLimit } from "./rateLimit.ts";
 import type { RequestIdentity } from "./requestIdentity.ts";
 import type {
   GameplayRepository,
@@ -429,19 +430,11 @@ export async function enforceWagerOutcomeRateLimit(
   rateLimiter: RateLimit,
   uid: string,
 ): Promise<void> {
-  let outcome: RateLimitOutcome;
-  try {
-    outcome = await rateLimiter.limit({ key: `wager-resolve:${uid}` });
-  } catch {
-    throw new AuthApiFailure(503, "unavailable", "rate-limit-unavailable");
-  }
-  if (!outcome.success) {
-    throw new AuthApiFailure(
-      429,
-      "resource-exhausted",
-      "Too many wager resolution attempts.",
-    );
-  }
+  return enforceRateLimit(
+    rateLimiter,
+    `wager-resolve:${uid}`,
+    "Too many wager resolution attempts.",
+  );
 }
 
 export async function resolveWagerOutcome(

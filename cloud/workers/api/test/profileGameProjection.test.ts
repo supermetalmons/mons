@@ -1984,6 +1984,142 @@ test("profile game projection Queue acknowledges poison and retries transient wo
   ]);
 });
 
+test("projection Queue constructs only the selected task dependencies for each message", async (t) => {
+  const calls: string[] = [];
+  const createOwner = crypto.randomUUID.bind(crypto);
+  t.mock.method(crypto, "randomUUID", () => {
+    calls.push("owner");
+    return createOwner();
+  });
+  const factory =
+    <T>(name: string, value: T) =>
+    () => {
+      calls.push(name);
+      return value;
+    };
+  const dependencies = {
+    createStateRepository: factory("state", projectionLockState()),
+    createRuntime: factory("runtime", runtime([])),
+    createEventRuntime: factory("event-runtime", eventRuntime([])),
+    createLocks: factory("locks", locks),
+    createProfileLinkJobs: factory("jobs", profileLinkJobs()),
+    createRating: factory(
+      "rating",
+      ratingRepository(null, { marks: [], patches: [] }),
+    ),
+    logger: silentLogger,
+  };
+  const cases: Array<[ProfileGameProjectionTask, string[]]> = [
+    [automatchTask(), ["owner", "state", "runtime", "locks"]],
+    [eventTask(), ["owner", "state", "event-runtime"]],
+    [profileLinkTask(), ["owner", "state", "runtime", "locks", "jobs"]],
+    [
+      { kind: "rating-profile-game-projection", operationId },
+      ["owner", "state", "runtime", "locks", "rating"],
+    ],
+  ];
+  for (const [task, expected] of cases) {
+    calls.length = 0;
+    for (let index = 0; index < 2; index++) {
+      const tracked = queueMessage(task);
+      await handleProfileGameProjectionMessage(
+        tracked.message,
+        TELEGRAM_TEST_ENV,
+        dependencies,
+      );
+      assert.equal(tracked.acknowledgements(), 1);
+      assert.deepEqual(tracked.retries, []);
+    }
+    assert.deepEqual(calls, [...expected, ...expected]);
+  }
+});
+
+test("projection Queue preserves acknowledgement and retry boundaries when logging fails", async () => {
+  const invalid = queueMessage({ invalid: true });
+  await assert.rejects(
+    handleProfileGameProjectionMessage(invalid.message, TELEGRAM_TEST_ENV, {
+      logger: {
+        info() {},
+        error() {
+          throw new Error("invalid-log-failed");
+        },
+      },
+    }),
+    /invalid-log-failed/,
+  );
+  assert.equal(invalid.acknowledgements(), 1);
+  assert.deepEqual(invalid.retries, []);
+  const processed = queueMessage(automatchTask(), 3);
+  const errors: unknown[] = [];
+  await handleProfileGameProjectionMessage(
+    processed.message,
+    TELEGRAM_TEST_ENV,
+    {
+      createStateRepository: () => projectionLockState(),
+      createRuntime: () => runtime([]),
+      createLocks: () => locks,
+      logger: {
+        info() {
+          throw new Error("processed-log-failed");
+        },
+        error: (entry) => errors.push(JSON.parse(String(entry))),
+      },
+    },
+  );
+  assert.equal(processed.acknowledgements(), 1);
+  assert.deepEqual(processed.retries, [{ delaySeconds: 4 }]);
+  assert.equal((errors[0] as { code: string }).code, "processed-log-failed");
+});
+
+test("automatch Queue waits for continuation delivery and acknowledges deferred work without sending", async () => {
+  for (const status of ["continued", "deferred"] as const) {
+    const tracked = queueMessage(automatchTask());
+    const sending = Promise.withResolvers<void>();
+    const release = Promise.withResolvers<void>();
+    const sent: unknown[] = [];
+    const values = new Map<string, unknown>([
+      [
+        "profileGameProjectionOutbox/automatch/auto_aaaaaaaaaaa",
+        automatchOutbox(),
+      ],
+    ]);
+    const processing = handleProfileGameProjectionMessage(
+      tracked.message,
+      {
+        ...TELEGRAM_TEST_ENV,
+        PROFILE_GAME_PROJECTION_QUEUE: {
+          ...TELEGRAM_TEST_ENV.PROFILE_GAME_PROJECTION_QUEUE,
+          async send(task) {
+            sent.push(task);
+            sending.resolve();
+            await release.promise;
+            return TELEGRAM_TEST_ENV.PROFILE_GAME_PROJECTION_QUEUE.send();
+          },
+        },
+      },
+      {
+        createStateRepository: () => ({
+          ...projectionLockState(values),
+          finishAutomatchProfileOutbox: async () => status,
+        }),
+        createRuntime: () => runtime([]),
+        createLocks: () => locks,
+        logger: silentLogger,
+      },
+    );
+    if (status === "continued") {
+      await sending.promise;
+      assert.equal(tracked.acknowledgements(), 0);
+      assert.equal(lockValues.size, 0);
+      release.resolve();
+    }
+    await processing;
+    assert.equal(tracked.acknowledgements(), 1);
+    assert.deepEqual(tracked.retries, []);
+    assert.deepEqual(sent, status === "continued" ? [automatchTask()] : []);
+  }
+});
+
 test("automatch Queue retries transient work without settling its outbox", async () => {
   const failed = queueMessage(automatchTask(), 3);
   const outboxPath = "profileGameProjectionOutbox/automatch/auto_aaaaaaaaaaa";
@@ -2060,7 +2196,9 @@ test("profile-link Queue immediately dispatches the next capped page", async () 
     [loginUid, profileLinkJob()],
   ]);
   const sent: unknown[] = [];
-  await handleProfileGameProjectionMessage(
+  const sending = Promise.withResolvers<void>();
+  const release = Promise.withResolvers<void>();
+  const processing = handleProfileGameProjectionMessage(
     message.message,
     {
       ...TELEGRAM_TEST_ENV,
@@ -2068,6 +2206,8 @@ test("profile-link Queue immediately dispatches the next capped page", async () 
         ...TELEGRAM_TEST_ENV.PROFILE_GAME_PROJECTION_QUEUE,
         send: async (body: unknown) => {
           sent.push(body);
+          sending.resolve();
+          await release.promise;
           return {
             metadata: { metrics: { backlogCount: 0, backlogBytes: 0 } },
           };
@@ -2087,6 +2227,12 @@ test("profile-link Queue immediately dispatches the next capped page", async () 
       }),
     },
   );
+  await sending.promise;
+  assert.equal(message.acknowledgements(), 0);
+  assert.equal(values.get(loginUid)?.matchCursor, "match-300");
+  assert.equal(lockValues.size, 0);
+  release.resolve();
+  await processing;
   assert.equal(message.acknowledgements(), 1);
   assert.deepEqual(sent, [profileLinkTask()]);
   assert.deepEqual(
