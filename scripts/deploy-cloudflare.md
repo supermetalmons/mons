@@ -166,6 +166,24 @@ npm run check:all
 
 The gate covers the browser, Worker, generated bindings, tooling, portable runtime, and dependency boundaries. It needs no Java or external database emulator. For routine narrow changes, run the relevant checks and reuse successful unchanged validation lanes. A frontend candidate preparation performs its build and client checks; avoid rebuilding it separately.
 
+## Reusable local admin fixture
+
+Authenticated deployment checks reuse the protected local fixture for ETH `0xE26067c76fdbe877F48b0a8400cf5Db8B47aF0fE`. Use or refresh this fixture before asking the user for credentials. Its files live outside the repository in `/Users/ivan/.codex/secure/mons-link/`:
+
+- `admin-session.json`: persistent session credentials, including refresh and revoke capabilities.
+- `admin-auth.json`: smoke authentication with exactly `uid`, `sessionId`, `accessToken`, `accessExpiresAtMs`, and `refreshToken`.
+- `admin-profile.json`: the profile fixture consumed by authenticated smoke checks.
+- `admin-identity.json`: the expected ETH and canonical admin identity.
+
+Run the local helper from the repository root before authenticated verification:
+
+```sh
+node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON /Users/ivan/.codex/secure/mons-link/refresh-admin-session.mjs
+npm run smoke:api -- --base-url https://api.mons.link --read-only --auth-token-fixture /Users/ivan/.codex/secure/mons-link/admin-auth.json --smoke-profile-fixture /Users/ivan/.codex/secure/mons-link/admin-profile.json
+```
+
+The helper verifies the ETH identity, canonical profile, and admin access. Access JWTs last five minutes; the refresh capability remains reusable until revoked. Keep these files protected, never print or commit tokens, and never revoke the persistent admin session during temporary smoke-fixture cleanup. If refresh or identity/admin verification fails, stop authenticated checks and investigate; a deliberate revocation must fail closed. Never overwrite or restore session or ownership rows to reactivate the fixture, or change runtime authentication policy to keep it working.
+
 ## API Worker release
 
 This is the routine path after the existing namespace is provisioned, with no lifecycle or incompatible state change. Record the current version, upload the validated candidate during preparation, then promote its explicit Version ID and run the standard smoke once:
