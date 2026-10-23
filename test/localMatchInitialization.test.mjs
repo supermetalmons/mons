@@ -21,6 +21,8 @@ registerHooks({
   },
 });
 
+const { createGameControlsStore } =
+  await import("../src/game/gameControlsStore.ts");
 const { createSessionControlsPresenter } =
   await import("../src/game/sessionControls.ts");
 const { createRemoteMoveSyncController } =
@@ -43,6 +45,7 @@ const source = ts.createSourceFile(
 );
 const declarations = [
   "publishGameControlsContext",
+  "resetMatchConnectionFlags",
   "initializeLocalMatch",
   "startFreshLocalMatch",
   "startBotMatch",
@@ -75,7 +78,7 @@ const declarations = [
   return declaration.getText(source).replace(/^export /, "");
 });
 
-function harness({ bot = false } = {}) {
+function harness({ bot = false, reconnecting = false } = {}) {
   const originalGame = variants.createGameModelForStoredVariant(randomVariant);
   const contexts = [];
   const initial = {
@@ -88,7 +91,7 @@ function harness({ bot = false } = {}) {
     isGameWithBot: bot,
     isGameOver: true,
     isReconnect: true,
-    didConnect: true,
+    didConnect: !reconnecting,
     isWaitingForInviteToGetAccepted: true,
     isWaitingForRematchResponse: true,
     flashbackMode: true,
@@ -108,6 +111,23 @@ function harness({ bot = false } = {}) {
     botPlayerColor: MonsRules.Color.White,
     lastBotMoveTimestamp: 1234,
   };
+  const controlsStore = createGameControlsStore({
+    duration: 60,
+    progress: 15,
+    requestDate: 1000,
+  });
+  controlsStore.updateContext({
+    ...Object.fromEntries(
+      Object.keys(controlsStore.getSnapshot().context)
+        .filter((key) => Object.hasOwn(initial, key))
+        .map((key) => [key, initial[key]]),
+    ),
+    sessionId: 1,
+  });
+  const observedSnapshots = [];
+  controlsStore.subscribe(() =>
+    observedSnapshots.push(controlsStore.getSnapshot()),
+  );
   const ui = {};
   const renders = [];
   const automoves = [];
@@ -154,6 +174,8 @@ function harness({ bot = false } = {}) {
     timerMatchId: timerHarness.controller.getMatchId(),
     ui: { ...ui },
     renderCount: renders.length,
+    snapshot: controlsStore.getSnapshot(),
+    notifications: observedSnapshots.length,
   });
   const noop = () => {};
   const setters = [
@@ -179,7 +201,11 @@ function harness({ bot = false } = {}) {
     matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
-    updateGameControlsContext: (context) => contexts.push(context),
+    batchGameControlsUpdates: controlsStore.batchUpdates,
+    updateGameControlsContext: (context) => {
+      controlsStore.updateContext(context);
+      contexts.push(context);
+    },
     initial,
     MonsRules,
     ...variants,
@@ -213,6 +239,56 @@ function harness({ bot = false } = {}) {
     dismissNotificationBannerIfNeeded: noop,
     automove: () => automoves.push(capture()),
   };
+  for (const [name, key] of Object.entries({
+    setHomeVisible: "homeVisible",
+    setBotGameOptionVisible: "botGameVisible",
+    setNavigationListButtonVisible: "navigationVisible",
+    showMoveHistoryButton: "moveHistoryVisible",
+    showVoiceReactionButton: "voiceReactionVisible",
+    setEndMatchVisible: "endMatchVisible",
+    setEndMatchConfirmed: "endMatchConfirmed",
+    showWaitingStateText: "waitingText",
+  })) {
+    const command = dependencies[name];
+    dependencies[name] = (value) => {
+      controlsStore.updatePresentation({ [key]: value });
+      command(value);
+    };
+  }
+  for (const [name, action] of Object.entries({
+    setUndoVisible: (visible) => ({ type: "setUndoVisible", visible }),
+    setAutomoveActionVisible: (visible) => ({
+      type: "setAutomoveVisible",
+      visible,
+    }),
+    setAutomoveActionEnabled: (enabled) => ({
+      type: "setAutomoveEnabled",
+      enabled,
+    }),
+    showResignButton: () => ({ type: "showResign" }),
+  })) {
+    const command = dependencies[name];
+    dependencies[name] = (...args) => {
+      controlsStore.dispatchGameControls(action(...args));
+      command(...args);
+    };
+  }
+  for (const [name, presentation] of Object.entries({
+    setBrushAndNavigationButtonDimmed: (dimmed) => ({
+      navigationDimmed: dimmed,
+      appearanceDimmed: dimmed,
+    }),
+    setInviteLinkActionVisible: (visible) => ({
+      inviteLinkVisible: visible,
+      ...(!visible ? { inviteReadyToCopy: false } : {}),
+    }),
+  })) {
+    const command = dependencies[name];
+    dependencies[name] = (value) => {
+      controlsStore.updatePresentation(presentation(value));
+      command(value);
+    };
+  }
   Object.assign(dependencies, createSessionControlsPresenter(dependencies));
   const { outputText } = ts.transpileModule(
     `${Object.keys(initial)
@@ -241,6 +317,8 @@ function harness({ bot = false } = {}) {
       ...api.state(),
       timerMatchId: timerHarness.controller.getMatchId(),
     }),
+    controlsStore,
+    observedSnapshots,
     contexts,
     originalGame,
     ui,
@@ -308,6 +386,13 @@ test("local rematch clears historical and terminal state while preserving histor
   const h = harness();
   h.rematch();
   h.assertVerificationReset();
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  for (const render of h.renders) {
+    assert.equal(render.notifications, 0);
+    assert.equal(render.snapshot.context.boardViewMode, "activeLive");
+    assert.equal(render.snapshot.context.isGameOver, false);
+    assert.equal(render.snapshot.presentation.gameControls.resignVisible, true);
+  }
   const state = h.state();
   assertFreshMatch(state, false);
   assert.equal(h.renders.length, 1);
@@ -341,10 +426,19 @@ test("white bot start opens with one automove only after the new model, colors a
   const h = harness();
   h.startBot();
   h.assertVerificationReset();
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  for (const render of h.renders) {
+    assert.equal(render.notifications, 0);
+    assert.equal(render.snapshot.context.boardViewMode, "activeLive");
+    assert.equal(render.snapshot.context.isGameOver, false);
+    assert.equal(render.snapshot.presentation.gameControls.resignVisible, true);
+  }
   assert.equal(h.contexts.at(-1).isGameWithBot, true);
   assert.equal(h.contexts.at(-1).isGameOver, false);
   assert.equal(h.automoves.length, 1);
   const started = h.automoves[0];
+  assert.equal(started.notifications, 0);
+  assert.equal(started.snapshot, h.controlsStore.getSnapshot());
   assertFreshMatch(started, true);
   assert.notEqual(started.game, h.originalGame);
   assert.equal(started.game.variant, randomVariant);
@@ -372,6 +466,13 @@ test("bot rematch preserves the previous game, switches the bot to black and wai
   const h = harness({ bot: true });
   h.rematch();
   h.assertVerificationReset();
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  for (const render of h.renders) {
+    assert.equal(render.notifications, 0);
+    assert.equal(render.snapshot.context.boardViewMode, "activeLive");
+    assert.equal(render.snapshot.context.isGameOver, false);
+    assert.equal(render.snapshot.presentation.gameControls.resignVisible, true);
+  }
   const state = h.state();
   assertFreshMatch(state, true);
   assert.equal(state.botPlayerColor, MonsRules.Color.Black);
@@ -391,4 +492,21 @@ test("bot rematch preserves the previous game, switches the bot to black and wai
   assert.notEqual(h.renders[0].game, h.originalGame);
   assertPlayableControls(h.renders[0].ui);
   assert.equal(h.automoves.length, 0);
+});
+
+test("a rematch while reconnecting returns without publishing controls or starting a match", () => {
+  const h = harness({ reconnecting: true });
+  const before = h.controlsStore.getSnapshot();
+  const state = h.state();
+  h.controlsStore.batchUpdates(() => {
+    assert.equal(h.rematch(), undefined);
+    assert.equal(h.controlsStore.getSnapshot(), before);
+    assert.deepEqual(h.observedSnapshots, []);
+  });
+  assert.deepEqual(h.state(), state);
+  assert.deepEqual(h.renders, []);
+  assert.deepEqual(h.seeds, []);
+  assert.deepEqual(h.observedSnapshots, []);
+  h.controlsStore.updatePresentation({ homeVisible: true });
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
 });

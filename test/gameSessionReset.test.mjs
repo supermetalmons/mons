@@ -19,6 +19,8 @@ registerHooks({
   },
 });
 
+const { createGameControlsStore } =
+  await import("../src/game/gameControlsStore.ts");
 const { createSessionControlsPresenter } =
   await import("../src/game/sessionControls.ts");
 const { createRemoteMoveSyncController } =
@@ -138,6 +140,24 @@ function harness({
       scores: { white: 0, black: 0 },
     },
   };
+  const controlsStore = createGameControlsStore({
+    duration: 60,
+    progress: 15,
+    requestDate: 1000,
+  });
+  controlsStore.updateContext({
+    ...Object.fromEntries(
+      Object.keys(controlsStore.getSnapshot().context)
+        .filter((key) => Object.hasOwn(initial, key))
+        .map((key) => [key, initial[key]]),
+    ),
+    sessionId: 1,
+  });
+  const observedSnapshots = [];
+  const observerSnapshots = [];
+  controlsStore.subscribe(() =>
+    observedSnapshots.push(controlsStore.getSnapshot()),
+  );
   const remoteMoveSync = createRemoteMoveSyncController({
     getGame: () => api?.state().game ?? initial.game,
     getActiveMatchId: () => "old",
@@ -172,7 +192,12 @@ function harness({
   timerHarness.controller.setStash("old", "white", "old-white");
   timerHarness.controller.setStash("old", "black", "old-black");
   timerHarness.controller.startCooldown("old");
-  const capture = (name) =>
+  const capture = (name) => {
+    observerSnapshots.push({
+      name,
+      snapshot: controlsStore.getSnapshot(),
+      notifications: observedSnapshots.length,
+    });
     events.push([
       name,
       {
@@ -185,6 +210,7 @@ function harness({
         waiting: api.state().isWaitingForInviteToGetAccepted,
       },
     ]);
+  };
   initial.watchOnlyListeners.add(() => capture("watcher"));
   const noop = () => {};
   const setterNames = [
@@ -233,7 +259,9 @@ function harness({
     matchTimers: timerHarness.controller,
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
+    batchGameControlsUpdates: controlsStore.batchUpdates,
     updateGameControlsContext: (context) => {
+      controlsStore.updateContext(context);
       contexts.push(context);
       events.push(["context", context]);
     },
@@ -333,6 +361,63 @@ function harness({
       events.push(["control", "disableAndHideUndoResignAndTimerControls"]),
     createLegacyBoardSquareTypeGrid: () => "legacy-grid",
   };
+  for (const [name, key] of Object.entries({
+    setHomeVisible: "homeVisible",
+    setNavigationListButtonVisible: "navigationVisible",
+    setBotGameOptionVisible: "botGameVisible",
+    setPlaySamePuzzleAgainButtonVisible: "replayPuzzleVisible",
+    setWatchOnlyVisible: "watchOnlyVisible",
+    showVoiceReactionButton: "voiceReactionVisible",
+    showMoveHistoryButton: "moveHistoryVisible",
+    setEndMatchVisible: "endMatchVisible",
+    setEndMatchConfirmed: "endMatchConfirmed",
+    showWaitingStateText: "waitingText",
+  })) {
+    const command = dependencies[name];
+    dependencies[name] = (value) => {
+      controlsStore.updatePresentation({ [key]: value });
+      command(value);
+    };
+  }
+  for (const [name, action] of Object.entries({
+    setUndoVisible: (visible) => ({ type: "setUndoVisible", visible }),
+    setUndoEnabled: (enabled) => ({ type: "setUndoEnabled", enabled }),
+    setAutomoveActionVisible: (visible) => ({
+      type: "setAutomoveVisible",
+      visible,
+    }),
+    setAutomoveActionEnabled: (enabled) => ({
+      type: "setAutomoveEnabled",
+      enabled,
+    }),
+    showPrimaryAction: (action) => ({ type: "setPrimaryAction", action }),
+    hideTimerButtons: () => ({ type: "hideTimers" }),
+    disableAndHideUndoResignAndTimerControls: () => ({
+      type: "hideGameControls",
+    }),
+  })) {
+    const command = dependencies[name];
+    dependencies[name] = (...args) => {
+      controlsStore.dispatchGameControls(action(...args));
+      command(...args);
+    };
+  }
+  for (const [name, presentation] of Object.entries({
+    setBrushAndNavigationButtonDimmed: (dimmed) => ({
+      navigationDimmed: dimmed,
+      appearanceDimmed: dimmed,
+    }),
+    setInviteLinkActionVisible: (visible) => ({
+      inviteLinkVisible: visible,
+      ...(!visible ? { inviteReadyToCopy: false } : {}),
+    }),
+  })) {
+    const command = dependencies[name];
+    dependencies[name] = (value) => {
+      controlsStore.updatePresentation(presentation(value));
+      command(value);
+    };
+  }
   Object.assign(dependencies, createSessionControlsPresenter(dependencies));
   const keys = Object.keys(initial);
   const { outputText } = ts.transpileModule(
@@ -353,6 +438,9 @@ function harness({
   return {
     ...api,
     remoteMoveSync,
+    controlsStore,
+    observedSnapshots,
+    observerSnapshots,
     contexts,
     events,
     ui,
@@ -372,6 +460,7 @@ for (const action of ["go", "disposeGameSession"]) {
     const h = harness();
     await h[action](home);
     const state = h.state();
+    assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
     assert.deepEqual(h.contexts.at(-1), {
       sessionId: 1,
       isOnlineGame: false,
@@ -502,8 +591,28 @@ for (const [action, pendingAutomatch] of [
       currentInputs: ["old-selection"],
       selectedProblem: "old-problem",
     });
+    h.controlsStore.updateContext({ isWatchOnly: true });
+    h.observedSnapshots.length = 0;
+    h.observerSnapshots.length = 0;
     h.events.length = 0;
     await h[action](home);
+    assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+    assert.ok(
+      h.observerSnapshots.every(({ notifications }) => notifications === 0),
+    );
+    assert.deepEqual(
+      h.observerSnapshots.map(({ name, snapshot }) => [
+        name,
+        snapshot.context.isWatchOnly,
+      ]),
+      action === "go"
+        ? [
+            ["wager-notify", true],
+            ["wager-notify", true],
+            ["watcher", false],
+          ]
+        : [["watcher", false]],
+    );
     const meaningful = h.events.filter(([name]) =>
       [
         "unsubscribe",
@@ -719,7 +828,39 @@ for (const scenario of routeCases) {
         showWaitingStateText: "retained",
         showPrimaryAction: "rematch",
       });
+      h.controlsStore.updatePresentation({
+        endMatchVisible: true,
+        endMatchConfirmed: true,
+        waitingText: "retained",
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setAutomoveEnabled",
+        enabled: false,
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setUndoEnabled",
+        enabled: true,
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setPrimaryAction",
+        action: "rematch",
+      });
+      h.observedSnapshots.length = 0;
+      const before = h.controlsStore.getSnapshot();
       await h.go(scenario.route);
+      const after = h.controlsStore.getSnapshot();
+      assert.deepEqual(h.observedSnapshots, after === before ? [] : [after]);
+      assert.deepEqual(after.context, h.contexts.at(-1));
+      assert.equal(after.presentation.endMatchVisible, true);
+      assert.equal(after.presentation.endMatchConfirmed, true);
+      assert.equal(after.presentation.waitingText, "retained");
+      assert.equal(after.presentation.gameControls.automove.enabled, false);
+      assert.equal(after.presentation.gameControls.undo.enabled, true);
+      assert.equal(after.presentation.gameControls.primaryAction, "rematch");
+      assert.equal(
+        after.presentation.gameControls.timer.config,
+        before.presentation.gameControls.timer.config,
+      );
       assert.deepEqual(controlCalls(h.events), [
         ["setIslandButtonDimmed", false],
         ...scenario.controls,
@@ -779,6 +920,7 @@ test("invalid snapshot startup throws before route controls and board completion
   const route = { mode: "snapshot", path: "snapshot/bad", snapshotId: "bad" };
   const h = harness({ route, snapshotValid: false });
   await assert.rejects(h.go(route), /invalid-snapshot-route/);
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
   assert.deepEqual(controlCalls(h.events), [["setIslandButtonDimmed", false]]);
   assert.deepEqual(h.events.at(-1), ["load-snapshot", "bad"]);
   assert.equal(
@@ -791,6 +933,13 @@ test("invalid snapshot startup throws before route controls and board completion
   assert.equal(
     h.events.some(([name]) => name === "content-ready"),
     false,
+  );
+  h.observedSnapshots.length = 0;
+  await h.go(home);
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  assert.equal(
+    h.controlsStore.getSnapshot().presentation.inviteLinkVisible,
+    true,
   );
 });
 
@@ -856,8 +1005,55 @@ for (const preserve of [false, true]) {
         showWaitingStateText: "old",
         showPrimaryAction: "rematch",
       });
+      h.controlsStore.updateContext({ isWatchOnly: true });
+      h.controlsStore.updatePresentation({
+        watchOnlyVisible: true,
+        voiceReactionVisible: true,
+        moveHistoryVisible: true,
+        endMatchVisible: true,
+        endMatchConfirmed: true,
+        waitingText: "old",
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setUndoVisible",
+        visible: true,
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setUndoEnabled",
+        enabled: true,
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setAutomoveVisible",
+        visible: true,
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setAutomoveEnabled",
+        enabled: false,
+      });
+      h.controlsStore.dispatchGameControls({
+        type: "setPrimaryAction",
+        action: "rematch",
+      });
+      h.observedSnapshots.length = 0;
       h.events.length = 0;
       h.disposeGameSession(invite());
+      assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+      const { presentation } = h.controlsStore.getSnapshot();
+      assert.equal(presentation.watchOnlyVisible, false);
+      assert.equal(presentation.voiceReactionVisible, false);
+      assert.equal(presentation.moveHistoryVisible, false);
+      assert.equal(presentation.endMatchVisible, false);
+      assert.equal(presentation.endMatchConfirmed, false);
+      assert.equal(presentation.waitingText, "");
+      assert.deepEqual(presentation.gameControls.undo, {
+        visible: false,
+        enabled: false,
+      });
+      assert.deepEqual(presentation.gameControls.automove, {
+        visible: false,
+        enabled: true,
+      });
+      assert.equal(presentation.gameControls.primaryAction, "none");
       assert.deepEqual(controlCalls(h.events), [
         ["setIslandButtonDimmed", preserve],
         ["setHomeVisible", preserve],

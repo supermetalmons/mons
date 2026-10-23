@@ -21,6 +21,8 @@ registerHooks({
 
 const { countRecordedMovesInHistoricalPair, getTrustedGameFromMatchPair } =
   await import("../src/game/historicalMatchModels.ts");
+const { createGameControlsStore } =
+  await import("../src/game/gameControlsStore.ts");
 
 const source = ts.createSourceFile(
   "gameController.ts",
@@ -66,6 +68,11 @@ const deferred = () => {
 const flush = () => new Promise((resolve) => setImmediate(resolve));
 
 function harness(load = async () => null, buildGame = () => new Game()) {
+  const controlsStore = createGameControlsStore({
+    duration: 90,
+    progress: 0,
+    requestDate: 1,
+  });
   const contexts = [];
   const timers = [];
   const retryWaits = [];
@@ -99,9 +106,13 @@ function harness(load = async () => null, buildGame = () => new Game()) {
     },
   });
   const dependencies = {
+    batchGameControlsUpdates: controlsStore.batchUpdates,
     getCurrentSessionId: () => sessionVersion,
     isGameConnectionBound: () => false,
-    updateGameControlsContext: (context) => contexts.push(context),
+    updateGameControlsContext: (context) => {
+      controlsStore.updateContext(context);
+      contexts.push(context);
+    },
     isWatchOnly: false,
     isGameWithBot: false,
     puzzleMode: false,

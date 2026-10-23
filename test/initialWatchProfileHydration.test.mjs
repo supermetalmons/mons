@@ -39,6 +39,7 @@ function harness({ pending = null, consumed = false } = {}) {
   const reads = [];
   const applied = [];
   const dependencies = {
+    batchGameControlsUpdates: (callback) => callback(),
     setWatchOnlyState: () => {},
     setWatchOnlyVisible: () => {},
     storage: {

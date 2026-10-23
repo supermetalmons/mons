@@ -106,7 +106,10 @@ import {
   transitionToHome,
 } from "../session/sessionTransitionPort";
 import { getCurrentSessionId, getSessionGuard } from "./matchSession";
-import { updateGameControlsContext } from "./gameControlsStore";
+import {
+  batchGameControlsUpdates,
+  updateGameControlsContext,
+} from "./gameControlsStore";
 import {
   createRematchViewing,
   type RematchSelectionRequest,
@@ -841,63 +844,67 @@ function prepareLiveBoardView(mode: "activeLive" | "waitingLive") {
 }
 
 function enterWaitingLiveView() {
-  prepareLiveBoardView("waitingLive");
-  refreshDisplayedMatchPresentation();
-  if (boardViewDebugLogsEnabled) {
-    console.log("[board-view] entered waitingLive");
-  }
-  triggerMoveHistoryPopupReload();
+  return batchGameControlsUpdates(() => {
+    prepareLiveBoardView("waitingLive");
+    refreshDisplayedMatchPresentation();
+    if (boardViewDebugLogsEnabled) {
+      console.log("[board-view] entered waitingLive");
+    }
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 function restoreLiveBoardView() {
-  prepareLiveBoardView(
-    isWaitingForRematchResponse ? "waitingLive" : "activeLive",
-  );
-  refreshDisplayedMatchPresentation();
-  if (boardViewMode === "activeLive") {
-    setNewBoard(false);
-    const didRestoreTimerState = matchTimers.restore();
-    applyWagerState();
-    markKnownWagerInitialStateReceived();
-    updateUndoButtonBasedOnGameState();
-    if (!isWatchOnly && !isGameOver && game.winner === undefined) {
-      if (isOnlineGame) {
-        showResignButton();
-        showMoveHistoryButton(true);
-        if (isPlayerSideTurn()) {
-          matchTimers.clearCooldown();
-          hideTimerButtons();
+  return batchGameControlsUpdates(() => {
+    prepareLiveBoardView(
+      isWaitingForRematchResponse ? "waitingLive" : "activeLive",
+    );
+    refreshDisplayedMatchPresentation();
+    if (boardViewMode === "activeLive") {
+      setNewBoard(false);
+      const didRestoreTimerState = matchTimers.restore();
+      applyWagerState();
+      markKnownWagerInitialStateReceived();
+      updateUndoButtonBasedOnGameState();
+      if (!isWatchOnly && !isGameOver && game.winner === undefined) {
+        if (isOnlineGame) {
+          showResignButton();
+          showMoveHistoryButton(true);
+          if (isPlayerSideTurn()) {
+            matchTimers.clearCooldown();
+            hideTimerButtons();
+            setUndoVisible(true);
+            setAutomoveActionVisible(true);
+          } else if (!didRestoreTimerState && !matchTimers.waitsForStashes()) {
+            const timerMatchId = matchTimers.getMatchId();
+            if (timerMatchId) {
+              matchTimers.restoreCooldown(timerMatchId);
+            } else {
+              showTimerButtonProgressing(0, MATCH_TIMER_DURATION_SECONDS, true);
+            }
+          }
+        } else if (didStartLocalGame) {
+          if (!puzzleMode) {
+            showResignButton();
+          }
+          showMoveHistoryButton(true);
           setUndoVisible(true);
           setAutomoveActionVisible(true);
-        } else if (!didRestoreTimerState && !matchTimers.waitsForStashes()) {
-          const timerMatchId = matchTimers.getMatchId();
-          if (timerMatchId) {
-            matchTimers.restoreCooldown(timerMatchId);
+          if (isGameWithBot) {
+            showVoiceReactionButton(true);
+            setAutomoveActionEnabled(isPlayerSideTurn());
           } else {
-            showTimerButtonProgressing(0, MATCH_TIMER_DURATION_SECONDS, true);
+            showVoiceReactionButton(false);
+            setAutomoveActionEnabled(true);
           }
-        }
-      } else if (didStartLocalGame) {
-        if (!puzzleMode) {
-          showResignButton();
-        }
-        showMoveHistoryButton(true);
-        setUndoVisible(true);
-        setAutomoveActionVisible(true);
-        if (isGameWithBot) {
-          showVoiceReactionButton(true);
-          setAutomoveActionEnabled(isPlayerSideTurn());
-        } else {
-          showVoiceReactionButton(false);
-          setAutomoveActionEnabled(true);
         }
       }
     }
-  }
-  if (boardViewDebugLogsEnabled) {
-    console.log(`[board-view] restored ${boardViewMode}`);
-  }
-  triggerMoveHistoryPopupReload();
+    if (boardViewDebugLogsEnabled) {
+      console.log(`[board-view] restored ${boardViewMode}`);
+    }
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 function prepareForNewLocalLiveMatch() {
@@ -908,31 +915,33 @@ function enterHistoricalView(
   selection: ViewedRematch,
   request: RematchSelectionRequest,
 ): boolean {
-  if (!request.isCurrent()) {
-    return false;
-  }
-  const { matchId, pair, game: historicalGame } = selection;
-  boardViewMode = "historicalView";
-  publishGameControlsContext();
-  if (!rematchViewing.commitSelection(request, selection)) {
-    return false;
-  }
-  connection.setWagerViewMatchId(matchId);
-  Board.setBoardFlipped(getViewedMatchBoardFlipped(matchId, pair));
-  flashbackMode = true;
-  flashbackStateGame = historicalGame;
-  clearBoardViewInputs();
-  applyBoardUiForCurrentView();
-  applyWagerState();
-  refreshDisplayedMatchPresentation();
-  ensureBoardViewInvariants("enterHistoricalView");
-  setNewBoard(true);
-  scheduleHistoricalMatchArchiveRefresh();
-  if (boardViewDebugLogsEnabled) {
-    console.log(`[board-view] entered historicalView for ${matchId}`);
-  }
-  triggerMoveHistoryPopupReload();
-  return true;
+  return batchGameControlsUpdates(() => {
+    if (!request.isCurrent()) {
+      return false;
+    }
+    const { matchId, pair, game: historicalGame } = selection;
+    boardViewMode = "historicalView";
+    publishGameControlsContext();
+    if (!rematchViewing.commitSelection(request, selection)) {
+      return false;
+    }
+    connection.setWagerViewMatchId(matchId);
+    Board.setBoardFlipped(getViewedMatchBoardFlipped(matchId, pair));
+    flashbackMode = true;
+    flashbackStateGame = historicalGame;
+    clearBoardViewInputs();
+    applyBoardUiForCurrentView();
+    applyWagerState();
+    refreshDisplayedMatchPresentation();
+    ensureBoardViewInvariants("enterHistoricalView");
+    setNewBoard(true);
+    scheduleHistoricalMatchArchiveRefresh();
+    if (boardViewDebugLogsEnabled) {
+      console.log(`[board-view] entered historicalView for ${matchId}`);
+    }
+    triggerMoveHistoryPopupReload();
+    return true;
+  });
 }
 
 function ensureBoardViewInvariants(source: string) {
@@ -1802,193 +1811,205 @@ function resetSessionState(
 }
 
 export async function go(routeStateOverride?: RouteState) {
-  cancelSessionPreload();
-  const routeState = routeStateOverride ?? getCurrentRouteState();
-  activeRouteState = routeState;
-  const isAutomatchTransition = resetSessionState("start");
-  Board.setBotStrengthControlVisible(false);
-  triggerMoveHistoryPopupReload();
-  if (!didSetupWagerSubscription) {
-    didSetupWagerSubscription = true;
-    unsubscribeFromWagerState = subscribeToWagerState((state) => {
-      currentWagerState = state;
-      logWagerDebug("subscription:update", {
-        state: summarizeWagerState(state),
+  return batchGameControlsUpdates(() => {
+    cancelSessionPreload();
+    const routeState = routeStateOverride ?? getCurrentRouteState();
+    activeRouteState = routeState;
+    const isAutomatchTransition = resetSessionState("start");
+    Board.setBotStrengthControlVisible(false);
+    triggerMoveHistoryPopupReload();
+    if (!didSetupWagerSubscription) {
+      didSetupWagerSubscription = true;
+      unsubscribeFromWagerState = subscribeToWagerState((state) => {
+        currentWagerState = state;
+        logWagerDebug("subscription:update", {
+          state: summarizeWagerState(state),
+        });
+        applyWagerState();
+        if (
+          !shouldDeferWagerStateForUninstalledMatch() &&
+          isGameOver &&
+          !(isMoveHistoryPopupOpen && flashbackMode)
+        ) {
+          const outcomeState = syncWagerOutcome();
+          logWagerDebug("subscription:sync-on-gameover", { outcomeState });
+        }
       });
-      applyWagerState();
-      if (
-        !shouldDeferWagerStateForUninstalledMatch() &&
-        isGameOver &&
-        !(isMoveHistoryPopupOpen && flashbackMode)
-      ) {
-        const outcomeState = syncWagerOutcome();
-        logWagerDebug("subscription:sync-on-gameover", { outcomeState });
-      }
-    });
-  }
-  Board.setupBoard();
-  Board.setPreserveDisplayAnimation(false);
-  Board.setBotStrengthControlMode(botAutomoveMode);
-  Board.setBotStrengthControlVisible(false);
-
-  playerSideColor = MonsRules.Color.White;
-  const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
-  applyGameSeedToCurrentGame(initialRouteGameSeed);
-  connection.setupConnection(false, routeState);
-
-  if (isAutomatchTransition) {
-    isOnlineGame = true;
-    publishGameControlsContext();
-    isWaitingForInviteToGetAccepted = true;
-    applyRouteControlsPreset("automatchTransition");
-    Board.runMonsBoardAsDisplayWaitingAnimation();
-  }
-
-  if (isBotsRoute()) {
-    game.contentPositions().forEach((position) => {
-      const location = new Location(position.row, position.column);
-      updateLocation(location);
-    });
-    updateDisplayedBoardSquareTypes(game);
-
-    didStartLocalGame = true;
-    applyRouteControlsPreset("watch");
-
-    setWatchOnlyState(true);
-    lastBotMoveTimestamp = 0;
-    consecutiveWatchAutomoveWorkerFailures = 0;
-    scheduleWatchAutomove();
-  } else if (isSnapshotRoute()) {
-    const snapshot = routeState.snapshotId ?? "";
-    if (!loadCurrentGameFromFen(snapshot)) {
-      throw new Error(INVALID_SNAPSHOT_ROUTE_ERROR);
     }
-    game.contentPositions().forEach((position) => {
-      const location = new Location(position.row, position.column);
-      updateLocation(location);
-    });
-    updateDisplayedBoardSquareTypes(game);
-    didStartLocalGame = true;
-    applyRouteControlsPreset("snapshot");
-  } else if (isCreateInviteRoute()) {
-    ensureLocalRematchSeriesInitialized();
-    game.contentPositions().forEach((position) => {
-      const location = new Location(position.row, position.column);
-      updateLocation(location);
-    });
-    updateDisplayedBoardSquareTypes(game);
-    applyRouteControlsPreset("lobby");
-  } else {
-    isOnlineGame = true;
-    publishGameControlsContext();
-    applyRouteControlsPreset("invite");
+    Board.setupBoard();
+    Board.setPreserveDisplayAnimation(false);
+    Board.setBotStrengthControlMode(botAutomoveMode);
+    Board.setBotStrengthControlVisible(false);
+
+    playerSideColor = MonsRules.Color.White;
+    const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
+    applyGameSeedToCurrentGame(initialRouteGameSeed);
+    connection.setupConnection(false, routeState);
 
     if (isAutomatchTransition) {
+      isOnlineGame = true;
+      publishGameControlsContext();
       isWaitingForInviteToGetAccepted = true;
-      setAutomatchWaitingState(true);
+      applyRouteControlsPreset("automatchTransition");
       Board.runMonsBoardAsDisplayWaitingAnimation();
-    } else if (!Board.hasMonsBoardDisplayAnimationRunning()) {
-      updateDisplayedBoardSquareTypes(game);
     }
-  }
 
-  Board.setupGameInfoElements(
-    !isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute(),
-  );
-  if (isSnapshotRoute() || isBotsRoute()) {
-    updateBoardMoveStatuses();
-    Board.updateScore(
-      game.scores[MonsRules.Color.White],
-      game.scores[MonsRules.Color.Black],
-      game.winner,
-      resignedColor,
-      winnerByTimerColor,
-    );
-  }
+    if (isBotsRoute()) {
+      game.contentPositions().forEach((position) => {
+        const location = new Location(position.row, position.column);
+        updateLocation(location);
+      });
+      updateDisplayedBoardSquareTypes(game);
 
-  if (isBotsRoute()) {
-    Board.showRandomEmojisForLoopMode();
-  }
-  syncInviteBotIntoLocalGameButton();
-  if (isCreateInviteRoute() || isSnapshotRoute() || isBotsRoute()) {
-    markMainGameContentReady(
-      !isBotsRoute() && !isGameOver && game.winner === undefined,
+      didStartLocalGame = true;
+      applyRouteControlsPreset("watch");
+
+      setWatchOnlyState(true);
+      lastBotMoveTimestamp = 0;
+      consecutiveWatchAutomoveWorkerFailures = 0;
+      scheduleWatchAutomove();
+    } else if (isSnapshotRoute()) {
+      const snapshot = routeState.snapshotId ?? "";
+      if (!loadCurrentGameFromFen(snapshot)) {
+        throw new Error(INVALID_SNAPSHOT_ROUTE_ERROR);
+      }
+      game.contentPositions().forEach((position) => {
+        const location = new Location(position.row, position.column);
+        updateLocation(location);
+      });
+      updateDisplayedBoardSquareTypes(game);
+      didStartLocalGame = true;
+      applyRouteControlsPreset("snapshot");
+    } else if (isCreateInviteRoute()) {
+      ensureLocalRematchSeriesInitialized();
+      game.contentPositions().forEach((position) => {
+        const location = new Location(position.row, position.column);
+        updateLocation(location);
+      });
+      updateDisplayedBoardSquareTypes(game);
+      applyRouteControlsPreset("lobby");
+    } else {
+      isOnlineGame = true;
+      publishGameControlsContext();
+      applyRouteControlsPreset("invite");
+
+      if (isAutomatchTransition) {
+        isWaitingForInviteToGetAccepted = true;
+        setAutomatchWaitingState(true);
+        Board.runMonsBoardAsDisplayWaitingAnimation();
+      } else if (!Board.hasMonsBoardDisplayAnimationRunning()) {
+        updateDisplayedBoardSquareTypes(game);
+      }
+    }
+
+    Board.setupGameInfoElements(
+      !isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute(),
     );
-  }
+    if (isSnapshotRoute() || isBotsRoute()) {
+      updateBoardMoveStatuses();
+      Board.updateScore(
+        game.scores[MonsRules.Color.White],
+        game.scores[MonsRules.Color.Black],
+        game.winner,
+        resignedColor,
+        winnerByTimerColor,
+      );
+    }
+
+    if (isBotsRoute()) {
+      Board.showRandomEmojisForLoopMode();
+    }
+    syncInviteBotIntoLocalGameButton();
+    if (isCreateInviteRoute() || isSnapshotRoute() || isBotsRoute()) {
+      markMainGameContentReady(
+        !isBotsRoute() && !isGameOver && game.winner === undefined,
+      );
+    }
+  });
 }
 
 export function disposeGameSession(nextRouteState?: RouteState) {
-  cancelSessionPreload();
-  remoteMoveSync.clearHistories();
-  const preserveAutomatchUi = pendingAutomatchTransition;
-  const wasWaitingAnimationRunning =
-    Board.hasMonsBoardDisplayAnimationRunning();
-  const preserveManualInviteAnimation =
-    wasWaitingAnimationRunning &&
-    isCreateInviteRoute() &&
-    nextRouteState?.mode === "invite" &&
-    !nextRouteState.autojoin &&
-    !!nextRouteState.inviteId &&
-    connection.hasPendingInviteCreationFor(nextRouteState.inviteId);
-  const preserveWaitingAnimation =
-    preserveAutomatchUi || preserveManualInviteAnimation;
-  resetSessionState("dispose", preserveAutomatchUi);
-  applyDisposedControlsPreset(preserveAutomatchUi);
-  Board.setPreserveDisplayAnimation(preserveWaitingAnimation);
-  Board.stopMonsBoardAsDisplayAnimations();
-  currentGameVariant = legacyDefaultGameVariant;
-  if (!preserveWaitingAnimation) {
-    setDisplayedBoardSquareTypes(
-      wasWaitingAnimationRunning ? createLegacyBoardSquareTypeGrid() : null,
-    );
-  }
-  Board.hideTimerCountdownDigits();
-  Board.hideAllMoveStatuses();
-  Board.setInviteBotButtonVisible(false);
-  Board.setBotStrengthControlVisible(false);
-  Board.removeHighlights();
-  Board.hideItemSelectionOrConfirmationOverlay();
-  triggerMoveHistoryPopupReload();
+  return batchGameControlsUpdates(() => {
+    cancelSessionPreload();
+    remoteMoveSync.clearHistories();
+    const preserveAutomatchUi = pendingAutomatchTransition;
+    const wasWaitingAnimationRunning =
+      Board.hasMonsBoardDisplayAnimationRunning();
+    const preserveManualInviteAnimation =
+      wasWaitingAnimationRunning &&
+      isCreateInviteRoute() &&
+      nextRouteState?.mode === "invite" &&
+      !nextRouteState.autojoin &&
+      !!nextRouteState.inviteId &&
+      connection.hasPendingInviteCreationFor(nextRouteState.inviteId);
+    const preserveWaitingAnimation =
+      preserveAutomatchUi || preserveManualInviteAnimation;
+    resetSessionState("dispose", preserveAutomatchUi);
+    applyDisposedControlsPreset(preserveAutomatchUi);
+    Board.setPreserveDisplayAnimation(preserveWaitingAnimation);
+    Board.stopMonsBoardAsDisplayAnimations();
+    currentGameVariant = legacyDefaultGameVariant;
+    if (!preserveWaitingAnimation) {
+      setDisplayedBoardSquareTypes(
+        wasWaitingAnimationRunning ? createLegacyBoardSquareTypeGrid() : null,
+      );
+    }
+    Board.hideTimerCountdownDigits();
+    Board.hideAllMoveStatuses();
+    Board.setInviteBotButtonVisible(false);
+    Board.setBotStrengthControlVisible(false);
+    Board.removeHighlights();
+    Board.hideItemSelectionOrConfirmationOverlay();
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 export function failedToCreateRematchProposal() {
-  isWaitingForRematchResponse = false;
-  pendingRematchNavigationToLiveBoard = false;
-  boardViewMode = "activeLive";
-  publishGameControlsContext();
-  nextBoardRenderSession();
-  Board.setBoardFlipped(activeBoardShouldBeFlipped());
-  applyBoardUiForCurrentView();
-  setNewBoard(false);
-  setEndMatchVisible(true);
-  showPrimaryAction(PrimaryActionType.Rematch);
+  return batchGameControlsUpdates(() => {
+    isWaitingForRematchResponse = false;
+    pendingRematchNavigationToLiveBoard = false;
+    boardViewMode = "activeLive";
+    publishGameControlsContext();
+    nextBoardRenderSession();
+    Board.setBoardFlipped(activeBoardShouldBeFlipped());
+    applyBoardUiForCurrentView();
+    setNewBoard(false);
+    setEndMatchVisible(true);
+    showPrimaryAction(PrimaryActionType.Rematch);
+  });
 }
 
 function rematchInLoopMode() {
-  isGameOver = false;
-  publishGameControlsContext();
-  applyGameSeedToCurrentGame(buildRandomGameSeed());
-  Board.toggleBoardFlipped();
-  playerSideColor =
-    playerSideColor === MonsRules.Color.White
-      ? MonsRules.Color.Black
-      : MonsRules.Color.White;
-  Board.resetForNewGame();
-  Board.didToggleItemsStyleSet(false);
-  Board.showRandomEmojisForLoopMode();
-  setNewBoard(false);
-  lastBotMoveTimestamp = 0;
-  scheduleWatchAutomove();
+  return batchGameControlsUpdates(() => {
+    isGameOver = false;
+    publishGameControlsContext();
+    applyGameSeedToCurrentGame(buildRandomGameSeed());
+    Board.toggleBoardFlipped();
+    playerSideColor =
+      playerSideColor === MonsRules.Color.White
+        ? MonsRules.Color.Black
+        : MonsRules.Color.White;
+    Board.resetForNewGame();
+    Board.didToggleItemsStyleSet(false);
+    Board.showRandomEmojisForLoopMode();
+    setNewBoard(false);
+    lastBotMoveTimestamp = 0;
+    scheduleWatchAutomove();
+  });
+}
+
+function resetMatchConnectionFlags(waitingForRematch: boolean) {
+  isReconnect = false;
+  didConnect = false;
+  isWaitingForInviteToGetAccepted = false;
+  isWaitingForRematchResponse = waitingForRematch;
 }
 
 function initializeLocalMatch(mode: "local" | "bot") {
   prepareForNewLocalLiveMatch();
   resetBotScoreReactionState();
   isGameOver = false;
-  isReconnect = false;
-  didConnect = false;
-  isWaitingForInviteToGetAccepted = false;
-  isWaitingForRematchResponse = false;
+  resetMatchConnectionFlags(false);
   flashbackMode = false;
   resignedColor = undefined;
   winnerByTimerColor = undefined;
@@ -2004,53 +2025,57 @@ function initializeLocalMatch(mode: "local" | "bot") {
 }
 
 function startFreshLocalMatch() {
-  ensureLocalRematchSeriesInitialized();
-  const activeLocalMatchIndex =
-    rematchViewing
-      .getLocalSeriesDescriptor()
-      ?.matches.find((match) => match.isActiveMatch)?.index ?? -1;
-  const playerStartsAsBlackInThisMatch =
-    activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
-  playerSideColor = playerStartsAsBlackInThisMatch
-    ? MonsRules.Color.Black
-    : MonsRules.Color.White;
-  initializeLocalMatch("local");
-  showVoiceReactionButton(false);
-  setEndMatchVisible(false);
-  setEndMatchConfirmed(false);
-  showWaitingStateText("");
-  Board.setBoardFlipped(activeBoardShouldBeFlipped());
-  Board.resetForNewGame();
-  applyGameSeedToCurrentGame(
-    buildGameSeedForStoredVariant(legacyDefaultGameVariant),
-  );
-  setNewBoard(false);
-  updateUndoButtonBasedOnGameState();
-  syncInviteBotIntoLocalGameButton();
-  triggerMoveHistoryPopupReload();
+  return batchGameControlsUpdates(() => {
+    ensureLocalRematchSeriesInitialized();
+    const activeLocalMatchIndex =
+      rematchViewing
+        .getLocalSeriesDescriptor()
+        ?.matches.find((match) => match.isActiveMatch)?.index ?? -1;
+    const playerStartsAsBlackInThisMatch =
+      activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
+    playerSideColor = playerStartsAsBlackInThisMatch
+      ? MonsRules.Color.Black
+      : MonsRules.Color.White;
+    initializeLocalMatch("local");
+    showVoiceReactionButton(false);
+    setEndMatchVisible(false);
+    setEndMatchConfirmed(false);
+    showWaitingStateText("");
+    Board.setBoardFlipped(activeBoardShouldBeFlipped());
+    Board.resetForNewGame();
+    applyGameSeedToCurrentGame(
+      buildGameSeedForStoredVariant(legacyDefaultGameVariant),
+    );
+    setNewBoard(false);
+    updateUndoButtonBasedOnGameState();
+    syncInviteBotIntoLocalGameButton();
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 function startBotMatch(botColor: MonsRules.Color) {
-  const nextSeed = buildRandomGameSeed();
-  ensureLocalRematchSeriesInitialized();
-  initializeLocalMatch("bot");
-  Board.setBoardFlipped(botColor === MonsRules.Color.White);
-  Board.showOpponentAsBotPlayer();
-  Board.resetForNewGame();
-  applyGameSeedToCurrentGame(nextSeed);
-  setNewBoard(false);
-  botPlayerColor = botColor;
-  playerSideColor =
-    botColor === MonsRules.Color.White
-      ? MonsRules.Color.Black
-      : MonsRules.Color.White;
-  showVoiceReactionButton(true);
-  lastBotMoveTimestamp = 0;
-  updateUndoButtonBasedOnGameState();
-  syncInviteBotIntoLocalGameButton();
-  if (game.activeColor === botPlayerColor) {
-    automove();
-  }
+  return batchGameControlsUpdates(() => {
+    const nextSeed = buildRandomGameSeed();
+    ensureLocalRematchSeriesInitialized();
+    initializeLocalMatch("bot");
+    Board.setBoardFlipped(botColor === MonsRules.Color.White);
+    Board.showOpponentAsBotPlayer();
+    Board.resetForNewGame();
+    applyGameSeedToCurrentGame(nextSeed);
+    setNewBoard(false);
+    botPlayerColor = botColor;
+    playerSideColor =
+      botColor === MonsRules.Color.White
+        ? MonsRules.Color.Black
+        : MonsRules.Color.White;
+    showVoiceReactionButton(true);
+    lastBotMoveTimestamp = 0;
+    updateUndoButtonBasedOnGameState();
+    syncInviteBotIntoLocalGameButton();
+    if (game.activeColor === botPlayerColor) {
+      automove();
+    }
+  });
 }
 
 export function didJustCreateRematchProposalSuccessfully(
@@ -2059,61 +2084,64 @@ export function didJustCreateRematchProposalSuccessfully(
   previousMatchId: string | null,
   previousMatchPair: HistoricalMatchPair | null,
 ) {
-  if (boardViewMode !== "historicalView") {
-    rematchViewing.clearSelection();
-  }
-  const hasCompleteHistoricalPair = !!(
-    previousMatchPair?.hostMatch && previousMatchPair?.guestMatch
-  );
-  if (previousMatchId && previousMatchPair && hasCompleteHistoricalPair) {
-    rematchViewing.seedProvisional(previousMatchPair);
-  }
-  if (previousMatchId) {
-    rematchViewing.setScore(previousMatchId, {
-      white: game.scores[MonsRules.Color.White],
-      black: game.scores[MonsRules.Color.Black],
-    });
-  }
-  resetBotScoreReactionState();
-  setEndMatchVisible(true);
-  showWaitingStateText("");
-
-  isGameOver = false;
-  publishGameControlsContext();
-  isReconnect = false;
-  didConnect = false;
-  isWaitingForInviteToGetAccepted = false;
-  isWaitingForRematchResponse = true;
-  remoteMoveSync.resetProgress();
-  playerSideColor =
-    nextMatch.color === "black" ? MonsRules.Color.Black : MonsRules.Color.White;
-  if (!loadCurrentGameFromFen(nextMatch.fen)) {
-    applyGameSeedToCurrentGame(
-      buildGameSeedForStoredVariant(nextMatch.gameVariant),
+  return batchGameControlsUpdates(() => {
+    if (boardViewMode !== "historicalView") {
+      rematchViewing.clearSelection();
+    }
+    const hasCompleteHistoricalPair = !!(
+      previousMatchPair?.hostMatch && previousMatchPair?.guestMatch
     );
-  }
+    if (previousMatchId && previousMatchPair && hasCompleteHistoricalPair) {
+      rematchViewing.seedProvisional(previousMatchPair);
+    }
+    if (previousMatchId) {
+      rematchViewing.setScore(previousMatchId, {
+        white: game.scores[MonsRules.Color.White],
+        black: game.scores[MonsRules.Color.Black],
+      });
+    }
+    resetBotScoreReactionState();
+    setEndMatchVisible(true);
+    showWaitingStateText("");
 
-  resignedColor = undefined;
-  winnerByTimerColor = undefined;
+    isGameOver = false;
+    publishGameControlsContext();
+    resetMatchConnectionFlags(true);
+    remoteMoveSync.resetProgress();
+    playerSideColor =
+      nextMatch.color === "black"
+        ? MonsRules.Color.Black
+        : MonsRules.Color.White;
+    if (!loadCurrentGameFromFen(nextMatch.fen)) {
+      applyGameSeedToCurrentGame(
+        buildGameSeedForStoredVariant(nextMatch.gameVariant),
+      );
+    }
 
-  lastReactionTime = 0;
-  currentInputs = [];
-  matchTimers.reset(null);
+    resignedColor = undefined;
+    winnerByTimerColor = undefined;
 
-  if (boardViewMode !== "historicalView") {
-    enterWaitingLiveView();
-  }
-  connection.signInIfNeededAndConnectToGame(inviteId, true);
-  triggerMoveHistoryPopupReload();
+    lastReactionTime = 0;
+    currentInputs = [];
+    matchTimers.reset(null);
+
+    if (boardViewMode !== "historicalView") {
+      enterWaitingLiveView();
+    }
+    connection.signInIfNeededAndConnectToGame(inviteId, true);
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 export function didDiscoverExistingRematchProposalWaitingForResponse() {
-  isWaitingForRematchResponse = true;
-  if (boardViewMode !== "historicalView") {
-    enterWaitingLiveView();
-    markMainGameWaiting();
-  }
-  triggerMoveHistoryPopupReload();
+  return batchGameControlsUpdates(() => {
+    isWaitingForRematchResponse = true;
+    if (boardViewMode !== "historicalView") {
+      enterWaitingLiveView();
+      markMainGameWaiting();
+    }
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
@@ -2135,65 +2163,67 @@ export function didClickStartBotGameButton() {
 }
 
 export function didClickInviteBotIntoLocalGameButton() {
-  if (
-    isOnlineGame ||
-    isWatchOnly ||
-    isGameWithBot ||
-    puzzleMode ||
-    isGameOver ||
-    !didStartLocalGame ||
-    isInviteBotIntoLocalGameUnavailable ||
-    !isCreateInviteRoute() ||
-    !didMakeFirstLocalPlayerMoveOnLocalBoard ||
-    !isFirstLocalRematchSeriesMatchActive() ||
-    game.turnNumber > 2
-  ) {
-    return;
-  }
-  const shouldSendInviteYoReaction =
-    game.activeColor === MonsRules.Color.White && game.turnNumber === 1;
-  resetBotScoreReactionState();
-  isInviteBotIntoLocalGameUnavailable = true;
-  isGameWithBot = true;
-  publishGameControlsContext();
-  botPlayerColor = MonsRules.Color.Black;
-  playerSideColor = MonsRules.Color.White;
-  const boardWasFlippedBeforeTransition = Board.isFlipped;
-  const didClearMoveHistoryFlipOverride =
-    clearMoveHistoryFlipOverrideForCurrentSession();
-  Board.setBoardFlipped(activeBoardShouldBeFlipped());
-  Board.showOpponentAsBotPlayer();
-  if (Board.isFlipped !== boardWasFlippedBeforeTransition) {
-    setNewBoard(false);
-  }
-  if (didClearMoveHistoryFlipOverride) {
-    triggerMoveHistoryPopupReload();
-  }
-  showResignButton();
-  showVoiceReactionButton(true);
-  setAutomoveActionVisible(true);
-  setAutomoveActionEnabled(isPlayerSideTurn());
-  updateUndoButtonBasedOnGameState();
-  syncInviteBotIntoLocalGameButton();
-  if (shouldSendInviteYoReaction) {
-    const inviteReactionGuard = getSessionGuard();
-    setManagedGameTimeout(
-      () => {
-        if (!isGameWithBot || isGameOver) {
-          return;
-        }
-        const reaction = newReactionOfKind("yo");
-        playReaction(reaction);
-        Board.showVoiceReactionText("yo", true);
-      },
-      500,
-      inviteReactionGuard,
-    );
-  }
-  lastBotMoveTimestamp = 0;
-  if (game.activeColor === botPlayerColor) {
-    automove();
-  }
+  return batchGameControlsUpdates(() => {
+    if (
+      isOnlineGame ||
+      isWatchOnly ||
+      isGameWithBot ||
+      puzzleMode ||
+      isGameOver ||
+      !didStartLocalGame ||
+      isInviteBotIntoLocalGameUnavailable ||
+      !isCreateInviteRoute() ||
+      !didMakeFirstLocalPlayerMoveOnLocalBoard ||
+      !isFirstLocalRematchSeriesMatchActive() ||
+      game.turnNumber > 2
+    ) {
+      return;
+    }
+    const shouldSendInviteYoReaction =
+      game.activeColor === MonsRules.Color.White && game.turnNumber === 1;
+    resetBotScoreReactionState();
+    isInviteBotIntoLocalGameUnavailable = true;
+    isGameWithBot = true;
+    publishGameControlsContext();
+    botPlayerColor = MonsRules.Color.Black;
+    playerSideColor = MonsRules.Color.White;
+    const boardWasFlippedBeforeTransition = Board.isFlipped;
+    const didClearMoveHistoryFlipOverride =
+      clearMoveHistoryFlipOverrideForCurrentSession();
+    Board.setBoardFlipped(activeBoardShouldBeFlipped());
+    Board.showOpponentAsBotPlayer();
+    if (Board.isFlipped !== boardWasFlippedBeforeTransition) {
+      setNewBoard(false);
+    }
+    if (didClearMoveHistoryFlipOverride) {
+      triggerMoveHistoryPopupReload();
+    }
+    showResignButton();
+    showVoiceReactionButton(true);
+    setAutomoveActionVisible(true);
+    setAutomoveActionEnabled(isPlayerSideTurn());
+    updateUndoButtonBasedOnGameState();
+    syncInviteBotIntoLocalGameButton();
+    if (shouldSendInviteYoReaction) {
+      const inviteReactionGuard = getSessionGuard();
+      setManagedGameTimeout(
+        () => {
+          if (!isGameWithBot || isGameOver) {
+            return;
+          }
+          const reaction = newReactionOfKind("yo");
+          playReaction(reaction);
+          Board.showVoiceReactionText("yo", true);
+        },
+        500,
+        inviteReactionGuard,
+      );
+    }
+    lastBotMoveTimestamp = 0;
+    if (game.activeColor === botPlayerColor) {
+      automove();
+    }
+  });
 }
 
 export function didClickBotStrengthControlButton() {
@@ -2215,48 +2245,56 @@ export function didFindInviteThatCanBeJoined() {
 export function didClickAutomatchButton(
   onAutomatchResponse?: (response: AutomatchResponse) => void,
 ) {
-  applyGameplayControlsPreset("automatchRequest");
-  dismissNotificationBannerIfNeeded();
-  setNavigationListButtonVisible(false);
-  Board.hideBoardPlayersInfo();
-  Board.removeHighlights();
-  Board.hideAllMoveStatuses();
-  isWaitingForInviteToGetAccepted = true;
-  pendingAutomatchTransition = true;
-  Board.runMonsBoardAsDisplayWaitingAnimation();
+  batchGameControlsUpdates(() => {
+    applyGameplayControlsPreset("automatchRequest");
+    dismissNotificationBannerIfNeeded();
+    setNavigationListButtonVisible(false);
+    Board.hideBoardPlayersInfo();
+    Board.removeHighlights();
+    Board.hideAllMoveStatuses();
+    isWaitingForInviteToGetAccepted = true;
+    pendingAutomatchTransition = true;
+    Board.runMonsBoardAsDisplayWaitingAnimation();
+  });
   const sessionGuard = getSessionGuard();
 
   connection
     .automatch()
     .then((response) => {
-      if (!sessionGuard() || !pendingAutomatchTransition) {
-        return;
-      }
-      onAutomatchResponse?.(response);
-      const automatchInviteId = response.ok ? response.inviteId : null;
-      if (automatchInviteId) {
-        connection.connectToAutomatch(automatchInviteId);
-      } else {
-        pendingAutomatchTransition = false;
-      }
+      return batchGameControlsUpdates(() => {
+        if (!sessionGuard() || !pendingAutomatchTransition) {
+          return;
+        }
+        onAutomatchResponse?.(response);
+        const automatchInviteId = response.ok ? response.inviteId : null;
+        if (automatchInviteId) {
+          connection.connectToAutomatch(automatchInviteId);
+        } else {
+          pendingAutomatchTransition = false;
+        }
+      });
     })
     .catch(() => {
-      if (!sessionGuard() || !pendingAutomatchTransition) {
-        return;
-      }
-      pendingAutomatchTransition = false;
-      setAutomatchEnabled(true);
+      return batchGameControlsUpdates(() => {
+        if (!sessionGuard() || !pendingAutomatchTransition) {
+          return;
+        }
+        pendingAutomatchTransition = false;
+        setAutomatchEnabled(true);
+      });
     });
 }
 
 export function dismissPendingAutomatchTransition() {
-  if (!pendingAutomatchTransition) {
-    return;
-  }
-  pendingAutomatchTransition = false;
-  isWaitingForInviteToGetAccepted = false;
-  setAutomatchWaitingState(false);
-  setAutomatchEnabled(true);
+  return batchGameControlsUpdates(() => {
+    if (!pendingAutomatchTransition) {
+      return;
+    }
+    pendingAutomatchTransition = false;
+    isWaitingForInviteToGetAccepted = false;
+    setAutomatchWaitingState(false);
+    setAutomatchEnabled(true);
+  });
 }
 
 function showRematchInterface() {
@@ -2348,46 +2386,51 @@ function tryRestoreLiveViewAfterRematchAcceptance() {
 }
 
 export function didReceiveRematchesSeriesEndIndicator() {
-  publishGameControlsContext();
-  if (isWatchOnly) {
+  return batchGameControlsUpdates(() => {
+    publishGameControlsContext();
+    if (isWatchOnly) {
+      setEndMatchVisible(true);
+      setEndMatchConfirmed(true);
+      return;
+    }
+    const wasWaitingForRematch =
+      isWaitingForRematchResponse && boardViewMode !== "historicalView";
+    isWaitingForRematchResponse = false;
+    pendingRematchNavigationToLiveBoard = false;
+    showPrimaryAction(PrimaryActionType.None);
     setEndMatchVisible(true);
     setEndMatchConfirmed(true);
-    return;
-  }
-  const wasWaitingForRematch =
-    isWaitingForRematchResponse && boardViewMode !== "historicalView";
-  isWaitingForRematchResponse = false;
-  pendingRematchNavigationToLiveBoard = false;
-  showPrimaryAction(PrimaryActionType.None);
-  setEndMatchVisible(true);
-  setEndMatchConfirmed(true);
-  if (wasWaitingForRematch) {
-    navigateFromWaitingLiveToLastCompletedMatch();
-  } else {
-    applyBoardUiForCurrentView();
-  }
-  triggerMoveHistoryPopupReload();
+    if (wasWaitingForRematch) {
+      navigateFromWaitingLiveToLastCompletedMatch();
+    } else {
+      applyBoardUiForCurrentView();
+    }
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 export function didUpdateRematchSeriesMetadata() {
-  publishGameControlsContext();
-  if (isWatchOnly) {
-    const didNavigate = connection.tryNavigateWatchOnlyToLatestApprovedMatch();
-    if (didNavigate) {
-      didConnect = false;
-      isGameOver = false;
-      publishGameControlsContext();
-      remoteMoveSync.resetProgress();
-      resignedColor = undefined;
-      winnerByTimerColor = undefined;
-      currentInputs = [];
-      restoreLiveBoardView();
+  return batchGameControlsUpdates(() => {
+    publishGameControlsContext();
+    if (isWatchOnly) {
+      const didNavigate =
+        connection.tryNavigateWatchOnlyToLatestApprovedMatch();
+      if (didNavigate) {
+        didConnect = false;
+        isGameOver = false;
+        publishGameControlsContext();
+        remoteMoveSync.resetProgress();
+        resignedColor = undefined;
+        winnerByTimerColor = undefined;
+        currentInputs = [];
+        restoreLiveBoardView();
+      }
+      triggerMoveHistoryPopupReload();
+      return;
     }
+    tryRestoreLiveViewAfterRematchAcceptance();
     triggerMoveHistoryPopupReload();
-    return;
-  }
-  tryRestoreLiveViewAfterRematchAcceptance();
-  triggerMoveHistoryPopupReload();
+  });
 }
 
 type ResolvedAutomoveOutput =
@@ -2663,68 +2706,72 @@ function scheduleWatchAutomove() {
 }
 
 function didConfirmRematchProposal() {
-  if (isReconnect && !didConnect) {
-    return;
-  }
-  if (puzzleMode) {
-    const nextProblem = getNextProblem(selectedProblem!.id);
-    if (nextProblem) {
-      showNextProblem(nextProblem);
+  return batchGameControlsUpdates(() => {
+    if (isReconnect && !didConnect) {
       return;
     }
-  }
+    if (puzzleMode) {
+      const nextProblem = getNextProblem(selectedProblem!.id);
+      if (nextProblem) {
+        showNextProblem(nextProblem);
+        return;
+      }
+    }
 
-  if (isGameWithBot) {
-    advanceLocalRematchSeriesToNextMatch();
-    const nextBotColor =
-      botPlayerColor === MonsRules.Color.White
-        ? MonsRules.Color.Black
-        : MonsRules.Color.White;
-    startBotMatch(nextBotColor);
-    return;
-  }
-
-  if (!isOnlineGame) {
-    if (canTrackLocalRematchSeries()) {
+    if (isGameWithBot) {
       advanceLocalRematchSeriesToNextMatch();
-      startFreshLocalMatch();
+      const nextBotColor =
+        botPlayerColor === MonsRules.Color.White
+          ? MonsRules.Color.Black
+          : MonsRules.Color.White;
+      startBotMatch(nextBotColor);
       return;
     }
-    void transitionToHome({ forceMatchScopeReset: true });
-    return;
-  }
 
-  if (boardViewMode === "historicalView") {
-    isWaitingForRematchResponse = true;
-    enterWaitingLiveView();
-  }
+    if (!isOnlineGame) {
+      if (canTrackLocalRematchSeries()) {
+        advanceLocalRematchSeriesToNextMatch();
+        startFreshLocalMatch();
+        return;
+      }
+      void transitionToHome({ forceMatchScopeReset: true });
+      return;
+    }
 
-  setEndMatchVisible(false);
-  Board.runMonsBoardAsDisplayWaitingAnimation();
-  connection.sendRematchProposal();
-  Board.hideBoardPlayersInfo();
+    if (boardViewMode === "historicalView") {
+      isWaitingForRematchResponse = true;
+      enterWaitingLiveView();
+    }
+
+    setEndMatchVisible(false);
+    Board.runMonsBoardAsDisplayWaitingAnimation();
+    connection.sendRematchProposal();
+    Board.hideBoardPlayersInfo();
+  });
 }
 
 export function didClickEndMatchButton(): boolean {
-  if (isReconnect && !didConnect) {
-    return false;
-  }
-  if (!connection.sendEndMatchIndicator()) {
-    return false;
-  }
-  const wasWaitingForRematch =
-    isWaitingForRematchResponse && boardViewMode !== "historicalView";
-  showPrimaryAction(PrimaryActionType.None);
-  setEndMatchConfirmed(true);
-  showWaitingStateText("");
-  Board.stopMonsBoardAsDisplayAnimations();
-  isWaitingForRematchResponse = false;
-  pendingRematchNavigationToLiveBoard = false;
-  if (wasWaitingForRematch) {
-    navigateFromWaitingLiveToLastCompletedMatch();
-  }
-  triggerMoveHistoryPopupReload();
-  return true;
+  return batchGameControlsUpdates(() => {
+    if (isReconnect && !didConnect) {
+      return false;
+    }
+    if (!connection.sendEndMatchIndicator()) {
+      return false;
+    }
+    const wasWaitingForRematch =
+      isWaitingForRematchResponse && boardViewMode !== "historicalView";
+    showPrimaryAction(PrimaryActionType.None);
+    setEndMatchConfirmed(true);
+    showWaitingStateText("");
+    Board.stopMonsBoardAsDisplayAnimations();
+    isWaitingForRematchResponse = false;
+    pendingRematchNavigationToLiveBoard = false;
+    if (wasWaitingForRematch) {
+      navigateFromWaitingLiveToLastCompletedMatch();
+    }
+    triggerMoveHistoryPopupReload();
+    return true;
+  });
 }
 
 export function didClickPrimaryActionButton(action: PrimaryAction) {
@@ -3297,25 +3344,27 @@ function applyOutput(
       }
 
       if (!isOnlineGame && !didStartLocalGame) {
-        ensureLocalRematchSeriesInitialized();
-        dismissNotificationBannerIfNeeded();
-        didStartLocalGame = true;
-        setHomeVisible(true);
-        setIslandButtonDimmed(true);
+        batchGameControlsUpdates(() => {
+          ensureLocalRematchSeriesInitialized();
+          dismissNotificationBannerIfNeeded();
+          didStartLocalGame = true;
+          setHomeVisible(true);
+          setIslandButtonDimmed(true);
 
-        setBrushAndNavigationButtonDimmed(true);
-        setUndoVisible(true);
-        setInviteLinkActionVisible(false);
-        setAutomatchVisible(false);
-        setBotGameOptionVisible(false);
-        if (!puzzleMode) {
-          setNavigationListButtonVisible(false);
-        }
-        setAutomoveActionVisible(true);
-        showMoveHistoryButton(true);
-        if (!puzzleMode) {
-          showResignButton();
-        }
+          setBrushAndNavigationButtonDimmed(true);
+          setUndoVisible(true);
+          setInviteLinkActionVisible(false);
+          setAutomatchVisible(false);
+          setBotGameOptionVisible(false);
+          if (!puzzleMode) {
+            setNavigationListButtonVisible(false);
+          }
+          setAutomoveActionVisible(true);
+          showMoveHistoryButton(true);
+          if (!puzzleMode) {
+            showResignButton();
+          }
+        });
       }
 
       currentInputs = [];
@@ -3676,14 +3725,16 @@ export function playSameCompletedPuzzleAgain() {
 }
 
 function resetToTheStartOfThePuzzle() {
-  if (!loadCurrentGameFromFen(selectedProblem!.fen)) {
-    return;
-  }
-  setNewBoard(false);
-  playSounds([Sound.Undo]);
-  Board.removeHighlights();
-  Board.hideItemSelectionOrConfirmationOverlay();
-  updateUndoButtonBasedOnGameState();
+  return batchGameControlsUpdates(() => {
+    if (!loadCurrentGameFromFen(selectedProblem!.fen)) {
+      return;
+    }
+    setNewBoard(false);
+    playSounds([Sound.Undo]);
+    Board.removeHighlights();
+    Board.hideItemSelectionOrConfirmationOverlay();
+    updateUndoButtonBasedOnGameState();
+  });
 }
 
 export function didClickAutomoveButton() {
@@ -4697,18 +4748,20 @@ export function didFailToLoadPendingInvite() {
 }
 
 export function didFailToLoadGame(notFound = false) {
-  isWaitingForInviteToGetAccepted = false;
-  isReconnect = true;
-  didConnect = false;
-  Board.stopMonsBoardAsDisplayAnimations();
-  showPrimaryAction(PrimaryActionType.None);
-  setHomeVisible(true);
-  showWaitingStateText(
-    notFound
-      ? "Game not found."
-      : "Couldn't load this game. Reload to try again.",
-  );
-  markMainGameError();
+  return batchGameControlsUpdates(() => {
+    isWaitingForInviteToGetAccepted = false;
+    isReconnect = true;
+    didConnect = false;
+    Board.stopMonsBoardAsDisplayAnimations();
+    showPrimaryAction(PrimaryActionType.None);
+    setHomeVisible(true);
+    showWaitingStateText(
+      notFound
+        ? "Game not found."
+        : "Couldn't load this game. Reload to try again.",
+    );
+    markMainGameError();
+  });
 }
 
 function showPuzzleInstructions() {
@@ -4724,33 +4777,35 @@ export function didSelectPuzzle(
   problem: Problem,
   skipInstructions: boolean = false,
 ) {
-  dismissNotificationBannerIfNeeded();
-  showPrimaryAction(PrimaryActionType.None);
-  setPlaySamePuzzleAgainButtonVisible(false);
-  isGameOver = false;
-  publishGameControlsContext();
-  currentInputs = [];
+  return batchGameControlsUpdates(() => {
+    dismissNotificationBannerIfNeeded();
+    showPrimaryAction(PrimaryActionType.None);
+    setPlaySamePuzzleAgainButtonVisible(false);
+    isGameOver = false;
+    publishGameControlsContext();
+    currentInputs = [];
 
-  if (!loadCurrentGameFromFen(problem.fen)) return;
-  clearMoveHistoryFlipOverrideForCurrentSession();
-  flashbackMode = false;
-  didStartLocalGame = true;
-  applyGameplayControlsPreset("puzzle");
-  closeNavigationAndAppearancePopupIfAny();
+    if (!loadCurrentGameFromFen(problem.fen)) return;
+    clearMoveHistoryFlipOverrideForCurrentSession();
+    flashbackMode = false;
+    didStartLocalGame = true;
+    applyGameplayControlsPreset("puzzle");
+    closeNavigationAndAppearancePopupIfAny();
 
-  setNewBoard(false);
+    setNewBoard(false);
 
-  puzzleMode = true;
-  selectedProblem = problem;
-  publishGameControlsContext();
+    puzzleMode = true;
+    selectedProblem = problem;
+    publishGameControlsContext();
 
-  if (!skipInstructions) {
-    showPuzzleInstructions();
-  }
-  Board.removeHighlights();
-  Board.hideItemSelectionOrConfirmationOverlay();
-  updateUndoButtonBasedOnGameState();
-  triggerMoveHistoryPopupReload();
+    if (!skipInstructions) {
+      showPuzzleInstructions();
+    }
+    Board.removeHighlights();
+    Board.hideItemSelectionOrConfirmationOverlay();
+    updateUndoButtonBasedOnGameState();
+    triggerMoveHistoryPopupReload();
+  });
 }
 
 function showNextProblem(problem: Problem) {
@@ -4929,58 +4984,60 @@ export function didReceiveMatchUpdate(
   const sessionGuard = getSessionGuard();
   ensureBoardViewInvariants("didReceiveMatchUpdate:start");
   if (!didConnect) {
-    const hydration = prepareInitialGameHydration(match, matchId);
-    if (!hydration) {
-      return;
-    }
-    isWaitingForInviteToGetAccepted = false;
-    resetOnlineReconnectRequestState();
-    if (boardViewMode !== "historicalView") {
-      Board.stopMonsBoardAsDisplayAnimations();
-      showWaitingStateText("");
-      setEndMatchVisible(false);
-      setAutomoveActionVisible(false);
-      showMoveHistoryButton(false);
-      setInviteLinkActionVisible(false);
-      setAutomatchVisible(false);
-      setBotGameOptionVisible(false);
-      setNavigationListButtonVisible(false);
-      setEndMatchVisible(false);
-      showPrimaryAction(PrimaryActionType.None);
-    }
-    const wasWaitingForRematchResponse = isWaitingForRematchResponse;
-    isWaitingForRematchResponse = false;
-    if (wasWaitingForRematchResponse && boardViewMode === "historicalView") {
-      pendingRematchNavigationToLiveBoard = true;
-      applyBoardUiForCurrentView();
-    }
-    didConnectTo(match, matchPlayerUid, matchId, hydration);
-    if (hydration.kind === "provisional") {
-      remoteMoveSync.setProcessedCount(match.color, movesCountOfMatch(match));
-    }
-    remoteMoveSync.remember(match, matchId);
-    didConnect = true;
-    markMainGameContentReady(
-      !isWatchOnly && !isGameOver && game.winner === undefined,
-    );
-    if (isReconnect) {
-      updateUndoButtonBasedOnGameState();
-      if (!isWatchOnly && !isGameOver && game.winner === undefined) {
-        setAutomoveActionEnabled(true);
+    return batchGameControlsUpdates(() => {
+      const hydration = prepareInitialGameHydration(match, matchId);
+      if (!hydration) {
+        return;
       }
-    }
-    if (isWatchOnly && connection.rematchSeriesEndIsIndicated()) {
-      setEndMatchVisible(true);
-      setEndMatchConfirmed(true);
-    }
-    if (
-      (!isReconnect || wasWaitingForRematchResponse) &&
-      !isGameOver &&
-      !isWatchOnly
-    ) {
-      playSounds([Sound.DidConnect]);
-    }
-    return;
+      isWaitingForInviteToGetAccepted = false;
+      resetOnlineReconnectRequestState();
+      if (boardViewMode !== "historicalView") {
+        Board.stopMonsBoardAsDisplayAnimations();
+        showWaitingStateText("");
+        setEndMatchVisible(false);
+        setAutomoveActionVisible(false);
+        showMoveHistoryButton(false);
+        setInviteLinkActionVisible(false);
+        setAutomatchVisible(false);
+        setBotGameOptionVisible(false);
+        setNavigationListButtonVisible(false);
+        setEndMatchVisible(false);
+        showPrimaryAction(PrimaryActionType.None);
+      }
+      const wasWaitingForRematchResponse = isWaitingForRematchResponse;
+      isWaitingForRematchResponse = false;
+      if (wasWaitingForRematchResponse && boardViewMode === "historicalView") {
+        pendingRematchNavigationToLiveBoard = true;
+        applyBoardUiForCurrentView();
+      }
+      didConnectTo(match, matchPlayerUid, matchId, hydration);
+      if (hydration.kind === "provisional") {
+        remoteMoveSync.setProcessedCount(match.color, movesCountOfMatch(match));
+      }
+      remoteMoveSync.remember(match, matchId);
+      didConnect = true;
+      markMainGameContentReady(
+        !isWatchOnly && !isGameOver && game.winner === undefined,
+      );
+      if (isReconnect) {
+        updateUndoButtonBasedOnGameState();
+        if (!isWatchOnly && !isGameOver && game.winner === undefined) {
+          setAutomoveActionEnabled(true);
+        }
+      }
+      if (isWatchOnly && connection.rematchSeriesEndIsIndicated()) {
+        setEndMatchVisible(true);
+        setEndMatchConfirmed(true);
+      }
+      if (
+        (!isReconnect || wasWaitingForRematchResponse) &&
+        !isGameOver &&
+        !isWatchOnly
+      ) {
+        playSounds([Sound.DidConnect]);
+      }
+      return;
+    });
   }
 
   if (!remoteMoveSync.remember(match, matchId)) {
@@ -5044,69 +5101,74 @@ export function didReceiveMatchUpdate(
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
-  const activeMatchId = connection.getActiveMatchId();
-  if (!activeMatchId || activeMatchId !== matchId) {
-    return;
-  }
-  currentInputs = [];
-  Board.removeHighlights();
-  Board.hideItemSelectionOrConfirmationOverlay();
-  ensureBoardViewInvariants("didRecoverMyMatch:before");
-  const shouldRenderLiveBoard = !shouldPreserveHistoricalViewForCurrentInvite();
-  setWatchOnlyState(false);
-  setWatchOnlyVisible(false);
-  isReconnect = true;
-  didConnect = false;
-  playerSideColor =
-    match.color === "white" ? MonsRules.Color.White : MonsRules.Color.Black;
-  const recoveredGame = gameModelFromFen(match.fen);
-  if (!recoveredGame) {
-    return;
-  }
-
-  if (shouldRenderLiveBoard) {
-    rematchViewing.clearSelection();
-    boardViewMode = "activeLive";
-    publishGameControlsContext();
-    nextBoardRenderSession();
-  }
-  resetWagerStateForMatch(matchId);
-  resetBotScoreReactionState();
-  installCurrentGameModel(recoveredGame);
-  if (shouldRenderLiveBoard) {
-    Board.setBoardFlipped(activeBoardShouldBeFlipped());
-  }
-  if (game.winner !== undefined) {
-    disableAndHideUndoResignAndTimerControls();
-    Board.hideTimerCountdownDigits();
-  }
-  verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
-  if (shouldRenderLiveBoard) {
-    Board.updateEmojiAndAuraIfNeeded(
-      match.emojiId.toString(),
-      match.aura,
-      false,
-    );
-    applyWagerState();
-    markKnownWagerInitialStateReceived();
-  }
-
-  if (match.status === "surrendered") {
-    if (shouldRenderLiveBoard) {
-      handleResignStatus(true, match.color);
-    } else {
-      handleResignStatusWithoutRender(true, match.color);
+  return batchGameControlsUpdates(() => {
+    const activeMatchId = connection.getActiveMatchId();
+    if (!activeMatchId || activeMatchId !== matchId) {
+      return;
     }
-  }
+    currentInputs = [];
+    Board.removeHighlights();
+    Board.hideItemSelectionOrConfirmationOverlay();
+    ensureBoardViewInvariants("didRecoverMyMatch:before");
+    const shouldRenderLiveBoard =
+      !shouldPreserveHistoricalViewForCurrentInvite();
+    setWatchOnlyState(false);
+    setWatchOnlyVisible(false);
+    isReconnect = true;
+    didConnect = false;
+    playerSideColor =
+      match.color === "white" ? MonsRules.Color.White : MonsRules.Color.Black;
+    const recoveredGame = gameModelFromFen(match.fen);
+    if (!recoveredGame) {
+      return;
+    }
 
-  matchTimers.update(true, match, matchId);
-  ensureBoardViewInvariants("didRecoverMyMatch:after");
-  preloadRematchScoresAfterGameLoaded();
+    if (shouldRenderLiveBoard) {
+      rematchViewing.clearSelection();
+      boardViewMode = "activeLive";
+      publishGameControlsContext();
+      nextBoardRenderSession();
+    }
+    resetWagerStateForMatch(matchId);
+    resetBotScoreReactionState();
+    installCurrentGameModel(recoveredGame);
+    if (shouldRenderLiveBoard) {
+      Board.setBoardFlipped(activeBoardShouldBeFlipped());
+    }
+    if (game.winner !== undefined) {
+      disableAndHideUndoResignAndTimerControls();
+      Board.hideTimerCountdownDigits();
+    }
+    verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
+    if (shouldRenderLiveBoard) {
+      Board.updateEmojiAndAuraIfNeeded(
+        match.emojiId.toString(),
+        match.aura,
+        false,
+      );
+      applyWagerState();
+      markKnownWagerInitialStateReceived();
+    }
+
+    if (match.status === "surrendered") {
+      if (shouldRenderLiveBoard) {
+        handleResignStatus(true, match.color);
+      } else {
+        handleResignStatusWithoutRender(true, match.color);
+      }
+    }
+
+    matchTimers.update(true, match, matchId);
+    ensureBoardViewInvariants("didRecoverMyMatch:after");
+    preloadRematchScoresAfterGameLoaded();
+  });
 }
 
 export function enterWatchOnlyMode(reuseInitialIdentity = false) {
-  setWatchOnlyState(true);
-  setWatchOnlyVisible(true);
+  batchGameControlsUpdates(() => {
+    setWatchOnlyState(true);
+    setWatchOnlyVisible(true);
+  });
   const storedLoginId = storage.getLoginId("");
   const storedProfileId = storage.getProfileId("");
   if (storedLoginId === "" || storedProfileId === "") {

@@ -12,7 +12,7 @@ registerHooks({
   resolve(specifier, context, nextResolve) {
     if (
       context.parentURL?.endsWith(".ts") &&
-      specifier.startsWith("./") &&
+      (specifier.startsWith("./") || specifier.startsWith("../")) &&
       !/\.[^/]+$/.test(specifier)
     ) {
       return nextResolve(`${specifier}.ts`, context);
@@ -21,7 +21,9 @@ registerHooks({
   },
 });
 
-const { createGameControlsState, gameControlsReducer } =
+const { createGameControlsStore } =
+  await import("../src/game/gameControlsStore.ts");
+const { createGameControlsState } =
   await import("../src/ui/controls/bottomControlsState.ts");
 const timerConfig = { duration: 60, progress: 15, requestDate: 1000 };
 
@@ -59,10 +61,10 @@ const declarations = [
 function harness(
   overrides = {},
   initialControls = createGameControlsState(timerConfig),
+  { rejectHistoricalCommit = false } = {},
 ) {
   const events = [];
   const contexts = [];
-  let gameControls = initialControls;
   const initial = {
     selectedProblem: null,
     puzzleMode: false,
@@ -84,6 +86,20 @@ function harness(
     game: { winner: undefined },
     ...overrides,
   };
+  const controlsStore = createGameControlsStore(timerConfig);
+  controlsStore.updateContext({
+    ...Object.fromEntries(
+      Object.keys(controlsStore.getSnapshot().context)
+        .filter((key) => Object.hasOwn(initial, key))
+        .map((key) => [key, initial[key]]),
+    ),
+    sessionId: 1,
+  });
+  controlsStore.updatePresentation({ gameControls: initialControls });
+  const observedSnapshots = [];
+  controlsStore.subscribe(() =>
+    observedSnapshots.push(controlsStore.getSnapshot()),
+  );
   const rematchViewing = createRematchViewingHarness({
     selection: {
       matchId: "old",
@@ -91,11 +107,20 @@ function harness(
       game: { id: "old" },
     },
   });
+  if (rejectHistoricalCommit) {
+    rematchViewing.commitSelection = () => false;
+  }
   let api;
   const record =
     (name) =>
     (...args) =>
-      events.push({ name, args, state: api.state() });
+      events.push({
+        name,
+        args,
+        state: api.state(),
+        snapshot: controlsStore.getSnapshot(),
+        notifications: observedSnapshots.length,
+      });
   let seedingTimer = true;
   const timerHarness = createMatchTimerHarness(
     { activeMatchId: "live" },
@@ -143,7 +168,11 @@ function harness(
     },
     getCurrentSessionId: () => 1,
     isGameConnectionBound: () => false,
-    updateGameControlsContext: (context) => contexts.push(context),
+    batchGameControlsUpdates: controlsStore.batchUpdates,
+    updateGameControlsContext: (context) => {
+      controlsStore.updateContext(context);
+      contexts.push(context);
+    },
     initial,
     deriveBoardViewControls,
     Board: board,
@@ -195,7 +224,18 @@ function harness(
   ]) {
     dependencies[name] = (...args) => {
       record(name)(...args);
-      gameControls = gameControlsReducer(gameControls, action(...args));
+      controlsStore.dispatchGameControls(action(...args));
+    };
+  }
+  for (const [name, key] of Object.entries({
+    setEndMatchVisible: "endMatchVisible",
+    setEndMatchConfirmed: "endMatchConfirmed",
+    showVoiceReactionButton: "voiceReactionVisible",
+    showWaitingStateText: "waitingText",
+  })) {
+    dependencies[name] = (value) => {
+      controlsStore.updatePresentation({ [key]: value });
+      record(name)(value);
     };
   }
   const { outputText } = ts.transpileModule(
@@ -224,9 +264,11 @@ function harness(
   );
   return {
     ...api,
+    controlsStore,
+    observedSnapshots,
     contexts,
     events,
-    controls: () => gameControls,
+    controls: () => controlsStore.getSnapshot().presentation.gameControls,
     names: () => events.map(({ name }) => name),
   };
 }
@@ -249,6 +291,7 @@ function assertLivePreparation(h, mode) {
   const wagerView = h.events.find(({ name }) => name === "wagerView");
   assert.deepEqual(wagerView.args, [null]);
   assert.equal(wagerView.state.selection, null);
+  assert.equal(wagerView.snapshot.context.boardViewMode, mode);
   const flip = h.events.find(({ name }) => name === "setBoardFlipped");
   assert.equal(flip.state.flashbackMode, false);
   assert.deepEqual(flip.state.currentInputs, []);
@@ -257,6 +300,8 @@ function assertLivePreparation(h, mode) {
 test("waiting entry clears historical input and orientation before waiting UI and appearance", () => {
   const h = harness();
   h.wait();
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  assert.ok(h.events.every(({ notifications }) => notifications === 0));
   assertLivePreparation(h, "waitingLive");
   assert.equal(h.contexts.at(-1).boardViewMode, "waitingLive");
   assert.deepEqual(h.names().slice(5), [
@@ -281,6 +326,11 @@ test("waiting entry clears historical input and orientation before waiting UI an
 test("active restoration refreshes appearance before rendering and restores timers before wagers", () => {
   const h = harness();
   h.restore();
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  assert.ok(h.events.every(({ notifications }) => notifications === 0));
+  const rendered = h.events.find(({ name }) => name === "setNewBoard");
+  assert.equal(rendered.snapshot.context.boardViewMode, "activeLive");
+  assert.equal(rendered.snapshot.presentation.voiceReactionVisible, true);
   assertLivePreparation(h, "activeLive");
   assert.equal(h.contexts.at(-1).boardViewMode, "activeLive");
   const refreshIndex = h.names().indexOf("refreshDisplayedMatchPresentation");
@@ -301,7 +351,15 @@ test("active restoration refreshes appearance before rendering and restores time
 
 test("pending restoration stays waiting without restoring a live board or consuming its timer", () => {
   const h = harness({ isWaitingForRematchResponse: true });
-  h.restore();
+  h.controlsStore.batchUpdates(() => {
+    h.restore();
+    assert.deepEqual(h.observedSnapshots, []);
+    assert.equal(
+      h.controlsStore.getSnapshot().context.boardViewMode,
+      "waitingLive",
+    );
+  });
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
   assertLivePreparation(h, "waitingLive");
   assert.equal(h.names().includes("setNewBoard"), false);
   assert.equal(h.names().includes("restoreTimer"), false);
@@ -328,6 +386,9 @@ test("historical entry installs the selection before effects and renders before 
   const pair = { matchId: "older" };
   const historicalGame = { id: "older" };
   assert.equal(h.history("older", pair, historicalGame, 5), true);
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  assert.ok(h.events.every(({ notifications }) => notifications === 0));
+  assert.equal(h.events[0].snapshot.context.boardViewMode, "historicalView");
   const state = h.state();
   assert.equal(state.boardViewMode, "historicalView");
   assert.equal(state.boardRenderSessionId, 5);
@@ -360,9 +421,12 @@ test("historical entry installs the selection before effects and renders before 
 test("a stale historical entry cannot change state or emit effects", () => {
   const h = harness();
   const before = h.state();
+  const snapshot = h.controlsStore.getSnapshot();
   assert.equal(h.history("older", {}, {}, 4), false);
   assert.deepEqual(h.state(), before);
   assert.deepEqual(h.events, []);
+  assert.equal(h.controlsStore.getSnapshot(), snapshot);
+  assert.deepEqual(h.observedSnapshots, []);
 });
 
 test("live local UI leaves existing end and reaction controls untouched", () => {
@@ -469,4 +533,31 @@ test("scrubbing a live match changes flashback without entering historical view"
   h.selectMove(1);
   assert.equal(h.state().boardViewMode, "activeLive");
   assert.equal(h.state().flashbackMode, false);
+});
+
+test("a rejected historical selection publishes its changed context once without later effects", () => {
+  const h = harness(
+    { boardViewMode: "activeLive", flashbackMode: false },
+    undefined,
+    { rejectHistoricalCommit: true },
+  );
+  const before = h.state();
+  h.controlsStore.batchUpdates(() => {
+    assert.equal(h.history("older", {}, {}, 5), false);
+    assert.equal(
+      h.controlsStore.getSnapshot().context.boardViewMode,
+      "historicalView",
+    );
+    assert.deepEqual(h.observedSnapshots, []);
+  });
+  assert.deepEqual(h.state(), { ...before, boardViewMode: "historicalView" });
+  assert.deepEqual(h.events, []);
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  h.observedSnapshots.length = 0;
+  h.restore();
+  assert.deepEqual(h.observedSnapshots, [h.controlsStore.getSnapshot()]);
+  assert.equal(
+    h.controlsStore.getSnapshot().context.boardViewMode,
+    "activeLive",
+  );
 });

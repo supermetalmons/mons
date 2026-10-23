@@ -105,6 +105,7 @@ function harness({
   };
   const noop = () => {};
   const dependencies = {
+    batchGameControlsUpdates: (callback) => callback(),
     initialGame: spy(new Game()),
     initiallyConnected: connected,
     createRemoteMoveSyncController,

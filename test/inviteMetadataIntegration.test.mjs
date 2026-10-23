@@ -35,6 +35,8 @@ registerHooks({
   },
 });
 
+const { batchGameControlsUpdates } =
+  await import("../src/game/gameControlsStore.ts");
 const { GameBootstrapApiError } =
   await import("../src/services/gameBootstrapApi.ts");
 
@@ -136,6 +138,7 @@ const { outputText: endMatchHandlerOutput } = ts.transpileModule(
 
 function clickEndMatch(h) {
   const dependencies = {
+    batchGameControlsUpdates,
     connection: h.instance,
     isReconnect: false,
     didConnect: true,

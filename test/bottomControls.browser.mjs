@@ -2959,6 +2959,69 @@ test(
 );
 
 test(
+  "a mounted controls reset publishes only its completed context and presentation",
+  { timeout: 60000 },
+  async () => {
+    await fixture(async (page) => {
+      const result = await page.evaluate(() => {
+        const { run, controlsStore, applyGameplayControlsPreset, port } =
+          window.harness;
+        const observed = [];
+        const unsubscribe = controlsStore.subscribeGameControls(() => {
+          observed.push(controlsStore.getGameControlsSnapshot());
+        });
+        let intermediate;
+        let notificationsInside;
+        let returned;
+        try {
+          run(() => {
+            returned = controlsStore.batchGameControlsUpdates(() => {
+              controlsStore.updateGameControlsContext({
+                sessionId: 2,
+                puzzleMode: true,
+                selectedPuzzleId: "test-puzzle",
+              });
+              applyGameplayControlsPreset("puzzle");
+              intermediate = controlsStore.getGameControlsSnapshot();
+              notificationsInside = observed.length;
+              port.showPrimaryAction(port.PrimaryActionType.Rematch);
+              return controlsStore.getGameControlsSnapshot();
+            });
+          });
+          run(() =>
+            controlsStore.batchGameControlsUpdates(() => {
+              controlsStore.updateGameControlsContext({ sessionId: 2 });
+              port.setHomeVisible(true);
+            }),
+          );
+          return {
+            notificationsInside,
+            intermediate,
+            observed,
+            final: controlsStore.getGameControlsSnapshot(),
+            returnedFinal: returned === controlsStore.getGameControlsSnapshot(),
+          };
+        } finally {
+          unsubscribe();
+        }
+      });
+      assert.equal(result.notificationsInside, 0);
+      assert.equal(result.intermediate.context.sessionId, 2);
+      assert.equal(result.intermediate.context.puzzleMode, true);
+      assert.equal(result.intermediate.presentation.homeVisible, true);
+      assert.equal(result.returnedFinal, true);
+      assert.deepEqual(result.observed, [result.final]);
+      assert.equal(
+        result.final.presentation.gameControls.primaryAction,
+        "rematch",
+      );
+      assert.equal(await count(page, "Next Lesson"), 1);
+      assert.equal(await count(page, "Play Again"), 0);
+    });
+  },
+);
+
+test(
   "published context rerenders primary actions without a presentation command",
   { timeout: 60000 },
   async () => {

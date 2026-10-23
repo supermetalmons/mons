@@ -322,6 +322,57 @@ test("nested batches and presentation resets publish only at the outer exit", ()
   assert.deepEqual(final.presentation.gameControls.timer.config, resetConfig);
 });
 
+test("batches return callback values without changing notification boundaries", () => {
+  const store = createGameControlsStore(config);
+  const result = { selectedMatchId: "match-2" };
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+
+  assert.equal(
+    store.batchUpdates(() => result),
+    result,
+  );
+  assert.deepEqual(observed, []);
+  assert.equal(
+    store.batchUpdates(() => {
+      store.updateContext({ sessionId: 2 });
+      const nestedResult = store.batchUpdates(() => {
+        store.updatePresentation({ homeVisible: true });
+        return result;
+      });
+      assert.equal(nestedResult, result);
+      assert.deepEqual(observed, []);
+      return nestedResult;
+    }),
+    result,
+  );
+  assert.deepEqual(observed, [store.getSnapshot()]);
+});
+
+test("early returns publish completed writes and leave later batches usable", () => {
+  const store = createGameControlsStore(config);
+  const observed = [];
+  store.subscribe(() => observed.push(store.getSnapshot()));
+  const initialize = (sessionId) =>
+    store.batchUpdates(() => {
+      if (sessionId === store.getSnapshot().context.sessionId) return false;
+      store.updateContext({ sessionId });
+      if (sessionId === 1) return true;
+      store.updatePresentation({ homeVisible: true });
+      return true;
+    });
+
+  assert.equal(initialize(0), false);
+  assert.deepEqual(observed, []);
+  assert.equal(initialize(1), true);
+  assert.deepEqual(observed, [store.getSnapshot()]);
+  assert.equal(store.getSnapshot().presentation.homeVisible, false);
+  assert.equal(initialize(2), true);
+  assert.equal(observed.length, 2);
+  assert.equal(observed.at(-1), store.getSnapshot());
+  assert.equal(store.getSnapshot().presentation.homeVisible, true);
+});
+
 test("a caught nested batch error keeps completed writes in the outer publication", () => {
   const store = createGameControlsStore(config);
   const failure = new Error("nested callback failed");

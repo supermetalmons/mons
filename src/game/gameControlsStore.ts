@@ -35,10 +35,10 @@ export function createGameControlsStore(initialTimerConfig: TimerConfig) {
     }
     listeners.forEach((listener) => listener());
   };
-  const batchUpdates = (callback: () => void): void => {
+  const batchUpdates = <T>(callback: () => T): T => {
     batchDepth += 1;
     try {
-      callback();
+      return callback();
     } finally {
       batchDepth -= 1;
       if (batchDepth === 0 && notificationPending) {
